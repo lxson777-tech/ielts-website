@@ -12,8 +12,10 @@
  * ONE DECISION COVERS EVERYTHING. The learner record and the four older
  * stores (attempts, essays and their marked reports, speaking results, the
  * study plan, vocabulary, saved lessons and notes) move together, because to
- * a student this is one thing. Saying no leaves all of it exactly where it
- * is, for them to come back to; nothing is ever deleted either way.
+ * a student this is one thing. So do an unfinished test and a mock exam
+ * paused part way through, made resumable in the account, unless the
+ * account already has one of its own. Saying no leaves all of it exactly
+ * where it is, for them to come back to; nothing is ever deleted either way.
  *
  * IT ASKS ONCE AND THEN GETS OUT OF THE WAY. The answer is remembered on the
  * device, so a student is not nagged, and no other account is offered that
@@ -113,6 +115,10 @@ export default function AnonymousWorkClaim({ token, variant = 'toast' }: Anonymo
   if (saved > 0) {
     lines.push(tn(saved, { one: '{n} saved lesson or note', other: '{n} saved lessons and notes' }, { n: saved }));
   }
+  /* Listed only when saying yes really brings it: the store counts these
+     false when the account already has one of its own, which wins. */
+  if (legacy?.unfinishedTest) lines.push(t('An unfinished test'));
+  if (legacy?.pausedMock) lines.push(t('A paused mock exam'));
   if (offer.summary.hasPlan) lines.push(t('Your target band and exam date'));
 
   const close = () => setOffer(null);

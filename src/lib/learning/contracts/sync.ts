@@ -260,6 +260,13 @@ export interface LegacyWorkCounts {
   vocabularyWords: number;
   savedLessons: number;
   notes: number;
+  /** An unfinished test sitting the claim would carry: one the account can
+      resume, and only when the account has none of its own (its own wins).
+      One owner holds at most one, so this is a yes or no rather than a
+      count. Optional so a value made before it existed still type-checks. */
+  unfinishedTest?: boolean;
+  /** A mock exam day paused part way through, on the same terms. */
+  pausedMock?: boolean;
 }
 
 export function emptyLegacyWorkCounts(): LegacyWorkCounts {
@@ -272,6 +279,8 @@ export function emptyLegacyWorkCounts(): LegacyWorkCounts {
     vocabularyWords: 0,
     savedLessons: 0,
     notes: 0,
+    unfinishedTest: false,
+    pausedMock: false,
   };
 }
 
@@ -283,7 +292,9 @@ export function hasLegacyWork(counts: LegacyWorkCounts): boolean {
     counts.hasPlan ||
     counts.vocabularyWords > 0 ||
     counts.savedLessons > 0 ||
-    counts.notes > 0
+    counts.notes > 0 ||
+    counts.unfinishedTest === true ||
+    counts.pausedMock === true
   );
 }
 

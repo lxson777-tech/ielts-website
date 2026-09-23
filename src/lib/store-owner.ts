@@ -48,7 +48,7 @@
  * `src/lib/progress.ts` is imported for its types by files the Mr EZ Worker
  * bundles, so this module it now depends on carries no catalogue, no React,
  * no data: types and a handful of string constants, and nothing that runs at
- * import time except three empty registries. The one thing it reads from the
+ * import time except four empty registries. The one thing it reads from the
  * build is the account project's two public settings, and only to know which
  * stored session is this application's own (see WHICH SESSION, EXACTLY).
  */
@@ -483,6 +483,18 @@ export const LEGACY_STORE_KEYS: readonly string[] = [
   'ielts.mock.v1',
 ] as const;
 
+/** The two stores whose stored value names its OWN owner: the unfinished
+    test sitting (src/lib/test-session.ts) and the mock exam day paused part
+    way through (src/lib/tests/mock.ts). The claim carries them as well, one
+    yes for everything, but not through the list above. See "Claiming the
+    stores whose value names its owner" below for why they are kept apart. */
+export const OWNER_STAMPED_STORE_KEYS: readonly string[] = [
+  /* The unfinished test sitting, src/lib/test-session.ts TEST_SESSION_KEY. */
+  'ielts.testsession.v1',
+  /* The paused mock day, src/lib/tests/mock.ts ACTIVE_MOCK_KEY. */
+  'ielts.mock.active.v1',
+] as const;
+
 /* ── Scoped keys, and the one-time move ──────────────────────────────────── */
 
 export function scopedKeyFor(base: string, owner: CacheOwner): string {
@@ -623,13 +635,113 @@ export interface LegacyClaimOutcome {
   /** Base keys where both sides had a copy and the store's own merge rule
       joined them. */
   merged: string[];
-  /** Base keys where both sides had a copy and no merge rule was registered.
-      The account keeps its own; the device's copy is left exactly where it
-      is rather than thrown away. */
+  /** Base keys where both sides had a copy and no merge rule was registered,
+      or, for a store whose value names its owner, where the account already
+      had one of its own (the account's own always wins there). The account
+      keeps its own; the device's copy is left exactly where it is rather
+      than thrown away. */
   keptSeparate: string[];
+  /** Base keys of a store whose value names its owner, where the device's
+      value could not be handed over as it stands: not a readable value of
+      that store, nothing left in it to pick up, stamped with a third owner,
+      or no re-stamp rule registered. Left exactly where it is. */
+  leftInPlace: string[];
 }
 
-/** Move the older stores from one owner to another, as one decision.
+/* ── Claiming the stores whose value names its owner ─────────────────────── */
+
+/* WHY THESE TWO ARE NOT IN LEGACY_STORE_KEYS
+ *
+ * An unfinished test sitting and a paused mock day each carry the owner who
+ * started them INSIDE the stored value (an `owner` field spelled the way
+ * ownerNamespace spells an owner), and the player and the mock screen refuse
+ * one stamped for anybody else. Copying the key across the way the history
+ * stores are copied would land a sitting in the account that still names the
+ * device, and the account's own player would turn it away as another
+ * student's. So each value is re-stamped for the account on the way, by a
+ * rule its own module registers, and there is never a second copy of that
+ * module's idea of what a resumable sitting is.
+ *
+ * Nor may they go through scopedKeyIn. Its one-time move reads the device's
+ * HISTORY stamp, and an unfinished sitting must never be handed out on the
+ * strength of that stamp (finding R2-01, see src/lib/test-session.ts). A
+ * sitting left by an older build is parked with the anonymous device owner by
+ * test-session.ts's own rule, and the paused mock was born owner-scoped and
+ * has no device-wide past at all.
+ *
+ * THE ACCOUNT'S OWN WINS. If the claiming account already has an unfinished
+ * sitting (or a paused mock) of its own, that one is kept exactly as it is
+ * and the device's is left where it is, under the anonymous device owner:
+ * one owner holds at most one of each, and overwriting a sitting the student
+ * is part way through would lose their answers. Nothing is merged.
+ *
+ * Otherwise they move exactly as the history stores do: the re-stamped copy
+ * is written under the account, and only once that write has landed is the
+ * device's scoped copy removed, so the next student on this browser is never
+ * offered it. The old device-wide key, where there is one, is never touched,
+ * and test-session.ts's own note stops it being parked a second time. */
+
+/** How one store whose value names its owner is handed from one owner to
+    another. Registered by the module that owns the store. */
+export interface OwnerStampedStoreRule {
+  /** The store's own one-time parking of an older build's device-wide value
+      with the anonymous device owner, run before that owner's copy is read.
+      Optional: a store born owner-scoped has nothing to park. */
+  prepare?(storage: BrowserStorage): void;
+  /** `raw`, held by `from`, rewritten to name `to` as its owner, with every
+      other field exactly as it was. Null when it is not something `from` can
+      hand over: not a readable value of this store, nothing left in it to
+      pick up, or stamped with a third owner. Owners are spelled the way
+      ownerNamespace spells them. */
+  restamp(raw: string, from: string, to: string): string | null;
+}
+
+const stampedRules = new Map<string, OwnerStampedStoreRule>();
+
+/** Each store registers its OWN re-stamp rule, from the module that owns it,
+    the same way the history stores register their merge rules. */
+export function registerOwnerStampedStore(base: string, rule: OwnerStampedStoreRule): void {
+  stampedRules.set(base, rule);
+}
+
+type StampedPlan =
+  | { kind: 'move'; sourceKey: string; targetKey: string; value: string }
+  | { kind: 'account-has-own' }
+  | { kind: 'not-claimable' };
+
+/** What a claim would do with one owner-stamped store right now, or null
+    when `from` holds nothing in it. Writes nothing except the store's own
+    one-time parking, which is what that store's own first read does too. */
+function planStampedMove(storage: BrowserStorage, base: string, from: CacheOwner, to: CacheOwner): StampedPlan | null {
+  const rule = stampedRules.get(base);
+  rule?.prepare?.(storage);
+  const sourceKey = scopedKeyFor(base, from);
+  const source = safeGet(storage, sourceKey);
+  if (source === null) return null;
+  const targetKey = scopedKeyFor(base, to);
+  if (safeGet(storage, targetKey) !== null) return { kind: 'account-has-own' };
+  const value = rule ? rule.restamp(source, ownerNamespace(from), ownerNamespace(to)) : null;
+  if (value === null) return { kind: 'not-claimable' };
+  return { kind: 'move', sourceKey, targetKey, value };
+}
+
+/** The owner-stamped stores a claim from `from` to `to` would carry across
+    right now, as base keys. What the claim offer counts, so the student is
+    told about an unfinished test or a paused mock only when saying yes would
+    really bring it, and never when the account already has its own. */
+export function claimableOwnerStampedStores(
+  storage: BrowserStorage | null,
+  from: CacheOwner,
+  to: CacheOwner,
+): string[] {
+  if (!storage || sameOwner(from, to)) return [];
+  return OWNER_STAMPED_STORE_KEYS.filter((base) => planStampedMove(storage, base, from, to)?.kind === 'move');
+}
+
+/* ── The claim itself ────────────────────────────────────────────────────── */
+
+/** Move the older stores, and the two stores whose value names its owner,
+    from one owner to another, as one decision.
  *
  * Called by the explicit anonymous-work claim and by nothing else. The
  * device-wide originals are not touched; only the scoped copies move, and
@@ -640,7 +752,7 @@ export function claimLegacyStores(
   from: CacheOwner,
   to: CacheOwner,
 ): LegacyClaimOutcome {
-  const outcome: LegacyClaimOutcome = { moved: [], merged: [], keptSeparate: [] };
+  const outcome: LegacyClaimOutcome = { moved: [], merged: [], keptSeparate: [], leftInPlace: [] };
   if (!storage || sameOwner(from, to)) return outcome;
 
   for (const base of LEGACY_STORE_KEYS) {
@@ -669,6 +781,26 @@ export function claimLegacyStores(
       continue;
     }
     outcome.keptSeparate.push(base);
+  }
+
+  /* The unfinished sitting and the paused mock day, re-stamped for the
+     account on the way (see "Claiming the stores whose value names its
+     owner" above). The account's own always wins. */
+  for (const base of OWNER_STAMPED_STORE_KEYS) {
+    const plan = planStampedMove(storage, base, from, to);
+    if (!plan) continue;
+    if (plan.kind === 'account-has-own') {
+      outcome.keptSeparate.push(base);
+      continue;
+    }
+    if (plan.kind === 'not-claimable') {
+      outcome.leftInPlace.push(base);
+      continue;
+    }
+    if (safeSet(storage, plan.targetKey, plan.value)) {
+      safeRemove(storage, plan.sourceKey);
+      outcome.moved.push(base);
+    }
   }
   return outcome;
 }

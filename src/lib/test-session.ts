@@ -39,10 +39,19 @@
    signed in when it is first read. Signed out, the device's own student can
    pick it up again. No account ever receives it automatically. The only
    route from the device to an account is the explicit "work saved on this
-   device" claim, which moves the keys listed in store-owner.ts's
-   LEGACY_STORE_KEYS. That list names the mock history (ielts.mock.v1) but,
-   as of this change, not this key, so an unfinished sitting from an older
-   build stays with the device; adding it there is store-owner.ts's call. */
+   device" claim.
+
+   WHAT THE CLAIM DOES WITH IT (23 September 2026)
+   Since this change the claim carries an unfinished sitting too: one yes
+   moves everything. It is listed in store-owner.ts's
+   OWNER_STAMPED_STORE_KEYS, not LEGACY_STORE_KEYS, because a sitting names
+   its owner inside the value and a plain copy would be refused by the
+   account's own player as another student's. restampSession below is the
+   rule the claim uses, registered with store-owner.ts at the bottom of this
+   file, and the parking rule below runs first so a sitting left by an older
+   build is claimed from the device, never from the history stamp. If the
+   account already has an unfinished sitting of its own, that one wins and
+   the device's is left where it is. */
 
 import type { CacheOwner } from './learning/contracts/sync';
 import { LEGACY_ADOPTION_KEY } from './learning/contracts/sync';
@@ -54,6 +63,7 @@ import {
   deviceIdFrom,
   deviceStorage,
   ownerNamespace,
+  registerOwnerStampedStore,
   safeGet,
   safeRemove,
   safeSet,
@@ -284,3 +294,30 @@ export function clearSession(sittingOwner?: string): void {
   if (!storage) return;
   safeRemove(storage, keyFor(currentOwner()));
 }
+
+/* ── Handing a sitting to an account, on the student's say-so ────────────── */
+
+/** A stored sitting held by `from`, re-stamped so that `to` can resume it:
+    the `owner` field names `to` and every other field, the answers and the
+    deadline included, is exactly as it was. Owners are spelled as
+    store-owner.ts spells them ('u:<id>' or 'anon:<deviceId>').
+ *
+ * Null when it is not `from`'s to hand over: not a sitting this file can
+ * read, or one stamped with a third owner (read() would refuse that one to
+ * `from` as well). A sitting with no owner written in it at all, which only
+ * an older build made, is `from`'s, the same way read() treats it. Pure: it
+ * reads and writes nothing, and store-owner.ts's claim is its only caller. */
+export function restampSession(raw: string, from: string, to: string): string | null {
+  const held = parse(raw);
+  if (!held) return null;
+  if (held.owner && held.owner !== from) return null;
+  return JSON.stringify({ ...held, owner: to });
+}
+
+/* The explicit "work saved on this device" claim carries an unfinished
+   sitting with this rule, after parking any older build's sitting with the
+   device first (never with an account, see the R2-01 note at the top). */
+registerOwnerStampedStore(KEY, {
+  prepare: (storage) => adoptUnownedIntoDevice(storage, KEY),
+  restamp: restampSession,
+});

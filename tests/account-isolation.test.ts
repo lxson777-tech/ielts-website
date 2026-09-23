@@ -226,6 +226,8 @@ const learnerStore = await import('../src/lib/learning/store.browser.ts');
 const learning = await import('../src/lib/learning/index.ts');
 const learningSync = await import('../src/lib/learning/sync.browser.ts');
 const lifecycle = await import('../src/lib/auth/lifecycle.ts');
+const testSession = await import('../src/lib/test-session.ts');
+const mockStore = await import('../src/lib/tests/mock.ts');
 
 /* ------------------------------------------------------------------ */
 /* The free local stand-in, in this process, on a port the OS picks    */
@@ -696,6 +698,190 @@ test('declining leaves the work exactly where it is, and it is never uploaded', 
   /* Nobody else is shown it either. */
   await startSyncForUser(B);
   assert.equal(learnerStore.describeAnonymousWork(), null, "student B was offered work student A declined");
+});
+
+/* ------------------------------------------------------------------ */
+/* 3b. An unfinished test and a paused mock exam: one yes moves them    */
+/* ------------------------------------------------------------------ */
+
+/* Both carry their owner inside the stored value, so the claim re-stamps
+   them for the account (src/lib/store-owner.ts, OWNER_STAMPED_STORE_KEYS).
+   Driven here through the real offer, claim and decline, with the real
+   sign-in and sign-out underneath. */
+
+/** The drill left part way through while signed out, and its answer. */
+const DEVICE_DRILL = { id: 'reading-full-006-drill-p2', durationMinutes: 20 } as unknown as Parameters<
+  typeof testSession.startSession
+>[0];
+const DEVICE_ANSWERS = { q14: 'SYNTHETIC answer given while signed out' };
+
+type PausedMock = Parameters<typeof mockStore.saveActiveMock>[0];
+
+/** A SYNTHETIC mock day for `owner`, paused on the beat before Reading with
+    Listening done. */
+function pausedMockFor(owner: string, overrides: Partial<PausedMock> = {}): PausedMock {
+  return {
+    version: 1,
+    owner,
+    mockId: 'mock-2026-09-23-1',
+    startedAt: '2026-09-23T09:00:00.000Z',
+    stage: 'transition-reading',
+    listeningTestId: 'listening-full-001',
+    readingTestId: 'reading-full-001',
+    task1PromptId: 'SYNTHETIC-task1',
+    task2PromptId: 'SYNTHETIC-task2',
+    listening: { raw: 31, total: 40, band: 7, bandLabel: '7', secondsUsed: 1_800 },
+    reading: null,
+    essay1: '',
+    essay2: '',
+    writingEndsAt: null,
+    speakingBand: null,
+    speakingCriteria: null,
+    speakingSkipped: false,
+    savedAt: 0,
+    ...overrides,
+  };
+}
+
+/** Signed out on this device: an unfinished drill and a paused mock day.
+    Returns the device owner and the two stored values as it holds them. */
+function leaveUnfinishedWorkSignedOut(): { anon: string; sitting: string; paused: string } {
+  assert.equal(storeOwner.currentOwner().kind, 'anonymous');
+  const anon = storeOwner.ownerNamespace(storeOwner.currentOwner());
+  testSession.startSession(DEVICE_DRILL);
+  assert.equal(testSession.saveAnswers(DEVICE_ANSWERS, anon), true);
+  assert.equal(mockStore.saveActiveMock(pausedMockFor(anon)), true);
+  return {
+    anon,
+    sitting: storage.data.get(`${testSession.TEST_SESSION_KEY}::${anon}`)!,
+    paused: storage.data.get(`${mockStore.ACTIVE_MOCK_KEY}::${anon}`)!,
+  };
+}
+
+test('an unfinished test and a paused mock exam are offered, and one yes makes them resumable in the account', async () => {
+  freshDevice();
+  const device = leaveUnfinishedWorkSignedOut();
+  await startSyncForUser(A);
+
+  /* Signing in does NOT take them. */
+  assert.equal(testSession.activeSession(), null, 'signing in took the unfinished test with no consent');
+  assert.equal(mockStore.loadActiveMock(), null, 'signing in took the paused mock with no consent');
+
+  /* They are the only thing on the device, and they are still offered, in
+     plain words the screen can say. */
+  const offer = learnerStore.describeAnonymousWork();
+  assert.ok(offer, 'an unfinished test and a paused mock were not offered at all');
+  assert.equal(offer.summary.legacy?.unfinishedTest, true);
+  assert.equal(offer.summary.legacy?.pausedMock, true);
+
+  let claimed!: ReturnType<typeof learnerStore.claimAnonymousWork>;
+  catchScheduledPush(() => {
+    claimed = learnerStore.claimAnonymousWork();
+  });
+  assert.equal(claimed.outcome, 'claimed');
+
+  /* A's own player and mock screen accept them. */
+  const mine = `u:${A.id}`;
+  const resumed = testSession.loadSession(DEVICE_DRILL.id);
+  assert.equal(resumed?.owner, mine, 'the claimed sitting still names the device, so the player refuses it');
+  assert.deepEqual(resumed?.answers, DEVICE_ANSWERS);
+  assert.equal(resumed?.endsAt, JSON.parse(device.sitting).endsAt, 'the claim moved the deadline');
+  const paused = mockStore.loadActiveMock();
+  assert.equal(paused?.owner, mine, 'the claimed mock still names the device, so the mock screen refuses it');
+  assert.equal(paused?.stage, 'transition-reading');
+  assert.equal(paused?.listening?.band, 7);
+
+  /* Claiming twice is harmless, and nothing is offered again. */
+  const sittingAfter = storage.data.get(`${testSession.TEST_SESSION_KEY}::${mine}`);
+  const pausedAfter = storage.data.get(`${mockStore.ACTIVE_MOCK_KEY}::${mine}`);
+  catchScheduledPush(() => {
+    learnerStore.claimAnonymousWork();
+  });
+  assert.equal(storage.data.get(`${testSession.TEST_SESSION_KEY}::${mine}`), sittingAfter);
+  assert.equal(storage.data.get(`${mockStore.ACTIVE_MOCK_KEY}::${mine}`), pausedAfter);
+  assert.equal(learnerStore.describeAnonymousWork(), null, 'the same sitting was offered again after being claimed');
+
+  /* Student B is offered nothing and receives nothing. */
+  stopSync();
+  await startSyncForUser(B);
+  assert.equal(learnerStore.describeAnonymousWork(), null, "student B was offered student A's claimed sitting");
+  assert.equal(testSession.activeSession(), null, "student B received student A's claimed sitting");
+  assert.equal(mockStore.loadActiveMock(), null, "student B received student A's claimed mock");
+
+  /* Signed out, the device no longer holds them: they moved, they were not
+     copied. */
+  stopSync();
+  assert.equal(testSession.activeSession(), null);
+  assert.equal(mockStore.loadActiveMock(), null);
+
+  /* Student A comes back and finds both. */
+  await startSyncForUser(A);
+  assert.deepEqual(testSession.loadSession(DEVICE_DRILL.id)?.answers, DEVICE_ANSWERS);
+  assert.equal(mockStore.loadActiveMock()?.owner, mine);
+});
+
+test('declining leaves the unfinished test and the paused mock exactly where they were', async () => {
+  freshDevice();
+  const device = leaveUnfinishedWorkSignedOut();
+  await startSyncForUser(A);
+
+  learnerStore.declineAnonymousWork();
+  assert.equal(learnerStore.describeAnonymousWork(), null, 'the student was asked again after saying no');
+  assert.equal(testSession.activeSession(), null, 'declining still moved the unfinished test into the account');
+  assert.equal(mockStore.loadActiveMock(), null, 'declining still moved the paused mock into the account');
+  assert.equal(storage.data.has(`${testSession.TEST_SESSION_KEY}::u:${A.id}`), false);
+  assert.equal(storage.data.has(`${mockStore.ACTIVE_MOCK_KEY}::u:${A.id}`), false);
+  assert.equal(storage.data.get(`${testSession.TEST_SESSION_KEY}::${device.anon}`), device.sitting);
+  assert.equal(storage.data.get(`${mockStore.ACTIVE_MOCK_KEY}::${device.anon}`), device.paused);
+
+  /* Signed out, the device's own student picks both up again. */
+  stopSync();
+  assert.deepEqual(testSession.loadSession(DEVICE_DRILL.id)?.answers, DEVICE_ANSWERS);
+  assert.equal(mockStore.loadActiveMock()?.owner, device.anon);
+
+  /* Nobody else is shown them. */
+  await startSyncForUser(B);
+  assert.equal(learnerStore.describeAnonymousWork(), null, 'student B was offered a sitting student A declined');
+  assert.equal(testSession.activeSession(), null);
+  assert.equal(mockStore.loadActiveMock(), null);
+});
+
+test("the account's own unfinished test and paused mock win: the device's are not offered and stay on the device", async () => {
+  freshDevice();
+  doStudentAsWork();
+  const device = leaveUnfinishedWorkSignedOut();
+  await startSyncForUser(A);
+
+  /* A starts a sitting and a mock day of their own after signing in. */
+  const mine = `u:${A.id}`;
+  testSession.startSession({ id: 'reading-full-007-drill-p1', durationMinutes: 20 } as unknown as typeof DEVICE_DRILL);
+  assert.equal(testSession.saveAnswers({ q1: 'SYNTHETIC answer by A after signing in' }, mine), true);
+  assert.equal(mockStore.saveActiveMock(pausedMockFor(mine, { stage: 'writing', essay1: 'SYNTHETIC draft by A' })), true);
+  const aSitting = storage.data.get(`${testSession.TEST_SESSION_KEY}::${mine}`);
+  const aPaused = storage.data.get(`${mockStore.ACTIVE_MOCK_KEY}::${mine}`);
+
+  /* The rest of the device's work is still offered; these two are not,
+     because saying yes would not bring them. */
+  const offer = learnerStore.describeAnonymousWork();
+  assert.ok(offer, "the rest of the device's work was not offered");
+  assert.equal(offer.summary.legacy?.unfinishedTest, false);
+  assert.equal(offer.summary.legacy?.pausedMock, false);
+
+  catchScheduledPush(() => {
+    learnerStore.claimAnonymousWork();
+  });
+  assert.equal(storage.data.get(`${testSession.TEST_SESSION_KEY}::${mine}`), aSitting, "A's own sitting was overwritten");
+  assert.equal(storage.data.get(`${mockStore.ACTIVE_MOCK_KEY}::${mine}`), aPaused, "A's own paused mock was overwritten");
+  assert.equal(testSession.activeSession()?.testId, 'reading-full-007-drill-p1');
+  assert.equal(mockStore.loadActiveMock()?.essay1, 'SYNTHETIC draft by A');
+  /* The rest of the claim still happened. */
+  assert.equal(whatTheStudentSees().essays, 1);
+
+  /* The device's two are exactly where they were. */
+  assert.equal(storage.data.get(`${testSession.TEST_SESSION_KEY}::${device.anon}`), device.sitting);
+  assert.equal(storage.data.get(`${mockStore.ACTIVE_MOCK_KEY}::${device.anon}`), device.paused);
+  stopSync();
+  assert.deepEqual(testSession.loadSession(DEVICE_DRILL.id)?.answers, DEVICE_ANSWERS);
 });
 
 /* ------------------------------------------------------------------ */

@@ -12,7 +12,15 @@
 
 import type { PracticeTest } from './schema';
 import { getAttempts, getBestBand, recordTestAttempt } from '../progress';
-import { currentOwner, deviceStorage, safeGet, safeRemove, safeSet, scopedKeyFor } from '../store-owner';
+import {
+  currentOwner,
+  deviceStorage,
+  registerOwnerStampedStore,
+  safeGet,
+  safeRemove,
+  safeSet,
+  scopedKeyFor,
+} from '../store-owner';
 /* The same "is this still the student who started the sitting" rule the test
    player uses, imported rather than written a second time: a mock day and a
    single paper must not be able to disagree about whose work they are. The
@@ -255,7 +263,10 @@ export function saveMockAttempt(attempt: MockAttempt, sittingOwner?: string): bo
 /** The base key. What reaches localStorage is this plus the owner, for
     example 'ielts.mock.active.v1::u:9f0c'. Born owner-scoped, so unlike the
     history above it has no device-wide past to adopt and is never read
-    through the adoption rule. */
+    through the adoption rule. A mock paused while signed out reaches an
+    account only through the explicit "work saved on this device" claim,
+    re-stamped for that account on the way (restampActiveMock below), and
+    never over a paused mock the account already has. */
 export const ACTIVE_MOCK_KEY = 'ielts.mock.active.v1';
 
 /** The stages a mock sitting moves through, in order. Named here rather
@@ -444,6 +455,29 @@ export function clearActiveMock(sittingOwner?: string): void {
   if (!storage) return;
   safeRemove(storage, activeKeyNow());
 }
+
+/** A written-down mock day held by `from`, re-stamped so that `to` can pick
+    it up: the `owner` field names `to` and every other field (the stage,
+    the finished legs, the essays, the Writing deadline) is exactly as it was
+    stored. Owners are spelled as store-owner.ts spells them.
+ *
+ * Null when it is not `from`'s to hand over: not a sitting this file can
+ * read, a sitting with nothing to pick up (the start screen or the results,
+ * which loadActiveMock would not offer either), or one stamped with anybody
+ * but `from`. Pure: it reads and writes nothing, and the explicit "work
+ * saved on this device" claim in store-owner.ts is its only caller. */
+export function restampActiveMock(raw: string, from: string, to: string): string | null {
+  const held = parseActive(raw);
+  if (!held || !inProgress(held.stage) || held.owner !== from) return null;
+  /* The stored object itself, not the tidied read-back, so a field this
+     build does not know about is carried across untouched. parseActive has
+     already proved it is an object. */
+  return JSON.stringify({ ...(JSON.parse(raw) as Record<string, unknown>), owner: to });
+}
+
+/* The claim carries a paused mock day with this rule. Born owner-scoped, it
+   has no older build's value to park first. */
+registerOwnerStampedStore(ACTIVE_MOCK_KEY, { restamp: restampActiveMock });
 
 /** Seconds left on the Writing clock at `now`, from its stored deadline.
     Before Writing has started (no deadline yet) the whole hour is left. A

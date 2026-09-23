@@ -251,6 +251,11 @@ export const strings: Record<string, string> = {
   'You were signed out when you did this. Add it to your account, or leave it here on this device.':
     'Вы были не в аккаунте, когда это делали. Добавьте это в свой аккаунт или оставьте здесь, на устройстве.',
   'Your target band and exam date': 'Ваш целевой балл и дата экзамена',
+  /* Added 23 September 2026: the claim now also carries an unfinished test
+     and a mock exam paused part way through. "Пробный экзамен" and
+     "незаконченный" as the mock screen already says them (tests-player.ts). */
+  'An unfinished test': 'Незаконченный тест',
+  'A paused mock exam': 'Приостановленный пробный экзамен',
   'Add to my account': 'Добавить в мой аккаунт',
   'Leave it here': 'Оставить здесь',
   'Added to your account.': 'Добавлено в ваш аккаунт.',

@@ -44,11 +44,17 @@
 import type { Locale } from '../i18n/locale';
 import { getProgressFor, type ProgressV1 } from '../progress';
 import { loadStudyPlanFor, saveStudyPlanFor, type SavedPlan } from '../study-plan';
+/* Imported for their base keys, and so that each store's own re-stamp rule
+   is registered with store-owner.ts before any claim can run: the claim is
+   only ever reached through this file. */
+import { TEST_SESSION_KEY } from '../test-session';
+import { ACTIVE_MOCK_KEY } from '../tests/mock';
 import {
   NOTES_STORE_KEY,
   VOCAB_STORE_KEY,
   announceStoresChanged,
   anonymousOwner,
+  claimableOwnerStampedStores,
   claimLegacyStores,
   currentOwner,
   deviceIdFrom,
@@ -1123,6 +1129,14 @@ export function createLearnerStore(options: LearnerStoreOptions = {}): LearnerSt
     } catch {
       /* Same. */
     }
+    /* The unfinished test and the paused mock exam, counted exactly as the
+       claim would carry them to the student now signed in (store-owner.ts
+       decides, with each store's own rule): only one that student could
+       resume, and never when their account already has one of its own,
+       because the account's own wins and the device's would stay here. */
+    const carried = claimableOwnerStampedStores(storage, of, owner);
+    counts.unfinishedTest = carried.includes(TEST_SESSION_KEY);
+    counts.pausedMock = carried.includes(ACTIVE_MOCK_KEY);
     return counts;
   }
 

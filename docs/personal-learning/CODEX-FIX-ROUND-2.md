@@ -123,3 +123,56 @@ Verdict: REVISE. Four findings, all accepted by the host. Dispositions:
 
 A second, fresh inspection follows the fixes, as the skill's inspection budget
 allows (two rounds).
+
+## Fixes after inspection round 1 (for inspection round 2)
+
+Base for the round-2 inspection diff is still `48b1d17`. The fixes for the
+four findings, each with deterministic tests and a browser journey against
+the local stand-in:
+
+- **R2-01** (`ba11669`): an unfinished test or old mock history left by an
+  earlier build is adopted once into the anonymous device owner and never
+  into a signed-in account; the history migration stamp is not consulted
+  (`src/lib/test-session.ts`, `src/lib/tests/mock.ts`, key
+  `ielts.unowned.adopted.v1`). The test that asserted the forbidden rule was
+  replaced; Codex's case (stamp names A, sitting started by B, A receives
+  nothing) is a named test and a step of `f22`.
+- **R2-02** (`1a194f8`): every grading request (essay, speaking trainer, live
+  examiner alone or inside the mock) is bound at start to the student who
+  started it (`bindToCurrentOwner`, `runOwnedGrade` in
+  `src/lib/store-owner.ts`); the reply is saved under that student's own
+  namespace whoever is signed in by then (`recordWritingGradedFor`,
+  `recordSpeakingGradedFor`, `recordWritingAttemptFor`,
+  `recordSpeakingAttemptFor`), shown and passed to completion only while that
+  student is still on screen and the component still mounted, with a neutral
+  notice otherwise. `tests/delayed-grade-owner.test.ts`; browser journey
+  `f23` with intercepted synthetic grades, 18 of 18
+  (`results-delayed-grade.md`).
+- **R2-03** (`ba11669`): a running mock is saved per student (stage, chosen
+  papers, prompts, finished papers, essays, the Writing deadline as a fixed
+  moment) under `ielts.mock.active.v1`; refresh or navigation keeps it; the
+  original student resumes it in the open tab or from a later page; another
+  student gets a separate fresh mock and the saved copy is untouched.
+  `tests/test-session-owner.test.ts`; `f22` 57 of 57
+  (`results-unfinished-test-2.md`).
+- **R2-04** (`1a194f8`): the initial owner is read only from this
+  application's own session key `sb-<project ref>-auth-token`
+  (`authProjectRef`, `configuredAuthSessionKey`; the ref derived from the
+  configured URL by the same rule the client library uses and pinned by a
+  test); foreign tokens are ignored; unconfigured accounts are anonymous and
+  `wireAccount` clears any leftover user owner. Cases in
+  `tests/account-isolation.test.ts`.
+
+Follow-up chosen by the host after the round: the explicit "work saved on this
+device" claim also carries an unfinished test sitting and a paused mock from
+the anonymous owner into the account, re-stamped to the claiming account so
+they can be resumed; the account's own sitting wins over the anonymous one.
+Once the account holds the copy, the device's anonymous copy is removed, as
+every other store already does on a claim (leaving it would let the next
+student on the device resume it); the old device-wide key is never touched.
+
+Proof commands for round 2 are unchanged. Additional browser scripts: `f22`
+and `f23` need the stand-in (`IELTS_STANDIN_URL`) and a dev server started
+with the dedicated `astro.config.f22.mjs` or `astro.config.f23.mjs` (their
+headers say why: a second dev server against this checkout needs its own Vite
+cache and must not watch the evidence folders).

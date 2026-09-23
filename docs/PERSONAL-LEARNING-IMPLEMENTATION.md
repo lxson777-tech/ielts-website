@@ -463,3 +463,29 @@ Codex inspection of this round itself (the claudex-loop contract: plan,
 change manifest and diff against `48b1d17`, structured verdict, write-capable
 integrations switched off for the run) on a clean copy of `2eabb37`; its
 verdict and findings are recorded in section 13.
+
+## 13. Fresh Codex inspection of the round-2 fixes
+
+At Alex's request the lead ran Codex itself as the independent inspector of
+this round, through the claudex-loop contract (read-only session, the plan
+`docs/personal-learning/CODEX-FIX-ROUND-2.md`, the change manifest and diff
+against `48b1d17`, a structured verdict; the write-capable integrations were
+switched off for the run and the model was the CLI default, gpt-6-astra).
+
+**Inspection 1, of `2eabb37`: REVISE, four findings, all accepted and fixed.**
+Structured result: `docs/personal-learning/evidence/codex-inspections/inspection-1-of-2eabb37.json`.
+
+| Finding | What was wrong | Fix | Commit |
+|---|---|---|---|
+| R2-01 (high) | An old unowned test sitting was adopted into whoever the history migration stamp named, not into the anonymous owner the spec requires; a test asserted the wrong rule | Unowned sittings and old mock history adopt into the anonymous device owner only; the stamp is not consulted; Codex's case (stamp names A, sitting started by B) is a named test and a browser step | `ba11669` |
+| R2-02 (high) | A speaking grade returning after the owner changed was recorded under the current owner; the same pattern existed for essays and the standalone examiner | Every grading request is bound at start to the student who started it and its reply is saved under that student's own namespace, shown only while they are still on screen; a late grade is never written under the next student and never dropped | `1a194f8` |
+| R2-03 (medium) | A stopped mock offered its own student no way back and kept its progress only in memory | The running mock is saved per student and resumable by that student; another student gets a separate fresh mock | `ba11669` |
+| R2-04 (medium) | The initial owner was read from any Supabase token on the origin, which GitHub Pages shares across applications | Only this application's own project token names the owner; unconfigured accounts are anonymous | `1a194f8` |
+
+Host follow-up: the explicit "work saved on this device" claim now also
+carries an unfinished test and a paused mock into the account, re-stamped so
+they can be resumed.
+
+**Inspection 2** (a fresh session, after the fixes) is recorded below once
+run.
+

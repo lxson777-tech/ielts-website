@@ -789,3 +789,212 @@ test('a damaged field in a written-down mock does not cost the papers already fi
   assert.equal(back?.writingEndsAt, null);
   assert.deepEqual(back?.listening, LISTENING_LEG);
 });
+
+/* ------------------------------------------------------------------ */
+/* 8. One yes moves everything: the claim carries the unfinished        */
+/*    sitting and the paused mock day, re-stamped for the account       */
+/* ------------------------------------------------------------------ */
+
+/* The lead's decision of 23 September 2026. Both stores carry their owner
+   INSIDE the value, so the claim re-stamps them for the account on the way;
+   a plain copy would be refused by the account's own player as another
+   student's. The account's own sitting and paused mock always win. These
+   drive store-owner.ts's claim directly; tests/account-isolation.test.ts
+   drives the same thing through the real offer, claim and decline. */
+
+const STAMPED = [session.TEST_SESSION_KEY, mock.ACTIVE_MOCK_KEY];
+
+/** Signed out on the device: A's drill part way through, with an answer,
+    and a mock day paused on the Reading paper with Listening done. Returns
+    the two stored values exactly as the device holds them. SYNTHETIC. */
+function leaveUnfinishedWorkOnTheDevice(): { sitting: string; paused: string } {
+  setCurrentOwner(null);
+  session.startSession(DRILL);
+  assert.equal(session.saveAnswers(A_ANSWER, NS_ANON), true);
+  assert.equal(mock.saveActiveMock(activeMock(NS_ANON, { stage: 'reading' })), true);
+  return { sitting: storage.data.get(sessionKey(NS_ANON))!, paused: storage.data.get(activeKey(NS_ANON))! };
+}
+
+test('the claim names both stores, and keeps them off the history stores\' list (R2-01)', () => {
+  assert.deepEqual([...storeOwner.OWNER_STAMPED_STORE_KEYS].sort(), [...STAMPED].sort());
+  /* That list resolves through the device's HISTORY stamp, which must never
+     decide who receives an unfinished sitting. */
+  for (const base of STAMPED) assert.equal(storeOwner.LEGACY_STORE_KEYS.includes(base), false, base);
+});
+
+test("the claim moves the device's unfinished sitting and paused mock into A, re-stamped so A's player accepts them", () => {
+  freshBrowser();
+  const device = leaveUnfinishedWorkOnTheDevice();
+
+  /* Signing in on its own hands over neither. */
+  setCurrentOwner(A);
+  assert.equal(session.activeSession(), null);
+  assert.equal(mock.loadActiveMock(), null);
+  assert.deepEqual(storeOwner.claimableOwnerStampedStores(storage, ANON, A).sort(), [...STAMPED].sort());
+
+  const outcome = storeOwner.claimLegacyStores(storage, ANON, A);
+  for (const base of STAMPED) assert.ok(outcome.moved.includes(base), JSON.stringify(outcome));
+
+  /* Only the owner changed: the answers, the deadline, the stage, the leg
+     already done and everything else are exactly what the device held. */
+  const aSitting = JSON.parse(storage.data.get(sessionKey(NS_A))!);
+  assert.equal(aSitting.owner, NS_A);
+  assert.deepEqual({ ...aSitting, owner: NS_ANON }, JSON.parse(device.sitting));
+  const aPaused = JSON.parse(storage.data.get(activeKey(NS_A))!);
+  assert.equal(aPaused.owner, NS_A);
+  assert.deepEqual({ ...aPaused, owner: NS_ANON }, JSON.parse(device.paused));
+
+  /* A's own player accepts both, and can carry on saving into them. */
+  const resumed = session.loadSession(DRILL.id);
+  assert.equal(resumed?.owner, NS_A);
+  assert.deepEqual(resumed?.answers, A_ANSWER);
+  assert.equal(session.saveAnswers({ q14: 'ii' }, NS_A), true, "A's player could not save into the claimed sitting");
+  const paused = mock.loadActiveMock();
+  assert.equal(paused?.owner, NS_A);
+  assert.equal(paused?.stage, 'reading');
+  assert.deepEqual(paused?.listening, LISTENING_LEG);
+  assert.equal(mock.saveActiveMock({ ...paused!, essay1: 'SYNTHETIC draft by A' }), true);
+
+  /* Moved, not copied: signed out, the device no longer offers them. */
+  setCurrentOwner(null);
+  assert.equal(session.activeSession(), null, 'the claimed sitting was also left on the device');
+  assert.equal(mock.loadActiveMock(), null, 'the claimed mock was also left on the device');
+});
+
+test('B never receives the sitting or the paused mock, before or after A claims them', () => {
+  freshBrowser();
+  leaveUnfinishedWorkOnTheDevice();
+
+  /* B signs in first: nothing arrives by signing in. */
+  setCurrentOwner(B);
+  assert.equal(session.activeSession(), null);
+  assert.equal(mock.loadActiveMock(), null);
+
+  setCurrentOwner(A);
+  storeOwner.claimLegacyStores(storage, ANON, A);
+  const aSitting = storage.data.get(sessionKey(NS_A));
+  const aPaused = storage.data.get(activeKey(NS_A));
+
+  setCurrentOwner(B);
+  assert.equal(session.activeSession(), null, "B was handed the sitting A claimed");
+  assert.equal(session.loadSession(DRILL.id), null);
+  assert.equal(mock.loadActiveMock(), null, "B was handed the mock A claimed");
+  assert.deepEqual(storeOwner.claimableOwnerStampedStores(storage, ANON, B), [], 'B would be offered what A claimed');
+
+  /* Even a claim run for B moves nothing of A's. */
+  const outcome = storeOwner.claimLegacyStores(storage, ANON, B);
+  for (const base of STAMPED) assert.equal(outcome.moved.includes(base), false, base);
+  assert.equal(storage.data.has(sessionKey(NS_B)), false);
+  assert.equal(storage.data.has(activeKey(NS_B)), false);
+  assert.equal(storage.data.get(sessionKey(NS_A)), aSitting);
+  assert.equal(storage.data.get(activeKey(NS_A)), aPaused);
+});
+
+test("the account's own sitting and paused mock win, and the device's are left exactly where they are", () => {
+  freshBrowser();
+  const device = leaveUnfinishedWorkOnTheDevice();
+
+  setCurrentOwner(A);
+  session.startSession(OTHER_DRILL);
+  session.saveAnswers({ q1: 'SYNTHETIC-A-own' }, NS_A);
+  mock.saveActiveMock(activeMock(NS_A, { stage: 'writing', essay1: 'SYNTHETIC own draft by A', writingEndsAt: WRITING_DEADLINE }));
+  const aSitting = storage.data.get(sessionKey(NS_A));
+  const aPaused = storage.data.get(activeKey(NS_A));
+
+  /* Not offered, because saying yes would not bring them. */
+  assert.deepEqual(storeOwner.claimableOwnerStampedStores(storage, ANON, A), []);
+
+  const outcome = storeOwner.claimLegacyStores(storage, ANON, A);
+  for (const base of STAMPED) {
+    assert.ok(outcome.keptSeparate.includes(base), JSON.stringify(outcome));
+    assert.equal(outcome.moved.includes(base), false, base);
+  }
+  assert.equal(storage.data.get(sessionKey(NS_A)), aSitting, "A's own sitting was overwritten");
+  assert.equal(storage.data.get(activeKey(NS_A)), aPaused, "A's own paused mock was overwritten");
+  assert.equal(session.activeSession()?.testId, OTHER_DRILL.id);
+  assert.equal(mock.loadActiveMock()?.essay1, 'SYNTHETIC own draft by A');
+
+  /* The device's are untouched, and the device's student can still pick
+     them up signed out. */
+  assert.equal(storage.data.get(sessionKey(NS_ANON)), device.sitting);
+  assert.equal(storage.data.get(activeKey(NS_ANON)), device.paused);
+  setCurrentOwner(null);
+  assert.deepEqual(session.loadSession(DRILL.id)?.answers, A_ANSWER);
+  assert.equal(mock.loadActiveMock()?.owner, NS_ANON);
+});
+
+test('claiming twice is harmless: the second claim moves nothing and changes nothing', () => {
+  freshBrowser();
+  leaveUnfinishedWorkOnTheDevice();
+  setCurrentOwner(A);
+  storeOwner.claimLegacyStores(storage, ANON, A);
+  const aSitting = storage.data.get(sessionKey(NS_A));
+  const aPaused = storage.data.get(activeKey(NS_A));
+
+  const again = storeOwner.claimLegacyStores(storage, ANON, A);
+  for (const base of STAMPED) {
+    assert.equal(again.moved.includes(base), false, base);
+    assert.equal(again.keptSeparate.includes(base), false, base);
+    assert.equal(again.leftInPlace.includes(base), false, base);
+  }
+  assert.equal(storage.data.get(sessionKey(NS_A)), aSitting);
+  assert.equal(storage.data.get(activeKey(NS_A)), aPaused);
+  assert.deepEqual(session.loadSession(DRILL.id)?.answers, A_ANSWER);
+});
+
+test('a sitting an older build left under the device-wide key is claimed from the device, and never parked again', () => {
+  /* Nothing has read the sitting since the update, and the history stamp
+     names B: neither matters. The claim parks it with the device by
+     test-session.ts's own rule and hands it to the account that said yes. */
+  freshBrowser({
+    [session.TEST_SESSION_KEY]: LEGACY_SESSION,
+    [LEGACY_MIGRATION_OWNER_KEY]: JSON.stringify({ version: 1, ownerKey: NS_B, at: '2026-09-01T09:00:00.000Z' }),
+  });
+  setCurrentOwner(A);
+  assert.deepEqual(storeOwner.claimableOwnerStampedStores(storage, ANON, A), [session.TEST_SESSION_KEY]);
+
+  const outcome = storeOwner.claimLegacyStores(storage, ANON, A);
+  assert.ok(outcome.moved.includes(session.TEST_SESSION_KEY), JSON.stringify(outcome));
+  const resumed = session.loadSession(DRILL.id);
+  assert.equal(resumed?.owner, NS_A, 'the unowned sitting was not stamped for the account that claimed it');
+  assert.deepEqual(resumed?.answers, { q14: 'i' });
+
+  setCurrentOwner(null);
+  assert.equal(session.activeSession(), null, 'the claimed old sitting was parked with the device a second time');
+  setCurrentOwner(B);
+  assert.equal(session.activeSession(), null, 'the account the history stamp names received it');
+  assert.equal(storage.data.get(session.TEST_SESSION_KEY), LEGACY_SESSION, 'the old device-wide key was changed');
+});
+
+test("a value on the device stamped for somebody else, or with nothing to pick up, is not handed over", () => {
+  freshBrowser({
+    [sessionKey(NS_ANON)]: JSON.stringify({ ...JSON.parse(LEGACY_SESSION), owner: NS_B }),
+    [activeKey(NS_ANON)]: JSON.stringify(activeMock(NS_ANON, { stage: 'results' })),
+  });
+  const before = new Map(storage.data);
+  setCurrentOwner(A);
+  assert.deepEqual(storeOwner.claimableOwnerStampedStores(storage, ANON, A), []);
+  const outcome = storeOwner.claimLegacyStores(storage, ANON, A);
+  for (const base of STAMPED) assert.ok(outcome.leftInPlace.includes(base), JSON.stringify(outcome));
+  assert.equal(storage.data.has(sessionKey(NS_A)), false);
+  assert.equal(storage.data.has(activeKey(NS_A)), false);
+  assert.equal(storage.data.get(sessionKey(NS_ANON)), before.get(sessionKey(NS_ANON)));
+  assert.equal(storage.data.get(activeKey(NS_ANON)), before.get(activeKey(NS_ANON)));
+});
+
+test('the two re-stamp rules change the owner and nothing else, and refuse what is not theirs to hand over', () => {
+  const sitting = JSON.stringify({ ...JSON.parse(LEGACY_SESSION), owner: NS_ANON, extra: 'SYNTHETIC-kept' });
+  assert.deepEqual(JSON.parse(session.restampSession(sitting, NS_ANON, NS_A)!), { ...JSON.parse(sitting), owner: NS_A });
+  /* An older build's sitting has no owner in it and is the key owner's. */
+  assert.equal(JSON.parse(session.restampSession(LEGACY_SESSION, NS_ANON, NS_A)!).owner, NS_A);
+  assert.equal(session.restampSession(sitting, NS_B, NS_A), null);
+  assert.equal(session.restampSession('not json', NS_ANON, NS_A), null);
+  assert.equal(session.restampSession(JSON.stringify({ version: 2 }), NS_ANON, NS_A), null);
+
+  const paused = JSON.stringify({ ...activeMock(NS_ANON, { stage: 'writing', writingEndsAt: WRITING_DEADLINE }), extra: 7 });
+  assert.deepEqual(JSON.parse(mock.restampActiveMock(paused, NS_ANON, NS_A)!), { ...JSON.parse(paused), owner: NS_A });
+  assert.equal(mock.restampActiveMock(paused, NS_B, NS_A), null);
+  assert.equal(mock.restampActiveMock(JSON.stringify(activeMock(NS_ANON, { stage: 'start' })), NS_ANON, NS_A), null);
+  assert.equal(mock.restampActiveMock(JSON.stringify(activeMock(NS_ANON, { stage: 'results' })), NS_ANON, NS_A), null);
+  assert.equal(mock.restampActiveMock('{', NS_ANON, NS_A), null);
+});
