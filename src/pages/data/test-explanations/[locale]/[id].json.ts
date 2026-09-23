@@ -21,6 +21,7 @@
    any use to a browser, so only the Russian is published. */
 
 import type { APIRoute, GetStaticPaths } from 'astro';
+import { ACCESS_MODE } from '../../../../lib/trial/mode';
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from '../../../../lib/i18n/locale';
 import type { PublishedExplanations } from '../../../../lib/i18n/test-explanations';
 
@@ -60,6 +61,10 @@ function publish(id: string, locale: string, raw: string): PublishedExplanations
 }
 
 export const getStaticPaths: GetStaticPaths = () => {
+  /* A trial build publishes none of these: the content gate
+     (workers/content-gate) hands them out to students allowed to open them,
+     from the private copy tools/build-gated-content.mjs writes. */
+  if (ACCESS_MODE === 'trial') return [];
   const paths: { params: { locale: string; id: string }; props: { raw: string } }[] = [];
   for (const [file, raw] of Object.entries(FILES)) {
     const rel = file.slice(PREFIX.length).replace(/\.json$/, '');

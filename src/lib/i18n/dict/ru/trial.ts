@@ -156,6 +156,10 @@ export const strings: Record<string, string> = {
   'We could not reach the grading service. Your essay is safe on this page and your Writing test has not been used; try again in a minute.':
     'Не удалось связаться с сервисом оценки. Эссе сохранено на этой странице, а тест Writing не израсходован. Попробуйте через минуту.',
 
+  /* The locked door (src/lib/i18n/lesson-body.ts) */
+  'This lesson could not be loaded just now. Check your connection and reload the page.':
+    'Не удалось загрузить урок. Проверьте подключение и обновите страницу.',
+
   /* Mr EZ */
   'Start your free trial to talk to Mr EZ.': 'Начните бесплатный пробный период, чтобы поговорить с Mr EZ.',
   'Your trial has ended, so Mr EZ cannot reply to new questions.': 'Пробный период закончился, поэтому Mr EZ не может ответить на новые вопросы.',

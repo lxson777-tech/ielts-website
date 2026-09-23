@@ -521,6 +521,54 @@ begin
 end
 $$;
 
+-- ── The content gate (service role only) ────────────────────────────────
+-- workers/content-gate asks this before it hands out a lesson body or a
+-- practice paper (Alex, 23 September 2026: protect the content itself, not
+-- only the screen). p_item is 'lesson:<key>' or 'test:<id>'.
+--   ok      the trial's own lesson while the trial runs; the section's
+--           trial test while the trial runs; and a test the student has
+--           begun, at any time, since its questions are already theirs
+--   reason  trial-required | trial-ended | not-included
+-- There is no full-access state yet (no payment): when there is, it is
+-- checked here, in one place, for every item.
+create or replace function public.trial_can_open(p_user uuid, p_item text)
+returns jsonb
+language plpgsql
+stable
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  t public.trial_accounts;
+  v_kind text := split_part(p_item, ':', 1);
+  v_id text := substr(p_item, length(split_part(p_item, ':', 1)) + 2);
+  offered boolean;
+begin
+  if v_kind not in ('lesson', 'test') or v_id = '' then
+    return jsonb_build_object('ok', false, 'reason', 'not-included');
+  end if;
+  select * into t from public.trial_accounts where user_id = p_user;
+  if not found then
+    return jsonb_build_object('ok', false, 'reason', 'trial-required');
+  end if;
+  if v_kind = 'test' and exists (
+    select 1 from public.trial_usage
+    where trial_usage.user_id = p_user and trial_usage.kind = 'test' and trial_usage.activity_id = v_id
+      and trial_usage.status <> 'released'
+  ) then
+    return jsonb_build_object('ok', true);
+  end if;
+  select exists (select 1 from public.trial_offer_items where item_id = p_item and enabled) into offered;
+  if not offered then
+    return jsonb_build_object('ok', false, 'reason', 'not-included');
+  end if;
+  if now() >= t.ends_at then
+    return jsonb_build_object('ok', false, 'reason', 'trial-ended');
+  end if;
+  return jsonb_build_object('ok', true);
+end
+$$;
+
 -- ── Who may call what ───────────────────────────────────────────────────
 -- Supabase grants EXECUTE on new public functions to anon and authenticated
 -- by default, so every grant here is preceded by an explicit revoke.
@@ -548,6 +596,8 @@ grant execute on function public.trial_usage_release(uuid, text, text) to servic
 revoke all on function public.trial_speaking_session_start(uuid, text) from public, anon, authenticated;
 revoke all on function public.trial_speaking_session_release(uuid, text) from public, anon, authenticated;
 grant execute on function public.trial_speaking_session_start(uuid, text) to service_role;
+revoke all on function public.trial_can_open(uuid, text) from public, anon, authenticated;
+grant execute on function public.trial_can_open(uuid, text) to service_role;
 grant execute on function public.trial_speaking_session_release(uuid, text) to service_role;
 
 -- ── The trial content (confirmed by Alex, 23 September 2026) ────────────
@@ -566,6 +616,7 @@ on conflict (item_id) do update
   set section = excluded.section, kind = excluded.kind, enabled = excluded.enabled;
 
 -- ── Rollback (run by hand, never by a script) ───────────────────────────
+-- drop function if exists public.trial_can_open(uuid, text);
 -- drop function if exists public.trial_speaking_session_release(uuid, text);
 -- drop function if exists public.trial_speaking_session_start(uuid, text);
 -- drop function if exists public.trial_usage_release(uuid, text, text);

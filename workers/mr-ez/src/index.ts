@@ -235,6 +235,10 @@ export interface Env {
       src/lib/trial/gate.ts and supabase/migrations/2026-09-23-trial.sql).
       Anything else, including unset, is today's open site. */
   ACCESS_MODE?: string;
+  /** Trial builds only: the secret the content gate accepts for the paper
+      and lesson-block data (SITE_DATA_URL and LESSON_BLOCKS_URL then point
+      at the gate's /data/... routes). A wrangler secret, never a var. */
+  CONTENT_SERVICE_KEY?: string;
 }
 
 export interface Deps {
@@ -669,6 +673,14 @@ async function writeNote(deps: Deps, env: Env, userId: string, key: NoteKey, rep
     shape that does not validate, or a file whose own id is not the one we
     asked for (which would mean a redirect or a misconfigured base, and
     explaining the wrong paper's questions is worse than explaining none). */
+/** In a trial build the papers and lesson blocks are no longer public: they
+    come from the content gate (workers/content-gate), which hands them to
+    this Worker for the shared CONTENT_SERVICE_KEY. Unset on the open site,
+    where nothing extra is sent. */
+function contentHeaders(env: Env): Record<string, string> {
+  return env.CONTENT_SERVICE_KEY ? { Authorization: `Bearer ${env.CONTENT_SERVICE_KEY}` } : {};
+}
+
 async function fetchSiteTest(deps: Deps, env: Env, testId: string): Promise<SiteTest> {
   const base = (env.SITE_DATA_URL || DEFAULT_SITE_DATA_URL).replace(/\/+$/, '');
   const unavailable = () =>
@@ -676,7 +688,7 @@ async function fetchSiteTest(deps: Deps, env: Env, testId: string): Promise<Site
 
   let resp: Response;
   try {
-    resp = await deps.fetch(`${base}/${testId}.json`, { signal: AbortSignal.timeout(10000) });
+    resp = await deps.fetch(`${base}/${testId}.json`, { headers: contentHeaders(env), signal: AbortSignal.timeout(10000) });
   } catch {
     throw unavailable();
   }
@@ -727,7 +739,7 @@ async function fetchLessonBlocks(deps: Deps, env: Env, slug: string): Promise<Pu
 
   let resp: Response;
   try {
-    resp = await deps.fetch(url, { signal: AbortSignal.timeout(10000) });
+    resp = await deps.fetch(url, { headers: contentHeaders(env), signal: AbortSignal.timeout(10000) });
   } catch {
     throw unavailable();
   }

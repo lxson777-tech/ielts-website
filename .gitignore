@@ -17,3 +17,4 @@ graphify-out/
 # audit trail and the dedupe history the content agent reads.
 marketing/assets/
 marketing/render-requests/
+gated-content/

@@ -1,0 +1,161 @@
+/* Does any public file of a build still carry locked course content?
+ *
+ * The trial's locked door (docs/TRIAL-IMPLEMENTATION.md, "Protecting the
+ * content") only means something if a trial build publishes no lesson body,
+ * no question, no answer, no passage and no transcript. This reads the real
+ * content (every practice paper in src/data/tests, every lesson body in
+ * src/content/lesson-bodies, English and Russian), takes a few distinctive
+ * phrases from each, and searches every file under a build folder for them.
+ *
+ *   node --import ./tests/ts-extension-loader.mjs tools/trial-content-audit.mjs [dist] [--json]
+ *
+ * Phrases are runs of plain words (letters, digits, spaces), so they survive
+ * however a page stores text: inside HTML, inside an island's JSON props,
+ * inside a JavaScript chunk.
+ *
+ * Two kinds of finding:
+ *   LEAK    any phrase of a practice paper (passage, transcript, answer
+ *           notes), or two or more phrases of the same lesson in one file:
+ *           real content in a public file. Exits 1.
+ *   SHARED  a single phrase of a lesson, found once: a line the lesson
+ *           shares with something public by design (a cue-card question in
+ *           the public question list, a one-line strategy tip). Reported,
+ *           never hidden, but not a failure.
+ */
+
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { join, resolve, dirname, relative, extname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const args = process.argv.slice(2);
+const DIST = resolve(REPO, args.find((a) => !a.startsWith('--')) ?? 'dist');
+const AS_JSON = args.includes('--json');
+/* Named exceptions, each with its reason (tools/trial-content-allowed.json). */
+const ALLOWED = JSON.parse(readFileSync(resolve(REPO, 'tools/trial-content-allowed.json'), 'utf8')).allowed.map((a) => ({
+  file: new RegExp(a.file),
+  items: new RegExp(a.items),
+  reason: a.reason,
+}));
+
+const decode = (html) =>
+  String(html ?? '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&#39;|&rsquo;|&lsquo;/g, "'")
+    .replace(/&[a-z]+;|&#\d+;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+/** Up to `count` phrases of 6 to 9 plain words each, spread through `text`. */
+function phrases(text, count = 3) {
+  const words = decode(text).split(' ');
+  const out = [];
+  const plain = (w) => /^[A-Za-z0-9Ѐ-ӿ]+,?$/.test(w);
+  for (let start = 0; start < words.length && out.length < count; start += Math.max(12, Math.floor(words.length / (count + 1)))) {
+    const run = [];
+    for (let i = start; i < words.length && run.length < 8; i++) {
+      if (plain(words[i])) run.push(words[i]);
+      else if (run.length) break;
+    }
+    const phrase = run.join(' ');
+    if (run.length >= 6 && phrase.length >= 30) out.push(phrase);
+  }
+  return out;
+}
+
+async function sentinels() {
+  const list = [];
+  const { ALL_TESTS } = await import('../src/data/tests/index.ts');
+  for (const test of ALL_TESTS) {
+    for (const part of test.parts) {
+      const s = part.stimulus;
+      const stimulusText = s.kind === 'passage' ? s.paragraphs.map((p) => p.html).join(' ') : `${s.transcriptHtml ?? ''} ${s.questionHtml ?? ''}`;
+      for (const p of phrases(stimulusText, 2)) list.push({ kind: 'test', id: test.id, phrase: p });
+      const explained = part.groups.flatMap((g) => g.questions.map((q) => q.explanation ?? q.evidence ?? '')).join(' ');
+      for (const p of phrases(explained, 2)) list.push({ kind: 'answers', id: test.id, phrase: p });
+    }
+  }
+  const bodies = resolve(REPO, 'src/content/lesson-bodies');
+  for (const dir of [bodies, join(bodies, 'ru')]) {
+    if (!existsSync(dir)) continue;
+    for (const file of readdirSync(dir)) {
+      if (!file.endsWith('.html')) continue;
+      const slug = file.replace(/\.html$/, '');
+      for (const p of phrases(readFileSync(join(dir, file), 'utf8'), 3)) {
+        list.push({ kind: dir === bodies ? 'lesson' : 'lesson-ru', id: slug, phrase: p });
+      }
+    }
+  }
+  return list;
+}
+
+function* files(dir) {
+  for (const name of readdirSync(dir)) {
+    const path = join(dir, name);
+    if (statSync(path).isDirectory()) yield* files(path);
+    else if (['.html', '.js', '.mjs', '.json', '.css', '.txt', '.xml'].includes(extname(name))) yield path;
+  }
+}
+
+const decodeFile = (text) =>
+  text
+    .replace(/\\u([0-9a-fA-F]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16)))
+    .replace(/&quot;|&#34;/g, '"')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\\n|\\t/g, ' ')
+    .replace(/\s+/g, ' ');
+
+async function main() {
+  if (!existsSync(DIST)) {
+    console.error(`No build at ${DIST}. Build first.`);
+    process.exit(2);
+  }
+  const marks = await sentinels();
+  const found = [];
+  for (const path of files(DIST)) {
+    const text = decodeFile(readFileSync(path, 'utf8'));
+    const hits = marks.filter((m) => text.includes(m.phrase));
+    if (hits.length) {
+      const perItem = new Map();
+      for (const h of hits) perItem.set(`${h.kind}:${h.id}`, (perItem.get(`${h.kind}:${h.id}`) ?? 0) + 1);
+      const leak = hits.some((h) => h.kind === 'test' || h.kind === 'answers') || [...perItem.values()].some((n) => n >= 2);
+      const file = relative(DIST, path).replace(/\\/g, '/');
+      const allowed = ALLOWED.find((a) => a.file.test(file) && [...perItem.keys()].every((k) => a.items.test(k)));
+      found.push({
+        file,
+        verdict: leak ? (allowed ? 'ALLOWED' : 'LEAK') : 'SHARED',
+        ...(allowed ? { reason: allowed.reason } : {}),
+        items: [...perItem.keys()],
+        phrases: [...new Set(hits.map((h) => h.phrase))].slice(0, 5),
+      });
+    }
+  }
+  const summary = {
+    build: relative(REPO, DIST) || '.',
+    phrasesChecked: marks.length,
+    tests: new Set(marks.filter((m) => m.kind !== 'lesson' && m.kind !== 'lesson-ru').map((m) => m.id)).size,
+    lessonBodies: new Set(marks.filter((m) => m.kind.startsWith('lesson')).map((m) => `${m.kind}:${m.id}`)).size,
+    filesLeaking: found.filter((f) => f.verdict === 'LEAK').length,
+    filesSharingALine: found.filter((f) => f.verdict === 'SHARED').length,
+    filesAllowed: found.filter((f) => f.verdict === 'ALLOWED').length,
+    found,
+  };
+  if (AS_JSON) console.log(JSON.stringify(summary, null, 2));
+  else {
+    console.log(`Checked ${summary.phrasesChecked} phrases from ${summary.tests} papers and ${summary.lessonBodies} lesson bodies against ${summary.build}.`);
+    console.log(
+      `${summary.filesLeaking} file(s) leak locked content; ${summary.filesSharingALine} share a single line; ${summary.filesAllowed} named exception(s).`,
+    );
+    for (const f of found.slice(0, 60)) {
+      console.log(`  ${f.verdict.padEnd(7)} ${f.file}: ${f.items.slice(0, 6).join(', ')}${f.items.length > 6 ? ` (+${f.items.length - 6})` : ''}`);
+      if (f.verdict === 'SHARED') console.log(`          "${f.phrases[0]}"`);
+      if (f.verdict === 'ALLOWED') console.log(`          ${f.reason}`);
+    }
+    if (found.length > 60) console.log(`  ... and ${found.length - 60} more files`);
+  }
+  process.exit(summary.filesLeaking ? 1 : 0);
+}
+
+await main();

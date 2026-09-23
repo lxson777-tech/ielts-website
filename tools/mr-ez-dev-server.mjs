@@ -1267,6 +1267,11 @@ async function initLive() {
    assessment. */
 
 let essayHandler = null;
+/** The content gate (workers/content-gate), serving gated-content/ from
+    disk, only with --trial. */
+let contentHandler = null;
+const CONTENT_SERVICE_KEY = 'local-content-service-key';
+const gateBase = () => `http://127.0.0.1:${server.address()?.port ?? PORT}/content`;
 
 function simulatedAssessment() {
   const note = 'SIMULATED: no AI examiner was called. This local stand-in is not a grade.';
@@ -1284,6 +1289,11 @@ function bridgeFetch({ onModel }) {
   return async (input, init) => {
     const url = typeof input === 'string' ? input : (input.url ?? String(input));
     if (url.startsWith('https://api.openai.com/')) return onModel(input, init);
+    // The trial's papers and lesson blocks come from the content gate, in
+    // process, exactly as the deployed Worker would fetch them from it.
+    if (contentHandler && url.startsWith(gateBase())) {
+      return contentHandler(url.slice(gateBase().length) || '/', { ...(init?.headers ?? {}) });
+    }
     if (url.startsWith(LIVE_SITE_DATA_URL) || url.startsWith(LIVE_LESSON_BLOCKS_URL)) return realFetch(input, init);
     if (!url.startsWith(STUB_SUPABASE)) throw new Error('unexpected fetch to ' + url);
     const parsed = new URL(url);
@@ -1312,6 +1322,35 @@ function bridgeFetch({ onModel }) {
 async function initTrial() {
   const { createTrialDb } = await import('./trial-db.mjs');
   trialDb = await createTrialDb();
+
+  /* The locked door. Its private store is gated-content/, written by
+     tools/build-gated-content.mjs (built here on first run). The REAL gate
+     handler answers, asking the real migration whether each student may
+     open each item. */
+  const gatedDir = resolve(REPO, process.env.MR_EZ_GATED_DIR || 'gated-content');
+  if (!existsSync(resolve(gatedDir, 'manifest.json'))) {
+    const { buildGatedContent } = await import('./build-gated-content.mjs');
+    await buildGatedContent();
+  }
+  const { createHandler: createGate } = await import('../workers/content-gate/src/index.ts');
+  const store = {
+    async get(key) {
+      const path = resolve(gatedDir, key);
+      // The gate only ever asks for keys it built from validated ids; this
+      // is belt and braces against leaving the folder.
+      if (!path.startsWith(gatedDir) || !existsSync(path)) return null;
+      return { text: async () => readFileSync(path, 'utf8') };
+    },
+  };
+  const gate = createGate({ fetch: bridgeFetch({ onModel: async () => { throw new Error('the gate never calls a model'); } }), store });
+  const gateEnv = {
+    ALLOWED_ORIGINS: 'http://localhost:4331,http://127.0.0.1:4331,http://localhost:4321,http://127.0.0.1:4321',
+    SUPABASE_URL: STUB_SUPABASE,
+    SUPABASE_SERVICE_ROLE_KEY: 'local-service-role-key',
+    CONTENT_SERVICE_KEY,
+  };
+  contentHandler = (pathAndQuery, headers) =>
+    gate.fetch(new Request(`http://gate.local${pathAndQuery}`, { headers }), gateEnv);
   const { createHandler } = await import('../workers/mr-ez/src/index.ts');
   const { createHandler: createEssayHandler } = await import('../workers/grade-essay/src/index.ts');
 
@@ -1323,8 +1362,11 @@ async function initTrial() {
     ALLOWED_ORIGINS: 'http://localhost:4321,http://127.0.0.1:4321,http://localhost:4322,http://127.0.0.1:4322',
     SUPABASE_URL: STUB_SUPABASE,
     SUPABASE_SERVICE_ROLE_KEY: 'local-service-role-key',
-    SITE_DATA_URL: LIVE_SITE_DATA_URL,
-    LESSON_BLOCKS_URL: LIVE_LESSON_BLOCKS_URL,
+    // A trial build publishes no paper or lesson data: the tutor reads them
+    // from the content gate, with the key the two Workers share.
+    SITE_DATA_URL: `${gateBase()}/data/tests`,
+    LESSON_BLOCKS_URL: `${gateBase()}/data/lesson-blocks`,
+    CONTENT_SERVICE_KEY,
     TUTOR_SIMULATE: 'on',
     ACCESS_MODE: 'trial',
   };
@@ -1379,6 +1421,16 @@ const server = createServer(async (req, res) => {
     if (url.pathname.startsWith('/auth/v1')) return await handleAuth(req, res, url);
     if (url.pathname.startsWith('/rest/v1/')) return await handleRest(req, res, url);
     if (url.pathname.startsWith('/tutor')) return await handleTutor(req, res, url);
+    if (url.pathname.startsWith('/content/')) {
+      if (!contentHandler) return send(res, 404, { message: 'the content gate runs only with --trial' });
+      const resp = await contentHandler(url.pathname.slice('/content'.length) + url.search, {
+        ...(req.headers.authorization ? { Authorization: req.headers.authorization } : {}),
+        ...(req.headers.origin ? { Origin: req.headers.origin } : {}),
+      });
+      const body = await resp.text();
+      res.writeHead(resp.status, Object.fromEntries(resp.headers));
+      return res.end(body);
+    }
     if (url.pathname === '/grade-essay' && req.method === 'POST') {
       if (!essayHandler) return send(res, 404, { message: 'the essay grader stand-in runs only with --trial' });
       const chunks = [];
@@ -1468,6 +1520,7 @@ server.listen(PORT, '127.0.0.1', () => {
     console.log('  Trial database    : /rest/v1/rpc/trial_*  (the real migration, in PGlite)');
     console.log('  Tutor             : /tutor  (real Worker, ACCESS_MODE=trial, simulated replies)');
     console.log('  Essay grader      : /grade-essay  (real Worker, ACCESS_MODE=trial, SIMULATED assessment)');
+    console.log('  Content gate      : /content/*  (real Worker, private copy in gated-content/)');
   } else if (LIVE) {
     console.log('  Tutor             : /tutor  *** LIVE: real Worker, real model, REAL MONEY ***');
     console.log('                      roughly $0.0005 per message');

@@ -20,6 +20,7 @@
    edited to make any of it work (lead decision D2). */
 
 import type { APIRoute, GetStaticPaths } from 'astro';
+import { ACCESS_MODE } from '../../../lib/trial/mode';
 import { publishLessonBlocks } from '../../../lib/learning/lesson-blocks';
 
 /* Every lesson body in the repo, English and translated, by path. Eager
@@ -56,11 +57,16 @@ const RUSSIAN = new Map<string, string>(
     .map(([parts, html]) => [parts[1] as string, html]),
 );
 
-export const getStaticPaths: GetStaticPaths = () =>
-  Object.entries(ENGLISH).map(([path, html]) => {
+export const getStaticPaths: GetStaticPaths = () => {
+  /* A trial build publishes none of these: the content gate
+     (workers/content-gate) hands them out to students allowed to open them,
+     from the private copy tools/build-gated-content.mjs writes. */
+  if (ACCESS_MODE === 'trial') return [];
+  return Object.entries(ENGLISH).map(([path, html]) => {
     const slug = slugOf(path);
     return { params: { slug }, props: { slug, html, ru: RUSSIAN.get(slug) ?? null } };
   });
+};
 
 export const GET: APIRoute = ({ props }) => {
   const published = publishLessonBlocks(

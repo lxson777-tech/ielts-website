@@ -11,6 +11,7 @@
  * shipping an empty page, the same rule every focused route holds to.
  */
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { ACCESS_MODE } from '../../../lib/trial/mode';
 import SpokenFocusedTask from '../../../components/learning/SpokenFocusedTask';
 import { SPOKEN_FOCUSED_TASKS, type SpokenFocusedTask as SpokenFocusedTaskData } from '../../../data/focused-exercises';
 import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../../../data/speaking-prompts';
@@ -77,6 +78,7 @@ const view: SpokenTaskView = {
   blockText: block?.text ?? '',
   ...(task.pronunciationNote ? { pronunciationNote: task.pronunciationNote } : {}),
 };
+const gated = ACCESS_MODE === 'trial';
 ---
 
 <BaseLayout
@@ -85,5 +87,6 @@ const view: SpokenTaskView = {
   trialGate={{ kind: 'locked', title: task.title }}
   description="A short self-check speaking task on one objective, built from a real Speaking prompt."
 >
-  <SpokenFocusedTask client:load view={view} />
+  {/* Not part of the trial: a trial build carries only the gate. */}
+  {!gated && <SpokenFocusedTask client:load view={view} />}
 </BaseLayout>

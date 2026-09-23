@@ -60,6 +60,10 @@ const {
   noindex = false,
 } = Astro.props;
 const gated = ACCESS_MODE === 'trial' && Boolean(trialGate);
+/* A page the trial does not include at all has nothing a trial student could
+   ever open, so a trial build leaves its content out of the page entirely
+   and shows only the gate's explanation. */
+const wholePageLocked = gated && trialGate?.kind === 'locked';
 const pageTitle = title.replaceAll('IELTS Portal', 'IELTS is EZ');
 
 const absoluteOgImage = new URL(withBase(ogImage), Astro.site).toString();
@@ -199,7 +203,7 @@ const jsonLd = {
             {gated && trialGate ? (
               <>
                 <TrialGate client:load spec={trialGate} />
-                <div data-trial-protected><slot /></div>
+                {!wholePageLocked && <div data-trial-protected><slot /></div>}
               </>
             ) : (
               <slot />
@@ -221,7 +225,7 @@ const jsonLd = {
           {gated && trialGate ? (
             <>
               <TrialGate client:load spec={trialGate} />
-              <div data-trial-protected><slot /></div>
+              {!wholePageLocked && <div data-trial-protected><slot /></div>}
             </>
           ) : (
             <slot />

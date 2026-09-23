@@ -12,6 +12,7 @@
  * claims, the build FAILS here rather than shipping an empty page.
  */
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { ACCESS_MODE } from '../../../lib/trial/mode';
 import FocusedExercise from '../../../components/learning/FocusedExercise';
 import WritingFocusedTask from '../../../components/learning/WritingFocusedTask';
 import {
@@ -358,9 +359,14 @@ const description = writtenView
   : isAuthoredFocusedExercise(exercise)
     ? 'A short focused practice set written for this site, not a real exam question.'
     : 'A short focused exercise on one question type, built from real exam material.';
+/* A trial build shows only the gate here (the trial does not include
+   focused exercises), so the exercise itself is left out of the page. */
+const gated = ACCESS_MODE === 'trial';
 ---
 
 <BaseLayout wide title={`${exercise.title} · IELTS Portal`} description={description} trialGate={{ kind: 'locked', title: exercise.title }}>
-  {writtenView && <WritingFocusedTask client:load view={writtenView} />}
-  {itemView && <FocusedExercise client:load view={itemView} />}
+  {/* Not part of the trial: a trial build carries only the gate, not the
+      exercise's passage and questions. */}
+  {!gated && writtenView && <WritingFocusedTask client:load view={writtenView} />}
+  {!gated && itemView && <FocusedExercise client:load view={itemView} />}
 </BaseLayout>

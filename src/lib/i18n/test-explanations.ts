@@ -41,6 +41,7 @@
 import { useEffect, useMemo, useState, createContext, useContext } from 'react';
 import { DEFAULT_LOCALE, type Locale } from './locale';
 import { withBase } from '../url';
+import { ACCESS_MODE } from '../trial/mode';
 
 /** What a published file looks like once the shas are stripped off:
     entry key to Russian note. */
@@ -91,11 +92,18 @@ function load(locale: Locale, id: string): Promise<Record<string, string> | null
   const key = `${locale}/${id}`;
   let pending = fetched.get(key);
   if (!pending) {
-    pending = fetch(withBase(`/data/test-explanations/${locale}/${id}.json`), {
-      headers: { Accept: 'application/json' },
-    })
-      .then((res) => (res.ok ? (res.json() as Promise<PublishedExplanations>) : null))
-      .then((file) => (file && file.entries && typeof file.entries === 'object' ? file.entries : null))
+    const file: Promise<PublishedExplanations | null> =
+      ACCESS_MODE === 'trial'
+        ? /* A trial build publishes no answer notes: they come from the
+             content gate, like the paper they explain. */
+          import('../trial/content')
+            .then(({ fetchGated }) => fetchGated(`explanations/${locale}/${id}`))
+            .then((result) => (result.ok ? (JSON.parse(result.text) as PublishedExplanations) : null))
+        : fetch(withBase(`/data/test-explanations/${locale}/${id}.json`), {
+            headers: { Accept: 'application/json' },
+          }).then((res) => (res.ok ? (res.json() as Promise<PublishedExplanations>) : null));
+    pending = file
+      .then((found) => (found && found.entries && typeof found.entries === 'object' ? found.entries : null))
       .catch(() => null);
     fetched.set(key, pending);
   }

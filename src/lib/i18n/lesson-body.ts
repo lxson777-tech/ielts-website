@@ -35,6 +35,7 @@
 
 import { getLocale, type Locale } from './locale';
 import { withBase } from '../url';
+import { t } from './translate';
 
 /** Marks the element whose innerHTML is one lesson fragment. Its value is
     the lesson slug, e.g. "reading-tfng". One per page. */
@@ -61,6 +62,11 @@ export const LESSON_CARDS_ATTR = 'data-lesson-cards';
     so a client-side navigation never flashes English before the Russian
     arrives. Removed unconditionally after FAILSAFE_MS. */
 export const LESSON_BODY_LOADING_ATTR = 'data-lesson-body-loading';
+
+/** Marks a fragment a TRIAL build left empty on purpose: its text, in every
+    language, comes from the content gate (workers/content-gate) for a
+    student allowed to open the lesson, never from a public file. */
+export const LESSON_GATED_ATTR = 'data-lesson-gated';
 
 /** Records which language the fragment currently shows, for debugging and
     for CSS that may one day need it. */
@@ -195,6 +201,53 @@ function load(locale: Locale, slug: string): Promise<string | null> {
   return pending;
 }
 
+/** A gated lesson in one language, from the content gate. Successes are
+    kept for the tab's lifetime (the same text for anyone allowed to read
+    it); a refusal or a failure is not, so signing in or reconnecting and
+    asking again works. */
+const gatedFetched = new Map<string, Promise<string | null>>();
+
+async function loadGated(locale: Locale, slug: string): Promise<{ html: string | null; code: string | null }> {
+  const key = `${locale}/${slug}`;
+  const cached = gatedFetched.get(key);
+  if (cached) {
+    const html = await cached;
+    if (html !== null) return { html, code: null };
+  }
+  const { fetchGated } = await import('../trial/content');
+  let result = await fetchGated(`lesson/${slug}?locale=${locale}`);
+  // No translation yet: the English text, as on the open site.
+  if (!result.ok && result.status === 404 && locale !== 'en') result = await fetchGated(`lesson/${slug}?locale=en`);
+  if (!result.ok) return { html: null, code: result.code };
+  gatedFetched.set(key, Promise.resolve(result.text));
+  return { html: result.text, code: null };
+}
+
+async function applyGated(el: HTMLElement, slug: string): Promise<void> {
+  const locale = getLocale();
+  if (el.getAttribute(LOCALE_ATTR) === locale) return;
+  const mine = ++generation;
+  setLoading(el, true);
+  const { html, code } = await loadGated(locale, slug);
+  if (mine !== generation) return;
+  setLoading(el, false);
+  if (html === null) {
+    /* A lesson the trial does not open is already covered by the trial
+       gate, which says why; this only matters for one it does open. */
+    if (code !== 'not-included' && code !== 'trial-ended' && code !== 'trial-required' && code !== 'sign-in-required') {
+      const note = document.createElement('p');
+      note.className = 'trial-fine';
+      note.setAttribute('role', 'status');
+      note.textContent = t('This lesson could not be loaded just now. Check your connection and reload the page.');
+      if (!el.querySelector('[role="status"]')) el.prepend(note);
+    }
+    return;
+  }
+  if (!fits(el, html)) return;
+  write(el, html, locale);
+  announce({ slug, locale });
+}
+
 /**
  * Put the current locale's version of this page's lesson body on screen.
  *
@@ -209,6 +262,8 @@ export async function applyLessonBody(): Promise<void> {
 
   const slug = el.getAttribute(LESSON_BODY_ATTR) ?? '';
   if (!slug) return;
+
+  if (el.hasAttribute(LESSON_GATED_ATTR)) return applyGated(el, slug);
 
   // Only ever captured from an element that has not been swapped, so a
   // second visit to the lesson (a fresh element, still English) is fine and
@@ -263,6 +318,7 @@ export async function applyLessonBody(): Promise<void> {
 export function resetLessonBodyCache(): void {
   englishHtml.clear();
   fetched.clear();
+  gatedFetched.clear();
   generation = 0;
   swaps = 0;
   lastDetail = null;

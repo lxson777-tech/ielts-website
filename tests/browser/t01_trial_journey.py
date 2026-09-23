@@ -210,6 +210,23 @@ def submit_test(page) -> bool:
     return True
 
 
+GATED = ROOT / "gated-content"
+
+
+def phrase_from(html: str) -> str:
+    """Six plain words from inside ONE paragraph of a lesson or paper, so the
+    same words appear together in the page's text however it is styled."""
+    import re
+    paragraphs = re.findall(r"<p[^>]*>(.*?)</p>", html, flags=re.S) or [html]
+    for para in paragraphs:
+        words = re.sub(r"<[^>]+>", "", para).split()
+        for i in range(len(words) - 6):
+            run = words[i : i + 6]
+            if all(re.fullmatch(r"[A-Za-z]+", w) for w in run) and len(" ".join(run)) > 30:
+                return " ".join(run)
+    return ""
+
+
 def protected_visible(page) -> bool:
     return page.evaluate(
         "() => { const el = document.querySelector('[data-trial-protected]'); return !!el && el.offsetParent !== null; }"
@@ -279,8 +296,8 @@ def run():
         check("keyboard: ArrowRight moves to Speaking and focuses it",
               page.evaluate("() => document.activeElement && document.activeElement.id") == "trial-home-tab-speaking"
               and page.locator("#trial-home-tab-speaking[aria-selected='true']").count() == 1)
-        check("dashboard: Speaking test shows as not open yet (decision pending)",
-              page.get_by_text("Not open yet").count() > 0)
+        check("dashboard: the Speaking test is available (Part 1, Alex's decision)",
+              page.get_by_text("1 available").count() > 0)
         page.keyboard.press("Home")
         page.wait_for_timeout(300)
 
@@ -294,6 +311,8 @@ def run():
         # ── 4. Lessons: the included one opens, others stay covered by direct link ──
         goto(page, "/lessons/reading/tfng")
         wait_text(page, "Available with full access")
+        tfng_phrase = phrase_from((GATED / "lessons/en/reading-tfng.html").read_text(encoding="utf-8"))
+        check("door: a locked lesson's text never reaches the browser", tfng_phrase not in page.content(), tfng_phrase)
         check("locked lesson by direct link: covered, title kept, View plans offered",
               page.get_by_text("Available with full access").count() > 0
               and page.get_by_role("link", name="View plans").count() > 0
@@ -303,6 +322,33 @@ def run():
         goto(page, "/lessons/reading/paraphrase")
         page.wait_for_timeout(1500)
         check("included lesson opens", protected_visible(page) and page.get_by_text("Available with full access").count() == 0)
+
+        # ── The locked door: the text is not in the page, only on the screen ──
+        lesson_phrase = phrase_from((GATED / "lessons/en/reading-paraphrase.html").read_text(encoding="utf-8"))
+        locked_phrase = phrase_from((GATED / "lessons/en/reading-tfng.html").read_text(encoding="utf-8"))
+        paper = json.loads((GATED / "tests/reading-full-001.json").read_text(encoding="utf-8"))
+        paper_phrase = phrase_from(" ".join(p["html"] for p in paper["parts"][0]["stimulus"]["paragraphs"]))
+        raw_lesson = page.request.get(BASE + "/lessons/reading/paraphrase").text()
+        raw_locked = page.request.get(BASE + "/lessons/reading/tfng").text()
+        raw_paper = page.request.get(BASE + "/tests/reading-full-001").text()
+        check("door: the lesson page's source carries none of the lesson text",
+              bool(lesson_phrase) and lesson_phrase not in raw_lesson, lesson_phrase)
+        check("door: a locked lesson's source carries none of its text either",
+              bool(locked_phrase) and locked_phrase not in raw_locked, locked_phrase)
+        check("door: the paper's page source carries none of the paper",
+              bool(paper_phrase) and paper_phrase not in raw_paper, paper_phrase)
+        try:
+            page.wait_for_function(
+                r"(p) => (document.querySelector('[data-lesson-body]')?.textContent ?? '').replace(/\s+/g, ' ').includes(p)",
+                arg=lesson_phrase, timeout=15000)
+            shown = True
+        except Exception:
+            shown = False
+        check("door: the allowed student sees the lesson text on screen (fetched through the door)", shown, lesson_phrase)
+        old_files = [page.request.get(BASE + path).status for path in (
+            "/data/tests/reading-full-001.json", "/lesson-bodies/ru/reading-paraphrase.html",
+            "/data/lesson-blocks/reading-paraphrase.json", "/data/test-explanations/ru/reading-full-001.json")]
+        check("door: the old public data files are not published", all(code == 404 for code in old_files), str(old_files))
 
         # ── 5. Mr EZ: five answered messages per section ──
         open_mrez(page)
@@ -393,6 +439,9 @@ def run():
         goto(page, "/tests/reading-full-002")
         wait_text(page, "Available with full access")
         check("test outside the trial: locked by direct link", page.get_by_text("Available with full access").count() > 0)
+        other_paper = json.loads((GATED / "tests/reading-full-002.json").read_text(encoding="utf-8"))
+        other_phrase = phrase_from(" ".join(p["html"] for p in other_paper["parts"][0]["stimulus"]["paragraphs"]))
+        check("door: the locked paper never reaches the browser", other_phrase not in page.content(), other_phrase)
         goto(page, "/trainers/reading/reading-full-001-drill-p1")
         wait_text(page, "Available with full access")
         check("drill cut from the trial paper: locked (not the section's test)",

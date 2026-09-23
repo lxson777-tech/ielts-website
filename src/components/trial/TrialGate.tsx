@@ -52,7 +52,12 @@ export default function TrialGate({ spec }: { spec: TrialGateSpec }) {
 
   useEffect(() => {
     setGate(reason === 'open' ? 'open' : reason === 'checking' ? 'pending' : 'locked');
-  }, [reason]);
+    /* A trial build's lesson text arrives from the content gate once the
+       student may read it: ask for it now (after a sign-in, too). */
+    if (reason === 'open' && spec.kind === 'lesson') {
+      void import('../../lib/i18n/lesson-body').then((m) => m.applyLessonBody());
+    }
+  }, [reason, spec.kind]);
 
   if (reason === 'open') return null;
   return <TrialBlock reason={reason} title={spec.title} />;

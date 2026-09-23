@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import GatedTestPlayer from '../../../components/trial/GatedTestPlayer';
+import { ACCESS_MODE } from '../../../lib/trial/mode';
 import TestPlayer from '../../../components/TestPlayer';
 import { withBase } from '../../../lib/url';
 import { ALL_LISTENING_DRILLS } from '../../../lib/tests/drills';
@@ -9,10 +11,17 @@ export function getStaticPaths() {
 }
 
 const { test } = Astro.props;
+/* A trial build puts only the paper's id and title on the page; the paper
+   itself comes from the content gate (GatedTestPlayer). */
+const gated = ACCESS_MODE === 'trial';
 ---
 
 <BaseLayout title={`${test.title} · IELTS Listening Drill`} bare>
   <div class="skill-listening">
-    <TestPlayer client:load test={test} hubUrl={withBase('/trainers/listening')} attemptKind="drill" />
+    {gated ? (
+      <GatedTestPlayer client:load testId={test.id} title={test.title} section={'Listening'} hubUrl={withBase('/trainers/listening')} attemptKind="drill" />
+    ) : (
+      <TestPlayer client:load test={test} hubUrl={withBase('/trainers/listening')} attemptKind="drill" />
+    )}
   </div>
 </BaseLayout>

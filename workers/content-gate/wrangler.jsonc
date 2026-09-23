@@ -1,0 +1,19 @@
+// Cloudflare Worker config for the content gate: the trial's locked door.
+// Read workers/content-gate/README.md first. NOT deployed; deploying it is a
+// real, externally visible step that needs Alex's approval, together with the
+// private bucket upload and the trial build of the site.
+// Secrets: npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+//          npx wrangler secret put CONTENT_SERVICE_KEY   (same value on workers/mr-ez)
+{
+  "name": "ielts-content-gate",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-01",
+  // The private store the gate reads from. Filled by
+  // `node --import ./tests/ts-extension-loader.mjs tools/build-gated-content.mjs`
+  // and an upload of gated-content/ (see the README). Never public.
+  "r2_buckets": [{ "binding": "CONTENT", "bucket_name": "ielts-gated-content" }],
+  "vars": {
+    "ALLOWED_ORIGINS": "https://lxson777-tech.github.io",
+    "SUPABASE_URL": "https://nbeyxwjvytrqtzzeilev.supabase.co"
+  }
+}

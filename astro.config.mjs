@@ -3,6 +3,43 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { fileURLToPath } from 'node:url';
+import { loadEnv } from 'vite';
+
+/* A trial build (PUBLIC_ACCESS_MODE=trial) must not publish the practice
+   papers in any public file. Several islands import src/data/tests (3.9 MB of
+   passages, questions and answers) straight into the browser, so for the
+   BROWSER bundle only that import is pointed at a titles-only list
+   (src/lib/trial/tests-light.ts). The pages themselves still build from the
+   real data on the server; the papers reach a student through the content
+   gate. The open site is untouched: without the setting this does nothing. */
+const env = { ...loadEnv(process.env.NODE_ENV === 'production' ? 'production' : 'development', process.cwd(), 'PUBLIC_'), ...process.env };
+const TRIAL_BUILD = String(env.PUBLIC_ACCESS_MODE ?? '').trim().toLowerCase() === 'trial';
+const LIGHT_TESTS = fileURLToPath(new URL('./src/lib/trial/tests-light.ts', import.meta.url));
+
+function trialBrowserContent() {
+  return {
+    name: 'trial-browser-content',
+    enforce: 'pre',
+    async resolveId(source, importer, options) {
+      if (!TRIAL_BUILD || options?.ssr || !importer) return null;
+      if (!/data[\\/]tests(?:[\\/]index(?:\.ts)?)?$/.test(source)) return null;
+      const resolved = await this.resolve(source, importer, { ...options, skipSelf: true });
+      if (resolved && /[\\/]src[\\/]data[\\/]tests[\\/]index\.ts$/.test(resolved.id)) return LIGHT_TESTS;
+      return null;
+    },
+    /* The vocabulary review deck pulls every vocabulary LESSON into the
+       browser to build its cards. Vocabulary is not in the trial, so a
+       trial build's browser copy gets no lessons and falls back to the small
+       words.ts deck the module already uses where lessons are unavailable. */
+    transform(code, id, options) {
+      if (!TRIAL_BUILD || options?.ssr || !/[\\/]src[\\/]lib[\\/]vocab-review\.ts$/.test(id.split('?')[0])) return null;
+      const glob = /import\.meta\.glob<string>\('\.\.\/content\/lesson-bodies\/vocabulary-\*\.html',[\s\S]*?\}\)/;
+      if (!glob.test(code)) this.error('trial build: the vocabulary deck no longer globs its lessons the expected way; update astro.config.mjs');
+      return { code: code.replace(glob, '({} as Record<string, string>)'), map: null };
+    },
+  };
+}
 
 export default defineConfig({
   devToolbar: { enabled: false },
@@ -39,6 +76,6 @@ export default defineConfig({
   },
   integrations: [react(), sitemap()],
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), trialBrowserContent()],
   },
 });

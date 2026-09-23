@@ -17,10 +17,15 @@
    build and must stay free of the 3.9 MB dataset. */
 
 import type { APIRoute, GetStaticPaths } from 'astro';
+import { ACCESS_MODE } from '../../../lib/trial/mode';
 import { ALL_TESTS } from '../../../data/tests';
 import { toSiteTest } from '../../../lib/tutor/test-items';
 
 export const getStaticPaths: GetStaticPaths = () => {
+  /* A trial build publishes none of these: the content gate
+     (workers/content-gate) hands them out to students allowed to open them,
+     from the private copy tools/build-gated-content.mjs writes. */
+  if (ACCESS_MODE === 'trial') return [];
   return ALL_TESTS.map((test) => ({ params: { id: test.id }, props: { test } }));
 };
 
