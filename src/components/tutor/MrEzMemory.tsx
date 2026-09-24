@@ -53,6 +53,7 @@ const STUDY_DAYS_LABEL: Record<PersonalPlanV1['constraints']['studyDays'], strin
   daily: 'Every day',
   weekdays: 'Weekdays only',
   custom: 'Custom days',
+  alternate: 'Every other day',
 };
 
 function overrideLabel(t: (s: string, vars?: Record<string, string | number>) => string, override: PlanOverride): string {

@@ -67,9 +67,27 @@ export interface PlanConstraints {
       override (see PlanOverride), never a change to this. */
   regularDailyMinutes: DailyMinutes;
   regularDailyMinutesStatus: Confirmation;
-  studyDays: 'daily' | 'weekdays' | 'custom';
-  /** Used only when studyDays is 'custom'. 0 is Sunday. */
+  /** 'alternate' is "every other day", added 24 September 2026. It is an
+      optional member in practice: plans saved before then never hold it,
+      and nothing about them changes (no contract version bump, no stored
+      plan is migrated). */
+  studyDays: 'daily' | 'weekdays' | 'custom' | 'alternate';
+  /** Used only when studyDays is 'custom'. 0 is Sunday.
+
+      An 'alternate' plan ALSO carries all seven days here, on purpose:
+      code older than 'alternate' (a tab left open from before the release,
+      or a Worker not yet redeployed) reads any unknown studyDays through
+      its 'custom' branch, and all seven days makes that older code count
+      every day as a study day, over-counting rather than scheduling
+      nothing. Current code never reads this field for 'alternate'. */
   customStudyDays?: readonly (0 | 1 | 2 | 3 | 4 | 5 | 6)[];
+  /** Used only when studyDays is 'alternate': the local yyyy-mm-dd day the
+      student chose "every other day". That day is a study day, the next is
+      a rest day, and so on, counted in whole calendar days from it (see
+      isStudyDay in planner.ts). Optional, like 'alternate' itself: an
+      'alternate' plan with no anchor is read as every day, never as no
+      days. */
+  alternateAnchor?: string;
   /** Language the student reads explanations in. Exam material stays
       English. A language preference is never an ability signal. */
   explanationLocale: Locale;
