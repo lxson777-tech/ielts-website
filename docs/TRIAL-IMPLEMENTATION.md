@@ -20,8 +20,9 @@ model. Every proof below is local, against synthetic accounts.
   conflict here was two neighbouring style imports, both kept, and one sentence ("See my
   results") that the merged work already translates, whose Russian is now theirs.
   Then merged at `defa6f1` (three more screens bound to their student, and a sign-in
-  that no longer announces a false account change), cleanly. Everything below was rerun
-  after that merge. Not built on the older marketing checkout in the root folder,
+  that no longer announces a false account change), cleanly, and on 24 September with
+  the published `main` (`fb65080`, the study platform as released), cleanly. Everything
+  below was rerun after that merge. Not built on the older marketing checkout in the root folder,
   which was only read for Codex's design files.
 
 ## The switch
@@ -190,13 +191,13 @@ needs the same pattern, and signed short-lived links for audio.
 
 | What | Result |
 |---|---|
-| `npm test` (whole suite, after the merge with `defa6f1`) | 2,067 of 2,067 pass (63 of them are the trial tests below) |
+| `npm test` (whole suite, after the merge with the published `main` `fb65080`) | 2,080 of 2,080 pass (64 of them are the trial tests below) |
 | `tests/trial-sql.test.ts`: the migration itself, in PGlite with Supabase's roles and row security | 22 of 22 |
 | `tests/trial-worker.test.ts`: the real Mr EZ handler against the real migration | 12 of 12 |
-| `tests/trial-graders.test.ts`: the real essay grader, speaking grader and live examiner | 12 of 12 |
+| `tests/trial-graders.test.ts`: the real essay grader, speaking grader and live examiner | 13 of 13 |
 | `tests/trial-content.test.ts`: the real content gate against the real migration | 8 of 8 |
 | `tests/trial-status.test.ts`: what the screens may say | 9 of 9 |
-| `tests/browser/t01_trial_journey.py`: the real site, door on, in a real browser | 81 of 81, twice before the merge with `defa6f1` and again after it (`docs/trial/evidence/results-t01.md`) |
+| `tests/browser/t01_trial_journey.py`: the real site, door on, in a real browser | 82 of 82 after the merge with the published `main` (`docs/trial/evidence/results-t01.md`) |
 | `tools/trial-content-audit.mjs` on the trial build | no leaks (see above) |
 | `npx astro check` | 0 errors, 0 warnings, 20 hints (none from the trial) |
 | `npm run build`, open and trial | 663 pages each |
