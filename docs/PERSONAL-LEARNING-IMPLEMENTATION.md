@@ -312,9 +312,18 @@ Matching Headings) and `7f7bacb` (Writing Task 1 overview).
 - Two browser scripts (`f06`, `s6`) needed `textContent` to read the collapsed
   scope list; the rerun scripts are corrected.
 
-## 9. Proposed production steps, none taken
+## 9. Proposed production steps, and what was taken on 24 September
 
-All of these are Alex's decisions. Nothing below has been done.
+All of these are Alex's decisions. On 24 September 2026 Alex approved putting
+the platform live: step 1 was done (main fast-forwarded to `2bd585b`, final
+code `c693b43`; GitHub Pages run 35958302071 succeeded; the live dashboard
+and the per-test data the Worker fetches answer), and step 3 was done (Mr EZ
+Worker version `047e03d2`, with `TUTOR_MAX_HELP_PER_USER_PER_DAY` at 60).
+Step 2, the learning tables, needs Alex's own Supabase login and is not
+applied; until then sync degrades to this-device-only with an honest
+status. Step 4, the paid live check, needs a local `.dev.vars` with the
+model key in `workers/mr-ez/`, which does not exist here, so it is not run.
+The list below is kept as written.
 
 1. **Merge and publish the site.** Merge the branch into `main` after review;
    the push publishes to GitHub Pages automatically. Rollback: revert the merge
@@ -605,6 +614,59 @@ clean, index regenerated and deterministic, race script anonymous both
 times. Vocabulary practice now records recognition rather than recall; the
 course catalogue's wording for that activity is corrected in a follow-up.
 
-**Inspection 6** (a fresh session, after those fixes and the merge) is
-recorded below once run.
+**The last screens of the same class landed in `34b7583`**, reported by the
+builders rather than by an inspection: the inline lesson quiz, the
+vocabulary round (on main's merged screen) and the spoken focused task are
+bound to their student and hand over on a switch; the written task ignores
+presses on a screen that was about to be handed over; the course catalogue's
+two vocabulary activities now declare recognition, not recall, with
+objectives that describe the merged practice, in English and Russian; and
+the sign-in path no longer resets the owner to anonymous and back for a
+student who is already the owner, so a signed-in page load announces no
+false account change and a real change is announced exactly once. Gates at
+that commit: 2004 tests, type check clean, 661 pages, index unchanged, race
+script anonymous both times, f22 207 of 207 (the spoken task measured on a
+fake microphone). Known and stated rather than fixed: five "mark as studied"
+or intake buttons still write at the press through the shared store (no
+other student's answers are involved; a tab that missed a switch would
+record that mark under the student it thinks is there).
+
+**Inspection 6, of `defa6f1`: REVISE, two findings, both accepted.**
+Structured result: `docs/personal-learning/evidence/codex-inspections/inspection-6-of-defa6f1.json`.
+(The diff for this round is taken from `c4a7793`, the commit Codex judged in
+round 5, because the full diff had grown past Codex's input limit once the
+merge of main was inside it; the spec records the exclusions.)
+
+| Finding | What was wrong | Fix |
+|---|---|---|
+| R2F-01 (high) | On the spoken focused task, two presses of Start while the microphone permission was pending started two recorders, and a switch stopped only the last, leaving a microphone capturing behind the cleared screen; the recorder's timeout did not release the tracks | Startup is single-flight; each take is checked to be current after every wait and stale streams released; the previous take is cancelled before replacement; the timeout releases the tracks |
+| R2F-02 (medium) | On the written focused task, a late evaluation's record step also reset the editable draft to the submitted text, overwriting a revision written after returning to the page | Appending the attempt is separated from updating the draft; a newer draft or a pending autosave is preserved |
+
+The two fixes landed in `c693b43` (one recording at a time on the spoken
+task, every microphone released on a switch; a late evaluation never
+overwrites a newer draft). Gates: 2016 tests, type check clean, 661 pages,
+index unchanged, race script anonymous both times, f22 218 of 218.
+
+**Inspection 7, of `05c206f`: REVISE, two findings, both medium, both
+accepted as true and left open.** Structured result:
+`docs/personal-learning/evidence/codex-inspections/inspection-7-of-05c206f.json`.
+Neither is rated high and neither leaks anything between students, so by the
+stopping rule agreed with Alex after round 5 the loop ends here.
+
+| Finding | What is wrong | Status |
+|---|---|---|
+| R2G-01 (medium) | Written focused task, same student, two tabs: a late evaluation in a tab still on screen can restore its submitted text over a revision saved from the other tab, because that branch rewrites the stored document from its own stale state | Open. Fix known: append the attempt against the latest stored document without touching the draft, reconcile local edits by revision identity |
+| R2G-02 (medium) | Mock exam: if the browser's store refuses a write while a leg is being finished, the refusal is treated like a never-saved sitting, so the result is shown and recorded while the stored leg stays unfinished and a refresh can hand it in again; removal failures are swallowed the same way | Open. Fix known: report a persistence failure as a failure, keep the attempt for retry, record only after finalisation succeeds |
+
+**Where the loop ended.** Seven inspections, nineteen Codex findings
+(seventeen fixed, two open), twelve more holes of the same class found and
+closed by the builders themselves. Final code commit `c693b43`. The full
+account of every finding and disposition is
+`docs/personal-learning/CODEX-FIX-ROUND-2.md`; the final browser evidence is
+the `-final` set under `docs/personal-learning/evidence/final/`: the frozen
+suite on the `c693b43` build, 296 pass and the one by-design fail
+(`results-final.md`), and the four account journeys on that commit against
+the local stand-in, 363 of 363 (`results-journeys-final.md`; f20 33, f21 22,
+f22 218, f23 90), with all seven of Codex's original reproduction scripts
+no longer reproducing.
 

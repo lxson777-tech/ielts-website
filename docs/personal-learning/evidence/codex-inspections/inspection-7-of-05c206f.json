@@ -1,0 +1,79 @@
+{
+  "status": "completed",
+  "mode": "inspect",
+  "provider": "codex",
+  "roles": {
+    "host": "claude",
+    "builder": "claude",
+    "inspector": "codex"
+  },
+  "plan": "C:\\Users\\Alex\\AppData\\Local\\Temp\\claude\\C--Users-Alex-Desktop-Projects-IELTS-website--claude-worktrees-todays-tab-ai-tutor-rework-8af4cd\\3ca7e737-f4b7-4276-9ab8-0c65cd68240a\\scratchpad\\wt-codex-inspect-7\\docs\\personal-learning\\CODEX-FIX-ROUND-2.md",
+  "plan_sha256": "eb86caee29ebdf0f756591d6c0b71f6f3fd4224b83bae8e4b3bafff97541f29b",
+  "base": "c4a7793",
+  "requested_model": null,
+  "requested_effort": null,
+  "cli_version": "codex-cli 0.155.1",
+  "session_id": "01a0cfb1-6ae5-7a91-991b-252a1f1a0ad3",
+  "usage": {
+    "input_tokens": 3946228,
+    "cached_input_tokens": 3485824,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 6637,
+    "reasoning_output_tokens": 3335
+  },
+  "elapsed_seconds": 445.35,
+  "mcp_overrides": [
+    "-c",
+    "mcp_servers.node_repl.enabled=false",
+    "-c",
+    "mcp_servers.magic.enabled=false",
+    "-c",
+    "mcp_servers.cua_repl={command=\"cmd.exe\",args=[\"/c\",\"exit\"],enabled=false}"
+  ],
+  "excluded_from_prompt": [
+    ":(exclude)docs/audits/claude-review-2026-09-22",
+    ":(exclude)docs/audits/claude-review-2026-09-23",
+    ":(exclude)docs/personal-learning/evidence",
+    ":(exclude)tests/browser",
+    ":(exclude)src/data/reading-practice.ts",
+    ":(exclude)src/data/tests/ru",
+    ":(exclude)src/styles",
+    ":(exclude)src/data/generated",
+    ":(exclude)tools/build_reading_practice.py",
+    ":(exclude)docs/PERSONAL-LEARNING-IMPLEMENTATION.md"
+  ],
+  "inspected_commit": "05c206f",
+  "snapshot_sha256": "9e61fe4e1d61639bb469bf1f21ee4b288b5b05099bb0e35abea2626c9324903b",
+  "response": {
+    "verdict": "REVISE",
+    "summary": "Two material defects remain: a late evaluation can overwrite another tab's draft, and failed finalisation can be treated as a successful hand-in.",
+    "findings": [
+      {
+        "id": "R2G-01",
+        "severity": "medium",
+        "path": "src/components/learning/WritingFocusedTask.tsx:543",
+        "evidence": "A submits text X in tab 1 and leaves it mounted. While evaluation is pending, A opens the same exercise in tab 2 and saves revision Y. The mounted branch of record() calls appendAttempt(current, ...) using tab 1's stale React state, then writeWrittenDraft replaces the entire stored document, restoring X over Y. There is no storage-event reconciliation. The new other-tab regression at tests/lesson-evidence-owner.test.ts:767 explicitly unmounts tab 1, exercising only the branch that rereads storage.",
+        "fix": "Append attempts against the latest stored document without replacing its editable draft. Reconcile pending local edits separately, preferably using revision identities. Add a regression with both tabs mounted, verifying Y survives the late evaluation and reload."
+      },
+      {
+        "id": "R2G-02",
+        "severity": "medium",
+        "path": "src/lib/tests/mock.ts:955",
+        "evidence": "For an already-persisted mock, finishMockLeg returns 'refused' when writeLegs fails, but mockLegSitting.finish converts that refusal to 'unsaved'. TestPlayer accepts 'unsaved', displays the result and invokes evidence writers although the stored leg remains unfinished. Refresh can therefore resume and submit that leg again. This contradicts the documented exception limiting 'unsaved' to sittings never persisted. Related finalisers clearActiveMock and clearSession also report success after safeRemove, which swallows deletion failures.",
+        "fix": "Distinguish persistence failure from a never-persisted sitting. Return an explicit failure, preserve the attempt for retry, and prevent recording or advancement until finalisation succeeds. Propagate deletion failure from safeRemove. Cover failed writes and removals after successful initial persistence."
+      }
+    ],
+    "coverage": [
+      "Confirmed the plan file's SHA256 matches the supplied hash; inspected checkout 05c206ffb5353c90f2d2698c6e946988d977fec9.",
+      "Traced focused writing and speaking ownership, recording lifecycle, draft writers and delayed-result handling.",
+      "Traced standalone and mock submission finalisation through TestPlayer, sitting stores and shared storage helpers.",
+      "Inspected authentication lifecycle, learning-store ownership, tutor request bindings, conversation storage and voice-start cancellation.",
+      "Read relevant regression cases and the latest supplied browser evidence for R2F-01 and R2F-02."
+    ],
+    "limitations": [
+      "Static inspection only. No tests, browser journeys, builds or paid services were run.",
+      "Full manifest coverage was not completed; some large diff outputs were truncated. This is not an exhaustive audit of every listed file.",
+      "Recorded test and browser results are host-provided evidence, not independently reproduced results."
+    ]
+  }
+}

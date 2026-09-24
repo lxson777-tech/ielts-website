@@ -926,3 +926,145 @@ load, which the claim offer waits for.
 Gates at `34b7583`: `npm test` 2004 of 2004, `npx astro check` 0 errors and 0
 warnings, `npm run build` 661 pages, the learning index byte-identical,
 Codex's `signout-race.mjs` printing anonymous both times.
+
+## Inspection round 6 (fresh Codex session, read-only, 23 September)
+
+Inspected: commit `defa6f1`. The diff from `48b1d17` had grown to 1.9 MB
+with the merge of the published main inside it and Codex refused it as too
+large (its limit is about one million characters), so this round's diff is
+taken from `c4a7793`, the commit Codex judged in round 5, with the browser
+scripts, the evidence, main's own data and style files, the generated index
+and the implementation report kept out of the prompt (0.73 MB); same
+settings otherwise, 553 seconds. Structured result:
+`docs/personal-learning/evidence/codex-inspections/inspection-6-of-defa6f1.json`.
+
+Verdict: REVISE. Two findings, both accepted by the host:
+
+- **R2F-01 (high) accepted.** On the spoken focused task, pressing Start
+  twice while the microphone permission is pending starts two recorders:
+  each press replaces the current take without marking startup as pending,
+  both returned streams pass the liveness check because it looks at the
+  exercise session rather than the take's own identity, and an account
+  switch or unmount stops only the last take, leaving the first capturing
+  behind the cleared screen; the recorder's ninety-second timeout stops
+  recording but does not release the microphone tracks. Fix: startup is
+  single-flight with a synchronous pending guard; after every await the
+  exact take is checked to be current and stale streams released; the
+  previous take is cancelled before it is replaced; the timeout releases
+  the tracks; a browser regression with two delayed starts followed by a
+  switch verifies every recorder stops and every track ends.
+- **R2F-02 (medium) accepted.** On the written focused task, a late
+  evaluation's keep step records the attempt through a helper that also
+  sets the editable draft to the submitted text, so a revision the student
+  wrote after returning to the page (or saved from another tab) is
+  overwritten and a reload loses it. Fix: appending the submitted attempt
+  is separated from updating the editable draft; a newer draft or editing
+  generation, including a pending autosave, is preserved while the
+  submitted text stays in the attempt history; a regression holds the
+  evaluation, switches away and back, autosaves a revision, releases the
+  evaluation and verifies the revision survives a reload.
+
+Both are fixed next. The host's stopping rule, set with Alex after round 5:
+the loop stops once a round returns nothing rated high and nothing that
+leaks between students; a seventh inspection confirms these two are closed
+and whatever it finds beyond that is recorded rather than fixed unless it
+meets that bar.
+
+## Fixes after inspection round 6 (for inspection round 7)
+
+Base for the round-7 inspection diff: `c4a7793`, with the same exclusions
+as round 6. Both fixes are in `c693b43`, each with deterministic tests and a
+browser journey against the local stand-in (no model called):
+
+- **R2F-01** (`src/components/learning/spoken-task-owner.ts`,
+  `SpokenFocusedTask.tsx`, `src/lib/speaking/recorder.ts`): every recording
+  goes through one keeper (`openSpokenTakes`). Pressing Start while the
+  microphone prompt is open does nothing, so the microphone is asked for
+  once; when a microphone arrives, the continuation checks that this exact
+  take is still the one on screen (`takeIsLive` now takes the current take),
+  not only that the same student is, and switches it off otherwise; a new
+  recording stops the previous one first; an account change, a refused press
+  or leaving the page stops every recording and switches off every
+  microphone the keeper holds; the ninety-second limit switches the
+  microphone off too (`endTracksAtTimeout`, off by default because the timed
+  Speaking trainer reuses one microphone across questions); a recording that
+  fails while stopping releases the microphone. Seven new cases in
+  `tests/last-screens-owner.test.ts` (each part removed in turn fails named
+  cases; weakening "stop everything" fails seven).
+- **R2F-02** (`src/components/learning/written-focused-task.ts`,
+  `WritingFocusedTask.tsx`): appending the submitted attempt is separated
+  from updating the editable draft (`appendAttempt`; `withAttempt` unchanged
+  for its other callers). When an evaluation returns, on screen or off, the
+  attempt is appended and the draft box left alone; the submitted words are
+  saved as the draft at the moment Check is pressed, so the no-switch case is
+  unchanged; a revision written after coming back, one still waiting to
+  autosave, or one saved from another tab survives. Five new cases in
+  `tests/lesson-evidence-owner.test.ts` (putting the old words back in the
+  draft fails three).
+
+`f22` step 23 in the browser: the microphone prompt held, Start pressed
+twice, the prompt released, the account switched in a second tab, every
+recorder stopped and every track ended (counted in the page); then an
+evaluation held, the student away and back, a revision autosaved, the
+evaluation released with a synthetic reply, and the revision on screen after
+a reload with the submitted text in the history; 218 of 218 overall
+(`results-unfinished-test-11.md`). The old-code comparison of that step was
+interrupted by a pause and not rerun, so the browser has not shown the old
+code failing; the deterministic cases carry that proof. Step 22's spoken
+check was pointed at the spoken task's own sentence (it had still counted
+the exercises' line). Stated: the spoken screen keeps saying "Recording..."
+after the limit until Stop is pressed, with the microphone already off; the
+written task still loses the last half-second of typing when the page is
+left mid-word (pre-existing).
+
+Gates at `c693b43`: `npm test` 2016 of 2016, `npx astro check` 0 errors and 0
+warnings, `npm run build` 661 pages, the learning index byte-identical,
+Codex's `signout-race.mjs` printing anonymous both times.
+
+## Inspection round 7 (fresh Codex session, read-only, 24 September)
+
+Inspected: commit `05c206f`, diff from `c4a7793` with the round-6
+exclusions, 445 seconds. Structured result:
+`docs/personal-learning/evidence/codex-inspections/inspection-7-of-05c206f.json`.
+
+Verdict: REVISE. Two findings, both medium, both about one student's own
+work, neither a leak between students and neither rated high. By the
+stopping rule agreed with Alex after round 5, the loop ends here: both are
+accepted as true and recorded as open items for a follow-up rather than
+built inside this loop.
+
+- **R2G-01 (medium) accepted, open.** The written focused task, same
+  student, two tabs: A submits text X in tab 1 and leaves it mounted; while
+  the evaluation is pending A opens the same exercise in tab 2 and saves
+  revision Y; when the evaluation returns, tab 1's on-screen branch appends
+  the attempt from its own stale state and rewrites the stored document,
+  restoring X over Y; there is no storage-event reconciliation, and the
+  round-6 regression for the other-tab case unmounts tab 1, so it exercises
+  only the branch that rereads storage. Codex's fix: append attempts against
+  the latest stored document without replacing its editable draft, reconcile
+  pending local edits separately (revision identities), and add a regression
+  with both tabs mounted.
+- **R2G-02 (medium) accepted, open.** For an already-persisted mock,
+  `finishMockLeg` returns "refused" when the leg write fails, but the
+  player's sitting store converts that refusal to "unsaved", which the
+  player accepts as a never-persisted sitting: the result is shown and
+  evidence written although the stored leg stays unfinished, so a refresh
+  can resume and submit that leg again; `clearActiveMock` and `clearSession`
+  also report success after a removal that `safeRemove` swallowed. Codex's
+  fix: distinguish a persistence failure from a never-persisted sitting,
+  return an explicit failure, keep the attempt for retry, record and advance
+  only after finalisation succeeds, and propagate removal failures.
+
+Both need a full or blocked browser store, or the same student with the
+same exercise open in two tabs during one evaluation, to occur. They are the
+right next two items if the ownership work continues.
+
+## Where the loop ended
+
+Seven fresh read-only inspections between 23 and 24 September: nineteen
+findings from Codex, seventeen fixed and two open above, plus twelve holes of
+the same class the builders reported themselves and closed before asking
+again. Final code commit of the loop: `c693b43` (the merge of the published
+main at `c5cf425` is inside it). Every browser journey was rerun on that
+commit against the local stand-in and the whole frozen suite on its build;
+the results are the `-final` files under `docs/personal-learning/evidence/final/`.

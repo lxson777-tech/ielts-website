@@ -36,6 +36,33 @@
  *     says answers in progress "were kept"; here a recording in progress is
  *     dropped, so that line was not true on this screen.
  *
+ * ONE TAKE AT A TIME (finding R2F-01 of the sixth Codex inspection)
+ * Start pressed twice while the browser's microphone prompt was still open
+ * started two takes. Each press replaced the take on screen, but nothing
+ * said a start was already on its way, and the check after the wait asked
+ * only whether the SESSION was still on screen, which it was for both. So
+ * both microphones were kept and both recorders started, and a hand-over or
+ * an unmount stopped only the last one: the first went on capturing behind
+ * the emptied screen. The takes now live on a desk (openSpokenTakes below)
+ * that the screen asks for every take, and three rules hold there:
+ *
+ *   - SINGLE FLIGHT. A take waiting for the microphone is marked as waiting
+ *     the moment it is opened, before the screen awaits anything, and a
+ *     press of Start while it waits opens nothing and asks for nothing;
+ *   - THE TAKE ITSELF IS CHECKED. After every wait, the take must still BE
+ *     the take on the desk (takeIsLive compares the take's own identity, not
+ *     only its session). A microphone that arrives for any other take is
+ *     released at once, every track ended, and that take is dropped;
+ *   - NOTHING IS REPLACED WHILE IT RUNS. Opening a take drops the one before
+ *     it first (recorder stopped, microphone released), and a hand-over, a
+ *     refused press or an unmount drops EVERY take the desk still holds
+ *     open (dropAll), not only the one on screen.
+ *
+ * The recorder's own time limit ends the microphone's tracks too when the
+ * spoken task asks it to (recordSegment's endTracksAtTimeout in
+ * src/lib/speaking/recorder.ts), so a take left running to its 90 seconds
+ * does not keep the microphone on.
+ *
  * "Done for now" records synchronously, at the press, so there is no late
  * result to keep: a press made before the switch is already in its own
  * student's record, and the hand-over takes its confirmation off the screen.
@@ -85,12 +112,19 @@ export function openTake<S, R extends TakeRecording = TakeRecording>(session: Ex
   return { session, stream: null, recording: null, dropped: false };
 }
 
-/** The take may carry on: it has not been dropped, it still belongs to the
-    session on screen (`onScreen`, read from the component's ref), and that
-    session's student is still the one on the page. A microphone that
-    arrives, or a recording that finishes, when this is false is dropped. */
-export function takeIsLive<S, R extends TakeRecording>(take: SpokenTake<S, R>, onScreen: ExerciseSession | null): boolean {
-  return !take.dropped && take.session === onScreen && exerciseIsCurrent(take.session);
+/** The take may carry on: it has not been dropped, it is still THE take on
+    screen (`current`, the desk's take: its own identity, R2F-01, so a take
+    that was replaced is never live again even while its session is), it
+    still belongs to the session on screen (`onScreen`, read from the
+    component's ref, or null once the screen has gone), and that session's
+    student is still the one on the page. A microphone that arrives, or a
+    recording that finishes, when this is false is dropped. */
+export function takeIsLive<S, R extends TakeRecording>(
+  take: SpokenTake<S, R>,
+  current: SpokenTake<S, R> | null,
+  onScreen: ExerciseSession | null,
+): boolean {
+  return !take.dropped && take === current && take.session === onScreen && exerciseIsCurrent(take.session);
 }
 
 /** Stop and drop a take: the recorder is told to stop and whatever it hands
@@ -111,6 +145,90 @@ export function dropTake<S, R extends TakeRecording>(take: SpokenTake<S, R>, rel
   const stream = take.stream;
   take.stream = null;
   if (stream) release(stream);
+}
+
+/** Every take one screen makes, and the rules of R2F-01 (see ONE TAKE AT A
+    TIME above). The screen never holds a take of its own: it asks the desk
+    for one, and the desk decides whether a press may open one and whether a
+    take may still go on after a wait. */
+export interface SpokenTakes<S, R extends TakeRecording = TakeRecording> {
+  /** The take on screen: waiting for the microphone, recording, or the last
+      one made. Null before the first take and after a drop. */
+  current(): SpokenTake<S, R> | null;
+  /** True while a take is waiting for the microphone. */
+  starting(): boolean;
+  /** A press of Start. Returns null, opening nothing, while a take is
+      already waiting for the microphone. Otherwise the take on screen, if
+      any, is dropped first (recorder stopped, microphone released) and a new
+      take is opened for `session`, marked as waiting and put on screen, all
+      before the caller's first await. */
+  begin(session: ExerciseSession): SpokenTake<S, R> | null;
+  /** The browser answered the microphone request `take` made: a stream, or
+      null for a refusal or a failure. The take stops waiting either way.
+      True when the take may go on (takeIsLive), and then a stream becomes
+      the take's microphone. False otherwise, and then a stream is released
+      at once, every track ended, and the take is dropped. */
+  settle(take: SpokenTake<S, R>, stream: S | null, onScreen: ExerciseSession | null): boolean;
+  /** takeIsLive against the take on screen. */
+  isLive(take: SpokenTake<S, R>, onScreen: ExerciseSession | null): boolean;
+  /** Drop the take on screen, if any. */
+  dropCurrent(): void;
+  /** Drop every take opened and not yet dropped, and let go of the one on
+      screen: the page changing hands, a refused press, the screen going. */
+  dropAll(): void;
+}
+
+export function openSpokenTakes<S, R extends TakeRecording = TakeRecording>(
+  release: (stream: S) => void,
+): SpokenTakes<S, R> {
+  /* Every take opened and not yet dropped. With the rules below there is at
+     most one, the one on screen; dropAll still walks all of them, so a take
+     can never be left running because something forgot it. */
+  const open = new Set<SpokenTake<S, R>>();
+  let onDesk: SpokenTake<S, R> | null = null;
+  let waiting: SpokenTake<S, R> | null = null;
+
+  const drop = (take: SpokenTake<S, R>): void => {
+    open.delete(take);
+    if (waiting === take) waiting = null;
+    dropTake(take, release);
+  };
+
+  const desk: SpokenTakes<S, R> = {
+    current: () => onDesk,
+    starting: () => waiting !== null && !waiting.dropped,
+    begin(session) {
+      if (desk.starting()) return null;
+      if (onDesk) drop(onDesk);
+      const take = openTake<S, R>(session);
+      open.add(take);
+      onDesk = take;
+      waiting = take;
+      return take;
+    },
+    settle(take, stream, onScreen) {
+      if (waiting === take) waiting = null;
+      if (!takeIsLive(take, onDesk, onScreen)) {
+        if (stream) release(stream);
+        drop(take);
+        return false;
+      }
+      if (stream) take.stream = stream;
+      return true;
+    },
+    isLive: (take, onScreen) => takeIsLive(take, onDesk, onScreen),
+    dropCurrent() {
+      const take = onDesk;
+      onDesk = null;
+      if (take) drop(take);
+    },
+    dropAll() {
+      onDesk = null;
+      waiting = null;
+      for (const take of [...open]) drop(take);
+    },
+  };
+  return desk;
 }
 
 /** "Done for now", written into `owner`'s learner record: the student the

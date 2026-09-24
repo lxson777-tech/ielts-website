@@ -1,0 +1,78 @@
+{
+  "status": "completed",
+  "mode": "inspect",
+  "provider": "codex",
+  "roles": {
+    "host": "claude",
+    "builder": "claude",
+    "inspector": "codex"
+  },
+  "plan": "C:\\Users\\Alex\\AppData\\Local\\Temp\\claude\\C--Users-Alex-Desktop-Projects-IELTS-website--claude-worktrees-todays-tab-ai-tutor-rework-8af4cd\\3ca7e737-f4b7-4276-9ab8-0c65cd68240a\\scratchpad\\wt-codex-inspect-6\\docs\\personal-learning\\CODEX-FIX-ROUND-2.md",
+  "plan_sha256": "b35ac676a484ef32238d360218a4ff6e43d5122da8e933debbdaad720e3a3380",
+  "base": "c4a7793",
+  "requested_model": null,
+  "requested_effort": null,
+  "cli_version": "codex-cli 0.155.1",
+  "session_id": "01a0cf40-5ab4-70d3-bac8-f4207d120736",
+  "usage": {
+    "input_tokens": 3981557,
+    "cached_input_tokens": 3423360,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 6033,
+    "reasoning_output_tokens": 2736
+  },
+  "elapsed_seconds": 552.77,
+  "mcp_overrides": [
+    "-c",
+    "mcp_servers.node_repl.enabled=false",
+    "-c",
+    "mcp_servers.magic.enabled=false",
+    "-c",
+    "mcp_servers.cua_repl={command=\"cmd.exe\",args=[\"/c\",\"exit\"],enabled=false}"
+  ],
+  "excluded_from_prompt": [
+    ":(exclude)docs/audits/claude-review-2026-09-22",
+    ":(exclude)docs/audits/claude-review-2026-09-23",
+    ":(exclude)docs/personal-learning/evidence",
+    ":(exclude)tests/browser",
+    ":(exclude)src/data/reading-practice.ts",
+    ":(exclude)src/data/tests/ru",
+    ":(exclude)src/styles",
+    ":(exclude)src/data/generated",
+    ":(exclude)tools/build_reading_practice.py",
+    ":(exclude)docs/PERSONAL-LEARNING-IMPLEMENTATION.md"
+  ],
+  "inspected_commit": "defa6f1",
+  "snapshot_sha256": "c4cf47f9234d6ada7b91f94699fded47097d0b69ae26bb1a4f169755a6ba446e",
+  "response": {
+    "verdict": "REVISE",
+    "summary": "Two material defects remain: overlapping recording starts can leave microphone capture running after an account switch, and a delayed focused-writing evaluation can overwrite a newer draft.",
+    "findings": [
+      {
+        "id": "R2F-01",
+        "severity": "high",
+        "path": "src/components/learning/SpokenFocusedTask.tsx:234",
+        "evidence": "Press Start twice while microphone permission is pending. Each call replaces takeRef.current, but neither marks startup pending. Both returned streams pass takeIsLive because spoken-task-owner.ts checks the exercise session, not the current take's identity. Both recorders can start. An account switch or unmount stops only the last take, leaving the first capturing behind the cleared screen. The recorder's 90-second timeout stops recording but does not release microphone tracks.",
+        "fix": "Make startup single-flight with a synchronous pending guard. After every await, verify the exact take or generation is still current and release stale streams. Cancel the previous take before replacing it. Add a browser regression with two delayed microphone starts followed by an account switch, verifying every recorder stops and every track ends."
+      },
+      {
+        "id": "R2F-02",
+        "severity": "medium",
+        "path": "src/components/learning/WritingFocusedTask.tsx:504",
+        "evidence": "A submits text X, switches away and returns while evaluation is pending, then writes and autosaves revision Y. The late request still executes runOwnedGrade's keep step, including when the tutor response is discarded as owner-changed. record() calls withAttempt at lines 506 or 512. That helper unconditionally sets draft to attempt.text (written-focused-task.ts:1649), replacing Y with X. Reloading loses the newer revision. The off-screen branch likewise overwrites a revision saved from another tab.",
+        "fix": "Separate appending the submitted attempt from updating the editable draft. Preserve any newer draft or editing generation, including pending autosaves, while keeping X in attempt history. Add a regression that holds X's evaluation, switches away and back, autosaves Y, releases the evaluation, and verifies Y survives reload."
+      }
+    ],
+    "coverage": [
+      "Verified the plan SHA256; inspected checkout HEAD defa6f14826ccd28b99e84e4be072c87eca69e5c.",
+      "Reviewed changed ownership paths for authentication, paper sessions, mock legs, tutor requests and conversations, live-session cancellation, focused tasks, quizzes and vocabulary.",
+      "Traced related helpers beyond the manifest, including the microphone recorder, written-draft storage and withAttempt, account lifecycle, and learner-store ownership.",
+      "Reviewed relevant test source and selected host browser evidence, plus changed catalogue, generated-index, content, translation and presentation hunks."
+    ],
+    "limitations": [
+      "Static review only. No tests, builds, browser journeys, edits or delegation were performed; host-reported passing totals were not independently verified.",
+      "Large files, browser scripts and supporting documentation received targeted rather than exhaustive full-file inspection. Some tool output was truncated, so full manifest coverage is not claimed.",
+      "The two failure scenarios are established by source tracing, not runtime reproduction."
+    ]
+  }
+}
