@@ -142,7 +142,13 @@ npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
 npx wrangler secret put OPENAI_API_KEY
 ```
 
-## Admin access (owner only)
+## Admin access (owner only, applied to production on 2026-09-24)
+
+Applied through the Supabase connector as migration `20260924082154`
+(`admin_access_2026_09_24`) after Alex's approval, then re-checked on the
+live project and over the public API while signed out (all refused).
+The database's security advisor flags `is_admin` and `admin_list_users` as
+signed-in-callable definer functions: that is intended, the check is inside.
 
 `migrations/2026-09-24-admin.sql` adds the lock behind the `/admin` page.
 The page itself is a static file anyone could open; the data is what is
