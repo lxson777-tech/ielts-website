@@ -369,9 +369,9 @@ export default function Intake({ variant, onDone, onDefer }: IntakeProps) {
 
   const hardestPaperField = (
     <details className="intake-details" open={showHardest} onToggle={(e) => setShowHardest(e.currentTarget.open)}>
-      <summary>{t('Tell us which paper feels hardest')}</summary>
+      <summary>{t('Tell us which section feels hardest')}</summary>
       <CapsuleRadioGroup
-        legend={t('Which paper feels hardest right now?')}
+        legend={t('Which section feels hardest right now?')}
         name="intake-hardest-paper"
         value={hardestPaper}
         onChange={setHardestPaper}

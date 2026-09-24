@@ -38,8 +38,8 @@ export const strings: Record<string, string> = {
   'Which language should explanations be in?': 'На каком языке объяснять материал?',
   'Lessons, questions, passages and model answers always stay in English. This only changes the language Mr EZ explains things in.':
     'Уроки, задания, тексты и образцы ответов всегда остаются на английском. Это меняет только язык объяснений Mr EZ.',
-  'Tell us which paper feels hardest': 'Скажите, какой раздел кажется самым сложным',
-  'Which paper feels hardest right now?': 'Какой раздел сейчас кажется самым сложным?',
+  'Tell us which section feels hardest': 'Скажите, какой раздел кажется самым сложным',
+  'Which section feels hardest right now?': 'Какой раздел сейчас кажется самым сложным?',
   'A guess is fine. This is just a starting hint, real results replace it fast.':
     'Можно ответить примерно. Это лишь первая подсказка, реальные результаты быстро её заменят.',
   'Add a recent score, if you have one': 'Добавить недавний результат, если он у вас есть',
