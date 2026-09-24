@@ -58,6 +58,50 @@ export const strings: Record<string, string> = {
   'Answer later': 'Ответить позже',
   'Your changes are saved.': 'Ваши изменения сохранены.',
 
+  /* The redo of 24 September 2026: one question per screen, study days with
+     "every other day", the site's own calendar, and the summary before
+     saving. 'Study days', 'Change', 'Today', 'Close' and 'Exam date' already
+     have a Russian entry elsewhere with this wording and are reused. */
+  'Question {n} of {total}': 'Вопрос {n} из {total}',
+  'Last step: check your answers': 'Последний шаг: проверьте ответы',
+  'Back to summary': 'К итогам',
+  Optional: 'Необязательно',
+  'Pick the day of your test. You can change it later in plan settings.':
+    'Выберите день экзамена. Его можно изменить позже в настройках плана.',
+  'Choose a date': 'Выберите дату',
+  'Every other day': 'Через день',
+  'Custom days': 'Свои дни',
+  Weekdays: 'По будням',
+  'Choose my days': 'Выбрать дни',
+  'Seven days a week': 'Семь дней в неделю',
+  'Study today, rest tomorrow, and so on': 'Сегодня занятие, завтра отдых, и так далее',
+  'Counting from {date}': 'Считая с {date}',
+  'Monday to Friday': 'С понедельника по пятницу',
+  'Pick the days that suit you': 'Отметьте удобные вам дни',
+  'Your study days': 'Ваши дни занятий',
+  'Choose at least one day.': 'Выберите хотя бы один день.',
+  'Here is your plan': 'Ваш план',
+  'Band {band} by {date}': 'Балл {band} к {date}',
+  'Band {band}, no exam date yet': 'Балл {band}, даты экзамена пока нет',
+  'Exam on {date}': 'Экзамен {date}',
+  'every day': 'каждый день',
+  'every other day': 'через день',
+  'on weekdays': 'по будням',
+  'on {days}': 'по дням: {days}',
+  '{minutes} minutes a day': '{minutes} минут в день',
+  Target: 'Цель',
+  'Not chosen yet': 'Пока не выбрано',
+  'No date yet': 'Даты пока нет',
+  'Every other day, starting {date}': 'Через день, начиная с {date}',
+  'Time each day': 'Время в день',
+  'Explanations in': 'Язык объяснений',
+  'Hardest section': 'Самый сложный раздел',
+
+  /* src/components/plan/DatePicker.tsx */
+  'Previous month': 'Предыдущий месяц',
+  'Next month': 'Следующий месяц',
+  'Go to today': 'К сегодняшнему дню',
+
   /* src/lib/plan/summary.ts, planOutcome() */
   'Your exam date has passed. Set a new date, or a new goal, to bring the plan back on track.':
     'Дата вашего экзамена уже прошла. Задайте новую дату или новую цель, чтобы вернуть план в нужное русло.',
@@ -81,6 +125,13 @@ export const strings: Record<string, string> = {
 };
 
 export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {
+  /* The date picker's field: how far away the chosen exam date is. */
+  'In {n} days': {
+    one: 'Через {n} день',
+    few: 'Через {n} дня',
+    many: 'Через {n} дней',
+    other: 'Через {n} дня',
+  },
   /* Keyed by the English "other" form exactly as written at the call site
      (docs/I18N-GUIDE.md), not the singular. The collapsed disclosure over
      the milestones the planner dropped, in src/components/learning/intake/ui.tsx. */

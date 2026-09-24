@@ -4,63 +4,128 @@
    Reuses the tokens `src/styles/workspace-redesign.css` defines on
    `.workspace-v2` (--color-surface, --color-ink, --color-ink-muted,
    --color-border, --color-brand, --color-brand-tint, --shadow-card) and the
-   site's own --radius-card / --radius-button / --font-display-ui from
-   global.css, rather than any new hex value: the intake should look like it
-   was always part of this workspace, not a bolted-on form. Capsule shapes
-   (999px) match the existing tab/pill language (.ws-tab, .plan-start).
+   site's own --radius-card / --radius-button / --font-display-ui /
+   --ease-out-expo from global.css, rather than any new hex value: the intake
+   should look like it was always part of this workspace, not a bolted-on
+   form. Capsule shapes (999px) match the existing tab/pill language.
 
-   Reduced motion: workspace-redesign.css's blanket `.workspace-v2 * {
-   transition-duration: .01ms !important }` rule covers the first-visit
-   variant, which renders inside the workspace. The settings variant does
-   NOT: /plan-settings is an ordinary platform page, outside `.workspace-v2`,
-   so the same motion is stopped again for `.intake` itself at the foot of
-   this file. */
+   Redone 24 September 2026 ("make it feel more smooth"): one question per
+   screen, a progress line, a fade-and-slide between screens, larger choices
+   with a clear selected state, and the site's own calendar
+   (src/styles/date-picker.css) instead of the browser's date input.
+
+   Reduced motion: workspace-redesign.css's blanket rule covers the
+   first-visit variant, which renders inside the workspace. The settings
+   variant does NOT: /plan-settings is an ordinary platform page, outside
+   `.workspace-v2`, so the motion is stopped again for `.intake` itself at
+   the foot of this file, animations included. */
 
 .intake {
-  max-width: 640px;
+  max-width: 680px;
+  --intake-ease: var(--ease-out-expo, cubic-bezier(0.22, 1, 0.36, 1));
 }
 .intake-settings {
   max-width: 720px;
 }
 
-/* ── One question at a time (first-visit) ─────────────────────────────── */
+/* ── One question per screen (first-visit) ────────────────────────────
+   The step no longer draws a card of its own: on Today it already sits
+   inside the intake card, and a card inside a card read as clutter. What
+   moves is the stage: the outgoing question fades and drifts the way it is
+   going, the incoming one arrives from the other side. Transform and
+   opacity only. */
 
-.intake-progress {
+.intake-progress-wrap {
   display: flex;
-  gap: 6px;
-  margin-bottom: 22px;
+  align-items: center;
+  gap: 14px;
+  margin: 8px 0 28px;
 }
-.intake-progress span {
+.intake-progress-track {
+  position: relative;
+  flex: 1 1 auto;
   height: 4px;
-  flex: 1 1 0;
+  overflow: hidden;
   border-radius: 999px;
   background: var(--color-border);
-  transition: background 200ms ease;
 }
-.intake-progress span.is-done,
-.intake-progress span.is-current {
-  background: var(--color-brand);
+.intake-progress-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--color-ink);
+  transform-origin: left center;
+  transition: transform 520ms var(--intake-ease);
 }
-.intake-progress span.is-current {
-  opacity: 0.55;
+.intake-progress-label {
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--color-ink-muted);
+  font-variant-numeric: tabular-nums;
 }
 
-.intake-step {
-  padding: 28px 26px 24px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-card, 16px);
-  box-shadow: var(--shadow-card);
-  animation: intake-step-in 260ms ease;
+.intake-stage {
+  min-height: 250px;
+  /* backwards, not both: a finished animation held with `both` keeps an
+     identity transform on the stage, and any transform makes it the frame
+     for position: fixed, which trapped the phone calendar sheet inside the
+     card instead of pinning it to the bottom of the screen. */
+  animation: intake-in-forward 340ms var(--intake-ease) backwards;
 }
-@keyframes intake-step-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+.intake-stage.is-back {
+  animation-name: intake-in-back;
+}
+.intake-stage.is-leaving {
+  animation: intake-out-forward 150ms ease-in both;
+  pointer-events: none;
+}
+.intake-stage.is-back.is-leaving {
+  animation-name: intake-out-back;
+}
+@keyframes intake-in-forward {
+  from { opacity: 0; transform: translateX(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes intake-in-back {
+  from { opacity: 0; transform: translateX(-14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes intake-out-forward {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateX(-10px); }
+}
+@keyframes intake-out-back {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateX(10px); }
+}
+
+.intake-step-heading {
+  margin: 0 0 4px;
+  outline: none;
+}
+.intake-step-heading:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+.intake-optional {
+  display: inline-block;
+  margin: 2px 0 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--color-surface-alt);
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--color-ink-muted);
 }
 
 /* ── Questions and fields ─────────────────────────────────────────────── */
 
 .intake-field {
+  min-width: 0;
   border: 0;
   padding: 0;
   margin: 0 0 22px;
@@ -71,158 +136,279 @@
 .intake-question {
   padding: 0;
   font-family: var(--font-display-ui);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
   color: var(--color-ink);
 }
 .intake-question-small {
   font-size: 15px;
   font-weight: 600;
-  margin: 0 0 10px;
+  letter-spacing: 0;
+  margin: 0 0 12px;
 }
 .intake-helper {
-  margin: 8px 0 14px;
-  font-size: 13px;
-  line-height: 1.7;
+  margin: 8px 0 0;
+  max-width: 56ch;
+  font-size: 13.5px;
+  line-height: 1.65;
   color: var(--color-ink-muted);
 }
+.intake-helper-tight {
+  margin-top: 10px;
+}
 
-/* ── Capsule radio group ───────────────────────────────────────────────── */
+/* ── Choices: pills and cards ─────────────────────────────────────────
+   Two shapes, one behaviour. Pills for short labels in a row (bands,
+   languages, sections); cards, a two-column grid, for options that carry a
+   line of explanation (study days, daily time). Both are real radios.
+
+   Chosen is a FILLED FOREST INK shape with warm white text: the approved
+   selected state for this design (DESIGN.md, "Active tabs use forest ink
+   with warm white text"). It used to be the brand tint, which a tester on
+   22 September 2026 read as an error state. A small tick eases in beside
+   the chosen label, so the choice reads without relying on colour. */
 
 .intake-capsule-row {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 10px;
+  margin-top: 18px;
+}
+.intake-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+.intake-card-grid.is-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .intake-capsule {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  padding: 11px 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 20px;
   border: 1px solid var(--color-border);
   border-radius: 999px;
   background: var(--color-surface);
   cursor: pointer;
-  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 240ms var(--intake-ease),
+    transform 240ms var(--intake-ease);
+}
+.intake-choice-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-height: 78px;
+  padding: 16px 18px;
+  border-radius: 16px;
 }
 .intake-capsule:hover {
-  border-color: var(--color-ink);
-  background: var(--color-surface-alt);
+  border-color: color-mix(in srgb, var(--color-ink) 50%, var(--color-border));
+  box-shadow: 0 10px 22px -16px rgb(38 60 53 / 50%);
+  transform: translateY(-1px);
+}
+.intake-capsule:active {
+  transform: translateY(0) scale(0.985);
 }
 .intake-capsule input {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   margin: 0;
   opacity: 0;
   cursor: pointer;
 }
-/* Chosen is a FILLED FOREST INK capsule with warm white text: the approved
-   selected state for this design (DESIGN.md, "Active tabs use forest ink
-   with warm white text"), already used by .ws-tab.is-active, .today-active
-   and .intake-button-primary just below.
-
-   It used to be the brand tint (--color-brand-tint, a pale salmon, with
-   rust --color-brand-hover text). A tester on 22 September 2026 read the
-   selected capsules on plan settings as an error state, which is exactly
-   what a red-family fill says. The brand stays the brand; it is just not
-   what "you picked this" looks like. */
+.intake-capsule-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
 .intake-capsule:has(input:checked) {
   border-color: var(--color-ink);
   background: var(--color-ink);
+  box-shadow: 0 12px 24px -16px rgb(38 60 53 / 70%);
 }
-/* The focus ring stays the brand colour, as it is on every other control in
-   this file and across the site. A ring is not a selected state. */
+/* The focus ring stays the brand colour, as on every other control on the
+   site. A ring is not a selected state. */
 .intake-capsule:has(input:focus-visible) {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
 }
 .intake-capsule-label {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 650;
+  line-height: 1.3;
   color: var(--color-ink);
-  /* The label flips to warm white when the capsule fills, so it eases with
-     the fill rather than snapping a beat ahead of it. */
-  transition: color 160ms ease;
+  transition: color 180ms ease;
 }
 .intake-capsule:has(input:checked) .intake-capsule-label {
   color: var(--color-surface);
 }
 .intake-capsule-hint {
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 500;
+  line-height: 1.45;
   color: var(--color-ink-muted);
-  transition: color 160ms ease;
+  transition: color 180ms ease;
 }
-/* The hint on a filled capsule ("Your teacher's recommendation"): warm white
-   pulled back towards the ink rather than a new grey. About 8:1 on the ink
-   fill, well above AA for small text. */
+/* About 8:1 on the ink fill, well above AA for small text. */
 .intake-capsule:has(input:checked) .intake-capsule-hint {
   color: color-mix(in srgb, var(--color-surface) 78%, var(--color-ink));
 }
+.intake-capsule-check {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 0;
+  height: 20px;
+  margin-left: -10px;
+  overflow: hidden;
+  border-radius: 999px;
+  color: var(--color-ink);
+  background: var(--color-surface);
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    opacity 200ms ease,
+    transform 280ms var(--intake-ease),
+    width 280ms var(--intake-ease),
+    margin 280ms var(--intake-ease);
+}
+.intake-capsule:has(input:checked) .intake-capsule-check {
+  width: 20px;
+  margin-left: 0;
+  opacity: 1;
+  transform: scale(1);
+}
+.intake-choice-card .intake-capsule-check {
+  margin-left: 0;
+}
 
-/* ── Native selects and date inputs, styled to match ──────────────────── */
+/* "Choose my days": seven round day toggles. */
+.intake-weekdays {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  animation: intake-reveal 280ms var(--intake-ease) both;
+}
+.intake-weekday {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 220ms var(--intake-ease);
+}
+.intake-weekday:hover {
+  border-color: color-mix(in srgb, var(--color-ink) 50%, var(--color-border));
+  transform: translateY(-1px);
+}
+.intake-weekday.is-on {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-surface);
+}
+.intake-weekday:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+@keyframes intake-reveal {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ── Native selects, styled to match ──────────────────────────────────── */
 
 .intake-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 .intake-grid-cell label,
 .intake-selfreport-row label,
-.intake-date-row label {
+.intake-selfreport-label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   font-size: 12px;
   font-weight: 600;
   color: var(--color-ink-muted);
 }
-.intake select,
-.intake input[type='date'] {
+.intake select {
   width: 100%;
+  min-height: 46px;
   padding: 10px 12px;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-button, 10px);
+  border-radius: 12px;
   background: var(--color-surface);
   font-size: 14px;
   font-weight: 600;
   color: var(--color-ink);
+  transition: border-color 180ms ease;
 }
-.intake select:focus-visible,
-.intake input[type='date']:focus-visible {
+.intake select:hover {
+  border-color: color-mix(in srgb, var(--color-ink) 45%, var(--color-border));
+}
+.intake select:focus-visible {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
 }
+
+/* ── The exam date ────────────────────────────────────────────────────── */
 
 .intake-date-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
-  margin-top: 10px;
+  margin-top: 18px;
 }
-.intake-date-row input[type='date'] {
-  width: auto;
-  min-width: 180px;
+.intake-date-row .dp {
+  flex: 1 1 280px;
+  max-width: 400px;
 }
 .intake-toggle-button {
-  padding: 9px 16px;
+  min-height: 48px;
+  padding: 11px 18px;
   border: 1px solid var(--color-border);
   border-radius: 999px;
   background: var(--color-surface);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 650;
   color: var(--color-ink-muted);
   cursor: pointer;
-  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 220ms var(--intake-ease);
 }
-/* "I do not have a date yet" is a capsule and a selected state too, on the
-   same screen, so it gets the same filled ink treatment rather than the old
-   salmon tint. */
+.intake-toggle-button:hover {
+  border-color: color-mix(in srgb, var(--color-ink) 50%, var(--color-border));
+  color: var(--color-ink);
+  transform: translateY(-1px);
+}
+/* "I do not have a date yet" is a selected state on the same screen, so it
+   gets the same filled ink treatment as a chosen capsule. */
 .intake-toggle-button.is-active {
   border-color: var(--color-ink);
   background: var(--color-ink);
@@ -236,38 +422,61 @@
 /* ── Progressive disclosure (<details>) ───────────────────────────────── */
 
 .intake-details {
-  margin: 18px 0 0;
-  padding-top: 16px;
+  margin: 22px 0 0;
+  padding-top: 18px;
   border-top: 1px solid var(--color-border);
 }
 .intake-details summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 650;
-  color: var(--color-brand);
+  color: var(--color-ink);
   list-style: none;
+  border-radius: 6px;
 }
 .intake-details summary::-webkit-details-marker {
   display: none;
 }
 .intake-details summary::before {
-  content: '+ ';
+  content: '';
+  width: 7px;
+  height: 7px;
+  margin: 0 4px 0 2px;
+  border-right: 1.7px solid currentColor;
+  border-bottom: 1.7px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 240ms var(--intake-ease);
 }
 .intake-details[open] summary::before {
-  content: '\2212 '; /* minus sign */
+  transform: rotate(45deg);
 }
-.intake-details[open] summary {
-  margin-bottom: 4px;
+.intake-details summary:hover {
+  color: var(--color-brand-hover);
+}
+.intake-details summary:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
+}
+.intake-details[open] > *:not(summary) {
+  animation: intake-reveal 260ms var(--intake-ease) both;
 }
 
 /* ── Availability confirmation ─────────────────────────────────────────── */
 
 .intake-confirm {
-  margin-top: 16px;
-  padding: 16px 18px;
-  border: 1px dashed var(--color-border);
-  border-radius: 14px;
+  margin-top: 18px;
+  padding: 18px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
   background: var(--color-surface-alt);
+  transition: border-color 200ms ease, background-color 200ms ease;
+}
+.intake-confirm.is-confirmed {
+  border-color: color-mix(in srgb, var(--color-ink) 35%, var(--color-border));
 }
 .intake-confirm-actions {
   display: flex;
@@ -281,26 +490,46 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 26px;
+  margin-top: 30px;
+}
+.intake-actions-spacer {
+  flex: 1 1 auto;
 }
 .intake-button {
-  padding: 12px 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 46px;
+  padding: 12px 24px;
   border-radius: 999px;
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 240ms var(--intake-ease),
+    transform 240ms var(--intake-ease),
+    opacity 180ms ease;
 }
 .intake-button-primary {
+  min-width: 132px;
   border: 1px solid var(--color-ink);
   background: var(--color-ink);
   color: var(--color-surface);
 }
-.intake-button-primary:hover {
+.intake-button-primary:hover:not(:disabled) {
   background: #172b24;
+  box-shadow: 0 12px 24px -14px rgb(38 60 53 / 70%);
+  transform: translateY(-1px);
+}
+.intake-button-primary:active:not(:disabled) {
+  transform: translateY(0);
 }
 .intake-button-primary:disabled {
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 .intake-button-secondary {
@@ -310,7 +539,6 @@
 }
 .intake-button-secondary:hover {
   border-color: var(--color-ink);
-  background: var(--color-surface-alt);
   color: var(--color-ink);
 }
 /* Declared after :hover on purpose: both are two classes deep, so source
@@ -325,11 +553,14 @@
   cursor: not-allowed;
 }
 .intake-button-ghost {
+  padding-left: 14px;
+  padding-right: 16px;
   border: 1px solid transparent;
   background: transparent;
   color: var(--color-ink-muted);
 }
 .intake-button-ghost:hover {
+  background: var(--color-surface-alt);
   color: var(--color-ink);
 }
 .intake-button:focus-visible {
@@ -338,21 +569,87 @@
 }
 .intake-link-defer {
   display: block;
-  margin: 18px auto 0;
-  padding: 4px;
+  margin: 20px auto 0;
+  padding: 6px 10px;
   border: 0;
   background: none;
   font-size: 13px;
   font-weight: 600;
   color: var(--color-ink-muted);
   text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  text-underline-offset: 4px;
   cursor: pointer;
+  transition: color 180ms ease, text-decoration-color 180ms ease;
 }
 .intake-link-defer:hover {
   color: var(--color-ink);
+  text-decoration-color: currentColor;
 }
 .intake-link-defer:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ── The summary before saving ─────────────────────────────────────────── */
+
+.intake-review-headline {
+  margin: 10px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--color-ink);
+}
+.intake-review-list {
+  margin: 20px 0 0;
+  padding: 4px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  background: var(--color-surface-alt);
+}
+.intake-review-row {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.8fr) minmax(0, 2fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-top: 1px solid var(--color-border);
+}
+.intake-review-row:first-child {
+  border-top: 0;
+}
+.intake-review-row dt {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+}
+.intake-review-row dd {
+  margin: 0;
+  min-width: 0;
+  font-size: 14.5px;
+  font-weight: 650;
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+.intake-review-change {
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+.intake-review-change:hover {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+.intake-review-change:focus-visible {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
 }
@@ -362,7 +659,7 @@
 .intake-outcome {
   margin-bottom: 22px;
   padding: 16px 18px;
-  border-radius: 14px;
+  border-radius: 16px;
   border: 1px solid var(--color-border);
   background: var(--color-surface-alt);
 }
@@ -419,8 +716,7 @@
 }
 
 /* What had to be dropped: real, but secondary, so it is one closed line
-   until the student asks for it. Same disclosure language as
-   .intake-details above, kept local to the panel. */
+   until the student asks for it. */
 .intake-outcome-dropped {
   margin-top: 12px;
 }
@@ -462,11 +758,32 @@
   font-weight: 650;
   color: var(--color-brand-hover);
 }
+.intake-status-saved {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: var(--color-ink);
+}
+.intake-status-tick {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--color-ink);
+  color: var(--color-surface);
+  animation: intake-pop 420ms var(--intake-ease) both;
+}
+@keyframes intake-pop {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
 
 /* ── Self-reported score ───────────────────────────────────────────────── */
 
 .intake-selfreport-list {
-  margin: 0 0 14px;
+  margin: 12px 0 14px;
   padding-left: 18px;
   font-size: 13px;
   line-height: 1.8;
@@ -478,10 +795,14 @@
   flex-wrap: wrap;
   align-items: end;
   gap: 12px;
+  margin-top: 12px;
 }
 .intake-selfreport-row > div {
   min-width: 130px;
   flex: 1 1 130px;
+}
+.intake-selfreport-row > .intake-selfreport-date {
+  flex: 2 1 240px;
 }
 .intake-selfreport-row .intake-button {
   flex: 0 0 auto;
@@ -490,25 +811,102 @@
 /* ── Settings variant: everything stacked ─────────────────────────────── */
 
 .intake-form .intake-field,
-.intake-form .intake-details {
-  margin-bottom: 24px;
+.intake-form .intake-details,
+.intake-form .intake-field-group {
+  margin-bottom: 30px;
+}
+.intake-form .intake-question {
+  font-size: 20px;
+}
+.intake-form .intake-question-small {
+  font-size: 15px;
 }
 
+/* On the plan settings page, src/styles/study-surfaces.css draws a line
+   under every .intake-field. A question made of two parts (the days and the
+   day picker, the minutes and the "can you really" check) is one block
+   there, so only the outer block draws its line, and a disclosure right
+   after a question does not draw a second one of its own. */
+.workspace-v2 .settings-page .intake-field .intake-field,
+.workspace-v2 .settings-page .intake-details .intake-field {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+/* study-surfaces.css sizes every settings-page question at 21px; the
+   "can you really" check is a sub-question and stays small. */
+.workspace-v2 .settings-page .intake-question.intake-question-small {
+  font-size: 15px;
+}
+.workspace-v2 .settings-page .intake-field + .intake-details {
+  margin-top: -6px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* ── Phone ─────────────────────────────────────────────────────────────── */
+
 @media (max-width: 719px) {
-  .intake-step {
-    padding: 22px 18px 20px;
-  }
   .intake-question {
-    font-size: 19px;
+    font-size: 21px;
   }
-  .intake-grid {
-    grid-template-columns: 1fr 1fr;
+  .intake-stage {
+    min-height: 0;
   }
   .intake-selfreport-row > div {
     flex-basis: 100%;
   }
   .intake-actions {
     flex-wrap: wrap;
+  }
+}
+@media (max-width: 560px) {
+  .intake-card-grid,
+  .intake-card-grid.is-three {
+    grid-template-columns: 1fr;
+  }
+  .intake-choice-card {
+    min-height: 64px;
+  }
+  .intake-capsule-row .intake-capsule {
+    flex: 1 1 calc(50% - 5px);
+    justify-content: center;
+  }
+  .intake-date-row .dp {
+    max-width: none;
+  }
+  .intake-toggle-button {
+    width: 100%;
+  }
+  .intake-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .intake-weekday {
+    width: auto;
+    height: 44px;
+  }
+  .intake-review-list {
+    padding: 2px 16px;
+  }
+  .intake-review-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2px 10px;
+  }
+  .intake-review-row dt {
+    grid-column: 1;
+  }
+  .intake-review-row dd {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .intake-review-change {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  .intake-button-primary {
+    flex: 1 1 auto;
   }
 }
 @media (max-width: 400px) {
@@ -520,15 +918,19 @@
 /* ── Reduced motion ───────────────────────────────────────────────────── */
 
 /* The intake on /plan-settings sits outside `.workspace-v2`, so the
-   workspace's blanket rule never reaches it. Same effect, stated locally:
-   the step card stops sliding in and every hover or selection change lands
-   at once instead of easing. */
+   workspace's blanket rule never reaches it. Same effect, stated locally
+   for both variants: no slide between screens, no reveal, and every hover
+   or selection change lands at once instead of easing. */
 @media (prefers-reduced-motion: reduce) {
-  .intake-step {
-    animation: none;
-  }
   .intake *,
   .intake {
+    animation: none !important;
     transition-duration: 0.01ms !important;
+  }
+  .intake-capsule:hover,
+  .intake-weekday:hover,
+  .intake-toggle-button:hover,
+  .intake-button-primary:hover:not(:disabled) {
+    transform: none;
   }
 }

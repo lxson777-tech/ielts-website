@@ -1,9 +1,9 @@
 /* Small presentational pieces shared by both Intake variants: a real,
-   keyboard-operable radio group styled as capsules, the one-question-at-a-
-   time step shell for first-visit, and the honest outcome panel. Nothing
+   keyboard-operable radio group styled as capsules or cards, the calm
+   progress line for first-visit, and the honest outcome panel. Nothing
    here reads storage or the plan API — Intake.tsx hands in everything. */
 
-import type { ReactNode } from 'react';
+import { useRef } from 'react';
 import { useT } from '../../../lib/i18n/react';
 import type { PlanStatus } from '../../../lib/learning/contracts/plan';
 import ScopeNote from '../ScopeNote';
@@ -23,9 +23,22 @@ interface CapsuleRadioGroupProps<T extends string> {
   onChange: (value: T) => void;
   /** One line under the question, above the options. */
   helper?: string;
+  /** When the question is already a visible heading (one question per
+      screen), the id of that heading: the group is labelled by it and no
+      second, duplicate legend is drawn. */
+  labelledBy?: string;
+  /** Called after the student picks an option WITH A POINTER (mouse, touch
+      or pen), never for arrow keys. Arrow keys move through a radio group
+      one option at a time, so advancing on them would skip the student
+      past the question on their first key press; keyboard users go on
+      with Enter or the Next button instead. */
+  onPick?: (value: T) => void;
+  /** 'pills' for short labels in a row (bands, languages); 'cards' for
+      options with a hint underneath, laid out as a two-column grid. */
+  layout?: 'pills' | 'cards';
 }
 
-/** A real `<fieldset><legend>` of native radio inputs, visually capsules.
+/** A real `<fieldset>` of native radio inputs, visually capsules or cards.
     Native radios give arrow-key navigation and a single Tab stop for free,
     so nothing here reaches for a custom `role="radiogroup"`. */
 export function CapsuleRadioGroup<T extends string>({
@@ -35,23 +48,64 @@ export function CapsuleRadioGroup<T extends string>({
   value,
   onChange,
   helper,
+  labelledBy,
+  onPick,
+  layout = 'pills',
 }: CapsuleRadioGroupProps<T>) {
+  /* A pointer press on an option, remembered for the click that follows it.
+     `event.detail` alone is not enough: a click forwarded from a <label>
+     can report 0 in some browsers even though a finger caused it. */
+  const pointerAt = useRef(0);
+  const helperId = helper ? `${name}-helper` : undefined;
   return (
-    <fieldset className="intake-field">
-      <legend className="intake-question">{legend}</legend>
-      {helper && <p className="intake-helper">{helper}</p>}
-      <div className="intake-capsule-row" role="presentation">
+    <fieldset
+      className={`intake-field intake-field-${layout}`}
+      aria-labelledby={labelledBy}
+      aria-describedby={helperId}
+    >
+      {!labelledBy && <legend className="intake-question">{legend}</legend>}
+      {helper && (
+        <p className="intake-helper" id={helperId}>
+          {helper}
+        </p>
+      )}
+      <div
+        className={
+          layout === 'cards'
+            ? `intake-card-grid${options.length === 3 ? ' is-three' : ''}`
+            : 'intake-capsule-row'
+        }
+        role="presentation"
+      >
         {options.map((option) => (
-          <label key={option.value} className="intake-capsule">
+          <label
+            key={option.value}
+            className={layout === 'cards' ? 'intake-capsule intake-choice-card' : 'intake-capsule'}
+            onPointerDown={() => {
+              pointerAt.current = Date.now();
+            }}
+          >
             <input
               type="radio"
               name={name}
               value={option.value}
               checked={value === option.value}
               onChange={() => onChange(option.value)}
+              onClick={(event) => {
+                const byPointer = event.detail > 0 || Date.now() - pointerAt.current < 1000;
+                pointerAt.current = 0;
+                if (byPointer) onPick?.(option.value);
+              }}
             />
-            <span className="intake-capsule-label">{option.label}</span>
-            {option.hint && <span className="intake-capsule-hint">{option.hint}</span>}
+            <span className="intake-capsule-text">
+              <span className="intake-capsule-label">{option.label}</span>
+              {option.hint && <span className="intake-capsule-hint">{option.hint}</span>}
+            </span>
+            <span className="intake-capsule-check" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="14" height="14" focusable="false">
+                <path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
           </label>
         ))}
       </div>
@@ -59,33 +113,27 @@ export function CapsuleRadioGroup<T extends string>({
   );
 }
 
-export function StepShell({
-  step,
-  total,
-  children,
-}: {
-  step: number;
-  total: number;
-  children: ReactNode;
-}) {
+/** A calm progress line for the one-question-at-a-time flow: a thin track
+    that fills smoothly, and the step in words for everyone who cannot see
+    the bar. */
+export function IntakeProgress({ step, total, label }: { step: number; total: number; label: string }) {
+  const pct = Math.max(0, Math.min(1, step / total)) * 100;
   return (
-    <div className="intake-step">
+    <div className="intake-progress-wrap">
       <div
-        className="intake-progress"
+        className="intake-progress-track"
         role="progressbar"
         aria-valuenow={step}
         aria-valuemin={1}
         aria-valuemax={total}
-        aria-label={`Step ${step} of ${total}`}
+        aria-valuetext={label}
+        aria-label={label}
       >
-        {Array.from({ length: total }).map((_, index) => (
-          <span
-            key={index}
-            className={index < step ? 'is-done' : index === step - 1 ? 'is-current' : ''}
-          />
-        ))}
+        <span className="intake-progress-fill" style={{ transform: `scaleX(${pct / 100})` }} />
       </div>
-      {children}
+      <span className="intake-progress-label" aria-hidden="true">
+        {label}
+      </span>
     </div>
   );
 }
