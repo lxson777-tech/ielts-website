@@ -16,7 +16,7 @@ import {
   getBestSpeakingBand,
   getProgress,
 } from '../lib/progress';
-import { loadStudyPlan, onStudyPlanChange, daysUntilTest, type SavedPlan } from '../lib/study-plan';
+import { loadStudyPlan, onStudyPlanChange, daysUntilTest, confirmedTargetBand, type SavedPlan } from '../lib/study-plan';
 import { buildCourse, courseStatus, type CourseStatus } from '../lib/course';
 import { ensureLearningWired } from '../lib/learning';
 import { useT } from '../lib/i18n/react';
@@ -156,7 +156,7 @@ export default function AccountOverview() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="min-w-0">
               <p className="font-display font-bold">
-                {t('Course · Band {band}', { band: plan.targetBand })}
+                {confirmedTargetBand(plan) ? t('Course · Band {band}', { band: confirmedTargetBand(plan)! }) : t('Not set yet')}
                 {days !== null && (
                   <span className="ml-2 font-normal text-ink-muted">
                     {tn(days, { one: '{n} day to go', other: '{n} days to go' })}

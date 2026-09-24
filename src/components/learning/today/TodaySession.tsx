@@ -247,7 +247,7 @@ export default function TodaySession() {
             {t("Let's set your goal")}
           </h2>
           <p className="today-intake-sub">
-            {t('One short question set makes every suggestion here specific to you instead of generic.')}
+            {t('A few choices to make your plan yours.')}
           </p>
           <Intake variant="first-visit" onDone={handleIntakeDone} onDefer={handleIntakeDefer} />
         </section>
@@ -398,6 +398,19 @@ function ActiveSessionCard({
         </h2>
       </header>
 
+      <p className="today-budget">
+        {t('About {n} minutes today.', { n: session.budgetMinutes })}
+        {session.regularDailyMinutes !== session.budgetMinutes && (
+          <span className="today-budget-note"> {t('Your regular day is {n} minutes.', { n: session.regularDailyMinutes })}</span>
+        )}
+      </p>
+
+      {current && (
+        <a className="today-start" href={withBase(current.href ?? '/dashboard')} onClick={startClick}>
+          {action === 'start' ? t('Start') : t('Continue')}
+        </a>
+      )}
+
       {!session.confirmed && (
         <p className="today-provisional-note">
           {t('Your plan is provisional until you set a goal.')}{' '}
@@ -413,13 +426,8 @@ function ActiveSessionCard({
 
       <ScopeNote note={session.scopeNote} />
 
-      <p className="today-budget">
-        {t('About {n} minutes today.', { n: session.budgetMinutes })}
-        {session.regularDailyMinutes !== session.budgetMinutes && (
-          <span className="today-budget-note"> {t('Your regular day is {n} minutes.', { n: session.regularDailyMinutes })}</span>
-        )}
-      </p>
-
+      <details className="today-agenda-details">
+        <summary>{t('Today’s activities')}</summary>
       <ol className="today-steps">
         {session.steps.map((step) => (
           <StepRow
@@ -430,12 +438,9 @@ function ActiveSessionCard({
           />
         ))}
       </ol>
+      </details>
 
-      {current && (
-        <a className="today-start" href={withBase(current.href ?? '/dashboard')} onClick={startClick}>
-          {action === 'start' ? t('Start') : t('Continue')}
-        </a>
-      )}
+
 
       {longerCommitment && (
         <div className="today-longer">

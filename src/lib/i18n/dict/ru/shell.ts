@@ -14,6 +14,14 @@
    See docs/I18N-GUIDE.md for the style rules and the glossary. */
 
 export const strings: Record<string, string> = {
+  'Today’s activities': 'Задания на сегодня',
+  'A few choices to make your plan yours.': 'Несколько вопросов для вашего плана.',
+  'Your own minimum per paper is shown where you set one. Papers without one have no target until you choose an overall band in Course settings.': 'Для каждого раздела показан выбранный вами минимум. Если минимум не задан, цель появится после выбора общего балла в настройках курса.',
+  'Your progress starts here.': 'Здесь появится ваш прогресс.',
+  'Complete a lesson or a practice task to start building your record. Your results and next steps will appear here.': 'Пройдите урок или выполните задание, чтобы начать. Здесь появятся ваши результаты и следующие шаги.',
+  'Go to today’s plan': 'Перейти к плану на сегодня',
+
+  'Show more lessons': 'Показать ещё уроки',
   'Reading': 'Чтение',
   'Listening': 'Аудирование',
   'Writing': 'Письмо',

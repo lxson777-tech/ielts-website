@@ -1,140 +1,122 @@
-/* The rolling schedule on /start ("Your route", rendered inside Course.tsx).
-   Since 2026-09-22 this reads the plan's own rolling schedule
-   (`PersonalPlanV1.schedule`, about a week, today first) instead of the old
-   fixed eight-week calendar `getWeekPlan()` used to build from
-   src/lib/plan/schedule.ts. There is no "previous/next week" strip any
-   more: the plan only ever carries the near week ahead (architecture
-   section 2.5, SCHEDULE_HORIZON_DAYS), and further-out plans are milestones,
-   not a calendar nobody could keep.
+/* The rolling schedule on /start ("Your route", rendered inside Course.tsx):
+   a seven-day selector and the selected day's agenda (Codex's design,
+   platform audit 2026-09-23, replacing the seven truncated columns).
 
-   Today's own column uses the live session steps (roles, done state, real
-   links), the same ones TodaySession shows, so this can never disagree with
-   Today. Later days show what the plan currently expects, resolved from the
+   The rows come from useCourseAgenda (src/lib/learning/agenda.ts): today's
+   rows are the live session's steps with their real links and done state,
+   the same ones TodaySession shows, so this can never disagree with Today.
+   Later days are what the plan currently expects, resolved from the
    catalogue: a plan, not a promise, which is why they are shown but not
-   linked as though they were today's task. */
+   linked as though they were today's task. Selection is presentation state
+   held by the hook; the planner still owns dates and activities. */
 
-import { useEffect, useState } from 'react';
 import { withBase } from '../../lib/url';
-import { findActivity } from '../../lib/learning/catalog';
-import { learningText } from '../../lib/learning/ru';
-import { ensureLearningWired, getCurrentSession, onLearnerRecordChange, onPersonalPlanChange, readPersonalPlan, type SharedSessionView } from '../../lib/learning';
-import type { PersonalPlanV1, ScheduledDay } from '../../lib/learning/contracts/plan';
+import type { AgendaDay } from '../../lib/learning/agenda';
 import { useT } from '../../lib/i18n/react';
 import { nt } from '../../lib/i18n/translate';
+import { useCourseAgenda } from './useCourseAgenda';
+import '../../styles/course-agenda.css';
 
 const DAY_LABEL = [nt('Sun'), nt('Mon'), nt('Tue'), nt('Wed'), nt('Thu'), nt('Fri'), nt('Sat')];
 
-const KIND_LABEL: Partial<Record<ScheduledDay['kind'], string>> = {
+const KIND_LABEL: Partial<Record<AgendaDay['kind'], string>> = {
   rest: nt('Rest'),
   'light-review': nt('Light review'),
   'exam-day': nt('Exam day'),
   assessment: nt('Timed practice'),
 };
 
-ensureLearningWired();
-
 export default function WeekView() {
-  const { t } = useT();
-  const [plan, setPlan] = useState<PersonalPlanV1 | null>(null);
-  const [session, setSession] = useState<SharedSessionView | null>(null);
-  const [ready, setReady] = useState(false);
+  const { t, locale } = useT();
+  const agenda = useCourseAgenda();
 
-  const refresh = () => {
-    try {
-      setSession(getCurrentSession());
-      setPlan(readPersonalPlan());
-    } catch {
-      setSession(null);
-      setPlan(null);
-    }
-    setReady(true);
-  };
+  if (agenda.status !== 'ready' || !agenda.selectedDay) return null;
+  const selectedDay = agenda.selectedDay;
 
-  useEffect(() => {
-    refresh();
-    const offRecord = onLearnerRecordChange(refresh);
-    const offPlan = onPersonalPlanChange(refresh);
-    return () => {
-      offRecord();
-      offPlan();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('focus', refresh);
-    return () => window.removeEventListener('focus', refresh);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  if (!ready || !plan || plan.schedule.length === 0) return null;
+  const dateLabel = (date: string) =>
+    new Date(`${date}T12:00:00`).toLocaleDateString(locale === 'ru' ? 'ru-RU' : 'en-GB', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+    });
 
   return (
-    <section className="mt-6 rounded-card border border-border bg-surface p-5 shadow-card sm:p-6" aria-labelledby="week-heading">
-      <div>
-        <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{t('The week ahead')}</p>
-        <h3 id="week-heading" className="mt-1 font-display text-lg font-bold">
-          {t('Your rolling schedule')}
-        </h3>
-        <p className="mt-1 text-sm text-ink-muted">
-          {t('Every day within its own time budget. Only today is fixed; the rest adjusts as you go.')}
-        </p>
+    <section className="course-agenda" aria-labelledby="week-heading">
+      <div className="course-agenda-heading">
+        <h2 id="week-heading">{t('The week ahead')}</h2>
+        <p>{t('Every day within its own time budget. Only today is fixed; the rest adjusts as you go.')}</p>
       </div>
-
-      <div className="plan-week-grid mt-4">
-        {plan.schedule.map((day) => (
-          <WeekDay key={day.date} day={day} isToday={session ? day.date === session.date : false} session={session} />
+      <div className="agenda-days" role="group" aria-label={t('Your rolling schedule')}>
+        {agenda.days.map((day) => (
+          <button
+            key={day.date}
+            type="button"
+            className="agenda-day"
+            aria-pressed={day.date === selectedDay.date}
+            aria-controls="selected-day-agenda"
+            aria-label={dateLabel(day.date)}
+            onClick={() => agenda.selectDate(day.date)}
+          >
+            <span>{t(DAY_LABEL[day.weekday]!)}</span>
+            <strong>{Number(day.date.slice(-2))}</strong>
+            <span className="agenda-day-status">
+              {day.isToday ? t('Today') : day.budgetMinutes > 0 ? t('{n} min', { n: day.budgetMinutes }) : t('Rest')}
+            </span>
+          </button>
         ))}
+      </div>
+      <div id="selected-day-agenda" className="agenda-detail" role="region" aria-labelledby="agenda-date-heading">
+        <div className="agenda-detail-heading">
+          <h3 id="agenda-date-heading">{dateLabel(selectedDay.date)}</h3>
+          {selectedDay.budgetMinutes > 0 && <span>{t('{n} min', { n: selectedDay.budgetMinutes })}</span>}
+        </div>
+        <WeekDay key={selectedDay.date} day={selectedDay} />
       </div>
     </section>
   );
 }
 
-function WeekDay({ day, isToday, session }: { day: ScheduledDay; isToday: boolean; session: SharedSessionView | null }) {
-  const { t, locale } = useT();
-  const label = DAY_LABEL[new Date(`${day.date}T00:00:00`).getDay()]!;
+function WeekDay({ day }: { day: AgendaDay }) {
+  const { t } = useT();
   const kindLabel = KIND_LABEL[day.kind];
 
-  return (
-    <div className={`plan-week-day${isToday ? ' is-today' : ''}`}>
-      <span className="plan-week-day-label">{t(label)}</span>
-      <span className="plan-week-day-num">{Number(day.date.slice(-2))}</span>
-      {day.budgetMinutes > 0 && <span className="text-xs text-ink-muted">{t('{n} min', { n: day.budgetMinutes })}</span>}
-      {day.activityIds.length === 0 ? (
+  if (day.items.length === 0) {
+    return (
+      <div className="agenda-activities">
         <span className="plan-week-empty">{kindLabel ? t(kindLabel) : t('Rest')}</span>
-      ) : isToday && session ? (
-        session.steps.map((step) => (
-          <a
-            key={step.stepId}
-            href={withBase(step.href ?? '/dashboard')}
-            className={`plan-week-item${step.state === 'done' ? ' is-done' : ''}`}
-            title={t('{label} ({minutes} min)', { label: step.purpose, minutes: step.minutes })}
-          >
-            <span className="plan-week-item-tick" aria-hidden="true">{step.state === 'done' ? '✓' : ''}</span>
-            <span className="plan-week-item-label">{step.purpose}</span>
-          </a>
-        ))
-      ) : (
-        day.activityIds.map((id) => {
-          const activity = findActivity(id);
-          if (!activity) return null;
-          /* The catalogue is one shared, locale-independent object (see
-             planner.ts objectiveFor), so its English objective sentence goes
-             through learningText(), the same lookup the planner and session
-             use, and never through t(), which only knows the site's own
-             dictionary and would silently leave a catalogue-only sentence in
-             English. This is what closed the Course route leak: a lesson
-             check's objective has Russian in src/lib/learning/ru.ts but was
-             never added to the site dictionary, so t() could not find it. */
-          const objective = learningText(locale, activity.objective);
-          return (
-            <span key={id} className="plan-week-item" title={objective}>
-              <span className="plan-week-item-tick" aria-hidden="true" />
-              <span className="plan-week-item-label">{objective}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="agenda-activities">
+      {day.items.map((item) => {
+        const copy = (
+          <>
+            <span className="plan-week-item-tick" aria-hidden="true">{item.state === 'done' ? '✓' : ''}</span>
+            <span className="agenda-activity-copy">
+              <strong>{item.title}</strong>
+              {item.detail && <span>{item.detail}</span>}
             </span>
-          );
-        })
-      )}
+            <span className="agenda-minutes">{t('{n} min', { n: item.minutes })}</span>
+          </>
+        );
+        return item.href ? (
+          <a
+            key={item.key}
+            href={withBase(item.href)}
+            className={`agenda-activity${item.state === 'done' ? ' is-done' : ''}`}
+            aria-current={item.state === 'current' ? 'step' : undefined}
+            title={t('{label} ({minutes} min)', { label: item.title, minutes: item.minutes })}
+          >
+            {copy}
+          </a>
+        ) : (
+          <span key={item.key} className="agenda-activity" title={item.detail ?? item.title}>
+            {copy}
+          </span>
+        );
+      })}
     </div>
   );
 }
