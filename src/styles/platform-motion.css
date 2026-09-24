@@ -123,6 +123,17 @@ body[data-platform-motion] tbody tr {
     body[data-platform-motion] .mrez-panel:not([hidden]) { opacity: 0; translate: 0 12px; }
   }
 }
+/* Tab panels overlap only during the crossfade. The measured outer height
+   moves the following content instead of jumping when the views differ. */
+body[data-platform-motion] .course-view-panels { position: relative; overflow: clip; }
+body[data-platform-motion] .course-view-panel {
+  display: flow-root; width: 100%; opacity: 0; visibility: hidden;
+  position: absolute; inset: 0 auto auto 0; transform: translateY(5px);
+  transition: opacity 240ms ease, transform 360ms var(--motion-ease), visibility 240ms;
+}
+body[data-platform-motion] .course-view-panel[data-active="true"] {
+  position: relative; opacity: 1; visibility: visible; transform: translateY(0);
+}
 @media (prefers-reduced-motion: reduce) {
   body[data-platform-motion] *, body[data-platform-motion] *::before, body[data-platform-motion] *::after,
   body[data-platform-motion] details::details-content {
