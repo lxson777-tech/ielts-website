@@ -20,8 +20,12 @@
 
 import type { APIRoute } from 'astro';
 import rawIndex from '../../data/generated/learning-index.json?raw';
+import { isTrialBuild } from '../../lib/trial/mode';
+import { trialLearningIndex } from '../../lib/trial/trim-index';
 
+/* A trial build publishes the trimmed copy (no exercise objectives, no
+   cue-card headlines, no Writing question titles): src/lib/trial/trim-index.ts. */
 export const GET: APIRoute = () =>
-  new Response(rawIndex, {
+  new Response(isTrialBuild() ? JSON.stringify(trialLearningIndex(JSON.parse(rawIndex))) : rawIndex, {
     headers: { 'Content-Type': 'application/json; charset=utf-8' },
   });

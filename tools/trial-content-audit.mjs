@@ -137,6 +137,12 @@ async function materialSentinels(list) {
   for (const card of SPEAKING_CUE_CARDS) add('cue-card', card.id, `${card.bullets.join(' ')} ${allStrings(card.part3Questions)} ${allStrings(card.ideas ?? [])}`, 2);
   const { SPEAKING_STRUCTURE_GUIDES } = await import('../src/data/speaking-structure-guides.ts');
   for (const [method, guide] of Object.entries(SPEAKING_STRUCTURE_GUIDES)) add('coach', `speaking-${method}`, allStrings(guide), 4);
+  const { ALL_FOCUSED_EXERCISES, SPOKEN_FOCUSED_TASKS } = await import('../src/data/focused-exercises.ts');
+  for (const ex of [...ALL_FOCUSED_EXERCISES, ...SPOKEN_FOCUSED_TASKS]) {
+    // Everything a focused exercise says except its id, title and links.
+    const { id, title, source, lesson, ...rest } = ex;
+    add('focused', id, allStrings(rest), 3);
+  }
   for (const part of ['band-guides', 'structures']) {
     const { strings } = await import(`../src/lib/i18n/dict/ru/parts/${part}.ts`);
     const values = Object.values(strings).filter((v) => typeof v === 'string' && v.length > 60);

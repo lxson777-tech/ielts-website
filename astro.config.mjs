@@ -4,7 +4,10 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
 import { loadEnv } from 'vite';
+import { trialLearningIndex } from './src/lib/trial/trim-index.ts';
+import { stripLockedEntries, trialRussianDictionary } from './src/lib/trial/trim-dictionary.ts';
 
 /* A trial build (PUBLIC_ACCESS_MODE=trial) must not publish the practice
    papers in any public file. Several islands import src/data/tests (3.9 MB of
@@ -33,7 +36,20 @@ const TRIAL_SWAPS = new Map([
   ['data/speaking-prompts.ts', light('./src/lib/trial/light/speaking-prompts.ts')],
   ['data/cue-cards.ts', light('./src/lib/trial/light/cue-cards.ts')],
   ['data/speaking-structure-guides.ts', light('./src/lib/trial/light/speaking-structure-guides.ts')],
+  ['data/focused-exercises.ts', light('./src/lib/trial/light/focused-exercises.ts')],
 ]);
+/* The learning index is public on the open site; a trial build's browser
+   gets the trimmed copy (src/lib/trial/trim-index.ts), made here from the
+   real file so the untrimmed one never enters the bundle. */
+const LEARNING_INDEX = light('./src/data/generated/learning-index.json');
+const TRIAL_INDEX_ID = '\0trial-learning-index.json';
+/* The Russian dictionary's entries are keyed by the English they translate,
+   so a translation of locked material carries that material twice. A trial
+   build's browser gets the dictionary without those entries
+   (src/lib/trial/trim-dictionary.ts). */
+const RU_DICTIONARY = light('./src/lib/i18n/dict/ru/index.ts');
+const TRIAL_RU_ID = '\0trial-ru-dictionary.js';
+const samePath = (a, b) => a.replaceAll('\\', '/').toLowerCase() === b.replaceAll('\\', '/').toLowerCase();
 /* A cheap look at the import text first, before asking Vite to resolve it:
    the last path segment of every swapped module. */
 const SWAP_NAMES = new Set([
@@ -48,6 +64,8 @@ const SWAP_NAMES = new Set([
   'speaking-prompts',
   'cue-cards',
   'speaking-structure-guides',
+  'focused-exercises',
+  'learning-index.json',
 ]);
 
 function trialBrowserContent() {
@@ -60,15 +78,37 @@ function trialBrowserContent() {
       if (!SWAP_NAMES.has(last)) return null;
       const resolved = await this.resolve(source, importer, { ...options, skipSelf: true });
       if (!resolved) return null;
-      const under = /[\\/]src[\\/](.+)$/.exec(resolved.id.split('?')[0]);
+      const file = resolved.id.split('?')[0];
+      // `?raw` imports (the published file's endpoint, on the server) are left alone.
+      if (samePath(file, LEARNING_INDEX)) return resolved.id.includes('?') ? null : TRIAL_INDEX_ID;
+      if (samePath(file, RU_DICTIONARY)) return TRIAL_RU_ID;
+      const under = /[\\/]src[\\/](.+)$/.exec(file);
       return (under && TRIAL_SWAPS.get(under[1].replaceAll('\\', '/'))) ?? null;
+    },
+    load(id) {
+      if (id === TRIAL_RU_ID) {
+        const { strings, plurals } = trialRussianDictionary();
+        return `export const BATCHES = [];\nexport const strings = ${JSON.stringify(strings)};\nexport const plurals = ${JSON.stringify(plurals)};\n`;
+      }
+      if (id !== TRIAL_INDEX_ID) return null;
+      // Plain JSON: the id ends in .json, so Vite's own JSON step turns it into a module.
+      return JSON.stringify(trialLearningIndex(JSON.parse(readFileSync(LEARNING_INDEX, 'utf8'))));
     },
     /* The vocabulary review deck pulls every vocabulary LESSON into the
        browser to build its cards. Vocabulary is not in the trial, so a
        trial build's browser copy gets no lessons and falls back to the small
        words.ts deck the module already uses where lessons are unavailable. */
     transform(code, id, options) {
-      if (!TRIAL_BUILD || options?.ssr || !/[\\/]src[\\/]lib[\\/]vocab-review\.ts$/.test(id.split('?')[0])) return null;
+      if (!TRIAL_BUILD || options?.ssr) return null;
+      /* The study plan's own Russian (src/lib/learning/ru.ts) translates
+         focused-exercise objectives next to its functions: those entries go,
+         the module stays (src/lib/trial/trim-dictionary.ts). */
+      if (/[\\/]src[\\/]lib[\\/]learning[\\/]ru\.ts$/.test(id.split('?')[0])) {
+        const { code: trimmed, removed } = stripLockedEntries(code);
+        if (removed === 0) this.error('trial build: src/lib/learning/ru.ts no longer holds its translations the expected way; update src/lib/trial/trim-dictionary.ts');
+        return { code: trimmed, map: null };
+      }
+      if (!/[\\/]src[\\/]lib[\\/]vocab-review\.ts$/.test(id.split('?')[0])) return null;
       const glob = /import\.meta\.glob<string>\('\.\.\/content\/lesson-bodies\/vocabulary-\*\.html',[\s\S]*?\}\)/;
       if (!glob.test(code)) this.error('trial build: the vocabulary deck no longer globs its lessons the expected way; update astro.config.mjs');
       return { code: code.replace(glob, '({} as Record<string, string>)'), map: null };
