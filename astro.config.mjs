@@ -30,10 +30,25 @@ const TRIAL_SWAPS = new Map([
   ['data/band-guides.ts', light('./src/lib/trial/light/band-guides.ts')],
   ['lib/i18n/dict/ru/parts/band-guides.ts', light('./src/lib/trial/light/dict-part-empty.ts')],
   ['lib/i18n/dict/ru/parts/structures.ts', light('./src/lib/trial/light/dict-part-empty.ts')],
+  ['data/speaking-prompts.ts', light('./src/lib/trial/light/speaking-prompts.ts')],
+  ['data/cue-cards.ts', light('./src/lib/trial/light/cue-cards.ts')],
+  ['data/speaking-structure-guides.ts', light('./src/lib/trial/light/speaking-structure-guides.ts')],
 ]);
 /* A cheap look at the import text first, before asking Vite to resolve it:
    the last path segment of every swapped module. */
-const SWAP_NAMES = new Set(['tests', 'index', 'model-answers', 'writing-prompts-imported', 'writing-structures', 'writing-plans', 'band-guides', 'structures']);
+const SWAP_NAMES = new Set([
+  'tests',
+  'index',
+  'model-answers',
+  'writing-prompts-imported',
+  'writing-structures',
+  'writing-plans',
+  'band-guides',
+  'structures',
+  'speaking-prompts',
+  'cue-cards',
+  'speaking-structure-guides',
+]);
 
 function trialBrowserContent() {
   return {

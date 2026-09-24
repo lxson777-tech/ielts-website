@@ -16,8 +16,10 @@
  * Since 24 September 2026 (Alex: lock the remaining study material too) it
  * also reads the supporting material the trial does not include: every Band 8
  * model answer, every Writing question, the writing coach's structures,
- * phrase bank and per-question plans, every band guide step, and the Russian
- * translations of the band guides and the coach.
+ * phrase bank and per-question plans, every band guide step, the Russian
+ * translations of the band guides and the coach, every cue card with its
+ * model talk and Part 3 answers, every Part 1 question and the speaking
+ * coach's methods and phrases.
  *
  * Two kinds of finding:
  *   LEAK    any phrase of a practice paper (passage, transcript, answer
@@ -128,6 +130,13 @@ async function materialSentinels(list) {
       }
     }
   }
+  const { CUE_CARDS } = await import('../src/data/cue-cards.ts');
+  for (const card of CUE_CARDS) add('cue-model', card.id, `${card.model.join(' ')} ${card.part3.map((x) => x.a).join(' ')}`, 3);
+  const { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } = await import('../src/data/speaking-prompts.ts');
+  for (const topic of SPEAKING_PART1_TOPICS) add('part1', topic.id, allStrings(topic.questions), 2);
+  for (const card of SPEAKING_CUE_CARDS) add('cue-card', card.id, `${card.bullets.join(' ')} ${allStrings(card.part3Questions)} ${allStrings(card.ideas ?? [])}`, 2);
+  const { SPEAKING_STRUCTURE_GUIDES } = await import('../src/data/speaking-structure-guides.ts');
+  for (const [method, guide] of Object.entries(SPEAKING_STRUCTURE_GUIDES)) add('coach', `speaking-${method}`, allStrings(guide), 4);
   for (const part of ['band-guides', 'structures']) {
     const { strings } = await import(`../src/lib/i18n/dict/ru/parts/${part}.ts`);
     const values = Object.values(strings).filter((v) => typeof v === 'string' && v.length > 60);

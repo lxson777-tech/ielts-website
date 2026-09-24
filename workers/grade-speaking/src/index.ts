@@ -37,6 +37,7 @@
 
 import { SPEAKING_ANCHORS } from './anchors';
 import { TRIAL_OFFER, parseAccessMode } from '../../../src/lib/trial/offer';
+import { bandStepsFor, readBandStepLocale } from '../../../src/lib/trial/band-steps';
 import {
   TRIAL_REFUSAL_TEXT,
   TrialRefusal,
@@ -144,6 +145,9 @@ interface GradeSpeakingRequest {
   mechanics?: { totalDurationMs?: number; underLength?: boolean; estSilenceRatio?: number };
   /** Trial mode only: the id the student's Speaking test was begun under. */
   trialSitting?: string;
+  /** Trial mode only: the language of the band guide steps returned with
+      the grade ('en' or 'ru'). */
+  locale?: string;
 }
 
 const CRITERION_KEYS = ['fluencyCoherence', 'lexicalResource', 'grammaticalRange', 'pronunciation'] as const;
@@ -1951,7 +1955,13 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
     if (trial) {
       /* Graded: the Speaking test is used, settled here on the server. */
       await settleUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);
-      return json({ ...medianRun(good), trial: { section: 'speaking', test: 'used' } }, 200, cors);
+      /* The band guide step for each band given, in the student's
+         language: a trial build's browser carries no band guides. */
+      const graded = medianRun(good) as Record<string, unknown>;
+      const criteria = (graded.criteria ?? {}) as Record<string, { band?: unknown }>;
+      const bands = Object.fromEntries(Object.entries(criteria).map(([key, value]) => [key, value?.band]));
+      const guides = bandStepsFor('speaking', bands, readBandStepLocale(body.locale));
+      return json({ ...graded, guides, trial: { section: 'speaking', test: 'used' } }, 200, cors);
     }
     return json(medianRun(good), 200, cors);
   }

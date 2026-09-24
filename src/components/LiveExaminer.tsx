@@ -134,6 +134,7 @@ import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../data/speaking-prom
 import type { StructureMethod } from '../data/speaking-structure-guides';
 import { SPEAKING_BAND_GUIDES, guideFor } from '../data/band-guides';
 import { useT } from '../lib/i18n/react';
+import { getLocale } from '../lib/i18n/locale';
 import BandReport from './BandReport';
 import GradingProgress from './GradingProgress';
 import SpeakingCoachPanel from './SpeakingCoachPanel';
@@ -913,7 +914,10 @@ export default function LiveExaminer({
               : {
                   expectedMinMs: DRILL_EXPECTED_MIN_MS[m],
                   scope: DRILL_GRADE_SCOPE[m],
-                  trial: trialSitting && trialToken ? { token: trialToken, sitting: trialSitting } : undefined,
+                  trial:
+                    trialSitting && trialToken
+                      ? { token: trialToken, sitting: trialSitting, locale: getLocale() === 'ru' ? 'ru' : 'en' }
+                      : undefined,
                 },
           );
         },
@@ -1282,7 +1286,9 @@ export default function LiveExaminer({
               comment: score.comment,
               tip: score.tip,
               nextBand: score.nextBand,
-              guide: guideFor(SPEAKING_BAND_GUIDES[c.key], score.band),
+              /* A trial grade brings its own steps (a trial build carries
+                 no band guides); otherwise the static playbook. */
+              guide: result.guides?.[c.key] ?? guideFor(SPEAKING_BAND_GUIDES[c.key], score.band),
             };
           })}
           strengths={result.strengths}

@@ -6,6 +6,7 @@
    each tied to the exact question that was asked. */
 
 import type { NextBandAdvice } from '../grading/next-band';
+import type { BandStepGuide } from '../../data/band-guides';
 
 export type SpeakingCriterionKey =
   | 'fluencyCoherence'
@@ -148,11 +149,15 @@ export interface SpeakingGradeResult {
   actionPlan?: string[];
   /** Which grader actually produced this result (drives the AI/sample badge). */
   grader: { name: string; live: boolean };
+  /** A trial grade only: the band guide step for each band given, sent by
+      the grader because a trial build's browser carries no band guides
+      (src/lib/trial/band-steps.ts). Already in the student's language. */
+  guides?: Partial<Record<SpeakingCriterionKey, BandStepGuide>>;
 }
 
 export type SpeakingAssessment = Pick<
   SpeakingGradeResult,
-  'criteria' | 'moments' | 'strengths' | 'improvements' | 'actionPlan'
+  'criteria' | 'moments' | 'strengths' | 'improvements' | 'actionPlan' | 'guides'
 >;
 
 /** The swappable model boundary. */

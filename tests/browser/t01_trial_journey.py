@@ -630,6 +630,8 @@ def run():
         check("speaking: a graded interview uses the test on the server (two interviews in all)",
               graded and len(rows) == 1 and rows[0]["status"] == "settled" and rows[0]["sessions"] == 2, json.dumps(rows))
         check("speaking: the stand-in's report is visibly SIMULATED", page.get_by_text("SIMULATED").count() > 0)
+        check("speaking: the report shows the band guide steps the grader returned",
+              page.get_by_text("Full guide: band 6 to 7").count() > 0)
         shot(page, "t17-speaking-graded-simulated", full=False)
         page.get_by_role("button", name="Done").click()
         wait_text(page, "You have used this section’s trial test")

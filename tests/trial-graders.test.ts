@@ -510,3 +510,68 @@ test('speaking grader: only the begun interview is graded, and a failed grade ke
   assert.equal(status.sections.speaking.test?.status, 'reserved', 'the Speaking test is still theirs to submit');
   await w.db.close();
 });
+
+test('speaking grader: a trial grade uses the test and returns only the band steps it earned, in the student’s language', async () => {
+  const w = await speakingWorld();
+  await w.db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-s-00006' }, { userId: A });
+  const criterion = (band: number) => ({ evidence: 'quoted', band, comment: 'A comment.', tip: 'A tip.' });
+  const grader = createSpeakingHandler({
+    fetch: (async (input: unknown, init?: RequestInit) => {
+      const url = String(input);
+      const headers = (init?.headers ?? {}) as Record<string, string>;
+      if (url === `${SUPABASE_URL}/auth/v1/user`) {
+        const id = TOKENS[(headers.Authorization ?? '').replace('Bearer ', '')];
+        return id ? new Response(JSON.stringify({ id })) : new Response('{}', { status: 401 });
+      }
+      if (url.startsWith(`${SUPABASE_URL}/rest/v1/rpc/`)) {
+        const fn = url.slice(`${SUPABASE_URL}/rest/v1/rpc/`.length);
+        return new Response(JSON.stringify(await w.db.rpc(fn, JSON.parse(String(init?.body)), { role: 'service_role' })));
+      }
+      if (url === 'https://api.openai.com/v1/audio/transcriptions') {
+        const text = 'I work in a bank and I enjoy it very much.';
+        return new Response(JSON.stringify({ text, duration: 40, words: [], segments: [{ type: 'speech', text, speaker: 'A', start: 0, end: 40, id: 'seg_0' }] }));
+      }
+      if (url === 'https://api.openai.com/v1/responses') {
+        const assessment = {
+          fluencyCoherence: criterion(7),
+          lexicalResource: criterion(6),
+          grammaticalRange: criterion(6),
+          moments: [{ quote: 'I work in a bank', note: 'clear' }],
+          strengths: ['a strength'],
+          improvements: ['an improvement'],
+        };
+        return new Response(JSON.stringify({ output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(assessment) }] }] }));
+      }
+      if (url === 'https://api.openai.com/v1/chat/completions') {
+        const pron = criterion(5);
+        return new Response(JSON.stringify({ choices: [{ message: { tool_calls: [{ function: { name: 'submit_pronunciation', arguments: JSON.stringify(pron) } }] } }] }));
+      }
+      throw new Error(`unexpected fetch ${url}`);
+    }) as typeof fetch,
+    sleep: async () => undefined,
+  });
+  const clip = { question: 'Tell me about your work.', mimeType: 'audio/mpeg', audioBase64: 'SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA', durationMs: 60000 };
+  const response = await grader.fetch(
+    new Request('https://speaking.test/', {
+      method: 'POST',
+      headers: { Origin: ORIGIN, 'Content-Type': 'application/json', Authorization: 'Bearer token-a' },
+      body: JSON.stringify({
+        kind: 'interview',
+        interview: { transcript: [{ role: 'examiner', text: 'Hello.' }, { role: 'candidate', text: 'I work in a bank.' }], audio: clip },
+        trialSitting: 'sit-s-00006',
+        locale: 'ru',
+      }),
+    }),
+    { ALLOWED_ORIGINS: ORIGIN, OPENAI_API_KEY: 'sk-test-dummy', GRADING_SAMPLES: '1', ACCESS_MODE: 'trial', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY: SERVICE_KEY } as never,
+  );
+  const body = (await response.json()) as Record<string, unknown>;
+  assert.equal(response.status, 200, JSON.stringify(body).slice(0, 200));
+  const guides = body.guides as Record<string, BandStepGuide>;
+  assert.deepEqual(Object.keys(guides).sort(), ['fluencyCoherence', 'grammaticalRange', 'lexicalResource', 'pronunciation']);
+  assert.equal(guides.fluencyCoherence.from, 7);
+  assert.equal(guides.pronunciation.from, 5);
+  assert.match(guides.fluencyCoherence.whatChanges, /[А-Яа-я]/, 'in Russian');
+  const status = parseTrialStatus(await w.db.rpc('trial_status', {}, { userId: A }))!;
+  assert.equal(status.sections.speaking.test?.status, 'settled', 'the graded interview used the Speaking test');
+  await w.db.close();
+});

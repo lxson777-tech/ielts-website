@@ -60,7 +60,7 @@ export async function gradeInterview(
     headers,
     body: JSON.stringify({
       kind: 'interview',
-      ...(opts.trial ? { trialSitting: opts.trial.sitting } : {}),
+      ...(opts.trial ? { trialSitting: opts.trial.sitting, locale: opts.trial.locale ?? 'en' } : {}),
       interview: {
         transcript: transcript.map((t) => ({ role: t.role, text: t.text.trim() })).filter((t) => t.text),
         scope: opts.scope,
@@ -97,6 +97,7 @@ export async function gradeInterview(
     strengths: assessment.strengths,
     improvements: assessment.improvements,
     actionPlan: assessment.actionPlan,
+    ...(assessment.guides ? { guides: assessment.guides } : {}),
     grader: { name: 'AI examiner (live interview)', live: true },
   };
 }
