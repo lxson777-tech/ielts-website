@@ -835,6 +835,33 @@ test('every fingerprint differs by language, so one is never served in the other
   assert.equal(unitFingerprint(unit, 'intro', '7.0'), unitFingerprint(unit, 'intro', '7.0', 'en'));
 });
 
+test('every fingerprint moves with the first name, and stays put without one', () => {
+  const progress = tfngWeaknessProgress();
+  const insights = insightsFor(progress);
+  const window = weekWindowFor(new Date('2026-09-10T09:00:00.000Z'), 0);
+  const facts = readWeek(progress as never, plan() as never, window, NOW, 0);
+  const unit = readUnit(5, progress as never, plan() as never, insights)!;
+
+  const all = (name?: string | null) => [
+    insightsFingerprint(insights, 'ru', name),
+    weekFingerprint(facts, 'ru', name),
+    unitFingerprint(unit, 'intro', '7.0', 'ru', name),
+    unitFingerprint(unit, 'wrap', '7.0', 'ru', name),
+  ];
+  const none = all();
+  const aigerim = all('Айгерим');
+  const aika = all('Айка');
+  for (let i = 0; i < none.length; i += 1) {
+    assert.notEqual(none[i], aigerim[i], `fingerprint ${i}: a name arriving is a new note`);
+    assert.notEqual(aigerim[i], aika[i], `fingerprint ${i}: a changed name is a new note`);
+  }
+  // No name, an empty one and null all mean the same thing: nothing already
+  // cached for a student without a profile is thrown away.
+  assert.deepEqual(all(null), none);
+  assert.deepEqual(all(''), none);
+  assert.equal(insightsFingerprint(insights, 'ru'), none[0]);
+});
+
 /* ================================================================== */
 /* Errors                                                              */
 /* ================================================================== */
@@ -915,6 +942,29 @@ test('a Russian request asks the model for Russian and still hands it English fa
   assert.match(sent.userText, /True \/ False \/ Not Given in Reading is consistently the weakest question type\./);
   // The student's own words are the one Russian thing, and they are quoted.
   assert.match(sent.userText.split('<<<STUDENT MESSAGE')[1] ?? '', /что делать дальше\?/);
+});
+
+test('a Cyrillic first name lives in its own fence and leaves the English facts English', async () => {
+  const state = stateWithWeakness();
+  state.studentProfiles = [{ user_id: USER_A, first_name: 'Айгерим' }];
+  state.openAi = { body: modelReply('Айгерим, вот что я бы сделал дальше.', 'trainer:writing', 'Потому что.') };
+  const { response, recorder } = await run(state, { task: 'welcome', locale: 'ru' });
+  assert.equal(response.status, 200);
+
+  const sent = recorder.openAiCalls[0]!;
+  const nameBlock = sent.userText.split('<<<STUDENT NAME\n')[1]?.split('STUDENT NAME>>>')[0];
+  assert.ok(nameBlock, 'the STUDENT NAME fence is there');
+  assert.match(nameBlock!, /^First name: Айгерим\n/, 'the name is written as the student wrote it');
+  // Only the name itself is Russian inside that fence: its instructions are English like every other fence.
+  assert.doesNotMatch(nameBlock!.replace('Айгерим', ''), /[Ѐ-ӿ]/);
+  for (const fence of ['GOALS', 'RESULTS', 'OBSERVATIONS', 'ACTIVITIES']) {
+    const block = sent.userText.split(`<<<${fence}`)[1]?.split(`${fence}>>>`)[0];
+    assert.ok(block, `the ${fence} block should be in the message`);
+    assert.doesNotMatch(block!, /[Ѐ-ӿ]/, `${fence} must stay English with a Russian name beside it`);
+  }
+  // And the persona is untouched by the name: it lives in the data, not the instructions.
+  assert.equal(sent.instructions, buildInstructions('welcome', 'ru'));
+  assert.doesNotMatch(sent.instructions, /Айгерим/);
 });
 
 test('an English request is byte-identical to what it was before any of this', async () => {

@@ -1,0 +1,50 @@
+/* A single study surface, with secondary context kept quiet. */
+.workspace-v2 .dash-workspace { grid-template-columns: minmax(0, 1fr) 245px; gap: 40px; }
+.workspace-v2 .dash-workspace > .today { min-width: 0; }
+.workspace-v2 .dash-side { padding-left: 26px; }
+.workspace-v2 .dash-target.is-unset strong { font-size: 24px; line-height: 1.3; }
+.workspace-v2 .dash-focus { padding: 8px 0 18px; }
+.workspace-v2 .dash-focus summary { cursor: pointer; padding: 12px 0; color: var(--color-ink); font-size: 14px; font-weight: 600; }
+.workspace-v2 .dash-focus summary:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 4px; border-radius: 4px; }
+.workspace-v2 .dash-focus-certainty.is-unknown { color: var(--color-ink-muted); }
+.workspace-v2 .today-intake { padding: 32px; }
+.workspace-v2 .today-intake-sub { max-width: 52ch; margin-bottom: 28px; }
+.workspace-v2 .today-intake .intake { max-width: none; }
+.workspace-v2 .today-intake .intake-step { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; animation: none; }
+.workspace-v2 .today-intake .intake-progress { max-width: 220px; margin-bottom: 26px; }
+.workspace-v2 .today-intake .intake-question { font-size: 23px; line-height: 1.4; max-width: 32ch; }
+.workspace-v2 .today-intake .intake-capsule-row { gap: 10px; margin-top: 18px; }
+.workspace-v2 .today-intake .intake-capsule { min-height: 48px; justify-content: center; }
+.workspace-v2 .today-intake .intake-actions { margin-top: 24px; }
+.workspace-v2 .today-intake .intake-link-defer { min-height: 44px; text-align: left; margin-top: 12px; }
+.workspace-v2 .today-card .today-budget-note,
+.workspace-v2 .today-card .today-step-role,
+.workspace-v2 .today-card .today-step-purpose,
+.workspace-v2 .today-card .today-step-minutes { color: #bcc8b7; }
+.workspace-v2 .today-step { padding-block: 16px; }
+.workspace-v2 .today-step-title { font-size: 14px; line-height: 1.6; }
+.workspace-v2 .dash-skills { padding-top: 28px; border-top: 1px solid var(--color-border); }
+@media (max-width: 900px) {
+  .workspace-v2 .dash-workspace { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .workspace-v2 .dash-side { padding-left: 0; border-left: 0; }
+}
+@media (max-width: 540px) {
+  .workspace-v2 .today-intake { padding: 24px 20px; }
+  .workspace-v2 .today-intake .intake-question { font-size: 21px; }
+  .workspace-v2 .today-intake .intake-capsule-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .workspace-v2 .today-intake .intake-capsule { align-items: center; text-align: center; padding: 12px 8px; }
+  .workspace-v2 .today-intake .intake-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+.today-agenda-details { margin-top: 22px; border-top: 1px solid #728679; }
+.today-agenda-details summary { padding: 18px 0; cursor: pointer; color: #fffefa; font-size: 14px; font-weight: 650; }
+.today-agenda-details summary:focus-visible { outline: 2px solid #fffefa; outline-offset: 3px; }
+.today-active > .today-start { margin: 0 0 24px; min-height: 48px; }
+@media (max-width: 540px) {
+ .workspace-v2 .dash-welcome { margin-bottom: 20px; }
+ .workspace-v2 .today-intake { padding: 22px 20px; }
+ .workspace-v2 .today-intake-sub { margin-bottom: 20px; }
+ .workspace-v2 .today-intake .intake-progress { margin-bottom: 18px; }
+ .workspace-v2 .today-intake .intake-capsule-row { gap: 8px; margin-top: 12px; }
+ .workspace-v2 .today-intake .intake-capsule { min-height: 44px; padding: 10px 8px; }
+}

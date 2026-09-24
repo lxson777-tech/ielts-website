@@ -123,3 +123,45 @@
 .workspace-v2 .speaking-choice > h2 { font-size: 23px; font-weight: 600; }
 
 .workspace-v2 .skill-resource-card-title { white-space: normal; min-width: 0; overflow-wrap: anywhere; line-height: 1.5; }
+
+/* Mobile tutor shares the navigation footprint rather than floating over work. */
+@media (max-width: 720px) {
+ .workspace-v2:has(.mrez-launcher) .ws-tabbar { padding-right: 62px; }
+ .workspace-v2 .mrez-launcher,
+ .workspace-v2:has(.writing-trainer-page) .mrez-launcher {
+  right: 19px; bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  width: 48px; height: 53px; padding: 4px; gap: 0; justify-content: center;
+  background: #fff3e5; border: 1px solid #e6cbb0; box-shadow: none;
+ }
+ .workspace-v2 .mrez-launcher .mrez-avatar { width: 36px !important; height: 36px !important; }
+ .workspace-v2 .mrez-launcher-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+ .workspace-v2 .mrez-panel { bottom: calc(88px + env(safe-area-inset-bottom, 0px)); max-height: calc(100dvh - 112px - env(safe-area-inset-bottom, 0px)); }
+ .workspace-v2:has(.mrez-launcher) .ws-main { padding-bottom: calc(108px + env(safe-area-inset-bottom, 0px)); }
+ .workspace-v2 .ws-tabbar-label { font-size: 10px; }
+ html { scroll-padding-bottom: 110px; }
+ .workspace-v2 input, .workspace-v2 textarea, .workspace-v2 button { scroll-margin-bottom: 110px; }
+}
+.workspace-v2 .library-card { min-height: 190px; padding: 22px; }
+.workspace-v2 .library-card-module { display: none; }
+.library-more { display: block; margin: 28px auto 0; min-height: 48px; padding: 12px 24px; border: 1px solid var(--color-border); border-radius: 999px; background: var(--color-surface); color: var(--color-ink); font-weight: 650; cursor: pointer; }
+.library-more:hover { background: #e7eae2; }
+.library-more:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 4px; }
+
+.report-empty { max-width: 620px; padding: 36px 0 52px; }
+.report-empty h2 { font-size: 28px; font-weight: 650; line-height: 1.25; }
+.report-empty p { max-width: 52ch; margin: 16px 0 24px; color: var(--color-ink-muted); line-height: 1.75; }
+.report-empty a { display: inline-flex; align-items: center; min-height: 48px; padding: 12px 22px; border-radius: 999px; background: var(--color-ink); color: var(--color-surface); font-weight: 650; }
+.workspace-v2 .lesson-hero-content { padding-top: 26px; padding-bottom: 24px; }
+.workspace-v2 .lesson-hero nav { margin-bottom: 14px; }
+.workspace-v2 .lesson-body { padding-top: 24px; }
+.workspace-v2 .lesson-body .section { padding-top: 18px; }
+.workspace-v2 .lesson-body .section-header { margin-bottom: 18px; }
+.workspace-v2 .lesson-body .section-title-block > .tag { display: none; }
+.lesson-optional-vocabulary { margin-top: 32px; padding: 18px 0; border-block: 1px solid var(--color-border); }
+.lesson-optional-vocabulary summary { cursor: pointer; font-weight: 600; min-height: 32px; }
+@media (max-width: 720px) {
+ .workspace-v2 .lesson-hero-content { padding-top: 18px; padding-bottom: 20px; }
+ .workspace-v2 .lesson-hero h1 { font-size: 29px; line-height: 1.18; }
+ .workspace-v2 .lesson-body { padding-top: 18px; }
+ .workspace-v2 .lesson-body .section-header h2 { font-size: 21px; }
+}

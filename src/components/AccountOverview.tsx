@@ -10,13 +10,14 @@ import type { User } from '@supabase/supabase-js';
 import { withBase } from '../lib/url';
 import { isAuthConfigured } from '../lib/auth/supabase';
 import { onAuthChange } from '../lib/auth/session';
+import { signInHref } from '../lib/auth/profile';
 import {
   getBestBand,
   getBestWritingBand,
   getBestSpeakingBand,
   getProgress,
 } from '../lib/progress';
-import { loadStudyPlan, onStudyPlanChange, daysUntilTest, type SavedPlan } from '../lib/study-plan';
+import { loadStudyPlan, onStudyPlanChange, daysUntilTest, confirmedTargetBand, type SavedPlan } from '../lib/study-plan';
 import { buildCourse, courseStatus, type CourseStatus } from '../lib/course';
 import { ensureLearningWired } from '../lib/learning';
 import { useT } from '../lib/i18n/react';
@@ -119,15 +120,19 @@ export default function AccountOverview() {
           ) : (
             <p className="text-sm text-ink-muted">
               {/* {loginLink} is left literal by t() with no vars, so it can be
-                  split by hand and the bold "Log in" re-inserted in place,
+                  split by hand and the "Sign in" link re-inserted in place,
                   wherever the translation puts it. */}
-              {t('Saved on this device only. {loginLink} (top of the page) to sync across devices.')
+              {t('Saved on this device only. {loginLink} to sync across devices.')
                 .split(/(\{loginLink\})/)
                 .map((part, i) =>
                   part === '{loginLink}' ? (
-                    <span key={i} className="font-semibold text-brand">
-                      {t('Log in')}
-                    </span>
+                    <a
+                      key={i}
+                      href={signInHref('/account')}
+                      className="font-semibold text-brand underline underline-offset-2 hover:text-brand-hover"
+                    >
+                      {t('Sign in')}
+                    </a>
                   ) : (
                     <span key={i}>{part}</span>
                   ),
@@ -156,7 +161,7 @@ export default function AccountOverview() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="min-w-0">
               <p className="font-display font-bold">
-                {t('Course · Band {band}', { band: plan.targetBand })}
+                {confirmedTargetBand(plan) ? t('Course · Band {band}', { band: confirmedTargetBand(plan)! }) : t('Not set yet')}
                 {days !== null && (
                   <span className="ml-2 font-normal text-ink-muted">
                     {tn(days, { one: '{n} day to go', other: '{n} days to go' })}

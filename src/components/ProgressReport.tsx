@@ -17,6 +17,7 @@
    architecture section 1.3 for the audit finding this responds to. */
 
 import { useEffect, useState } from 'react';
+import { withBase } from '../lib/url';
 import {
   getProgress,
   getAttempts,
@@ -27,12 +28,13 @@ import {
   getBestSpeakingBand,
   getActivity,
 } from '../lib/progress';
-import { loadStudyPlan, daysUntilTest, skillTargetFor, type PlanSkill, type SavedPlan } from '../lib/study-plan';
+import { loadStudyPlan, daysUntilTest, skillTargetFor, confirmedTargetBand, type PlanSkill, type SavedPlan } from '../lib/study-plan';
 import { getStreak } from '../lib/plan/streak';
 import { buildCourse } from '../lib/course';
 import type { Skill } from '../data/lessons';
 import WeeklyReview from './tutor/WeeklyReview';
 import { useT, type Translator } from '../lib/i18n/react';
+import { planHistoryText } from '../lib/learning/plan-history';
 import { nt } from '../lib/i18n/translate';
 import { ensurePlan, readLearnerRecord, getCurrentSession } from '../lib/learning';
 import { evaluateEvidence } from '../lib/learning/policy';
@@ -106,6 +108,26 @@ const SKILL_LABEL: Record<Skill, string> = {
    not get its own date format. */
 
 export default function ProgressReport() {
+  // Keep the screen concise without omitting collapsed explanations from print.
+  useEffect(() => {
+    let openedForPrint: HTMLDetailsElement[] = [];
+    const prepare = () => {
+      openedForPrint = Array.from(document.querySelectorAll<HTMLDetailsElement>('.report-detail:not([open])'));
+      openedForPrint.forEach((detail) => { detail.open = true; });
+    };
+    const restore = () => {
+      openedForPrint.forEach((detail) => { detail.open = false; });
+      openedForPrint = [];
+    };
+    window.addEventListener('beforeprint', prepare);
+    window.addEventListener('afterprint', restore);
+    return () => {
+      window.removeEventListener('beforeprint', prepare);
+      window.removeEventListener('afterprint', restore);
+      restore();
+    };
+  }, []);
+
   const { t, tn, locale } = useT();
   const [mounted, setMounted] = useState(false);
   const [name, setName] = useState('');
@@ -119,6 +141,7 @@ export default function ProgressReport() {
 
   const progress = getProgress();
   const plan: SavedPlan | null = loadStudyPlan();
+  const targetBand = confirmedTargetBand(plan);
   const days = plan ? daysUntilTest(plan.testDate) : null;
   const streak = getStreak(plan);
   const activity = getActivity();
@@ -189,6 +212,15 @@ export default function ProgressReport() {
   const reportedScores = selfReportedScores(policy);
   const recentPlanChanges = [...learningPlan.history].slice(-5).reverse();
 
+  const hasStudyRecord = Object.keys(progress.lessons).length > 0 || getAttempts().length > 0 || writingAttempts.length > 0 || speakingAttempts.length > 0 || recentEvidence.length > 0 || reportedScores.length > 0;
+  if (!hasStudyRecord) return (
+    <section className="report-empty">
+      <h2>{t('Your progress starts here.')}</h2>
+      <p>{t('Complete a lesson or a practice task to start building your record. Your results and next steps will appear here.')}</p>
+      <a href={withBase('/dashboard')}>{t('Go to today’s plan')}</a>
+    </section>
+  );
+
   return (
     <div className="progress-report-content space-y-10">
       <div className="report-print-hide flex flex-wrap items-end justify-between gap-4">
@@ -232,7 +264,7 @@ export default function ProgressReport() {
           <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div className="rounded-card border border-border bg-surface p-4">
               <p className="text-xs text-ink-muted">{t('Target band')}</p>
-              <p className="mt-1 font-display text-xl font-extrabold">{plan.targetBand}</p>
+              <p className="mt-1 font-display text-xl font-extrabold">{targetBand ?? t('Not set')}</p>
             </div>
             <div className="rounded-card border border-border bg-surface p-4">
               <p className="text-xs text-ink-muted">{t('Test date')}</p>
@@ -362,7 +394,9 @@ export default function ProgressReport() {
         </div>
         {plan?.skillTargets && (
           <p className="mt-2 text-xs text-ink-muted">
-            {t('Your own minimum per paper is shown where you set one, otherwise your overall target of Band {band}. Change these in Course settings.', { band: plan.targetBand })}
+            {targetBand
+              ? t('Your own minimum per paper is shown where you set one, otherwise your overall target of Band {band}. Change these in Course settings.', { band: targetBand })
+              : t('Your own minimum per paper is shown where you set one. Papers without one have no target until you choose an overall band in Course settings.')}
           </p>
         )}
       </section>
@@ -416,7 +450,7 @@ function Line({ line, t }: { line: NarrativeLine; t: Translator['t'] }) {
 
 function PaperDetail({ narrative, t }: { narrative: ReturnType<typeof paperNarratives>[number]; t: Translator['t'] }) {
   return (
-    <details className="report-detail rounded-card border border-border bg-surface p-4" open>
+    <details className="report-detail rounded-card border border-border bg-surface p-4">
       <summary className="report-detail-summary font-display text-sm font-bold">
         {t(SKILL_LABEL[narrative.paper])}
       </summary>
@@ -690,7 +724,7 @@ function TeacherReviewSummary({
           <ul className="report-detail-list mt-2">
             {planChanges.map((change, i) => (
               <li key={i}>
-                {formatDate(change.at, locale)} · &ldquo;{change.summary}&rdquo;
+                {formatDate(change.at, locale)} · &ldquo;{planHistoryText(locale, change.summary)}&rdquo;
               </li>
             ))}
           </ul>

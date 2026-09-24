@@ -25,7 +25,7 @@ import {
 import { questionnaireFromSearch, TRIAL_OFFER, TRIAL_TUTOR_PER_SECTION, type TrialQuestionnaire } from '../../lib/trial/offer';
 import { useTrial } from '../../lib/trial/react';
 import { msRemaining } from '../../lib/trial/status';
-import AuthModal from '../AuthModal';
+import { signInHref, signUpHref } from '../../lib/auth/profile';
 import TrialBlock from './TrialBlock';
 import { timeLeftText } from './TrialHome';
 
@@ -40,7 +40,6 @@ export default function TrialJoin() {
   const i18n = useT();
   const { t } = i18n;
   const trial = useTrial();
-  const [auth, setAuth] = useState<'signin' | 'signup' | null>(null);
   const [questionnaire, setQuestionnaire] = useState<TrialQuestionnaire | null>(null);
   const [starting, setStarting] = useState(false);
   const [startError, setStartError] = useState<string | null>(null);
@@ -129,19 +128,21 @@ export default function TrialJoin() {
           {offer}
           {suggestion}
           <div className="trial-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 8 }}>
-            <button type="button" className="trial-btn trial-primary" onClick={() => setAuth('signup')}>
+            {/* The sign-up and sign-in pages bring the student back to
+                /trial (after the profile page, for a new account); the
+                questionnaire answers wait in this browser meanwhile. */}
+            <a className="trial-btn trial-primary" href={signUpHref('/trial')}>
               {t('Create a free account')}
-            </button>
-            <button type="button" className="trial-btn" onClick={() => setAuth('signin')}>
+            </a>
+            <a className="trial-btn" href={signInHref('/trial')}>
               {t('I already have an account')}
-            </button>
+            </a>
           </div>
           <small style={{ marginTop: 16 }}>
             {t('The trial belongs to your account, so it is the same on every device and signing out never restarts it.')}
           </small>
         </div>
         {art}
-        {auth && <AuthModal initialMode={auth} onClose={() => setAuth(null)} />}
       </section>
     );
   }

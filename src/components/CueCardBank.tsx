@@ -54,6 +54,8 @@ export default function CueCardBank() {
     { id: 'upgrade', label: t('Band 8 upgrade') },
     { id: 'part3', label: 'Part 3' },
   ];
+  const [search, setSearch] = useState('');
+  const [visibleCount, setVisibleCount] = useState(12);
   const [familyFilter, setFamilyFilter] = useState<CueCardFamily | 'all'>('all');
   /* ?card=<id> opens straight on that card, the same deep-link convention
      ModelAnswers.tsx uses for ?task=. deepLinked marks a visit the URL
@@ -102,7 +104,7 @@ export default function CueCardBank() {
     };
   }, []);
 
-  const filtered = familyFilter === 'all' ? CUE_CARDS : CUE_CARDS.filter((c) => c.family === familyFilter);
+  const filtered = CUE_CARDS.filter(c => (familyFilter === 'all' || c.family === familyFilter) && c.title.toLowerCase().includes(search.trim().toLowerCase()));
   const selected = CUE_CARDS.find((c) => c.id === selectedId) ?? null;
 
   function familyLabel(id: CueCardFamily): string {
@@ -168,6 +170,8 @@ export default function CueCardBank() {
   if (selected) {
     return (
       <div className="screen-in space-y-5">
+      <label className="discovery-search">{t('Search cue cards')}<input type="search" value={search} onChange={e => {setSearch(e.target.value);setVisibleCount(12);}} /></label>
+      <p className="discovery-count" aria-live="polite">{Math.min(visibleCount,filtered.length)} / {filtered.length} {t('results shown')}</p>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"
@@ -370,16 +374,18 @@ export default function CueCardBank() {
   /* ── Grid view ── */
   return (
     <div className="screen-in space-y-5">
+      <label className="discovery-search">{t('Search cue cards')}<input type="search" value={search} onChange={e => {setSearch(e.target.value);setVisibleCount(12);}} /></label>
+      <p className="discovery-count" aria-live="polite">{Math.min(visibleCount,filtered.length)} / {filtered.length} {t('results shown')}</p>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="cue-chip-row flex flex-wrap gap-2">
-          <FilterChip active={familyFilter === 'all'} onClick={() => setFamilyFilter('all')}>
+          <FilterChip active={familyFilter === 'all'} onClick={() => {setFamilyFilter('all');setVisibleCount(12);}}>
             {t('All ({count})', { count: CUE_CARDS.length })}
           </FilterChip>
           {CUE_CARD_FAMILIES.map((f) => {
             const count = CUE_CARDS.filter((c) => c.family === f.id).length;
             return (
-              <FilterChip key={f.id} active={familyFilter === f.id} onClick={() => setFamilyFilter(f.id)}>
-                {f.label} ({count})
+              <FilterChip key={f.id} active={familyFilter === f.id} onClick={() => {setFamilyFilter(f.id);setVisibleCount(12);}}>
+                {t(f.label)} ({count})
               </FilterChip>
             );
           })}
@@ -394,7 +400,7 @@ export default function CueCardBank() {
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((c) => (
+        {filtered.slice(0,visibleCount).map((c) => (
           <button
             key={c.id}
             type="button"
@@ -402,7 +408,7 @@ export default function CueCardBank() {
             className="group flex flex-col items-start gap-2 rounded-card border border-border bg-surface p-4 text-left shadow-card transition-all hover:-translate-y-0.5 hover:shadow-card-hover"
           >
             <span className="rounded-full bg-surface-alt px-2.5 py-0.5 text-[0.68rem] font-bold uppercase tracking-wider text-ink-muted">
-              {familyLabel(c.family)}
+              {t(familyLabel(c.family))}
             </span>
             <p className="font-display text-base font-bold leading-snug group-hover:text-brand">{c.title}</p>
             <p className="mt-auto text-xs text-ink-muted">
@@ -412,9 +418,10 @@ export default function CueCardBank() {
         ))}
       </div>
 
+      {filtered.length > visibleCount && <button type="button" className="discovery-more" onClick={() => setVisibleCount(n => n + 12)}>{t('Show more')}</button>}
       {filtered.length === 0 && (
         <p className="rounded-card border border-dashed border-border p-8 text-center text-sm text-ink-muted">
-          {t('No cards in this family yet.')}
+          {t('No matches. Try another search.')}
         </p>
       )}
     </div>

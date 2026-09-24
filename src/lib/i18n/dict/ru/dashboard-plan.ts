@@ -14,6 +14,12 @@ export const strings: Record<string, string> = {
   'Good afternoon.': 'Добрый день.',
   'Good evening.': 'Добрый вечер.',
   'Welcome back.': 'С возвращением.',
+  /* The same four with the student's own first name (src/lib/dashboard-greeting.ts).
+     {name} is inserted as typed and never translated. */
+  'Good morning, {name}.': 'Доброе утро, {name}.',
+  'Good afternoon, {name}.': 'Добрый день, {name}.',
+  'Good evening, {name}.': 'Добрый вечер, {name}.',
+  'Welcome back, {name}.': 'С возвращением, {name}.',
   'A little practice. A step closer.': 'Немного практики. Ещё один шаг вперёд.',
   '{minutes} / {goal} min today': '{minutes} / {goal} мин сегодня',
   'Your study overview': 'Обзор вашей учёбы',
@@ -199,8 +205,6 @@ export const strings: Record<string, string> = {
 
   /* AccountOverview.tsx */
   'Synced across your devices': 'Синхронизировано на всех ваших устройствах',
-  'Saved on this device only. {loginLink} (top of the page) to sync across devices.':
-    'Сохранено только на этом устройстве. {loginLink} (вверху страницы), чтобы синхронизировать между устройствами.',
   'Log in': 'Войти',
   'Lessons done (of {total})': 'Пройдено уроков (из {total})',
   'Best {skill} band': 'Лучший балл {skill}',

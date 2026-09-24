@@ -1,0 +1,46 @@
+---
+interface Props { types?: Record<string, string>; }
+const { types = {} } = Astro.props;
+---
+<div class="discovery-controls" data-catalogue-controls>
+  <label><span data-i18n>Search the bank</span><input type="search" data-catalogue-search /></label>
+  {Object.keys(types).length > 0 && <label><span data-i18n>Question type</span><select data-catalogue-type><option value="" data-i18n>All types</option>{Object.entries(types).map(([value,label]) => <option value={value} data-i18n>{label}</option>)}</select></label>}
+  {Object.keys(types).length > 0 && <label><span data-i18n>Time</span><select data-catalogue-time><option value="" data-i18n>Any duration</option><option value="15" data-i18n>Up to 15 minutes</option><option value="20" data-i18n>Up to 20 minutes</option></select></label>}
+  <p class="discovery-count" aria-live="polite"><span data-catalogue-count></span> <span data-i18n>results shown</span></p>
+</div>
+<script>
+function setupCatalogues() {
+  document.querySelectorAll<HTMLElement>('[data-discovery]').forEach(root => {
+    if (root.dataset.bound) return;
+    root.dataset.bound = 'true';
+    const search = root.querySelector<HTMLInputElement>('[data-catalogue-search]')!;
+    const type = root.querySelector<HTMLSelectElement>('[data-catalogue-type]');
+    const duration = root.querySelector<HTMLSelectElement>('[data-catalogue-time]');
+    const cards = [...root.querySelectorAll<HTMLElement>('[data-discovery-item]')];
+    const groups = [...root.querySelectorAll<HTMLElement>('[data-discovery-group]')];
+    const more = root.querySelector<HTMLButtonElement>('[data-catalogue-more]')!;
+    let limit = 12;
+    if (type) { const asked = new URLSearchParams(location.search).get('type'); if (asked && [...type.options].some(o => o.value === asked)) type.value = asked; }
+    function update() {
+      const query = search.value.trim().toLocaleLowerCase();
+      let total = 0;
+      cards.forEach(card => {
+        const matches = (!duration?.value || Number(card.dataset.minutes) <= Number(duration.value)) && (!query || `${card.dataset.search || ''} ${card.textContent}`.toLocaleLowerCase().includes(query)) && (!type?.value || (card.dataset.drillTypes || '').split(',').includes(type.value));
+        if (matches) total++;
+        card.hidden = !matches || total > limit;
+      });
+      groups.forEach(group => { group.hidden = !group.querySelector('[data-discovery-item]:not([hidden])'); });
+      root.querySelector('[data-catalogue-count]')!.textContent = `${Math.min(limit,total)} / ${total}`;
+      root.querySelector<HTMLElement>('[data-catalogue-empty]')!.hidden = total !== 0;
+      more.hidden = total <= limit;
+    }
+    search.addEventListener('input', () => {limit = 12;update();});
+    duration?.addEventListener('change', () => {limit = 12;update();});
+    type?.addEventListener('change', () => {limit = 12;update();});
+    more.addEventListener('click', () => {limit += 12;update();});
+    update();
+  });
+}
+setupCatalogues();
+document.addEventListener('astro:page-load', setupCatalogues);
+</script>

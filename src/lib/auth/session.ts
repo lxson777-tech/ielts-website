@@ -1,9 +1,14 @@
 /* Thin auth helpers over the Supabase client. Every function no-ops safely when
    accounts aren't configured (getSupabase() → null), so callers never have to
-   branch on configuration. Primary sign-in is a standard email + password
-   form; Google and a one-time email link remain as secondary options. The
-   password itself never touches our own code — every call here hands it
-   straight to supabase-js, which posts it directly to Supabase's auth API. */
+   branch on configuration. Sign-in is email + password or Google; the
+   one-time email link was removed on 24 September 2026. The pages that call
+   these live in src/components/auth/. The password itself never touches our
+   own code: every call here hands it straight to supabase-js, which posts it
+   directly to Supabase's auth API.
+
+   None of these decide whose work is on this device. A successful call
+   changes the session, supabase-js announces it, and the app-wide lifecycle
+   (src/lib/auth/lifecycle.ts) reacts exactly as it always has. */
 
 import type { Session, User } from '@supabase/supabase-js';
 import { getSupabase } from './supabase';
@@ -44,29 +49,47 @@ export async function getAccessToken(): Promise<string | null> {
   return data.session?.access_token ?? null;
 }
 
-/** Standard email + password sign-in. */
-export async function signInWithPassword(email: string, password: string): Promise<{ error?: string }> {
+/** The bot check's one-time answer, added to a call's options only when
+    there is one. With PUBLIC_TURNSTILE_SITE_KEY unset (local development)
+    the forms render no widget and send no token, so the call is exactly
+    what it was before the check existed. */
+function withCaptcha<T extends object>(options: T, captchaToken?: string | null): T & { captchaToken?: string } {
+  return captchaToken ? { ...options, captchaToken } : options;
+}
+
+/** Standard email + password sign-in (the /sign-in page). */
+export async function signInWithPassword(
+  email: string,
+  password: string,
+  captchaToken?: string | null,
+): Promise<{ error?: string }> {
   const sb = getSupabase();
   if (!sb) return { error: t('Accounts are not configured for this site yet.') };
-  const { error } = await sb.auth.signInWithPassword({ email: email.trim(), password });
+  const { error } = await sb.auth.signInWithPassword({
+    email: email.trim(),
+    password,
+    options: withCaptcha({}, captchaToken),
+  });
   return error ? { error: error.message } : {};
 }
 
-/** Create a new account with a password. `emailRedirectTo` is where the
-    confirmation link (required by this project's auth settings) lands the
-    user back. Returns `needsConfirmation: true` when Supabase created the
-    user but withheld a session pending that email click. */
+/** Create a new account with a password (the /sign-up page).
+    `emailRedirectTo` is where the confirmation link lands the student: the
+    profile page, so a new account gives its details first. Returns
+    `needsConfirmation: true` when Supabase created the user but withheld a
+    session pending that email click. */
 export async function signUpWithPassword(
   email: string,
   password: string,
   emailRedirectTo: string,
+  captchaToken?: string | null,
 ): Promise<{ error?: string; needsConfirmation?: boolean }> {
   const sb = getSupabase();
   if (!sb) return { error: t('Accounts are not configured for this site yet.') };
   const { data, error } = await sb.auth.signUp({
     email: email.trim(),
     password,
-    options: { emailRedirectTo },
+    options: withCaptcha({ emailRedirectTo }, captchaToken),
   });
   if (error) return { error: error.message };
   // A confirmed session comes back immediately if email confirmation is off;
@@ -75,18 +98,23 @@ export async function signUpWithPassword(
 }
 
 /** Email a password-reset link. `redirectTo` should point at the page that
-    calls updatePassword() once the user lands back with a recovery session
-    (see /reset-password). */
-export async function sendPasswordReset(email: string, redirectTo: string): Promise<{ error?: string }> {
+    calls updatePassword() once the student lands back with a recovery
+    session (see /reset-password). */
+export async function sendPasswordReset(
+  email: string,
+  redirectTo: string,
+  captchaToken?: string | null,
+): Promise<{ error?: string }> {
   const sb = getSupabase();
   if (!sb) return { error: t('Accounts are not configured for this site yet.') };
-  const { error } = await sb.auth.resetPasswordForEmail(email.trim(), { redirectTo });
+  const { error } = await sb.auth.resetPasswordForEmail(email.trim(), withCaptcha({ redirectTo }, captchaToken));
   return error ? { error: error.message } : {};
 }
 
-/** Sets a new password on the currently-active session — used on the
-    /reset-password landing page, where clicking the emailed link has already
-    given the browser a temporary "recovery" session. */
+/** Sets a new password on the currently-active session: the /reset-password
+    landing page (where clicking the emailed link has already given the
+    browser a temporary "recovery" session) and "Change password" on
+    /account. */
 export async function updatePassword(password: string): Promise<{ error?: string }> {
   const sb = getSupabase();
   if (!sb) return { error: t('Accounts are not configured for this site yet.') };
@@ -94,16 +122,14 @@ export async function updatePassword(password: string): Promise<{ error?: string
   return error ? { error: error.message } : {};
 }
 
-/** Email the user a one-time sign-in link — kept as a fallback for anyone who
-    doesn't want to set a password. `redirectTo` is where the link lands
-    them back (an absolute URL on this origin). */
-export async function sendMagicLink(email: string, redirectTo: string): Promise<{ error?: string }> {
+/** Ask to move the account to a new email address. Supabase emails a
+    confirmation link to the new address (and, with "secure email change"
+    on in the dashboard, to the old one as well); nothing changes until it
+    is opened. `redirectTo` is where that link lands the student. */
+export async function updateEmail(newEmail: string, redirectTo: string): Promise<{ error?: string }> {
   const sb = getSupabase();
   if (!sb) return { error: t('Accounts are not configured for this site yet.') };
-  const { error } = await sb.auth.signInWithOtp({
-    email: email.trim(),
-    options: { emailRedirectTo: redirectTo },
-  });
+  const { error } = await sb.auth.updateUser({ email: newEmail.trim() }, { emailRedirectTo: redirectTo });
   return error ? { error: error.message } : {};
 }
 
@@ -114,10 +140,26 @@ export async function signInWithGoogle(redirectTo: string): Promise<{ error?: st
   return error ? { error: error.message } : {};
 }
 
+/** Sign out of THIS device. The session here is ended on Supabase's side too
+    (its refresh token is revoked), so a shared computer is left signed out
+    for good; the student's other devices stay signed in. Spelled out as
+    'local' since 24 September 2026: supabase-js's own default is 'global',
+    which quietly signed a student out everywhere from the menu. That is now
+    its own, explicit action (signOutEverywhere, on /account). */
 export async function signOut(): Promise<void> {
   const sb = getSupabase();
   if (!sb) return;
-  await sb.auth.signOut();
+  await sb.auth.signOut({ scope: 'local' });
+}
+
+/** Sign this account out on every device. Supabase revokes every session
+    the account holds, then this browser signs out exactly as signOut()
+    does, so the lifecycle hears the same SIGNED_OUT event. */
+export async function signOutEverywhere(): Promise<{ error?: string }> {
+  const sb = getSupabase();
+  if (!sb) return { error: t('Accounts are not configured for this site yet.') };
+  const { error } = await sb.auth.signOut({ scope: 'global' });
+  return error ? { error: error.message } : {};
 }
 
 /** Subscribe to auth changes (sign-in, sign-out, token refresh). Fires once

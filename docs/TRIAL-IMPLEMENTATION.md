@@ -21,8 +21,9 @@ model. Every proof below is local, against synthetic accounts.
   results") that the merged work already translates, whose Russian is now theirs.
   Then merged at `defa6f1` (three more screens bound to their student, and a sign-in
   that no longer announces a false account change), cleanly, and on 24 September with
-  the published `main` (`fb65080`, the study platform as released), cleanly. Everything
-  below was rerun after that merge. Not built on the older marketing checkout in the root folder,
+  the published `main` (`fb65080`, the study platform as released), cleanly, and then
+  with the published `main` at `a82e9c4` (the login rework: sign-in pages and student
+  profiles). Everything below was rerun after that merge. Not built on the older marketing checkout in the root folder,
   which was only read for Codex's design files.
 
 ## The switch
@@ -226,17 +227,17 @@ index file byte for byte).
 
 | What | Result |
 |---|---|
-| `npm test` (whole suite, after the merge with the published `main` `fb65080` and the lock-down of the rest) | 2,089 of 2,089 pass (73 of them are the trial tests below) |
+| `npm test` (whole suite, after the merge with the published `main` `a82e9c4`) | 2,174 of 2,174 pass (73 of them are the trial tests below) |
 | `tests/trial-sql.test.ts`: the migration itself, in PGlite with Supabase's roles and row security | 22 of 22 |
 | `tests/trial-worker.test.ts`: the real Mr EZ handler against the real migration | 12 of 12 |
 | `tests/trial-graders.test.ts`: the real essay grader, speaking grader and live examiner | 16 of 16 |
 | `tests/trial-content.test.ts`: the real content gate against the real migration, signed recordings included | 11 of 11 |
 | `tests/trial-trim.test.ts`: the trimmed learning index and dictionaries | 3 of 3 |
 | `tests/trial-status.test.ts`: what the screens may say | 9 of 9 |
-| `tests/browser/t01_trial_journey.py`: the real site, door on, in a real browser | 89 of 89 after locking the rest (`docs/trial/evidence/results-t01.md`) |
+| `tests/browser/t01_trial_journey.py`: the real site, door on, in a real browser | 89 of 89 after the merge with the login rework, signing up through the new pages (`docs/trial/evidence/results-t01.md`) |
 | `tools/trial-content-audit.mjs` on the trial build | no leaks (see above) |
 | `npx astro check` | 0 errors, 0 warnings, 20 hints (none from the trial) |
-| `npm run build`, open and trial | 663 pages each |
+| `npm run build`, open and trial | 669 pages each |
 
 The browser journey covers: signed-out offer; sign-up then explicit start; questionnaire
 carried over; 72-hour display from the server clock; restarting never restarts; locked
@@ -336,25 +337,16 @@ build with the same variables (`npx astro build`), then
 7. **Payments, renewals, refunds, support, recording retention**: not built. The plans
    page says payment is not connected.
 
-## Next merge: the login rework (not yet published)
+## Merged: the login rework (24 September)
 
-Another session is rebuilding sign-in on `claude/login-rework-profiles` (from `main`
-`32cdeb4`): it removes `src/components/AuthModal.tsx` and magic links, and adds pages
-`/sign-in`, `/sign-up`, `/forgot-password` and `/profile`. When that reaches `main` and is
-merged here:
-- `src/components/trial/TrialJoin.tsx` and `TrialBlock.tsx` open `AuthModal`; switch them
-  to links built with `signInHref(next)` / `signUpHref(next)` from `src/lib/auth/profile.ts`
-  (`?next=` brings the student back to `/trial`, so the questionnaire round trip must be
-  rechecked).
-- `tools/mr-ez-dev-server.mjs` gains a `student_profiles` table and `PUT /auth/v1/user`
-  there; the trial's own additions to that file (`--trial`, the live examiner and graders)
-  sit elsewhere in it.
-- `src/lib/platform-nav.ts`: their routes go after `/account`, the trial's before
-  `/reset-password`, so both stay.
-- `LiveExaminer.tsx` gets one small edit where the modal opened; the trial's Speaking
-  changes sit elsewhere in it.
-- The browser journey signs up through the modal (`sign_up_in_modal`, `open_auth`) and
-  must move to the new pages.
+`main` at `a82e9c4` replaced the sign-in popup with pages (`/sign-in`, `/sign-up`,
+`/forgot-password`, `/profile`). The trial follows it: the join screen's "Create a free
+account" and "I already have an account", and the "Sign in" on a covered page, are now
+links to `/sign-up?next=/trial`, `/sign-in?next=/trial` and `/sign-in?next=<this page>`
+(`signUpHref` / `signInHref`). A new account fills in its profile and comes back to
+`/trial`; the questionnaire answers wait in the browser meanwhile, and the browser journey
+proves they arrive. The only conflicts were neighbouring lines (styles, props, the Russian
+batch list, the test harness), all kept on both sides.
 
 ## Also coming: the placement test (not yet published)
 

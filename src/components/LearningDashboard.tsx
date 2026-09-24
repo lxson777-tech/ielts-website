@@ -18,7 +18,7 @@ import { withBase } from '../lib/url';
 import { getProgress, onProgressChange, type ProgressV1 } from '../lib/progress';
 import { buildCourse } from '../lib/course';
 import { loadOrCreateStudyPlan } from '../lib/plan/schedule';
-import { onStudyPlanChange } from '../lib/study-plan';
+import { onStudyPlanChange, confirmedTargetBand } from '../lib/study-plan';
 import { CARD_SET, getVocabSummary, type VocabSummary } from '../lib/vocab-review';
 import { VOCABULARY_PARTS } from '../data/vocabulary';
 import { getStreak, getTodayGoalProgress } from '../lib/plan/streak';
@@ -40,7 +40,11 @@ import {
 } from './learning/today/todayViewModel';
 import PlanToday from './plan/PlanToday';
 import { useT } from '../lib/i18n/react';
+import { greetingKey } from '../lib/dashboard-greeting';
+import { onAccountChange } from '../lib/auth/lifecycle';
+import { cachedProfile, loadProfile, onProfileChange, type StudentProfile } from '../lib/auth/profile';
 import '../styles/learning-today.css';
+import '../styles/today-polish.css';
 
 const ALL_PAPERS = ['reading', 'listening', 'writing', 'speaking'] as const;
 
@@ -76,10 +80,54 @@ function useCountUp(target: number, duration = 600): number {
   return shown;
 }
 
-function greeting(hour: number): string {
-  if (hour < 12) return 'Good morning.';
-  if (hour < 18) return 'Good afternoon.';
-  return 'Good evening.';
+/** The signed-in student's own first name, or null.
+
+    Signed out, not yet known, or no profile saved: null, and the greeting
+    reads exactly as it did before profiles existed. The cache is read ONLY
+    for the user id the account lifecycle reports right now (profile.ts keys
+    it by user id), so on a shared computer the previous student's name is
+    never shown to the next one. The cached name appears at once, the
+    server's answer replaces it, and a save anywhere else on the page (the
+    profile form) arrives through onProfileChange without a reload. A server
+    that could not be asked (`undefined`) leaves what is showing alone. */
+function useFirstName(): string | null {
+  const [firstName, setFirstName] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    let userId: string | null = null;
+    const show = (profile: StudentProfile | null | undefined) => {
+      const name = profile?.firstName?.trim();
+      setFirstName(name ? name : null);
+    };
+
+    const offAccount = onAccountChange((state) => {
+      if (!state.known) return;
+      const id = state.user?.id ?? null;
+      if (id === userId) return;
+      userId = id;
+      if (!id) {
+        setFirstName(null);
+        return;
+      }
+      show(cachedProfile(id));
+      void loadProfile(id).then((profile) => {
+        if (!active || userId !== id || profile === undefined) return;
+        show(profile);
+      });
+    });
+    const offProfile = onProfileChange((id, profile) => {
+      if (active && id === userId) show(profile);
+    });
+
+    return () => {
+      active = false;
+      offAccount();
+      offProfile();
+    };
+  }, []);
+
+  return firstName;
 }
 
 export default function LearningDashboard() {
@@ -97,6 +145,7 @@ export default function LearningDashboard() {
   const [goal, setGoal] = useState<{ minutes: number; goal: number | null } | null>(null);
   const [focus, setFocus] = useState<FocusAreaCertainty[]>([]);
   const [hour, setHour] = useState<number | null>(null);
+  const firstName = useFirstName();
 
   // Everything is read after mount: the stores are localStorage-backed, so
   // the server render and the first client render must agree on "nothing
@@ -107,7 +156,7 @@ export default function LearningDashboard() {
     const read = () => {
       const plan = loadOrCreateStudyPlan();
       setProgress(getProgress());
-      setTargetBand(plan.targetBand);
+      setTargetBand(confirmedTargetBand(plan));
       setTargetIsGuess(Boolean(plan.defaulted));
       setVocab(getVocabSummary());
       setStreak(getStreak(plan));
@@ -170,10 +219,10 @@ export default function LearningDashboard() {
   return (
     <div className="dash">
       <div className="dash-welcome"><h1 className="dash-greeting">
-        {hour === null ? t('Welcome back.') : t(greeting(hour))}<span className="dash-welcome-sub">{t('A little practice. A step closer.')}</span>
+        {t(greetingKey(hour, firstName), firstName ? { name: firstName } : undefined)}<span className="dash-welcome-sub">{t('A little practice. A step closer.')}</span>
       </h1>
         <div className="dash-daily-status">
-          <span className="dash-streak"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M13 3c1 5-5 6-3 10 1-1 2-2 2-4 4 3 6 5 6 8a6 6 0 0 1-12 0c0-4 2-7 7-14Z"/></svg>{tn(shownStreak, { one: '{n} day streak', other: '{n} day streak' })}</span>
+          {shownStreak > 0 && <span className="dash-streak"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M13 3c1 5-5 6-3 10 1-1 2-2 2-4 4 3 6 5 6 8a6 6 0 0 1-12 0c0-4 2-7 7-14Z"/></svg>{tn(shownStreak, { one: '{n} day streak', other: '{n} day streak' })}</span>}
           {/* No minutes target at all while the daily time has never been
               confirmed (goal.goal is null): a brand-new student has not
               chosen one yet, and "0 / 25 min today" showed a number nobody
@@ -190,10 +239,10 @@ export default function LearningDashboard() {
       <PlanToday />
 
       <aside className="dash-side" aria-label={t('Your study overview')}>
-      <div className="dash-target"><span>{t('Your goal')}</span><strong>{targetBand && !targetIsGuess ? t('Band {band}', { band: targetBand }) : t('Not set yet')}</strong><a href={withBase('/start')}>{targetIsGuess ? t('Set your target band') : t('Adjust your study plan')} <span aria-hidden="true">↗</span></a></div>
+      <div className={`dash-target${targetBand ? '' : ' is-unset'}`}><span>{t('Your goal')}</span><strong>{targetBand ? t('Band {band}', { band: targetBand }) : t('Not set yet')}</strong><a href={withBase('/start')}>{targetIsGuess ? t('Set your target band') : t('Adjust your study plan')} <span aria-hidden="true">↗</span></a></div>
 
-      <div className="dash-focus" aria-label={t('Focus areas')}>
-        <span className="dash-card-label">{t('Focus areas')}</span>
+      {focus.some((area) => area.certainty !== 'unknown') && <details className="dash-focus">
+        <summary className="dash-card-label">{t('Focus areas')}</summary>
         <ul className="dash-focus-list">
           {focus.map((area) => (
             <li key={area.paper} className="dash-focus-item">
@@ -211,7 +260,7 @@ export default function LearningDashboard() {
             </li>
           ))}
         </ul>
-      </div>
+      </details>}
 
       <div className="dash-cards">
         <a className="dash-card" href={withBase('/review')}>

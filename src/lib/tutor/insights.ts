@@ -665,8 +665,19 @@ export function readInsights(
     one language, so a student who switches to Russian must not be handed
     the English one back (and the other way round). Folding it into the
     hashed string keeps that out of the database schema entirely: two
-    languages are simply two different fingerprints. */
-export function insightsFingerprint(insights: StudentInsights, locale: Locale = 'en'): string {
+    languages are simply two different fingerprints.
+
+    The student's FIRST NAME is folded in when there is one, because a
+    welcome may greet them by it: a welcome cached before they filled in
+    their profile is rewritten once with the name, and again if they change
+    it. It is appended only when present, so the fingerprint of a student
+    with no profile is exactly what it was before names existed and nothing
+    already cached is thrown away for them. */
+export function insightsFingerprint(
+  insights: StudentInsights,
+  locale: Locale = 'en',
+  firstName?: string | null,
+): string {
   const { goals, facts } = insights;
   const parts = [
     locale,
@@ -678,6 +689,7 @@ export function insightsFingerprint(insights: StudentInsights, locale: Locale = 
     facts.typeAccuracy.map((t) => `${t.skill}:${t.type}:${t.correct}/${t.total}`).join(','),
     insights.observations.map((o) => `${o.id}:${o.confidence}`).join(','),
   ];
+  if (firstName) parts.push(`name:${firstName}`);
   return fnv1a(parts.join('|'));
 }
 

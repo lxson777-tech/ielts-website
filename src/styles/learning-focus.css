@@ -593,3 +593,7 @@
   .focused-audio-note { margin: 0 16px 18px; }
   .focused-evidence-replay { display: block; margin: 6px 0 0; width: fit-content; }
 }
+
+.focused-legend .listening-source-legend > div { display:flex; gap:12px; padding:5px 0; }
+.focused-legend .listening-source-legend dt { font-weight:750; }
+.focused-legend img { display:block; max-width:100%; height:auto; margin:auto; }

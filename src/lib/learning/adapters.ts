@@ -229,16 +229,17 @@ const LESSON_TITLE_BY_KEY: Readonly<Record<string, string>> = (() => {
   return titles;
 })();
 
-/** The real, short name for one step, or null when nothing more specific
+/** The real, short name for one activity (a step's, or a later day's in
+    the Course agenda), or null when nothing more specific
     than kind/paper/subskill is known (see SharedStepView.title). Prefers
     the catalogue's own `label` so that once catalog.ts starts populating
     one (for drills and tests, from the generated index's own titles) it
     takes over here with no further change. */
-function catalogueStepTitle(step: SessionStep, activity: CatalogueActivity | undefined): string | null {
+export function activityTitle(activityId: string, activity: CatalogueActivity | undefined): string | null {
   if (activity?.label) return activity.label;
   if (!activity) return null;
   if (activity.kind === 'lesson') {
-    const key = lessonKeyOf(step.activityId);
+    const key = lessonKeyOf(activityId);
     return (key && LESSON_TITLE_BY_KEY[key]) || null;
   }
   if (activity.kind === 'lesson-check') {
@@ -270,7 +271,7 @@ function stepView(step: SessionStep, catalogue: LearningCatalogueV1): SharedStep
     objective: activity?.objective ?? step.purpose,
     indivisible: activity?.indivisible ?? false,
     lessonKey: lessonKeyOf(step.activityId),
-    title: catalogueStepTitle(step, activity),
+    title: activityTitle(step.activityId, activity),
   };
 }
 

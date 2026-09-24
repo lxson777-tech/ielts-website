@@ -1,0 +1,16 @@
+---
+/* "About you" (24 September 2026): the details every student gives once,
+   and can edit later. With `?next=<route>` it is the first-time setup and
+   goes on there after saving; without it, it is the edit page reached from
+   the account menu and /account. See src/components/auth/ProfileForm.tsx. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProfileForm from '../components/auth/ProfileForm';
+---
+
+<BaseLayout title="Your details · IELTS Portal" description="Your IELTS is EZ profile." noindex>
+  <ProfileForm client:load />
+</BaseLayout>
+
+<style is:global>
+  @import '../styles/auth.css';
+</style>

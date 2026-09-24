@@ -14,9 +14,7 @@ const trainers = [
   {
     skill: 'reading',
     title: 'Reading Trainer',
-    description: nt(
-      'One timed passage at a time, with a live "how to approach it" strategy panel and trap warnings for every question type.',
-    ),
+    description: nt("Read one passage with strategy tips, then review your answers."),
     perk: 'Strategy panel and trap warnings while you read',
     // A build-time count baked into plain text: no counted-phrase mechanism
     // reaches text this dynamic without touching src/lib/i18n, so it is left
@@ -29,9 +27,7 @@ const trainers = [
   {
     skill: 'listening',
     title: 'Listening Trainer',
-    description: nt(
-      'One part of the recording at a time, with a live "how to approach it" strategy panel, full pause/seek/replay control while you practise, unlike the bare-conditions full test.',
-    ),
+    description: nt("Listen to one recording. Pause and replay while you practise."),
     perk: 'Pause, seek and replay while you practise',
     stats: `${ALL_LISTENING_DRILLS.length} drills`,
     href: '/trainers/listening',
@@ -41,9 +37,7 @@ const trainers = [
   {
     skill: 'speaking',
     title: 'Speaking Trainer',
-    description: nt(
-      'Practice Part 1, 2 or 3 on its own, with a live coach panel: the answer structure (A.R.E. / PEEL / OREO), useful phrases, topic vocabulary and idea hints when you get stuck.',
-    ),
+    description: nt("Speak through one part of the exam, with guidance when you need it."),
     perk: 'Coach panel with structure, phrases and idea hints',
     stats: `${SPEAKING_PART1_TOPICS.length} Part 1 topics · ${SPEAKING_CUE_CARDS.length} cue cards`,
     href: '/trainers/speaking',
@@ -53,9 +47,7 @@ const trainers = [
   {
     skill: 'writing',
     title: 'Writing Trainer',
-    description: nt(
-      'Write against a rotating prompt with a live coach panel: the paragraph plan for that exact question type, useful phrases and topic vocabulary, then get instant AI feedback.',
-    ),
+    description: nt("Write an answer with a paragraph plan, then review your feedback."),
     perk: 'Coach panel with a paragraph plan and instant feedback',
     stats: `${task1Count} Task 1 prompts · ${task2Count} Task 2 prompts`,
     href: '/trainers/writing',

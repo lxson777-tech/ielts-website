@@ -33,9 +33,6 @@ export const strings: Record<string, string> = {
   /* src/components/Card.astro. */
   Open: 'Открыть',
 
-  /* src/components/HeroStartCta.tsx. */
-  'Start my IELTS preparation': 'Начать подготовку к IELTS',
-
   /* src/components/home/GameStudent.astro, EzStudent.astro (decorative,
      accessible labels only; neither component is used anywhere yet). */
   'IELTS student': 'Студент, готовящийся к IELTS',

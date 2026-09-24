@@ -8,7 +8,7 @@ import MrEzMemory from '../components/tutor/MrEzMemory';
   <div class="settings-page platform-hub mx-auto max-w-4xl px-4 py-12 sm:px-6">
     <SectionHeading level="h1" title="Your study plan" subtitle="Set your target, exam date and study time. Your completed lessons stay saved." />
     <Intake variant="settings" client:load />
-    <div class="mt-10"><MrEzMemory client:load /></div>
+    <details class="support-disclosure mt-10"><summary data-i18n>What Mr EZ remembers</summary><MrEzMemory client:load /></details>
   </div>
 </BaseLayout>
 <style is:global>

@@ -77,6 +77,16 @@ export default function BandReport({
         )}
       </div>
 
+      <div className="grid gap-4 sm:grid-cols-2">
+        <ListCard title={`✓ ${t('Strengths')}`} items={strengths} tone="success" />
+        {actionPlan && actionPlan.length > 0 ? (
+          <ActionPlanCard steps={actionPlan} />
+        ) : (
+          <ListCard title={t('Improve next')} items={improvements} tone="brand" />
+        )}
+      </div>
+
+
       <MotionConfig reducedMotion="user">
         <motion.div
           className="grid gap-4 sm:grid-cols-2 sm:items-start"
@@ -104,7 +114,7 @@ export default function BandReport({
                 <p className="mt-2 text-sm text-ink-muted">{c.comment}</p>
 
                 {(c.tip || c.nextBand) && (
-                  <div className="space-y-3 pt-3">
+                  <details className="criterion-advice space-y-3 pt-3"><summary>{t('How to improve this criterion')}</summary>
                     {c.tip && (
                       <p>
                         <span className="block rounded-lg bg-brand-tint/60 px-2.5 py-1.5 text-xs text-ink">
@@ -196,7 +206,7 @@ export default function BandReport({
                         )}
                       </div>
                     )}
-                  </div>
+                  </details>
                 )}
               </motion.div>
             );
@@ -206,14 +216,6 @@ export default function BandReport({
 
       {children}
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <ListCard title={`✓ ${t('Strengths')}`} items={strengths} tone="success" />
-        {actionPlan && actionPlan.length > 0 ? (
-          <ActionPlanCard steps={actionPlan} />
-        ) : (
-          <ListCard title={t('Improve next')} items={improvements} tone="brand" />
-        )}
-      </div>
 
       {/* The report says which rung the student is on. The ladder itself, every
           band for every criterion, lives on one browsable page. */}

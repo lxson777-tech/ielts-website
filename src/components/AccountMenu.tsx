@@ -1,8 +1,8 @@
 /* Account widget for the nav. Renders nothing when accounts aren't configured
    (the "Start Here" study-plan link lives in Nav.astro's More menu and mobile
    menu, so onboarding doesn't depend on this island). Signed out, the button
-   opens the login window (AuthModal) directly; signed in, it becomes an avatar
-   menu with progress and sign-out.
+   links to the /sign-in page (the sign-in popup was replaced on 24 September
+   2026); signed in, it becomes an avatar menu with progress and sign-out.
    Mounting this island used to be what drove sync. It no longer is: since
    23 September 2026 the base layout starts src/lib/auth/lifecycle.ts on every
    route, chrome or no chrome, and this island reads it. That is what gives a
@@ -22,8 +22,10 @@ import { buildCourse, courseStatus } from '../lib/course';
 import { ensureLearningWired } from '../lib/learning';
 import type { SharedSessionView } from '../lib/learning/adapters';
 import { useT } from '../lib/i18n/react';
-import AuthModal from './AuthModal';
+import { signInHref } from '../lib/auth/profile';
+import { currentRoute } from '../lib/auth/next';
 import AnonymousWorkClaim from './learning/AnonymousWorkClaim';
+import { fullNameOf, initialsFor, useKnownProfile } from './auth/known-profile';
 
 const MODULES = buildCourse();
 
@@ -40,8 +42,8 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
   const { t } = useT();
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const profile = useKnownProfile(user?.id ?? null);
   const menuRef = useRef<HTMLDivElement>(null);
   /* Course entry for the menu. Computed only while the menu is open so the
      nav island doesn't read two stores on every page load. `started` is what
@@ -91,12 +93,6 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
     });
   }, []);
 
-  // Close the login window as soon as auth succeeds (sign-in inside the modal
-  // calls onClose itself, but OAuth/magic-link land back signed-in too).
-  useEffect(() => {
-    if (user) setModalOpen(false);
-  }, [user]);
-
   useEffect(() => {
     if (!menuOpen) return;
     const onDoc = (e: MouseEvent) => {
@@ -115,8 +111,9 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
 
   /* ── Signed in ── */
   if (user) {
-    const label = user.email ?? t('Account');
-    const initial = (user.email ?? '?').charAt(0).toUpperCase();
+    const fullName = fullNameOf(profile);
+    const label = fullName || user.email || t('Account');
+    const initial = initialsFor(user.email ?? undefined, profile).charAt(0) || '?';
     return (
       <div ref={menuRef} className="relative inline-block">
         <button
@@ -142,6 +139,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
             <div className="border-b border-border px-4 py-3">
               <p className="text-xs text-ink-muted">{t('Signed in as')}</p>
               <p className="truncate text-sm font-semibold">{label}</p>
+              {fullName && user.email && <p className="truncate text-xs text-ink-muted">{user.email}</p>}
               <p className="mt-1 text-xs text-success">{t('Progress is syncing to your account.')}</p>
             </div>
             <a
@@ -211,9 +209,11 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
   /* ── Signed out ── */
   return (
     <div className="relative inline-block">
-      <button
-        type="button"
-        onClick={() => setModalOpen(true)}
+      <a
+        href={withBase('/sign-in')}
+        onClick={(e) => {
+          e.currentTarget.href = signInHref(currentRoute());
+        }}
         className={`group inline-flex items-center gap-2 rounded-full font-display font-bold ring-1 ring-inset ring-brand/15 transition-all duration-200 ${
           compact
             ? 'w-full bg-brand-tint px-3 py-2 text-sm text-brand'
@@ -231,9 +231,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
           </svg>
         </span>
         {t('Log in')}
-      </button>
-
-      {modalOpen && <AuthModal onClose={() => setModalOpen(false)} />}
+      </a>
     </div>
   );
 }

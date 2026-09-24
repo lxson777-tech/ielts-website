@@ -227,18 +227,20 @@ test('a component reading findActivity() translates its objective and unavailabl
   assert.deepEqual(problems, [], `Components bypassing the learning Russian map:\n  ${problems.join('\n  ')}`);
 });
 
-test('WeekView keeps the exact fix: activity.objective goes through learningText(locale, ...) for the days it resolves from the catalogue', () => {
-  const source = fs.readFileSync(path.join(REPO_ROOT, 'src/components/plan/WeekView.tsx'), 'utf8');
+test('the Course agenda keeps the exact fix: activity.objective goes through learningText(locale, ...) for the days it resolves from the catalogue', () => {
+  /* Moved with the code: WeekView now renders rows built by
+     src/lib/learning/agenda.ts (courseAgenda), which is where a later day's
+     objective is resolved and translated. */
+  const agenda = fs.readFileSync(path.join(REPO_ROOT, 'src/lib/learning/agenda.ts'), 'utf8');
   assert.match(
-    source,
+    agenda,
     /learningText\(\s*locale\s*,\s*activity\.objective\s*\)/,
-    'WeekView.tsx should translate a future day\'s activity objective with learningText(locale, activity.objective)',
+    "agenda.ts should translate a future day's activity objective with learningText(locale, activity.objective)",
   );
-  assert.doesNotMatch(
-    source,
-    /\{t\(activity\.objective\)\}/,
-    'WeekView.tsx must not go back to rendering activity.objective through the general t()',
-  );
+  for (const file of ['src/lib/learning/agenda.ts', 'src/components/plan/WeekView.tsx']) {
+    const source = fs.readFileSync(path.join(REPO_ROOT, file), 'utf8');
+    assert.doesNotMatch(source, /\bt\(activity\.objective\)/, `${file} must not render activity.objective through the general t()`);
+  }
 });
 
 /* ================================================================== */

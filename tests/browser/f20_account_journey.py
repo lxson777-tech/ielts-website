@@ -457,16 +457,26 @@ def close_workspace_menu_if_open(page):
 
 def ws_menu_state(page) -> dict:
     """Read the workspace menu's own idea of who is signed in, opening and
-    then closing it again so this is safe to call between other actions."""
+    then closing it again so this is safe to call between other actions.
+
+    Since the 24 September 2026 login rework the identity line shows the
+    student's NAME once their profile is known, with the email underneath
+    (`.ws-menu-email`). `identity` stays the EMAIL either way, so every
+    caller comparing it with an address keeps working; `name` is the name,
+    or None before the profile is known."""
     open_workspace_menu(page)
     menu = page.locator(".ws-menu[role='menu']")
     sign_in_item = menu.get_by_role("menuitem", name="Sign in")
     sign_out_item = menu.get_by_role("menuitem", name="Sign out")
-    identity = menu.locator(".ws-menu-identity strong")
+    strong = menu.locator(".ws-menu-identity strong")
+    email_line = menu.locator(".ws-menu-identity .ws-menu-email")
+    strong_text = strong.first.inner_text().strip() if strong.count() else None
+    email_text = email_line.first.inner_text().strip() if email_line.count() else None
     state = {
         "shows_sign_in": sign_in_item.count() > 0,
         "shows_sign_out": sign_out_item.count() > 0,
-        "identity": identity.first.inner_text().strip() if identity.count() else None,
+        "identity": email_text or strong_text,
+        "name": strong_text if email_text else None,
     }
     close_workspace_menu_if_open(page)
     return state
@@ -493,49 +503,277 @@ def _user_id_from_auth_response(page, url_fragment: str, act) -> str | None:
         return None
 
 
-def ws_sign_up(page, email: str, password: str) -> str | None:
-    """First-time sign-in for a fresh email through the ONLY reachable sign
-    in surface (WorkspaceMenu -> AuthModal). The stand-in's /signup doubles
-    as sign-in (no inbox on a local dev server). Returns the real user id."""
-    open_workspace_menu(page)
-    try_click(page.get_by_role("menuitem", name="Sign in"), timeout=8000)
-    dialog = page.get_by_role("dialog")
+# ── the account pages (24 September 2026) ───────────────────────────────────
+#
+# The sign-in popup (AuthModal) is gone. "Sign in" in the workspace menu is
+# now a link to /sign-in?next=<this page>; /sign-in links to /sign-up; a new
+# account fills in /profile ("About you") and is then taken back to `next`.
+# An existing account whose profile is missing is sent to /profile by the
+# profile gate once it lands, and back again after.
+#
+# SIGN_IN_IN_PLACE (set by f22 and f23): those scripts sign a student in or
+# out WHILE a paper or a held grade is on screen, and check that the page was
+# never reloaded (window.__f23SamePage and the like). A sign-in page cannot do
+# that from the same tab, so in that mode the sign-in happens in a second tab
+# of the same browser, through the real /sign-in page, and the original page
+# hears it the way a real student's other tab would: supabase-js announces
+# the new session to every tab. A new account for that mode is created with
+# its profile through the stand-in's API first (there is no form to show on a
+# page that must not move), then signed in through /sign-in the same way.
+
+SIGN_IN_IN_PLACE = False
+
+# A fixed, SYNTHETIC adult profile, and an under-18 variant with a parent.
+ADULT_PROFILE = {
+    "first_name": "Synthetic",
+    "last_name": "Student",
+    "dob": ("4", "3", "2000"),          # day, month, year as the selects hold them
+    "phone": "+7 701 234 56 78",
+    "city": "Almaty",
+    "occupation": "Synthetic University",
+    "source": "friend",
+}
+MINOR_PROFILE = {
+    "first_name": "Synthetic",
+    "last_name": "Younger",
+    "dob": ("1", "9", "2012"),
+    "phone": "+7 702 000 11 22",
+    "city": "Almaty",
+    "occupation": "Synthetic School 1",
+    "source": "centre",
+    "parent_name": "Synthetic Parent",
+    "parent_phone": "+7 777 000 33 44",
+}
+
+
+def current_route(page) -> str:
+    """The page's route with its query, base path stripped: what the site
+    itself passes as `next`."""
+    from urllib.parse import urlparse
+    parsed = urlparse(page.url)
+    base_path = urlparse(BASE_URL).path.rstrip("/")
+    route = parsed.path
+    if base_path and route.startswith(base_path):
+        route = route[len(base_path):]
+    route = route or "/"
+    return route + (f"?{parsed.query}" if parsed.query else "")
+
+
+def _on_route(page, route: str) -> bool:
+    return current_route(page).split("?")[0] == route
+
+
+def _wait_for_route(page, predicate, timeout_ms=20000) -> bool:
+    deadline = time.time() + timeout_ms / 1000
+    while time.time() < deadline:
+        try:
+            if predicate(current_route(page)):
+                return True
+        except Exception:
+            pass
+        page.wait_for_timeout(200)
+    return False
+
+
+def fill_profile(page, profile: dict | None = None) -> bool:
+    """Fill /profile ("About you") with a fixed SYNTHETIC profile and save
+    it. Under 18, the parent block must appear by itself once the date of
+    birth is chosen, and is filled too. Returns True once the page has
+    accepted the details (it leaves for `next`, or says Saved)."""
+    profile = profile or ADULT_PROFILE
     try:
-        page.wait_for_selector("[role='dialog']", timeout=10000)
+        page.wait_for_selector("#profile-firstName", timeout=20000)
     except Exception:
-        pass
-    try_click(dialog.get_by_role("button", name="Sign up", exact=True), timeout=10000)
-    page.wait_for_timeout(400)
-    dialog.locator("#account-email").fill(email)
-    dialog.locator("#account-password").fill(password)
-    dialog.locator("#account-confirm").fill(password)
+        return False
+    page.locator("#profile-firstName").fill(profile["first_name"])
+    page.locator("#profile-lastName").fill(profile["last_name"])
+    day, month, year = profile["dob"]
+    page.locator("#profile-dob-day").select_option(day)
+    page.locator("#profile-dob-month").select_option(month)
+    page.locator("#profile-dob-year").select_option(year)
+    page.locator("#profile-phone").fill(profile["phone"])
+    page.locator("#profile-city").fill(profile["city"])
+    page.locator("#profile-occupation").fill(profile["occupation"])
+    page.locator(f"#profile-source-{profile['source']}").check(force=True)
+    if profile.get("parent_name"):
+        try:
+            page.wait_for_selector("[data-testid='parent-block']", timeout=5000)
+        except Exception:
+            return False
+        page.locator("#profile-parentName").fill(profile["parent_name"])
+        page.locator("#profile-parentPhone").fill(profile["parent_phone"])
+        page.locator("#profile-parentConsent").check()
+    before = page.url
+    button = page.get_by_role("button", name="Save and continue")
+    if not button.count():
+        button = page.get_by_role("button", name="Save details")
+    try_click(button, timeout=10000)
+    return _wait_for_route(
+        page,
+        lambda r: r.split("?")[0] != "/profile" or page.locator("text=Saved").count() > 0,
+        timeout_ms=15000,
+    ) or page.url != before
+
+
+def _open_sign_in_page(page) -> None:
+    """The real path: the avatar menu's "Sign in" link, which carries this
+    page as `next`. Falls back to the address itself if the menu is not
+    there (a full-screen page has no header)."""
+    here = current_route(page)
+    if open_workspace_menu(page) and try_click(page.get_by_role("menuitem", name="Sign in"), timeout=8000):
+        if _wait_for_route(page, lambda r: r.split("?")[0] == "/sign-in", timeout_ms=10000):
+            page.wait_for_selector("#signin-email", timeout=20000)
+            return
+    from urllib.parse import quote
+    goto(page, f"/sign-in?next={quote(here, safe='')}")
+    page.wait_for_selector("#signin-email", timeout=20000)
+
+
+def _session_user_id(page) -> str | None:
+    """The signed-in user's id from the session supabase-js stores in this
+    browser (`sb-<project>-auth-token`), or None when nobody is signed in."""
+    try:
+        return page.evaluate(
+            """() => {
+                for (let i = 0; i < localStorage.length; i += 1) {
+                    const key = localStorage.key(i);
+                    if (!/^sb-.*-auth-token$/.test(key || '')) continue;
+                    try { return JSON.parse(localStorage.getItem(key)).user.id || null; } catch (e) { return null; }
+                }
+                return null;
+            }"""
+        )
+    except Exception:
+        return None
+
+
+def _submit_sign_in(page) -> str | None:
+    """Press "Sign in" once and return the user id. Read off the /token
+    response when it arrives in time; otherwise off the stored session once
+    the page has moved on. Never presses twice: a second press on a slow
+    dev server was what left an earlier run with no id to report."""
+    user_id = None
+    try:
+        with page.expect_response(lambda r: "/auth/v1/token" in r.url, timeout=30000) as resp_info:
+            try_click(page.get_by_role("button", name="Sign in", exact=True), timeout=10000)
+        user_id = ((resp_info.value.json() or {}).get("user") or {}).get("id")
+    except Exception:
+        user_id = None
+    _wait_for_route(page, lambda r: r.split("?")[0] != "/sign-in", timeout_ms=20000)
+    return user_id or _session_user_id(page)
+
+
+def _sign_in_on_this_tab(page, email: str, password: str, profile: dict | None) -> str | None:
+    _open_sign_in_page(page)
+    page.locator("#signin-email").fill(email)
+    page.locator("#signin-password").fill(password)
+    user_id = _submit_sign_in(page)
+    # An account with no profile yet is sent to /profile by the gate.
+    page.wait_for_timeout(1500)
+    if _on_route(page, "/profile"):
+        fill_profile(page, profile)
+    page.wait_for_timeout(1500)
+    return user_id
+
+
+def _standin_post(path: str, body, headers: dict) -> tuple[int, dict | list | None]:
+    request = urllib.request.Request(
+        STANDIN_URL + path,
+        data=json.dumps(body).encode("utf-8"),
+        headers={"Content-Type": "application/json", **headers},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=10) as response:
+            raw = response.read().decode("utf-8")
+            return response.status, (json.loads(raw) if raw else None)
+    except urllib.error.HTTPError as error:
+        return error.code, None
+
+
+def _create_account_with_profile(email: str, password: str, profile: dict | None) -> str | None:
+    """In-place mode only: make the account and its profile on the stand-in
+    directly, so the page that must not move is never sent to /profile."""
+    profile = profile or ADULT_PROFILE
+    status, body = _standin_post("/auth/v1/signup", {"email": email, "password": password},
+                                 {"apikey": "local-anon-key"})
+    user_id = ((body or {}).get("user") or {}).get("id") if status == 200 else None
+    if not user_id:
+        return None
+    day, month, year = profile["dob"]
+    minor = bool(profile.get("parent_name"))
+    row = {
+        "user_id": user_id,
+        "first_name": profile["first_name"],
+        "last_name": profile["last_name"],
+        "date_of_birth": f"{int(year):04d}-{int(month):02d}-{int(day):02d}",
+        "phone": "".join(ch for ch in profile["phone"] if ch.isdigit() or ch == "+"),
+        "city": profile["city"],
+        "occupation": profile["occupation"],
+        "source": profile["source"],
+        "parent_name": profile.get("parent_name") if minor else None,
+        "parent_phone": "".join(ch for ch in profile.get("parent_phone", "") if ch.isdigit() or ch == "+") if minor else None,
+        "parent_consent_at": "2026-09-24T00:00:00.000Z" if minor else None,
+    }
+    _standin_post("/rest/v1/student_profiles?on_conflict=user_id", row,
+                  {**SERVICE_ROLE_HEADERS, "Prefer": "resolution=merge-duplicates"})
+    return user_id
+
+
+def _sign_in_from_another_tab(page, email: str, password: str, profile: dict | None) -> str | None:
+    helper = page.context.new_page()
+    try:
+        goto(helper, "/sign-in?next=%2Fdashboard")
+        helper.wait_for_selector("#signin-email", timeout=20000)
+        helper.locator("#signin-email").fill(email)
+        helper.locator("#signin-password").fill(password)
+        user_id = _submit_sign_in(helper)
+        helper.wait_for_timeout(800)
+        if _on_route(helper, "/profile"):
+            fill_profile(helper, profile)
+    finally:
+        helper.close()
+    # The original page hears the new session from the other tab.
+    page.wait_for_timeout(2200)
+    return user_id
+
+
+def ws_sign_up(page, email: str, password: str, profile: dict | None = None) -> str | None:
+    """First sign-in for a fresh email. The real journey: the avatar menu's
+    "Sign in" link, "Create an account" on /sign-in, the /sign-up form, the
+    /profile form, and back to the page it started on. The stand-in's
+    /signup hands back a session straight away (no inbox on a local dev
+    server). Returns the real user id."""
+    if SIGN_IN_IN_PLACE:
+        user_id = _create_account_with_profile(email, password, profile)
+        signed_in = _sign_in_from_another_tab(page, email, password, profile)
+        return user_id or signed_in
+    start = current_route(page)
+    _open_sign_in_page(page)
+    try_click(page.get_by_role("link", name="Create an account"), timeout=10000)
+    page.wait_for_selector("#signup-email", timeout=20000)
+    page.locator("#signup-email").fill(email)
+    page.locator("#signup-password").fill(password)
+    page.locator("#signup-confirm").fill(password)
     user_id = _user_id_from_auth_response(
         page, "/auth/v1/signup",
-        lambda: try_click(dialog.get_by_role("button", name="Create account"), timeout=10000),
+        lambda: try_click(page.get_by_role("button", name="Create account"), timeout=10000),
     )
+    _wait_for_route(page, lambda r: r.split("?")[0] == "/profile", timeout_ms=20000)
+    user_id = user_id or _session_user_id(page)
+    fill_profile(page, profile)
+    _wait_for_route(page, lambda r: r.split("?")[0] == start.split("?")[0], timeout_ms=20000)
     page.wait_for_timeout(2200)
     return user_id
 
 
-def ws_sign_in(page, email: str, password: str) -> str | None:
-    """A REAL sign-in against an account that already exists: goes through
-    the stand-in's /token endpoint, which checks the password. Returns the
-    real user id."""
-    open_workspace_menu(page)
-    try_click(page.get_by_role("menuitem", name="Sign in"), timeout=8000)
-    dialog = page.get_by_role("dialog")
-    try:
-        page.wait_for_selector("[role='dialog']", timeout=10000)
-    except Exception:
-        pass
-    dialog.locator("#account-email").fill(email)
-    dialog.locator("#account-password").fill(password)
-    user_id = _user_id_from_auth_response(
-        page, "/auth/v1/token",
-        lambda: try_click(dialog.get_by_role("button", name="Log in", exact=True), timeout=10000),
-    )
-    page.wait_for_timeout(2200)
-    return user_id
+def ws_sign_in(page, email: str, password: str, profile: dict | None = None) -> str | None:
+    """A REAL sign-in against an account that already exists: /sign-in goes
+    through the stand-in's /token endpoint, which checks the password, then
+    back to the page it started on. Returns the real user id."""
+    if SIGN_IN_IN_PLACE:
+        return _sign_in_from_another_tab(page, email, password, profile)
+    return _sign_in_on_this_tab(page, email, password, profile)
 
 
 def ws_sign_out(page):
@@ -670,11 +908,31 @@ def run():
             "page this journey visits - see the headline finding above). First sign-in for a fresh "
             'email ("Sign up", which doubles as sign-in on the stand-in).',
         )
-        a_id = ws_sign_up(page, EMAIL_A, PASSWORD_A)
+        a_id = ws_sign_up(page, EMAIL_A, PASSWORD_A, ADULT_PROFILE)
+        write_row(
+            "Signing up went /sign-up, then /profile, then back to the page it started on",
+            bool(a_id) and _on_route(page, "/dashboard"),
+            f"user id {a_id}, landed on {current_route(page)}",
+        )
+        _, a_profile_rows = rest_get(f"student_profiles?user_id=eq.{a_id}")
+        write_row(
+            "A's profile (a synthetic adult) reached the stand-in's student_profiles under A's id",
+            len(a_profile_rows or []) == 1
+            and (a_profile_rows[0].get("first_name") == ADULT_PROFILE["first_name"])
+            and a_profile_rows[0].get("phone") == "+77012345678"
+            and a_profile_rows[0].get("parent_name") is None,
+            json.dumps(a_profile_rows),
+        )
         menu_state = ws_menu_state(page)
         write_row("After signing in as A, the workspace menu shows Sign out, not Sign in",
                   menu_state["shows_sign_out"] and not menu_state["shows_sign_in"],
                   json.dumps(menu_state))
+        write_row(
+            "The menu calls A by name, with the email underneath",
+            menu_state.get("name") == f'{ADULT_PROFILE["first_name"]} {ADULT_PROFILE["last_name"]}'
+            and menu_state.get("identity") == EMAIL_A,
+            json.dumps(menu_state),
+        )
         shot(page, "04-a-signed-in-workspace-menu")
 
         # The offer only appears once the account's own cloud sync has fully
@@ -875,7 +1133,18 @@ def run():
             "step 2, and the claim offer never re-appears for a different account once one account "
             "has decided), not A's real signed-in lesson.",
         )
-        b_id = ws_sign_up(page, EMAIL_B, PASSWORD_B)
+        # B is a synthetic student UNDER 18: the profile page must show the
+        # parent block by itself and refuse to save without it.
+        b_id = ws_sign_up(page, EMAIL_B, PASSWORD_B, MINOR_PROFILE)
+        _, b_profile_rows = rest_get(f"student_profiles?user_id=eq.{b_id}")
+        write_row(
+            "B (a synthetic student under 18) saved a profile with a parent's name, phone and agreement",
+            len(b_profile_rows or []) == 1
+            and b_profile_rows[0].get("parent_name") == MINOR_PROFILE["parent_name"]
+            and b_profile_rows[0].get("parent_phone") == "+77770003344"
+            and bool(b_profile_rows[0].get("parent_consent_at")),
+            json.dumps(b_profile_rows),
+        )
         b_claim_marker = claim_offer_present(page)
         write_row(
             "B is offered nothing on this device: A already claimed everything there was, and even if "

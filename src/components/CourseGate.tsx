@@ -17,7 +17,9 @@
    another device), so a signed-out student sees a quiet note about that
    rather than a locked screen. */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { usePlatformReducedMotion } from './SmoothReveal';
 import type { User } from '@supabase/supabase-js';
 import { isAuthConfigured } from '../lib/auth/supabase';
 import { onAuthChange } from '../lib/auth/session';
@@ -35,6 +37,22 @@ export default function CourseGate() {
   // client paint (localStorage and the URL can only be read after mount on a
   // statically rendered page), then the effect below settles it.
   const [view, setView] = useState<CourseView>('route');
+  const [panelHeight, setPanelHeight] = useState<number | null>(null);
+  const routeRef = useRef<HTMLDivElement>(null);
+  const sectionsRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = usePlatformReducedMotion();
+
+  // Keep both panels mounted so a tab switch preserves the chosen day,
+  // expanded sections and any unfinished intake answers.
+  useLayoutEffect(() => {
+    const panel = view === 'route' ? routeRef.current : sectionsRef.current;
+    if (!panel) return;
+    const measure = () => setPanelHeight(panel.getBoundingClientRect().height);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(panel);
+    return () => observer.disconnect();
+  }, [view]);
 
   useEffect(() => {
     if (!isAuthConfigured()) return;
@@ -99,19 +117,22 @@ export default function CourseGate() {
     </div>
   );
 
-  if (view === 'sections') {
-    return (
-      <>
-        {switcher}
-        <CourseSections />
-      </>
-    );
-  }
-
   return (
     <>
       {switcher}
-      <Course />
+      <motion.div className="course-view-panels"
+        initial={false}
+        animate={{ height: panelHeight ?? 'auto' }}
+        transition={{ duration: reduceMotion ? 0 : .42, ease: [.22, 1, .36, 1] }}>
+        <div ref={routeRef} className="course-view-panel" data-active={view === 'route'}
+          inert={view !== 'route'} aria-hidden={view !== 'route'}>
+          <Course />
+        </div>
+        <div ref={sectionsRef} className="course-view-panel" data-active={view === 'sections'}
+          inert={view !== 'sections'} aria-hidden={view !== 'sections'}>
+          <CourseSections />
+        </div>
+      </motion.div>
     </>
   );
 }

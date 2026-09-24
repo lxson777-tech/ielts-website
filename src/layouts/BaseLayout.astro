@@ -6,6 +6,8 @@ import '../styles/workspace-redesign.css';
 import '../styles/mr-ez.css';
 import '../styles/study-surfaces.css';
 import '../styles/trial.css';
+import '../styles/discovery.css';
+import '../styles/platform-motion.css';
 import '@fontsource-variable/manrope';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -44,8 +46,8 @@ interface Props {
       student, and stays covered with a reason if the trial does not open
       it. A display rule, not a security boundary (see TrialGate). */
   trialGate?: TrialGateSpec;
-  /** Keep this page out of search results (the trial's own pages, until
-      the offer is switched on). */
+  /** Keep this page out of search engines (the owner-only admin page, and
+      the trial's own pages until the offer is switched on). */
   noindex?: boolean;
 }
 
@@ -74,6 +76,9 @@ const route = toRoute(Astro.url.pathname, import.meta.env.BASE_URL);
 // the clean route is what the canonical link must point at.
 const canonicalUrl = new URL(withBase(route), Astro.site).toString();
 const isAppRoute = !bare && routeIsApp(route);
+// Nobody is signed in on the sign-in, sign-up and password pages, and Mr EZ
+// needs a signed-in student, so his launcher would only sit over the form.
+const isAuthPage = ['/sign-in', '/sign-up', '/forgot-password', '/reset-password'].includes(route);
 const isWide = wide ?? isWideRoute(route);
 
 const jsonLd = {
@@ -93,7 +98,7 @@ const jsonLd = {
     <meta name="description" content={description} />
     <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
     <link rel="canonical" href={canonicalUrl} />
-    {noindex && <meta name="robots" content="noindex" />}
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <title>{pageTitle}</title>
 
     <meta property="og:type" content={ogType} />
@@ -184,9 +189,11 @@ const jsonLd = {
   </head>
   <body
     class:list={["flex min-h-screen flex-col bg-surface text-ink", { "workspace-v2": isAppRoute }]}
+    data-platform-motion={routeIsApp(route) ? 'true' : undefined}
     data-route={route}
     data-lesson-key={lessonKey}
     data-trial-gate={gated ? 'pending' : undefined}
+    data-bare={bare ? 'true' : undefined}
   >
     {/* Whose work this is, decided once, on every route, before anything on
         the page loads a draft, restores a sitting or records an answer. It
@@ -217,7 +224,7 @@ const jsonLd = {
             on app routes: the fullscreen test player and the mock exam use
             the `bare` layout, so Mr EZ is simply not present during a timed
             paper rather than relying on him declining to help. */}
-        <MrEzPanel client:load transition:persist="mr-ez" />
+        {!isAuthPage && <MrEzPanel client:load transition:persist="mr-ez" />}
       </>
     ) : (
       <>

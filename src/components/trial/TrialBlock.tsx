@@ -5,11 +5,12 @@
    Presentational only: the decision is made by the caller from the server's
    answer (src/lib/trial/status.ts). */
 
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useT } from '../../lib/i18n/react';
 import { withBase } from '../../lib/url';
 import { refreshTrial, type TrialView } from '../../lib/trial/client';
-import AuthModal from '../AuthModal';
+import { signInHref } from '../../lib/auth/profile';
+import { currentRoute } from '../../lib/auth/next';
 
 export type TrialBlockReason =
   | 'checking'
@@ -53,7 +54,6 @@ export default function TrialBlock({
   variant?: 'page' | 'full';
 }) {
   const { t } = useT();
-  const [signIn, setSignIn] = useState(false);
 
   const plans = (
     <a className="trial-btn trial-primary" href={withBase('/plans')}>
@@ -88,9 +88,11 @@ export default function TrialBlock({
       body = t('Your trial belongs to your account, so it is the same on every device. Signing out never restarts it.');
       actions = (
         <>
-          <button type="button" className="trial-btn trial-primary" onClick={() => setSignIn(true)}>
+          {/* The sign-in page brings the student straight back here. Only
+              ever shown in the browser (the server renders "checking"). */}
+          <a className="trial-btn trial-primary" href={signInHref(currentRoute())}>
             {t('Sign in')}
-          </button>
+          </a>
           <a className="trial-btn" href={withBase('/trial')}>
             {t('New here? Start a free 3-day trial')}
           </a>
@@ -176,7 +178,6 @@ export default function TrialBlock({
         <p>{body}</p>
         {actions && <div className="trial-actions">{actions}</div>}
       </div>
-      {signIn && <AuthModal initialMode="signin" onClose={() => setSignIn(false)} />}
     </section>
   );
 }

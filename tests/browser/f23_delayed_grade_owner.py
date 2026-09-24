@@ -220,6 +220,13 @@ os.environ.setdefault("IELTS_STANDIN_URL", "http://127.0.0.1:8831")
 from playwright.sync_api import sync_playwright  # noqa: E402
 
 import f20_account_journey as journey  # noqa: E402  (its page actions are reused as-is)
+
+# The scenarios below sign a student out and another in on the SAME page while
+# a grade is held, and check the page never reloaded. Since the 24 September
+# 2026 login rework sign-in is a page of its own, so the shared helpers sign
+# in from a second tab of the same browser and this page hears it without
+# moving (see SIGN_IN_IN_PLACE in f20_account_journey.py).
+journey.SIGN_IN_IN_PLACE = True
 from final_helpers import (  # noqa: E402
     BASE_URL,
     RESULTS_PATH,

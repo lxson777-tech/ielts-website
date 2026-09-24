@@ -111,11 +111,26 @@ export function sanitiseSkillTargets(value: unknown): SavedPlan['skillTargets'] 
   return Object.keys(out).length ? out : undefined;
 }
 
+/** The overall band the student actually chose, or null while it is still
+    unchosen. A `defaulted` plan's `targetBand` is the platform's placeholder
+    (the homepage suggestion or '7.0', see createDefaultPlan), kept only
+    because the stored shape requires a string: it is never the student's
+    goal. Every screen that shows or compares against "your target" reads it
+    through here, so Today, Course, Report, Account, Settings and Mr EZ agree
+    on one answer, and an unchosen target reads as unchosen everywhere
+    (tests/target-band-consistency.test.ts). */
+export function confirmedTargetBand(plan: SavedPlan | null): string | null {
+  if (!plan || plan.defaulted) return null;
+  return plan.targetBand || null;
+}
+
 /** The band this student is aiming at in one paper: their own minimum when
-    they set one, otherwise the overall target. */
+    they set one, otherwise their chosen overall target, otherwise null. A
+    per-paper minimum is only ever written by the student, so it counts even
+    while the overall target is still unchosen. */
 export function skillTargetFor(plan: SavedPlan | null, skill: PlanSkill): string | null {
   if (!plan) return null;
-  return plan.skillTargets?.[skill] ?? plan.targetBand ?? null;
+  return plan.skillTargets?.[skill] ?? confirmedTargetBand(plan);
 }
 
 /** The six target bands the course now offers, one decimal place, low to

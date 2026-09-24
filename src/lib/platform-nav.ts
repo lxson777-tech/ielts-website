@@ -38,6 +38,7 @@ export interface WorkspaceMenuItem {
 export const WORKSPACE_MENU: WorkspaceMenuItem[][] = [
   [
     { href: '/account', label: nt('Account') },
+    { href: '/profile', label: nt('My details') },
     { href: '/plan-settings', label: nt('Study plan settings') },
     { href: '/account#saved', label: nt('Saved and notes') },
     { href: '/report', label: nt('Progress report') },
@@ -47,6 +48,7 @@ export const WORKSPACE_MENU: WorkspaceMenuItem[][] = [
     { href: '/learn/bands', label: nt('What each band needs') },
     { href: '/writing/models', label: nt('Model answers') },
     { href: '/speaking/cue-cards', label: nt('Cue cards') },
+    { href: '/help', label: nt('Help') },
   ],
 ];
 
@@ -62,19 +64,25 @@ export const APP_ROUTE_PREFIXES = [
   '/speaking',
   '/writing',
   '/account',
+  '/admin',
+  '/sign-in',
+  '/sign-up',
+  '/forgot-password',
+  '/profile',
   '/review',
   '/report',
   // The three-day trial's own pages (src/pages/trial.astro, plans.astro).
   '/trial',
   '/plans',
   '/reset-password',
+  '/help',
 ];
 
 /** Routes whose content genuinely needs the wider 1100px column: a two-pane
     library, or a row of cards that turns cramped at 880px. Matched exactly,
     not by prefix, so a single lesson or drill page inside one of these
     sections still gets the calmer reading width. */
-export const WIDE_ROUTES = ['/trainers', '/tests', '/learn', '/account', '/writing/models'];
+export const WIDE_ROUTES = ['/trainers', '/tests', '/learn', '/account', '/writing/models', '/admin'];
 
 function matches(prefix: string, route: string): boolean {
   return route === prefix || route.startsWith(`${prefix}/`);

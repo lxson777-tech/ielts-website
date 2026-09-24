@@ -121,6 +121,7 @@ export default function Intake({ variant, onDone, onDefer }: IntakeProps) {
 
   const [saving, setSaving] = useState(false);
   const [savedPlan, setSavedPlan] = useState<PersonalPlanV1 | null>(null);
+  const [dirty, setDirty] = useState(false);
   const [justSaved, setJustSaved] = useState(false);
 
   useEffect(() => {
@@ -485,20 +486,16 @@ export default function Intake({ variant, onDone, onDefer }: IntakeProps) {
         />
         <form
           className="intake-form"
-          onChange={() => setJustSaved(false)}
+          onChange={() => {setJustSaved(false);setDirty(true);}}
           onSubmit={(e) => {
             e.preventDefault();
             save();
           }}
         >
-          {targetBandField}
-          {perPaperField}
-          {examDateField}
-          {studyDaysField}
-          {dailyTimeField}
-          {languageField}
-          {hardestPaperField}
-          {selfReportField}
+          <fieldset className="settings-group"><legend>{t('Your goal')}</legend>{targetBandField}{perPaperField}</fieldset>
+          <fieldset className="settings-group"><legend>{t('Your schedule')}</legend>{examDateField}{studyDaysField}{dailyTimeField}</fieldset>
+          <details className="support-disclosure"><summary>{t('Learning preferences')}</summary>{languageField}{hardestPaperField}{selfReportField}</details>
+          {dirty && !justSaved && <p role="status" className="text-sm text-ink-muted">{t('You have unsaved changes.')}</p>}
           <div className="intake-actions">
             <button type="submit" className="intake-button intake-button-primary" disabled={saving}>
               {t('Save changes')}

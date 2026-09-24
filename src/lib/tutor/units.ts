@@ -217,12 +217,17 @@ export type UnitNoteKind = 'intro' | 'wrap';
     only a change in what the record actually says about the student (the
     relevance list) or in what they are aiming at (the target band) should.
     'wrap' is only ever shown once, right after completedAt is set, so it
-    only needs to track unitId and that timestamp. */
+    only needs to track unitId and that timestamp.
+
+    Both fold in the student's FIRST NAME when there is one, as
+    insightsFingerprint does, so a note cached before the profile existed is
+    rewritten once with the name. Appended only when present. */
 export function unitFingerprint(
   facts: UnitFacts,
   kind: UnitNoteKind,
   targetBand: string | null,
   locale: Locale = 'en',
+  firstName?: string | null,
 ): string {
   const parts = kind === 'intro'
     ? ['intro', locale, String(facts.unitId), targetBand ?? '-', facts.relevance.map((r) => `${r.observationId}:${r.confidence}`).join(',')]
@@ -230,6 +235,7 @@ export function unitFingerprint(
     // a cached note is prose in one language, and switching language must
     // not hand a student back the other one.
     : ['wrap', locale, String(facts.unitId), facts.completedAt ?? '-'];
+  if (firstName) parts.push(`name:${firstName}`);
   return fnv1a(parts.join('|'));
 }
 

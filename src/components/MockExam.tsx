@@ -60,7 +60,8 @@ import { fetchLiveConfig, type LiveConfig } from '../lib/speaking/live/link';
 import Html from './Html';
 import TestPlayer from './TestPlayer';
 import LiveExaminer from './LiveExaminer';
-import AuthModal from './AuthModal';
+import { signInHref } from '../lib/auth/profile';
+import { currentRoute } from '../lib/auth/next';
 
 /* The stages, and the shape one finished paper takes, are declared in
    src/lib/tests/mock.ts, because a sitting is written down as it goes and
@@ -1086,6 +1087,7 @@ function StartScreen({
             the bold stays put and only the sentence after it is a key. Where a
             second <strong> sat mid sentence it had to go: Russian puts those
             words somewhere else (docs/I18N-GUIDE.md). */}
+        <details className="support-disclosure"><summary>{t('Paper details and scoring')}</summary>
         <ul className="mt-6 space-y-2.5 text-sm text-ink">
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="mt-0.5 shrink-0 text-ink-muted"><ListeningIcon /></span>
@@ -1119,6 +1121,7 @@ function StartScreen({
             </span>
           </li>
         </ul>
+        </details>
 
         <div className="mt-6 space-y-3 rounded-card border border-border bg-surface-alt p-4">
           <p className="text-sm font-semibold">{t('Choose your tests')}</p>
@@ -1431,7 +1434,6 @@ function SpeakingBriefScreen({
   const { t } = useT();
   const [user, setUser] = useState<User | null>(null);
   const [liveConfig, setLiveConfig] = useState<LiveConfig | null>(null);
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => onAuthChange(setUser), []);
 
@@ -1479,7 +1481,7 @@ function SpeakingBriefScreen({
             <p>{t('Sign in to take the speaking test (this keeps the paid voice service for real students).')}</p>
             <button
               type="button"
-              onClick={() => setShowAuthModal(true)}
+              onClick={() => window.location.assign(signInHref(currentRoute()))}
               className="mt-2 rounded-button border border-border px-4 py-1.5 text-xs font-semibold hover:bg-surface-alt"
             >
               {/* "Sign in" is translated once, in dict/ru/shell.ts. */}
@@ -1511,8 +1513,6 @@ function SpeakingBriefScreen({
             {t('Skip speaking')}
           </button>
         </div>
-
-        {showAuthModal && <AuthModal initialMode="signin" onClose={() => setShowAuthModal(false)} />}
       </div>
     </div>
   );

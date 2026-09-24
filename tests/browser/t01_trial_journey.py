@@ -136,33 +136,97 @@ def english(page):
     page.add_init_script("try { localStorage.setItem('ielts.locale.v1', 'en'); } catch (e) {}")
 
 
-def sign_up_in_modal(page, email: str):
-    dialog = page.locator("[role='dialog'][aria-modal='true']")
-    page.wait_for_selector("[role='dialog'][aria-modal='true']", timeout=10000)
-    try_click(dialog.get_by_role("button", name="Sign up", exact=True), timeout=4000)
-    page.wait_for_timeout(300)
-    dialog.locator("#account-email").fill(email)
-    dialog.locator("#account-password").fill(PASSWORD)
-    if dialog.locator("#account-confirm").count():
-        dialog.locator("#account-confirm").fill(PASSWORD)
-    try_click(dialog.get_by_role("button", name="Create account"), timeout=8000)
-    page.wait_for_timeout(2500)
+# Sign-in since the login rework (24 September): the trial's buttons are links
+# to /sign-up?next=/trial and /sign-in?next=/trial; a new account fills in
+# /profile ("About you", required) and is then taken back to /trial. The same
+# SYNTHETIC adult profile as tests/browser/f20_account_journey.py.
+PROFILE = {
+    "first_name": "Synthetic",
+    "last_name": "Student",
+    "dob": ("4", "3", "2000"),
+    "phone": "+7 701 234 56 78",
+    "city": "Almaty",
+    "occupation": "Synthetic University",
+    "source": "friend",
+}
 
 
-def sign_in_in_modal(page, email: str):
-    dialog = page.locator("[role='dialog'][aria-modal='true']")
-    page.wait_for_selector("[role='dialog'][aria-modal='true']", timeout=10000)
-    dialog.locator("#account-email").fill(email)
-    dialog.locator("#account-password").fill(PASSWORD)
-    try_click(dialog.get_by_role("button", name="Log in", exact=True), timeout=8000)
-    page.wait_for_timeout(2500)
+def route_of(page) -> str:
+    """The page's path without the site's base."""
+    from urllib.parse import urlparse
+    path = urlparse(page.url).path
+    base = urlparse(BASE).path.rstrip("/")
+    return path[len(base):] if base and path.startswith(base) else path
 
 
-def open_auth(page, button: str) -> bool:
+def wait_route(page, predicate, timeout_ms=20000) -> bool:
+    deadline = time.time() + timeout_ms / 1000
+    while time.time() < deadline:
+        try:
+            if predicate(route_of(page)):
+                return True
+        except Exception:
+            pass
+        page.wait_for_timeout(200)
+    return False
+
+
+def submit(page):
+    try_click(page.locator("form button[type=submit]"), timeout=10000)
+
+
+def fill_profile(page) -> bool:
+    try:
+        page.wait_for_selector("#profile-firstName", timeout=20000)
+    except Exception:
+        return False
+    page.locator("#profile-firstName").fill(PROFILE["first_name"])
+    page.locator("#profile-lastName").fill(PROFILE["last_name"])
+    day, month, year = PROFILE["dob"]
+    page.locator("#profile-dob-day").select_option(day)
+    page.locator("#profile-dob-month").select_option(month)
+    page.locator("#profile-dob-year").select_option(year)
+    page.locator("#profile-phone").fill(PROFILE["phone"])
+    page.locator("#profile-city").fill(PROFILE["city"])
+    page.locator("#profile-occupation").fill(PROFILE["occupation"])
+    page.locator(f"#profile-source-{PROFILE['source']}").check(force=True)
+    submit(page)
+    return wait_route(page, lambda r: r != "/profile", timeout_ms=20000)
+
+
+def sign_up_on_page(page, email: str):
+    """On /sign-up: create the account, fill the profile, land back on `next`."""
+    page.wait_for_selector("#signup-email", timeout=20000)
+    page.locator("#signup-email").fill(email)
+    page.locator("#signup-password").fill(PASSWORD)
+    if page.locator("#signup-confirm").count():
+        page.locator("#signup-confirm").fill(PASSWORD)
+    submit(page)
+    wait_route(page, lambda r: r != "/sign-up", timeout_ms=20000)
+    if route_of(page) == "/profile":
+        fill_profile(page)
+    page.wait_for_timeout(1500)
+
+
+def sign_in_on_page(page, email: str):
+    """On /sign-in: sign in and land back on `next` (via /profile if it is missing)."""
+    page.wait_for_selector("#signin-email", timeout=20000)
+    page.locator("#signin-email").fill(email)
+    page.locator("#signin-password").fill(PASSWORD)
+    submit(page)
+    wait_route(page, lambda r: r != "/sign-in", timeout_ms=20000)
+    page.wait_for_timeout(1500)
+    if route_of(page) == "/profile":
+        fill_profile(page)
+    page.wait_for_timeout(1500)
+
+
+def open_auth(page, link: str) -> bool:
+    """Follow the trial's sign-up or sign-in link to its page."""
     return click_until(
         page,
-        lambda: page.get_by_role("button", name=button),
-        lambda: page.locator("[role='dialog'][aria-modal='true']").count() > 0,
+        lambda: page.get_by_role("link", name=link),
+        lambda: route_of(page) in ("/sign-up", "/sign-in"),
     )
 
 
@@ -261,7 +325,7 @@ def run():
         # panel mid-step. Visit the pages the journey uses before any check runs.
         warm = ctx.new_page()
         for path in ("/trial", "/dashboard", "/lessons/reading/paraphrase", "/tests/reading-full-001",
-                     "/writing/checker", "/speaking/examiner", "/plans"):
+                     "/writing/checker", "/speaking/examiner", "/plans", "/sign-up", "/sign-in", "/profile"):
             try:
                 warm.goto(BASE + path, wait_until="networkidle", timeout=60000)
             except Exception:
@@ -287,7 +351,7 @@ def run():
         # ── 3. Sign up through the real sign-in, then the explicit start ──
         goto(page, "/trial")
         open_auth(page, "Create a free account")
-        sign_up_in_modal(page, a_email)
+        sign_up_on_page(page, a_email)
         check("join: after sign-up, eligibility shows the explicit start screen",
               wait_text(page, "Before you begin") and wait_text(page, "Start my 3-day trial"))
         check("join: questionnaire carried through the sign-in round trip",
@@ -616,6 +680,7 @@ def run():
         shot(page, "t15-speaking-trial-start", full=False)
 
         standin("/__force", {"fail": "live"})
+        page.wait_for_selector("[data-trial-speaking-start]:not([disabled])", timeout=30000)
         page.locator("[data-trial-speaking-start]").click()
         wait_text(page, "could not start just now", timeout=20000)
         rows = usage(a_email, "test", "speaking")
@@ -626,6 +691,7 @@ def run():
 
         # The session opens, but the student's own connection to it fails.
         page.evaluate("window.__liveStandin.passThrough = true")
+        page.wait_for_selector("[data-trial-speaking-start]:not([disabled])", timeout=30000)
         page.locator("[data-trial-speaking-start]").click()
         page.wait_for_function("window.__liveStandin.creates.length >= 2", timeout=30000)
         page.wait_for_function("!document.querySelector('[data-trial-speaking-start]')?.disabled", timeout=30000)
@@ -639,6 +705,7 @@ def run():
         page.evaluate("window.__liveStandin.passThrough = false")
 
         standin("/__force", {"fail": "grader"})
+        page.wait_for_selector("[data-trial-speaking-start]:not([disabled])", timeout=30000)
         page.locator("[data-trial-speaking-start]").click()
         in_interview = wait_text(page, "Part 1 · Interview", timeout=30000)
         check("speaking: the interview runs as Part 1", in_interview)
@@ -662,6 +729,7 @@ def run():
         wait_text(page, "You have started your trial Speaking test")
         check("speaking: after the failure the test can be started again",
               page.get_by_text("You have started your trial Speaking test").count() > 0)
+        page.wait_for_selector("[data-trial-speaking-start]:not([disabled])", timeout=30000)
         page.locator("[data-trial-speaking-start]").click()
         graded = wait_text(page, "SIMULATED", timeout=150000)
         rows = usage(a_email, "test", "speaking")
@@ -691,7 +759,7 @@ def run():
         dev2 = ctx2.new_page()
         goto(dev2, "/trial")
         open_auth(dev2, "I already have an account")
-        sign_in_in_modal(dev2, a_email)
+        sign_in_on_page(dev2, a_email)
         check("second device: the same trial, not a new one", wait_text(dev2, "Your trial is already running"))
         goto(dev2, "/dashboard")
         wait_text(dev2, "Your 3-day trial")
@@ -715,7 +783,7 @@ def run():
         # ── 10. Another student on the same device sees none of A's trial ──
         goto(page, "/trial")
         open_auth(page, "Create a free account")
-        sign_up_in_modal(page, b_email)
+        sign_up_on_page(page, b_email)
         wait_text(page, "Start my 3-day trial")
         check("student B: no trial inherited from A", trial_state(b_email)["account"] is None
               and page.get_by_text("Before you begin").count() > 0)
@@ -764,17 +832,11 @@ def run():
         ru.add_init_script("try { localStorage.setItem('ielts.locale.v1', 'ru'); } catch (e) {}")
         goto(ru, "/trial")
         open_auth(ru, "Создать бесплатный аккаунт")
-        dialog = ru.locator("[role='dialog'][aria-modal='true']")
         try:
-            ru.wait_for_selector("[role='dialog'][aria-modal='true']", timeout=10000)
-            dialog.locator("#account-email").fill(f"trial-ru-{RUN}@example.test")
-            dialog.locator("#account-password").fill(PASSWORD)
-            if dialog.locator("#account-confirm").count():
-                dialog.locator("#account-confirm").fill(PASSWORD)
-            dialog.locator("button[type=submit]").first.click()
+            sign_up_on_page(ru, f"trial-ru-{RUN}@example.test")
         except Exception as e:  # noqa: BLE001
             print("  ru sign-up:", e)
-        ru.wait_for_timeout(2500)
+        wait_route(ru, lambda r: r == "/trial", timeout_ms=15000)
         try_click(ru.get_by_role("button", name="Начать 3 дня бесплатно"))
         try:
             ru.wait_for_url("**/dashboard", timeout=20000)
@@ -805,7 +867,11 @@ def run():
             }"""
         )
         check("reduced motion: no button transitions and no shimmer",
-              motion["button"] in ("0s", "0s, 0s, 0s") and motion["shimmer"] == "none", json.dumps(motion))
+              # The platform's reduced-motion rule (src/styles/platform-motion.css)
+              # sets .01ms, not 0: anything under a millisecond is no animation.
+              (motion["button"] != "missing"
+               and all(float(d.strip().rstrip("s")) < 0.001 for d in motion["button"].split(",")))
+              and motion["shimmer"] == "none", json.dumps(motion))
         rm.close()
 
         browser.close()
