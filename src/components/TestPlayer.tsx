@@ -89,7 +89,9 @@ interface Props {
 }
 
 /** Base-prefixed URL for images stored under /public. */
-const asset = (p: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${p}`;
+/* A full link (a trial build's signed recording from the content gate) is
+   used as it is; a site path gets the site's base. */
+const asset = (p: string) => (/^https?:\/\//.test(p) ? p : `${import.meta.env.BASE_URL.replace(/\/$/, '')}${p}`);
 
 /** Imported question HTML stores public assets from the site root. Prefix only
     local `src="/..."` values so diagrams also resolve when Astro is hosted

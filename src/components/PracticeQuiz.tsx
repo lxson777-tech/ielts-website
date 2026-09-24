@@ -31,7 +31,9 @@ import {
 import { currentLessonBlockContext, type LessonBlockContext } from './learning/lesson-block-help';
 
 /** Base-prefixed URL for images stored under /public. */
-const asset = (p: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${p}`;
+/* A full link (a trial build's signed recording from the content gate) is
+   used as it is; a site path gets the site's base. */
+const asset = (p: string) => (/^https?:\/\//.test(p) ? p : `${import.meta.env.BASE_URL.replace(/\/$/, '')}${p}`);
 
 /* Interactive practice exercise for reading and listening question-type
    pages. A set is a list of `units` (see PracticeUnit in

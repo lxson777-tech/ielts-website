@@ -44,9 +44,15 @@ const STORE: Record<string, string> = {
   'prompts/pte-wt-121-task2.json': '{"id":"another question"}',
   [`models/${TRIAL_WRITING.examplePromptId}.json`]: '{"model":"the one example"}',
   [`models/${TRIAL_WRITING.essayPromptId}.json`]: '{"model":"the essay question answered"}',
+  'tests/listening-full-001.json': '{"id":"listening-full-001","audioSrc":"/audio/listening/test-001.mp3","parts":[{"stimulus":{"src":"/audio/listening/test-001.mp3"}}]}',
+  'practice/practice-listening-part1.json': '{"segments":[{"src":"/ielts-website/audio/listening/test-001.mp3"}]}',
 };
 
-async function world(opts: { dbDown?: boolean } = {}) {
+/** A pretend recording: 1000 bytes, each its own position modulo 256. */
+const RECORDING = Uint8Array.from({ length: 1000 }, (_, i) => i % 256);
+const AUDIO: Record<string, Uint8Array> = { 'audio/listening/test-001.mp3': RECORDING, 'audio/listening/test-002.mp3': RECORDING };
+
+async function world(opts: { dbDown?: boolean; signing?: boolean } = {}) {
   const db = await createTrialDb();
   await db.addUser(A);
   await db.addUser(B);
@@ -64,9 +70,33 @@ async function world(opts: { dbDown?: boolean } = {}) {
     }
     throw new Error(`unexpected fetch ${url}`);
   }) as typeof fetch;
-  const store = { get: async (key: string) => (key in STORE ? { text: async () => STORE[key] } : null) };
-  const gate = createHandler({ fetch: fetchFn, store });
-  const env = { ALLOWED_ORIGINS: ORIGIN, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY: SERVICE_KEY, CONTENT_SERVICE_KEY: CONTENT_KEY } as never;
+  const store = {
+    get: async (key: string, options: { range?: { offset: number; length?: number } } = {}) => {
+      if (key in AUDIO) {
+        const whole = AUDIO[key]!;
+        const { offset = 0, length = whole.length - offset } = options.range ?? {};
+        const bytes = whole.slice(offset, offset + length);
+        return { size: whole.length, text: async () => '', arrayBuffer: async () => bytes.buffer.slice(0) };
+      }
+      if (!(key in STORE)) return null;
+      return { size: STORE[key]!.length, text: async () => STORE[key]!, arrayBuffer: async () => new TextEncoder().encode(STORE[key]!).buffer };
+    },
+  };
+  const clock = { now: Date.parse('2026-09-24T10:00:00Z') };
+  const gate = createHandler({ fetch: fetchFn, store, now: () => clock.now });
+  const env = {
+    ALLOWED_ORIGINS: ORIGIN,
+    SUPABASE_URL,
+    SUPABASE_SERVICE_ROLE_KEY: SERVICE_KEY,
+    CONTENT_SERVICE_KEY: CONTENT_KEY,
+    ...(opts.signing ? { AUDIO_SIGNING_KEY: 'audio-signing-dummy', AUDIO_BASE_URL: 'https://gate.test' } : {}),
+  } as never;
+  /** A request exactly as a browser's <audio> element makes it: no sign-in. */
+  const audio = async (link: string, range?: string) => {
+    const headers: Record<string, string> = range ? { Range: range } : {};
+    const response = await gate.fetch(new Request(link, { headers }), env);
+    return { status: response.status, bytes: new Uint8Array(await response.arrayBuffer()), headers: response.headers };
+  };
   const get = async (path: string, token?: string) => {
     const headers: Record<string, string> = { Origin: ORIGIN };
     if (token) headers.Authorization = `Bearer ${token}`;
@@ -80,7 +110,7 @@ async function world(opts: { dbDown?: boolean } = {}) {
     }
     return { status: response.status, text, code, cache: response.headers.get('Cache-Control') };
   };
-  return { db, get };
+  return { db, get, audio, clock };
 }
 
 test('routes: only well-formed items, never a path out of the store', () => {
@@ -138,6 +168,49 @@ test('Writing: the trial opens its one essay question and its one example, and n
   }
   assert.notEqual(TRIAL_WRITING.essayPromptId, TRIAL_WRITING.examplePromptId, 'never a model answer to the question being tested');
   assert.equal((await w.get(essay)).status, 401, 'nothing without a sign-in');
+  await w.db.close();
+});
+
+test('recordings: a paper the student may open gets signed links, which play, skip, and stop working when they expire', async () => {
+  const w = await world({ signing: true });
+  await w.db.rpc('trial_start', {}, { userId: A });
+  const paper = JSON.parse((await w.get('/test/listening-full-001', 'token-a')).text) as { audioSrc: string; parts: { stimulus: { src: string } }[] };
+  const link = paper.audioSrc;
+  assert.match(link, /^https:\/\/gate\.test\/audio\/test-001\.mp3\?exp=\d+&sig=[A-Za-z0-9_-]+$/, 'the site path became a signed link');
+  assert.equal(paper.parts[0]!.stimulus.src, link, 'every mention of it');
+  const quiz = JSON.parse((await w.get('/practice/practice-listening-part1', 'token-a')).text) as { segments: { src: string }[] };
+  assert.match(quiz.segments[0]!.src, /^https:\/\/gate\.test\/audio\/test-001\.mp3\?exp=/, "the lesson quiz's clips too, with the site's base");
+
+  const whole = await w.audio(link);
+  assert.equal(whole.status, 200, 'no sign-in needed: the link is the permission');
+  assert.equal(whole.bytes.length, 1000);
+  assert.equal(whole.headers.get('Accept-Ranges'), 'bytes');
+  assert.match(String(whole.headers.get('Cache-Control')), /^private/);
+  const part = await w.audio(link, 'bytes=100-199');
+  assert.equal(part.status, 206, 'skipping works');
+  assert.deepEqual([...part.bytes.slice(0, 3)], [100, 101, 102]);
+  assert.equal(part.headers.get('Content-Range'), 'bytes 100-199/1000');
+  assert.equal((await w.audio(link, 'bytes=900-')).bytes.length, 100);
+
+  const url = new URL(link);
+  const forged = `https://gate.test/audio/test-002.mp3${url.search}`;
+  assert.equal((await w.audio(forged)).status, 403, "test-001's signature does not open test-002");
+  const later = new URL(link);
+  later.searchParams.set('exp', String(Number(url.searchParams.get('exp')) + 3600));
+  assert.equal((await w.audio(later.toString())).status, 403, 'a stretched expiry breaks the signature');
+  assert.equal((await w.audio('https://gate.test/audio/test-001.mp3')).status, 404, 'no link, no recording');
+
+  w.clock.now += 121 * 60_000;
+  assert.equal((await w.audio(link)).status, 403, 'expired after two hours');
+  await w.db.close();
+});
+
+test('recordings: without a signing key nothing is signed and nothing is served', async () => {
+  const w = await world();
+  await w.db.rpc('trial_start', {}, { userId: A });
+  const paper = JSON.parse((await w.get('/test/listening-full-001', 'token-a')).text) as { audioSrc: string };
+  assert.equal(paper.audioSrc, '/audio/listening/test-001.mp3');
+  assert.equal((await w.audio('https://gate.test/audio/test-001.mp3?exp=9999999999&sig=AAAAAAAAAAAAAAAAAAAAAAAA')).status, 404);
   await w.db.close();
 });
 

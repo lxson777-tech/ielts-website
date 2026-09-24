@@ -513,6 +513,44 @@ def run():
         p1.wait_for_timeout(3500)
         rows = usage(a_email, "test", "listening")
         check("two tabs: one Listening sitting between them", len(rows) == 1, json.dumps(rows))
+
+        # The recording comes through a signed link of the door, and skips.
+        # Whichever tab is running the test (the other one may have been told
+        # the sitting is already open elsewhere).
+        running, audio_src = p1, ""
+        for _ in range(10):
+            for p in (p1, p2):
+                src = p.evaluate("document.querySelector('audio')?.getAttribute('src') ?? ''")
+                if src:
+                    running, audio_src = p, src
+                    break
+            if audio_src:
+                break
+            p1.wait_for_timeout(1000)
+        probe = running.evaluate(
+            """async (src) => {
+                if (!src) return null;
+                const r = await fetch(src, { headers: { Range: 'bytes=1000-1999' } });
+                const size = (await r.arrayBuffer()).byteLength;
+                // And a real player: it reads the recording's length through the link.
+                const player = new Audio();
+                const seconds = await new Promise((done) => {
+                    player.onloadedmetadata = () => done(player.duration);
+                    player.onerror = () => done(-1);
+                    setTimeout(() => done(-2), 15000);
+                    player.src = src;
+                });
+                return { status: r.status, type: r.headers.get('Content-Type'), size, seconds };
+            }""",
+            audio_src,
+        )
+        check("audio: the Listening recording plays from a signed link of the door, and skipping works",
+              audio_src.startswith(STANDIN + "/content/audio/test-001.mp3?exp=") and "sig=" in audio_src
+              and probe is not None and probe["status"] == 206 and probe["size"] == 1000 and probe["type"] == "audio/mpeg"
+              and probe["seconds"] > 600,
+              json.dumps({"src": audio_src[:90], "probe": probe}))
+        public_audio = page.request.get(BASE + "/audio/listening/test-001.mp3").status
+        check("audio: the trial site no longer serves the recordings itself", public_audio == 404, str(public_audio))
         p1.close()
         p2.close()
 

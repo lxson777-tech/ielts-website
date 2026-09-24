@@ -21,7 +21,8 @@
  *   models/<prompt id>.json       a Band 8 model with its question
  *   data/tests/<id>.json          the compact paper Mr EZ reads (toSiteTest)
  *   data/lesson-blocks/<slug>.json  the lesson blocks Mr EZ reads
- *   manifest.json                 every key, for checking an upload
+ *   manifest.json                 every key, for checking an upload, plus the
+ *                                 listening recordings to upload from public/
  *
  * Each item is shaped exactly as the open site's own endpoints shape it
  * (src/pages/data/..., src/pages/lesson-bodies/...), so the pages cannot tell
@@ -116,7 +117,19 @@ export async function buildGatedContent(out = DEFAULT_OUT) {
     }
   }
 
-  put('manifest.json', JSON.stringify({ keys: [...keys].sort() }, null, 1));
+  // Listening recordings: the bucket holds them under audio/listening/<file>
+  // (the gate's signed /audio/<file> links read them). They are uploaded
+  // straight from public/audio/listening, not copied here (530 MB), so the
+  // manifest names each one with its source for the upload.
+  const audioDir = resolve(REPO, 'public/audio/listening');
+  const audio = existsSync(audioDir)
+    ? readdirSync(audioDir)
+        .filter((file) => /^test-\d{3}\.mp3$/.test(file))
+        .sort()
+        .map((file) => ({ key: `audio/listening/${file}`, source: `public/audio/listening/${file}` }))
+    : [];
+
+  put('manifest.json', JSON.stringify({ keys: [...keys].sort(), audio }, null, 1));
   return { out: OUT, keys: keys.length };
 }
 

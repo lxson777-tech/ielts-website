@@ -167,37 +167,73 @@ lives in a private folder (`gated-content/`, written by `tools/build-gated-conte
 that stands in for a private storage bucket. The open site is unchanged. Details and the
 upload proposal: `workers/content-gate/README.md`.
 
-Measured with `tools/trial-content-audit.mjs`, which searches every public file of a
-build for phrases from all 70 papers and all 139 lesson bodies (English and Russian):
+**The rest of the material (Alex, 24 September 2026: lock all of it).** A trial build
+also keeps out of the public site: every Band 8 model answer, every Writing and Speaking
+question (Part 1 questions, cue cards and their model talks), the band guides, the writing
+and speaking coaches (structures, phrase banks, per-question plans), every focused
+exercise, the Russian translations of all of that, the listening recordings and the
+Task 1 chart images. How:
 
-| Trial build | Files leaking a paper, an answer or a lesson |
+- **Stand-ins in the browser.** `trialBrowserContent()` in `astro.config.mjs` points each
+  such module at an empty stand-in of the same shape (`src/lib/trial/light/`, see its
+  README), for the browser bundle only; pages still build from the real data on the
+  server. The reason lists a student picks from after a wrong answer moved to
+  `src/data/mistake-reasons.ts` so the open test screens keep them.
+- **What the trial screens need comes from the door or the grader.** The Writing
+  Checker offers only Task 2 and fetches its one fixed question (`TRIAL_WRITING.
+  essayPromptId`, "The working week should be shorter...") once the test is begun, and
+  the essay grader grades against its own copy of that question, never the browser's.
+  The Task 2 lesson shows one Band 8 example (`TRIAL_WRITING.examplePromptId`, "The best
+  way to provide enough homes...", a different question) with no "Another example". The
+  Speaking test needs only a Part 1 topic id and name (the live examiner reads the
+  questions itself). A trial grade, Writing or Speaking, returns the one band guide step
+  per criterion that matches the band given, in the student's language
+  (`src/lib/trial/band-steps.ts`); the full ladder never reaches the browser. The test
+  tips inside the trial's Reading and Listening tests stay visible (Alex's decision).
+- **The public learning index** is published trimmed in a trial build
+  (`src/lib/trial/trim-index.ts`): no exercise objectives, cue cards labelled "Part 2 cue
+  card", Writing titles "Task 1/2 question" except the trial's own two.
+- **The Russian dictionaries** lose every entry that translates a locked sentence (290 of
+  2,489 in the main dictionary; the study plan's `src/lib/learning/ru.ts` likewise), at
+  build time (`src/lib/trial/trim-dictionary.ts`). Interface wording is untouched.
+- **Recordings.** A trial build publishes no recording (the build publishes from a copy
+  of `public/` without them, made in the system's temporary folder). Whenever the door
+  hands a student a paper or lesson quiz they may open, every recording it names becomes
+  a signed link of the door, `<gate>/audio/<file>?exp=&sig=`, which plays (with skipping)
+  for two hours and is refused after that, or if altered, or for any other file. The
+  length is a whole test with room to pause, since a recording streams in pieces as it
+  plays; a student who needs longer reloads the page. The Task 1 chart images are simply
+  not published (the trial has no Task 1 question).
+
+Measured with `tools/trial-content-audit.mjs`, which now searches every public file of a
+build for phrases from all 70 papers, all 139 lesson bodies (English and Russian) and 479
+pieces of supporting material, and checks that no recording or chart image is published:
+
+| Trial build | Files leaking locked content |
 |---|---|
 | Before the door | 344 |
-| After | 0 (six files share a single line with a lesson; one named exception) |
+| After the door (23 September) | 0 of what it then searched; the supporting material still shipped |
+| After locking the rest (24 September) | 0 |
 
-The six single shared lines are a cue-card question that is also in the public question
-list, a one-line strategy tip, and a useful-phrase line from the writing coach. The named
-exception (`tools/trial-content-allowed.json`) is the 146-word word-of-the-day sampler,
-shown site-wide; some of its example sentences also appear in vocabulary lessons. It is
-kept public as a free taster until Alex decides.
-
-**Not behind the door yet**: model answers, cue cards, band guides, writing and speaking
-prompts, focused-exercise content and the writing coach's phrase bank still ship inside
-the site's code (locked pages no longer show them, but a determined student could dig
-them out of the code files). Listening recordings are public audio files. Closing those
-needs the same pattern, and signed short-lived links for audio.
+What remains is single sentences that genuinely appear in two places (a one-line
+question-type tip, a checker rule, the trial's own essay title in the index), reported by
+the audit and never a failure, and the one named exception
+(`tools/trial-content-allowed.json`): the 146-word word-of-the-day sampler, kept public as
+a free taster (Alex's decision, 24 September). The regular site's build is unchanged (its
+index file byte for byte).
 
 ## Proof
 
 | What | Result |
 |---|---|
-| `npm test` (whole suite, after the merge with the published `main` `fb65080`) | 2,080 of 2,080 pass (64 of them are the trial tests below) |
+| `npm test` (whole suite, after the merge with the published `main` `fb65080` and the lock-down of the rest) | 2,089 of 2,089 pass (73 of them are the trial tests below) |
 | `tests/trial-sql.test.ts`: the migration itself, in PGlite with Supabase's roles and row security | 22 of 22 |
 | `tests/trial-worker.test.ts`: the real Mr EZ handler against the real migration | 12 of 12 |
-| `tests/trial-graders.test.ts`: the real essay grader, speaking grader and live examiner | 13 of 13 |
-| `tests/trial-content.test.ts`: the real content gate against the real migration | 8 of 8 |
+| `tests/trial-graders.test.ts`: the real essay grader, speaking grader and live examiner | 16 of 16 |
+| `tests/trial-content.test.ts`: the real content gate against the real migration, signed recordings included | 11 of 11 |
+| `tests/trial-trim.test.ts`: the trimmed learning index and dictionaries | 3 of 3 |
 | `tests/trial-status.test.ts`: what the screens may say | 9 of 9 |
-| `tests/browser/t01_trial_journey.py`: the real site, door on, in a real browser | 82 of 82 after the merge with the published `main` (`docs/trial/evidence/results-t01.md`) |
+| `tests/browser/t01_trial_journey.py`: the real site, door on, in a real browser | 89 of 89 after locking the rest (`docs/trial/evidence/results-t01.md`) |
 | `tools/trial-content-audit.mjs` on the trial build | no leaks (see above) |
 | `npx astro check` | 0 errors, 0 warnings, 20 hints (none from the trial) |
 | `npm run build`, open and trial | 663 pages each |
@@ -222,7 +258,7 @@ counted), the report says SIMULATED, and the page then says the test is used; pl
 sign-out covers the lesson again without restarting; a second student on the same
 device inherits nothing; a server failure keeps content covered with Try again; expiry
 from the stored start (dashboard, lesson, Mr EZ, a test not begun); a Russian phone
-screen with no sideways scroll; reduced motion. Screenshots `t01` to `t18` are in
+screen with no sideways scroll; reduced motion; the Writing lesson's one example and the trial's fixed essay question through the door, band guide steps under a Writing and a Speaking grade, and the Listening recording through a signed link that a real player reads and skips, while the site itself no longer serves it. Screenshots `t01` to `t19` are in
 `docs/trial/evidence/`.
 
 How the Speaking test runs locally with no voice call: the local backend runs the REAL
@@ -308,10 +344,13 @@ build with the same variables (`npx astro build`), then
    the three tables exist with row security on, and `select public.trial_status()` as a
    signed-in user returns `{"state":"none",...}`. On its own this changes nothing for
    students.
-2. **Private bucket and gate**: create the private R2 bucket, upload `gated-content/`,
-   deploy `workers/content-gate` with its two secrets (`SUPABASE_SERVICE_ROLE_KEY`,
-   `CONTENT_SERVICE_KEY`). Rollback: delete the Worker; the bucket is private and serves
-   nothing without it.
+2. **Private bucket and gate**: create the private R2 bucket, upload `gated-content/`
+   and the recordings listed under `audio` in `gated-content/manifest.json` (from
+   `public/audio/listening/`, about 530 MB; only `test-001.mp3` is needed for the trial),
+   deploy `workers/content-gate` with its three secrets (`SUPABASE_SERVICE_ROLE_KEY`,
+   `CONTENT_SERVICE_KEY`, `AUDIO_SIGNING_KEY`) and set `AUDIO_BASE_URL` to its own
+   address. Rollback: delete the Worker; the bucket is private and serves nothing
+   without it.
 3. **Workers to trial mode**: set `ACCESS_MODE` to `trial` on mr-ez (plus
    `CONTENT_SERVICE_KEY`, and `SITE_DATA_URL` / `LESSON_BLOCKS_URL` pointed at the
    gate's `/data/...`), grade-essay and grade-speaking (plus `SUPABASE_URL` and the

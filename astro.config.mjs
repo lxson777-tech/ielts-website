@@ -4,7 +4,10 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath } from 'node:url';
-import { readFileSync } from 'node:fs';
+import { readFileSync, cpSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { join, relative } from 'node:path';
+import { tmpdir } from 'node:os';
+import { createHash } from 'node:crypto';
 import { loadEnv } from 'vite';
 import { trialLearningIndex } from './src/lib/trial/trim-index.ts';
 import { stripLockedEntries, trialRussianDictionary } from './src/lib/trial/trim-dictionary.ts';
@@ -49,7 +52,8 @@ const TRIAL_INDEX_ID = '\0trial-learning-index.json';
    (src/lib/trial/trim-dictionary.ts). */
 const RU_DICTIONARY = light('./src/lib/i18n/dict/ru/index.ts');
 const TRIAL_RU_ID = '\0trial-ru-dictionary.js';
-const samePath = (a, b) => a.replaceAll('\\', '/').toLowerCase() === b.replaceAll('\\', '/').toLowerCase();
+const normalPath = (p) => p.replaceAll('\\', '/').replace(/\/+$/, '').toLowerCase();
+const samePath = (a, b) => normalPath(a) === normalPath(b);
 /* A cheap look at the import text first, before asking Vite to resolve it:
    the last path segment of every swapped module. */
 const SWAP_NAMES = new Set([
@@ -116,7 +120,41 @@ function trialBrowserContent() {
   };
 }
 
+/* A trial build publishes the site's public files EXCEPT the listening
+   recordings (served by the content gate through signed links) and the
+   Task 1 chart images (the questions they illustrate are locked too). Astro
+   always copies its whole public folder, so a trial build is pointed at a
+   copy without those: made in the system's temporary folder (never inside
+   the project), refreshed on every trial build. It only ever copies; nothing
+   is deleted. A file in that copy which public/ no longer has stops the
+   build with the folder to clear by hand, rather than being published. */
+const PUBLIC_DIR = light('./public');
+const TRIAL_UNPUBLISHED = [light('./public/audio/listening'), light('./public/pics/writing/imported')];
+const isUnpublished = (path) =>
+  TRIAL_UNPUBLISHED.some((locked) => normalPath(path) === normalPath(locked) || normalPath(path).startsWith(`${normalPath(locked)}/`));
+
+function trialPublicDir() {
+  // One folder per checkout, so two working copies never share it.
+  const out = join(tmpdir(), `ielts-trial-public-${createHash('sha256').update(PUBLIC_DIR).digest('hex').slice(0, 10)}`);
+  cpSync(PUBLIC_DIR, out, { recursive: true, force: true, filter: (source) => !isUnpublished(source) });
+  const walk = (dir) => {
+    for (const name of readdirSync(dir)) {
+      const path = join(dir, name);
+      if (statSync(path).isDirectory()) walk(path);
+      else {
+        const original = join(PUBLIC_DIR, relative(out, path));
+        if (!existsSync(original) || isUnpublished(original)) {
+          throw new Error(`trial build: ${path} is not in public/ any more, or must not be published. Delete the folder ${out} by hand and build again.`);
+        }
+      }
+    }
+  };
+  walk(out);
+  return out;
+}
+
 export default defineConfig({
+  publicDir: TRIAL_BUILD ? trialPublicDir() : undefined,
   devToolbar: { enabled: false },
   site: 'https://lxson777-tech.github.io',
   base: '/ielts-website',

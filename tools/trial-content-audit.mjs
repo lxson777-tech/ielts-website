@@ -174,6 +174,17 @@ async function main() {
   }
   const marks = await sentinels();
   const found = [];
+  /* Files a trial build must not publish at all: the listening recordings
+     (served by the content gate through signed links) and the Task 1 chart
+     images. Any file under these folders is a leak. */
+  for (const locked of ['audio/listening', 'pics/writing/imported']) {
+    const dir = join(DIST, locked);
+    if (!existsSync(dir)) continue;
+    const published = readdirSync(dir).filter((name) => !statSync(join(dir, name)).isDirectory());
+    if (published.length) {
+      found.push({ file: `${locked}/`, verdict: 'LEAK', items: [`${published.length} file(s)`], phrases: published.slice(0, 5) });
+    }
+  }
   for (const path of files(DIST)) {
     const text = decodeFile(readFileSync(path, 'utf8'));
     const hits = marks.filter((m) => text.includes(m.phrase));

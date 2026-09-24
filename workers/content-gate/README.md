@@ -19,6 +19,9 @@ item right now (`trial_can_open` in `supabase/migrations/2026-09-23-trial.sql`)?
 | `GET /practice/<set id>` | a lesson's practice quiz | with its lesson |
 | `GET /test/<id>` | a practice paper or drill, whole | the section's trial test while the trial runs; a test the student began, at any time |
 | `GET /explanations/<locale>/<id>` | translated answer notes | with the paper (or, for a quiz, its lesson) |
+| `GET /prompt/<prompt id>` | a Writing question | the trial's essay question, with its Writing test |
+| `GET /model/<prompt id>` | a Band 8 model with its question | the trial's one example, with its Task 2 lesson |
+| `GET /audio/<file>?exp=&sig=` | a listening recording, byte ranges supported | anyone holding a link the gate signed, until it expires |
 | `GET /data/tests/<id>.json`, `GET /data/lesson-blocks/<key>.json` | Mr EZ's data | the Mr EZ Worker only, with `CONTENT_SERVICE_KEY` |
 
 Who is asking comes only from the verified sign-in; the request names only what it
@@ -47,9 +50,24 @@ as the list. Nothing here has been run.
   the allowed student sees the lesson through the gate, locked items never reach the
   browser, the old public data files are gone.
 
-## Not covered yet
+## Recordings
 
-Supporting libraries still ship inside the site's code: model answers, cue cards,
-band guides, writing and speaking prompts, focused-exercise content, the writing
-coach's phrase bank. Listening recordings are public audio files. Locking those needs
-the same pattern (content through the gate) and, for audio, short-lived signed links.
+An `<audio>` element cannot send a sign-in, so the gate signs links. Whenever it hands
+a student a paper or a lesson quiz they may open, it rewrites every recording that
+content names (`/audio/listening/<file>`) to `<AUDIO_BASE_URL>/audio/<file>?exp=&sig=`,
+an HMAC of the file and the expiry under `AUDIO_SIGNING_KEY` (a secret nobody else
+holds). The audio route checks the signature and the expiry (two hours,
+`AUDIO_LINK_MINUTES`) and serves the file from `audio/listening/<file>` in the bucket,
+with byte ranges so a student can skip. Without `AUDIO_SIGNING_KEY` nothing is signed
+and nothing is served. The recordings are uploaded from `public/audio/listening/`
+(listed under `audio` in `gated-content/manifest.json`); a trial build of the site does
+not publish them.
+
+## The rest of the material
+
+Everything else the trial does not include (model answers, questions, cue cards, band
+guides, the writing and speaking coaches, focused exercises, and their Russian) is kept
+out of a trial build's browser by stand-ins (`src/lib/trial/light/`), a trimmed learning
+index and trimmed dictionaries; see "The rest of the material" in
+`docs/TRIAL-IMPLEMENTATION.md`. The gate serves only the two Writing pieces the trial
+shows (its essay question and its lesson example).

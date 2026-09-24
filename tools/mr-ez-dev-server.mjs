@@ -86,7 +86,7 @@
 
 import { createServer } from 'node:http';
 import { randomUUID } from 'node:crypto';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, statSync, openSync, readSync, closeSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -1399,13 +1399,40 @@ async function initTrial() {
     await buildGatedContent();
   }
   const { createHandler: createGate } = await import('../workers/content-gate/src/index.ts');
+  /* Recordings stay where the site keeps them (public/audio/listening):
+     the private bucket holds the same files under audio/listening/, and
+     copying 530 MB here would only duplicate them. */
+  const audioDir = resolve(REPO, 'public/audio/listening');
   const store = {
-    async get(key) {
-      const path = resolve(gatedDir, key);
+    async get(key, options = {}) {
+      const audio = /^audio\/listening\/(test-\d{3}\.mp3)$/.exec(key);
+      const base = audio ? audioDir : gatedDir;
+      const path = resolve(base, audio ? audio[1] : key);
       // The gate only ever asks for keys it built from validated ids; this
       // is belt and braces against leaving the folder.
-      if (!path.startsWith(gatedDir) || !existsSync(path)) return null;
-      return { text: async () => readFileSync(path, 'utf8') };
+      if (!path.startsWith(base) || !existsSync(path)) return null;
+      const size = statSync(path).size;
+      const range = options.range;
+      const bytes = () => {
+        if (!range) return readFileSync(path);
+        const length = Math.min(range.length ?? size - range.offset, size - range.offset);
+        const buffer = Buffer.alloc(Math.max(0, length));
+        const fd = openSync(path, 'r');
+        try {
+          readSync(fd, buffer, 0, buffer.length, range.offset);
+        } finally {
+          closeSync(fd);
+        }
+        return buffer;
+      };
+      return {
+        size,
+        text: async () => readFileSync(path, 'utf8'),
+        arrayBuffer: async () => {
+          const b = bytes();
+          return b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength);
+        },
+      };
     },
   };
   const gate = createGate({ fetch: bridgeFetch({ onModel: async () => { throw new Error('the gate never calls a model'); } }), store });
@@ -1414,6 +1441,8 @@ async function initTrial() {
     SUPABASE_URL: STUB_SUPABASE,
     SUPABASE_SERVICE_ROLE_KEY: 'local-service-role-key',
     CONTENT_SERVICE_KEY,
+    AUDIO_SIGNING_KEY: 'local-audio-signing-key',
+    AUDIO_BASE_URL: gateBase(),
   };
   contentHandler = (pathAndQuery, headers) =>
     gate.fetch(new Request(`http://gate.local${pathAndQuery}`, { headers }), gateEnv);
@@ -1558,8 +1587,10 @@ const server = createServer(async (req, res) => {
       const resp = await contentHandler(url.pathname.slice('/content'.length) + url.search, {
         ...(req.headers.authorization ? { Authorization: req.headers.authorization } : {}),
         ...(req.headers.origin ? { Origin: req.headers.origin } : {}),
+        ...(req.headers.range ? { Range: req.headers.range } : {}),
       });
-      const body = await resp.text();
+      // Bytes, not text: a recording passes through here too.
+      const body = Buffer.from(await resp.arrayBuffer());
       res.writeHead(resp.status, Object.fromEntries(resp.headers));
       return res.end(body);
     }

@@ -4,6 +4,7 @@
 // private bucket upload and the trial build of the site.
 // Secrets: npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
 //          npx wrangler secret put CONTENT_SERVICE_KEY   (same value on workers/mr-ez)
+//          npx wrangler secret put AUDIO_SIGNING_KEY     (signs recording links; any long random value)
 {
   "name": "ielts-content-gate",
   "main": "src/index.ts",
@@ -15,5 +16,8 @@
   "vars": {
     "ALLOWED_ORIGINS": "https://lxson777-tech.github.io",
     "SUPABASE_URL": "https://nbeyxwjvytrqtzzeilev.supabase.co"
+    // Once deployed, set AUDIO_BASE_URL to this Worker's own address, e.g.
+    // "https://ielts-content-gate.<account>.workers.dev", for the signed
+    // recording links it writes.
   }
 }
