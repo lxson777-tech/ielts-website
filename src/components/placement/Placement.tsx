@@ -149,6 +149,9 @@ export default function Placement({ material }: { material: PlacementMaterialPro
   const materialMissing = !material.listening || !material.reading || !material.writing || !material.speaking;
 
   const screen = placementScreen({ opened: opened !== null, signedIn, state, taken, materialMissing });
+  const paperUnderWay: 'listening' | 'reading' | null =
+    (part === 'listening' || part === 'reading') && state?.legs[part] && !state.legs[part]!.handedIn ? part : null;
+  const paperOnScreen = playing ?? paperUnderWay;
 
   /* Before the results read a single estimate, the plan is rebuilt from the
      new evidence. onEvidenceRecorded replans only when what is known
@@ -163,6 +166,13 @@ export default function Placement({ material }: { material: PlacementMaterialPro
     }
     setReplanned(true);
   }, [screen, replanned]);
+
+  /* A paper found under way (a reload, or coming back later) is held on
+     screen the same way a freshly started one is, so its own hand-in does
+     not take it away before its score card has been read. */
+  useEffect(() => {
+    if (paperUnderWay && playing === null) setPlaying(paperUnderWay);
+  }, [paperUnderWay, playing]);
 
   function refused(refusal: ExerciseRefusal) {
     setNote(PLACEMENT_OWNER_CHANGED_NOTE);
@@ -229,12 +239,17 @@ export default function Placement({ material }: { material: PlacementMaterialPro
   }
 
   /* A Listening or Reading paper under way: the test player takes the whole
-     screen, exactly as it does for a paper opened on its own. */
-  if (screen === 'part' && state && opened && (part === 'listening' || part === 'reading')) {
-    const leg = state.legs[part];
-    const test = part === 'listening' ? material.listening : material.reading;
-    const underWay = leg !== undefined && !leg.handedIn && leg.testId === test?.id;
-    if (test && (underWay || playing === part)) {
+     screen, exactly as it does for a paper opened on its own. It stays on
+     screen after the hand-in, until the student presses Continue on its
+     score card (onFinish), even though the sitting has already moved on to
+     the next part underneath: the hand-in settles the part the moment it is
+     accepted, so a reload at that point opens the next part's brief. */
+  if (screen === 'part' && state && opened && paperOnScreen) {
+    const test = paperOnScreen === 'listening' ? material.listening : material.reading;
+    const leg = state.legs[paperOnScreen];
+    const ours = !leg || leg.testId === test?.id;
+    if (test && ours) {
+      const part = paperOnScreen;
       return (
         <div className={`placement placement-paper skill-${part}`}>
           <TestPlayer
