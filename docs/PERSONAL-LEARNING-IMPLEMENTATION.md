@@ -312,9 +312,18 @@ Matching Headings) and `7f7bacb` (Writing Task 1 overview).
 - Two browser scripts (`f06`, `s6`) needed `textContent` to read the collapsed
   scope list; the rerun scripts are corrected.
 
-## 9. Proposed production steps, none taken
+## 9. Proposed production steps, and what was taken on 24 September
 
-All of these are Alex's decisions. Nothing below has been done.
+All of these are Alex's decisions. On 24 September 2026 Alex approved putting
+the platform live: step 1 was done (main fast-forwarded to `2bd585b`, final
+code `c693b43`; GitHub Pages run 35958302071 succeeded; the live dashboard
+and the per-test data the Worker fetches answer), and step 3 was done (Mr EZ
+Worker version `047e03d2`, with `TUTOR_MAX_HELP_PER_USER_PER_DAY` at 60).
+Step 2, the learning tables, needs Alex's own Supabase login and is not
+applied; until then sync degrades to this-device-only with an honest
+status. Step 4, the paid live check, needs a local `.dev.vars` with the
+model key in `workers/mr-ez/`, which does not exist here, so it is not run.
+The list below is kept as written.
 
 1. **Merge and publish the site.** Merge the branch into `main` after review;
    the push publishes to GitHub Pages automatically. Rollback: revert the merge
