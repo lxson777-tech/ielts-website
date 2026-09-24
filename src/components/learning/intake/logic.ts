@@ -32,7 +32,16 @@ export interface IntakeAnswers {
   overallTargetBand?: number;
   perPaperMinimums?: Partial<Record<Paper, number | null>>;
   examDate?: string | null;
-  studyDays?: 'daily' | 'weekdays';
+  studyDays?: StudyDaysChoice;
+  /** The weekdays picked under "Choose my days" (0 is Sunday). Read only
+      when `studyDays` is 'custom'. */
+  customStudyDays?: readonly Weekday[];
+  /** Today's local yyyy-mm-dd, the day "every other day" counts from.
+      Read only when `studyDays` is 'alternate' AND the plan was not already
+      on 'alternate': re-saving an unchanged "every other day" keeps the
+      day it was first chosen, so the rhythm never shifts under a student
+      because they visited the settings page. */
+  alternateAnchor?: string;
   dailyMinutes?: DailyMinutes;
   /** The explicit answer to "Can you really give this most days?". Only
       read when `dailyMinutes` is actually part of this save; see
@@ -82,6 +91,46 @@ export function needsFreshAvailabilityConfirm(previous: PlanConstraints, next: D
   return next !== previous.regularDailyMinutes;
 }
 
+export type StudyDaysChoice = PlanConstraints['studyDays'];
+export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+/** Monday first, the way a calendar in Almaty is read. */
+export const WEEKDAYS_MONDAY_FIRST: readonly Weekday[] = [1, 2, 3, 4, 5, 6, 0];
+export const ALL_WEEKDAYS: readonly Weekday[] = [0, 1, 2, 3, 4, 5, 6];
+
+/** The study-days fields of `constraints` for one answer. Split out of
+ *  `buildConstraints` so the three rules are stated once:
+ *  - untouched (`undefined`) leaves every study-days field exactly as it was;
+ *  - 'alternate' keeps its existing anchor when the plan was already on
+ *    'alternate', and otherwise takes today's; it also writes all seven
+ *    days into `customStudyDays` (see the contract's note: older code then
+ *    reads it as every day, never as no day);
+ *  - leaving 'alternate' drops the anchor, so a stale one can never come
+ *    back to life if the student picks "every other day" again later. */
+function studyDaysFields(
+  previous: PlanConstraints,
+  answers: IntakeAnswers,
+): Pick<PlanConstraints, 'studyDays' | 'customStudyDays' | 'alternateAnchor'> | null {
+  const choice = answers.studyDays;
+  if (choice === undefined) return null;
+  if (choice === 'alternate') {
+    const anchor =
+      previous.studyDays === 'alternate' && previous.alternateAnchor
+        ? previous.alternateAnchor
+        : answers.alternateAnchor;
+    return {
+      studyDays: 'alternate',
+      customStudyDays: ALL_WEEKDAYS,
+      ...(anchor ? { alternateAnchor: anchor } : {}),
+    };
+  }
+  if (choice === 'custom') {
+    const picked = answers.customStudyDays ?? previous.customStudyDays ?? [];
+    return { studyDays: 'custom', customStudyDays: [...new Set(picked)].sort((a, b) => a - b) as Weekday[] };
+  }
+  return { studyDays: choice };
+}
+
 export function buildConstraints(previous: PlanConstraints, answers: IntakeAnswers): PlanConstraints {
   const touched = answers.dailyMinutes !== undefined;
   const minutes = answers.dailyMinutes ?? previous.regularDailyMinutes;
@@ -94,14 +143,49 @@ export function buildConstraints(previous: PlanConstraints, answers: IntakeAnswe
       : 'provisional'
     : 'confirmed';
 
-  return {
+  const next: PlanConstraints = {
     ...previous,
     regularDailyMinutes: minutes,
     regularDailyMinutesStatus: status,
-    studyDays: answers.studyDays ?? previous.studyDays,
     explanationLocale: answers.explanationLocale ?? previous.explanationLocale,
   };
+  const days = studyDaysFields(previous, answers);
+  if (!days) return next;
+  /* Nothing changed about the days: hand back exactly what was there, so a
+     re-save stays byte-identical (same fields, same order). */
+  if (sameStudyDays(previous, days)) return next;
+  const rest: PlanConstraints = { ...next };
+  delete rest.alternateAnchor;
+  return { ...rest, ...days };
 }
+
+function sameStudyDays(
+  previous: PlanConstraints,
+  days: Pick<PlanConstraints, 'studyDays' | 'customStudyDays' | 'alternateAnchor'>,
+): boolean {
+  if (previous.studyDays !== days.studyDays) return false;
+  if (days.studyDays === 'custom' || days.studyDays === 'alternate') {
+    const a = previous.customStudyDays ?? [];
+    const b = days.customStudyDays ?? [];
+    if (a.length !== b.length || a.some((day, index) => day !== b[index])) return false;
+  }
+  if (days.studyDays === 'alternate' && previous.alternateAnchor !== days.alternateAnchor) return false;
+  return true;
+}
+
+/** What the study-days step shows on load: the plan's own setting, faithfully,
+ *  including a custom set of days (the old intake showed a custom plan as
+ *  "Every day" and would have overwritten it on save). */
+export function initialStudyDaysSelection(constraints: PlanConstraints): {
+  choice: StudyDaysChoice;
+  customDays: Weekday[];
+} {
+  return {
+    choice: constraints.studyDays ?? 'daily',
+    customDays: constraints.studyDays === 'custom' ? [...(constraints.customStudyDays ?? [])] : [],
+  };
+}
+
 
 function paperMinimumsMerged(
   previous: PlanGoals['perPaperMinimums'],

@@ -39,6 +39,7 @@ import {
   examDateAnswerFrom,
   inputsFromPerPaperMinimums,
   initialDailyTimeSelection,
+  initialStudyDaysSelection,
   lighterDailyMinutes,
   needsFreshAvailabilityConfirm,
   perPaperMinimumsDiff,
@@ -432,3 +433,76 @@ test('work dropped with no usable exam date still avoids "enough", without inven
   assert.doesNotMatch(outcome.headline, /until the exam/i);
   assert.match(outcome.headline, /25 minutes a day/);
 });
+
+/* ── Study days, redone 24 September 2026 ─────────────────────────────────
+   "Every other day" and "Choose my days" join "Every day" and "Weekdays".
+   The rule itself is pinned in tests/study-days-alternate.test.ts; these
+   pin what the intake SAVES. */
+
+const TODAY_KEY = '2026-09-24';
+
+test('choosing "every other day" saves the rule with today as its starting day', () => {
+  const next = buildConstraints(defaultPlanConstraints(), { studyDays: 'alternate', alternateAnchor: TODAY_KEY });
+  assert.equal(next.studyDays, 'alternate');
+  assert.equal(next.alternateAnchor, TODAY_KEY);
+  assert.deepEqual(
+    next.customStudyDays,
+    [0, 1, 2, 3, 4, 5, 6],
+    'all seven days, so code older than this change reads it as every day',
+  );
+});
+
+test('re-saving "every other day" keeps the day it was first chosen, so the rhythm never shifts', () => {
+  const existing = buildConstraints(defaultPlanConstraints(), { studyDays: 'alternate', alternateAnchor: '2026-09-10' });
+  const resaved = buildConstraints(existing, { studyDays: 'alternate', alternateAnchor: TODAY_KEY });
+  assert.equal(resaved.alternateAnchor, '2026-09-10');
+  assert.equal(JSON.stringify(resaved), JSON.stringify(existing), 'byte-identical');
+});
+
+test('an "every other day" plan survives a save that answered nothing, byte for byte', () => {
+  const existing = buildConstraints(defaultPlanConstraints(), { studyDays: 'alternate', alternateAnchor: '2026-09-10' });
+  assert.equal(JSON.stringify(buildConstraints(existing, {})), JSON.stringify(existing));
+  const goals = emptyPlanGoals();
+  assert.equal(JSON.stringify(buildGoals(goals, {}, NOW)), JSON.stringify(goals));
+});
+
+test('changing only the exam date leaves every study-day field exactly as it was', () => {
+  const existing = buildConstraints(defaultPlanConstraints({ regularDailyMinutes: 25, regularDailyMinutesStatus: 'confirmed' }), {
+    studyDays: 'alternate',
+    alternateAnchor: '2026-09-10',
+  });
+  /* What the settings page sends when only the date moved: the unchanged
+     time and language, and no study days at all. */
+  const answers: IntakeAnswers = {
+    examDate: '2026-12-03',
+    dailyMinutes: 25,
+    availabilityConfirmed: true,
+    explanationLocale: 'en',
+  };
+  assert.equal(JSON.stringify(buildConstraints(existing, answers)), JSON.stringify(existing));
+});
+
+test('leaving "every other day" drops its starting day, so a stale one can never return', () => {
+  const existing = buildConstraints(defaultPlanConstraints(), { studyDays: 'alternate', alternateAnchor: '2026-09-10' });
+  const weekdays = buildConstraints(existing, { studyDays: 'weekdays' });
+  assert.equal(weekdays.studyDays, 'weekdays');
+  assert.equal('alternateAnchor' in weekdays, false);
+  const again = buildConstraints(weekdays, { studyDays: 'alternate', alternateAnchor: TODAY_KEY });
+  assert.equal(again.alternateAnchor, TODAY_KEY, 'picking it again starts from today');
+});
+
+test('"choose my days" saves the picked weekdays, sorted and without repeats', () => {
+  const next = buildConstraints(defaultPlanConstraints(), { studyDays: 'custom', customStudyDays: [5, 1, 3, 1] });
+  assert.equal(next.studyDays, 'custom');
+  assert.deepEqual(next.customStudyDays, [1, 3, 5]);
+  assert.equal('alternateAnchor' in next, false);
+});
+
+test('a custom set of days loads as itself (the old intake showed it as "Every day")', () => {
+  const custom = defaultPlanConstraints({ studyDays: 'custom', customStudyDays: [2, 4] });
+  assert.deepEqual(initialStudyDaysSelection(custom), { choice: 'custom', customDays: [2, 4] });
+  const alt = buildConstraints(defaultPlanConstraints(), { studyDays: 'alternate', alternateAnchor: TODAY_KEY });
+  assert.deepEqual(initialStudyDaysSelection(alt), { choice: 'alternate', customDays: [] });
+  assert.deepEqual(initialStudyDaysSelection(defaultPlanConstraints()), { choice: 'daily', customDays: [] });
+});
+
