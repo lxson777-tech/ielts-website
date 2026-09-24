@@ -66,6 +66,7 @@ import {
   activitiesThatTeach,
   checksForSubskill,
   findActivity,
+  isPlacementReserved,
   lessonBlockFor,
   practiceForSubskill,
   prerequisiteClosure,
@@ -216,7 +217,11 @@ export type IneligibleReason =
   | 'surface-unavailable'
   | 'too-recent'
   | 'seen-before'
-  | 'hub';
+  | 'hub'
+  /** Held back for the one-sitting placement test (PLACEMENT_ONLY_TAG in
+      catalog.ts). Never scheduled by the plan in any role: not as practice,
+      not as a check, not as a short sample and not as a checkpoint. */
+  | 'placement-only';
 
 export interface EligibilityContext {
   catalogue: LearningCatalogueV1;
@@ -251,6 +256,7 @@ export function ineligibleReason(
   context: EligibilityContext,
 ): IneligibleReason | null {
   if (activity.unavailable) return 'unavailable';
+  if (isPlacementReserved(activity)) return 'placement-only';
 
   const skipped = context.overrides.some(
     (override) =>
