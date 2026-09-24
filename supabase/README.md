@@ -197,7 +197,14 @@ insert into public.admins (user_id, note)
 select id, 'why they are an admin' from auth.users where email = 'their@email';
 ```
 
-## Student profiles (proposed, not applied)
+## Student profiles (applied to production on 2026-09-24)
+
+Applied through the Supabase connector as migration `20260924140010`
+(`student_profiles_2026_09_24`) after Alex's approval, following a dry run
+in a self-rolling-back transaction on the live project (own row only, the
+under-18 rule, phone shape, future dates and a student's delete all behaved).
+The section below is kept as written for the record.
+
 
 **This has NOT been applied to the production project.** It is a reviewed
 proposal in `migrations/2026-09-24-profiles.sql`. Nobody but Alex applies it,
