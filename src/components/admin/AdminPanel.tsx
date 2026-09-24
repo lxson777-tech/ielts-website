@@ -11,9 +11,17 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { onAccountChange } from '../../lib/auth/lifecycle';
 import { withBase } from '../../lib/url';
 import {
+  ageOf,
   checkIsAdmin,
+  fullName,
+  hasProfile,
+  isUnder18,
   lastSeen,
   listAllUsers,
+  longDate,
+  matchesSearch,
+  phoneLabel,
+  sourceLabel,
   testLabel,
   type AdminRecentItem,
   type AdminUserRow,
@@ -60,7 +68,11 @@ function hours(minutes: number): string {
   return `${h < 10 ? h.toFixed(1).replace(/\.0$/, '') : Math.round(h)} h`;
 }
 
-function initials(email: string | null): string {
+function initials(u: AdminUserRow): string {
+  const first = u.first_name?.trim();
+  const last = u.last_name?.trim();
+  if (first) return ((first[0] ?? '') + (last?.[0] ?? '')).toUpperCase();
+  const email = u.email;
   const local = (email ?? '?').split('@')[0] ?? '?';
   const parts = local.split(/[._-]+/).filter(Boolean);
   if (parts.length >= 2) return (parts[0]![0]! + parts[1]![0]!).toUpperCase();
@@ -96,6 +108,7 @@ export default function AdminPanel() {
   const [loadedAt, setLoadedAt] = useState<number | null>(null);
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<Sort>('newest');
+  const [missingOnly, setMissingOnly] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
 
   // Follow the account: a sign-out while the page is open locks it again.
@@ -159,19 +172,20 @@ export default function AdminPanel() {
       activeWeek: users.filter((u) => seen(u) >= weekAgo).length,
       newWeek: users.filter((u) => new Date(u.joined_at).getTime() >= weekAgo).length,
       minutes: users.reduce((sum, u) => sum + (u.minutes_studied ?? 0), 0),
+      under18: users.filter((u) => isUnder18(u)).length,
+      missing: users.filter((u) => !hasProfile(u)).length,
     };
   }, [users]);
 
   const shown = useMemo(() => {
     if (!users) return [];
-    const q = query.trim().toLowerCase();
-    const list = q ? users.filter((u) => (u.email ?? '').toLowerCase().includes(q)) : [...users];
+    const list = users.filter((u) => matchesSearch(u, query) && (!missingOnly || !hasProfile(u)));
     const time = (iso: string | null) => (iso ? new Date(iso).getTime() : 0);
     if (sort === 'newest') list.sort((a, b) => time(b.joined_at) - time(a.joined_at));
     if (sort === 'active') list.sort((a, b) => time(lastSeen(b)) - time(lastSeen(a)));
     if (sort === 'practice') list.sort((a, b) => practiceCount(b) - practiceCount(a) || b.minutes_studied - a.minutes_studied);
     return list;
-  }, [users, query, sort]);
+  }, [users, query, sort, missingOnly]);
 
   if (gate === 'checking') {
     return (
@@ -249,6 +263,10 @@ export default function AdminPanel() {
             <dt>Time studied</dt>
             <dd>{hours(stats.minutes)}</dd>
           </div>
+          <div>
+            <dt>Under 18</dt>
+            <dd>{stats.under18}</dd>
+          </div>
         </dl>
       )}
 
@@ -263,10 +281,17 @@ export default function AdminPanel() {
                 <circle cx="9" cy="9" r="5.5" />
                 <path d="m13.2 13.2 3.3 3.3" strokeLinecap="round" />
               </svg>
-              <span className="sr-only">Search by email</span>
-              <input type="search" placeholder="Search by email" value={query} onChange={(e) => setQuery(e.target.value)} />
+              <span className="sr-only">Search by name, email, phone or city</span>
+              <input type="search" placeholder="Search name, email, phone, city" value={query} onChange={(e) => setQuery(e.target.value)} />
             </label>
-            <div className="admin-sort" role="group" aria-label="Sort students">
+            <div className="admin-controls-side">
+              {stats && (stats.missing > 0 || missingOnly) && (
+                <button type="button" className="admin-toggle" aria-pressed={missingOnly} onClick={() => setMissingOnly((on) => !on)}>
+                  Only missing details
+                  <span className="admin-toggle-count">{stats.missing}</span>
+                </button>
+              )}
+              <div className="admin-sort" role="group" aria-label="Sort students">
               {(
                 [
                   ['newest', 'Newest'],
@@ -278,6 +303,7 @@ export default function AdminPanel() {
                   {label}
                 </button>
               ))}
+              </div>
             </div>
           </div>
 
@@ -293,7 +319,13 @@ export default function AdminPanel() {
           </div>
 
           {shown.length === 0 ? (
-            <p className="admin-empty">{query ? 'No student matches that email.' : 'No accounts yet.'}</p>
+            <p className="admin-empty">
+              {query.trim()
+                ? 'No student matches that search.'
+                : missingOnly
+                  ? 'Everyone has filled in their details.'
+                  : 'No accounts yet.'}
+            </p>
           ) : (
             <ul className="admin-list">
               {shown.map((u) => (
@@ -315,6 +347,7 @@ export default function AdminPanel() {
 
 function StudentRow({ user: u, isYou, open, onToggle }: { user: AdminUserRow; isYou: boolean; open: boolean; onToggle: () => void }) {
   const seen = lastSeen(u);
+  const name = fullName(u);
   const panelId = `admin-student-${u.user_id}`;
   // The same numbers as the columns, as one line, for narrow screens where
   // the columns are hidden (admin.css reads it with attr()).
@@ -333,16 +366,17 @@ function StudentRow({ user: u, isYou, open, onToggle }: { user: AdminUserRow; is
       <button type="button" className="admin-row-main" data-summary={summary} aria-expanded={open} aria-controls={panelId} onClick={onToggle}>
         <span className="admin-who">
           <span className="admin-avatar" aria-hidden="true">
-            {initials(u.email)}
+            {initials(u)}
           </span>
           <span className="admin-who-text">
             <span className="admin-email">
-              {u.email ?? 'No email'}
+              <span className="admin-name-text">{name ?? u.email ?? 'No email'}</span>
               {isYou && <span className="admin-tag">You</span>}
               {!isYou && u.is_admin && <span className="admin-tag">Admin</span>}
+              {!hasProfile(u) && <span className="admin-tag is-quiet">No details yet</span>}
             </span>
             <span className="admin-sub">
-              Joined {shortDate(u.joined_at)} · {u.provider === 'google' ? 'Google' : 'Email'}
+              {name && u.email ? `${u.email} · ` : ''}Joined {shortDate(u.joined_at)} · {u.provider === 'google' ? 'Google' : 'Email'}
             </span>
           </span>
         </span>
@@ -379,6 +413,7 @@ function StudentRow({ user: u, isYou, open, onToggle }: { user: AdminUserRow; is
 function StudentDetail({ user: u }: { user: AdminUserRow }) {
   return (
     <div className="admin-detail-inner">
+      <StudentProfile user={u} />
       <div className="admin-detail-grid">
         <section>
           <h3>Study plan</h3>
@@ -476,5 +511,83 @@ function StudentDetail({ user: u }: { user: AdminUserRow }) {
         )}
       </section>
     </div>
+  );
+}
+
+/** The "Details" block: who the student is and how to reach them, and for
+    anyone under 18 the parent or guardian who agreed. First in the
+    expanded row because it is what the owner most often opens a row for. */
+function StudentProfile({ user: u }: { user: AdminUserRow }) {
+  if (!hasProfile(u)) {
+    return (
+      <section className="admin-profile">
+        <h3>Details</h3>
+        <p className="admin-note is-flush">This student has not filled in their details yet.</p>
+      </section>
+    );
+  }
+  const age = ageOf(u);
+  const birthday = longDate(u.date_of_birth);
+  const minor = isUnder18(u);
+  const showParent = minor || !!(u.parent_name || u.parent_phone || u.parent_consent_at);
+  return (
+    <section className="admin-profile">
+      <h3>Details</h3>
+      <dl className="admin-kv">
+        <div>
+          <dt>Name</dt>
+          <dd>{fullName(u)}</dd>
+        </div>
+        <div>
+          <dt>Age</dt>
+          <dd>
+            {age === null ? 'Unknown' : age}
+            {birthday && <span className="admin-kv-sub">Born {birthday}</span>}
+          </dd>
+        </div>
+        <div>
+          <dt>Phone</dt>
+          <dd>{u.phone ? <a href={`tel:${u.phone}`}>{phoneLabel(u.phone)}</a> : 'Not given'}</dd>
+        </div>
+        <div>
+          <dt>City</dt>
+          <dd>{u.city || 'Not given'}</dd>
+        </div>
+        <div>
+          <dt>School, university or job</dt>
+          <dd>{u.occupation || 'Not given'}</dd>
+        </div>
+        <div>
+          <dt>Found us through</dt>
+          <dd>{sourceLabel(u.source) ?? 'Not given'}</dd>
+        </div>
+        <div>
+          <dt>Details updated</dt>
+          <dd>{longDate(u.profile_updated_at) ?? 'Unknown'}</dd>
+        </div>
+      </dl>
+      {showParent && (
+        <div className="admin-parent">
+          <h4>
+            Parent or guardian
+            {minor && <span className="admin-tag is-quiet">Under 18</span>}
+          </h4>
+          <dl className="admin-kv">
+            <div>
+              <dt>Name</dt>
+              <dd>{u.parent_name || 'Not given'}</dd>
+            </div>
+            <div>
+              <dt>Phone</dt>
+              <dd>{u.parent_phone ? <a href={`tel:${u.parent_phone}`}>{phoneLabel(u.parent_phone)}</a> : 'Not given'}</dd>
+            </div>
+            <div>
+              <dt>Agreement</dt>
+              <dd>{u.parent_consent_at ? `Agreed on ${longDate(u.parent_consent_at)}` : 'Not recorded'}</dd>
+            </div>
+          </dl>
+        </div>
+      )}
+    </section>
   );
 }
