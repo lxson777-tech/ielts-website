@@ -418,8 +418,13 @@ export function reviewTarget(
     The LOCALE is part of it, for the same reason it is part of
     insightsFingerprint: a cached note is a paragraph of prose in one
     language, and a student who switches language must get a note written
-    in the one they are reading, not the one they left. */
-export function weekFingerprint(facts: WeekFacts, locale: Locale = 'en'): string {
+    in the one they are reading, not the one they left.
+
+    The FIRST NAME is folded in when there is one, the same way and for the
+    same reason as in insightsFingerprint: a note written before the student
+    filled in their profile is rewritten once with their name. Appended only
+    when present, so a nameless fingerprint is unchanged. */
+export function weekFingerprint(facts: WeekFacts, locale: Locale = 'en', firstName?: string | null): string {
   const parts = [
     locale,
     facts.window.start,
@@ -434,6 +439,7 @@ export function weekFingerprint(facts: WeekFacts, locale: Locale = 'en'): string
     facts.bandMoves.map((m) => `${m.skill}:${m.before ?? '-'}:${m.after}`).join(','),
     facts.planChanges.map((c) => `${c.at}:${c.trigger}:${c.summary}`).join(','),
   ];
+  if (firstName) parts.push(`name:${firstName}`);
   return fnv1a(parts.join('|'));
 }
 

@@ -110,6 +110,15 @@ export interface FakeState {
       when `learningTables` is 'present', like the other two, and an empty
       list is a student who has synced no companion document yet. */
   learningCompanions?: { user_id: string; kind: string; data: unknown }[];
+  /* ── The student profile ───────────────────────────────────────────────
+     supabase/migrations/2026-09-24-profiles.sql. 'present' is the default
+     and serves the rows below (none unless a test adds one, which is a
+     student who has not filled the profile in). 'missing' is the project
+     before the migration is applied: a 404 naming the relation, which the
+     Worker must read as "no name" rather than as a failure. 'broken' is a
+     table that exists but answers 500. */
+  profilesTable?: 'present' | 'missing' | 'broken';
+  studentProfiles?: { user_id: string; first_name: string }[];
 }
 
 export interface Recorder {
@@ -348,6 +357,24 @@ function rest(
         (state.learningEvents ?? [])
           .filter((row) => row.user_id === where.user_id && (!where.event_id || row.event_id === where.event_id))
           .map((row) => ({ event: row.event })),
+      );
+    }
+    if (table === 'student_profiles') {
+      if (state.profilesTable === 'missing') {
+        return new Response(
+          JSON.stringify({ code: '42P01', message: 'relation "public.student_profiles" does not exist' }),
+          { status: 404, headers: { 'Content-Type': 'application/json' } },
+        );
+      }
+      if (state.profilesTable === 'broken') return new Response('{}', { status: 500 });
+      /* Filtered by the user id the handler passed, so a Worker that ever
+         stopped filtering would hand student A another student's name and
+         the isolation test would catch it. Only the selected column comes
+         back, as PostgREST would. */
+      return json(
+        (state.studentProfiles ?? [])
+          .filter((row) => row.user_id === where.user_id)
+          .map((row) => ({ first_name: row.first_name })),
       );
     }
     if (table === 'mr_ez_notes') {

@@ -14,6 +14,12 @@ export const strings: Record<string, string> = {
   'Good afternoon.': 'Добрый день.',
   'Good evening.': 'Добрый вечер.',
   'Welcome back.': 'С возвращением.',
+  /* The same four with the student's own first name (src/lib/dashboard-greeting.ts).
+     {name} is inserted as typed and never translated. */
+  'Good morning, {name}.': 'Доброе утро, {name}.',
+  'Good afternoon, {name}.': 'Добрый день, {name}.',
+  'Good evening, {name}.': 'Добрый вечер, {name}.',
+  'Welcome back, {name}.': 'С возвращением, {name}.',
   'A little practice. A step closer.': 'Немного практики. Ещё один шаг вперёд.',
   '{minutes} / {goal} min today': '{minutes} / {goal} мин сегодня',
   'Your study overview': 'Обзор вашей учёбы',
