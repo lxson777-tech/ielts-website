@@ -32,6 +32,7 @@ create table if not exists public.student_profiles (
   constraint student_profiles_last_name_len  check (length(btrim(last_name)) between 1 and 60),
   constraint student_profiles_city_len       check (length(btrim(city)) between 1 and 80),
   constraint student_profiles_occupation_len check (length(btrim(occupation)) between 1 and 120),
+  constraint student_profiles_parent_name_len check (parent_name is null or length(btrim(parent_name)) between 1 and 80),
   constraint student_profiles_source         check (source in ('friend', 'instagram', 'centre', 'other')),
   -- Digits with an optional leading plus, 7 to 15 digits (E.164 length).
   constraint student_profiles_phone_shape    check (phone ~ '^\+?[0-9]{7,15}$'),
@@ -54,18 +55,23 @@ create policy "student_profiles update own" on public.student_profiles
 -- The rules a browser cannot skip: a date of birth in the past and not
 -- absurdly young, and for anyone under 18 a parent's name, phone and
 -- agreement. Checked here because a CHECK constraint cannot use today's date.
+-- "Today" is Almaty's date, where the students are, not the server's (UTC),
+-- so an 18th birthday counts from local midnight. The agreement time is
+-- stamped HERE, by the server, the first time the parent fields arrive: the
+-- browser may send any value and it is ignored.
 create or replace function public.guard_student_profile_write()
 returns trigger
 language plpgsql
 set search_path = ''
 as $$
 declare
+  today date := (now() at time zone 'Asia/Almaty')::date;
   age_years integer;
 begin
-  if new.date_of_birth >= current_date then
+  if new.date_of_birth >= today then
     raise exception 'date of birth must be in the past' using errcode = '23514';
   end if;
-  age_years := extract(year from age(current_date, new.date_of_birth))::integer;
+  age_years := extract(year from age(today, new.date_of_birth))::integer;
   if age_years < 5 then
     raise exception 'date of birth is too recent' using errcode = '23514';
   end if;
@@ -73,6 +79,12 @@ begin
     if new.parent_name is null or length(btrim(new.parent_name)) = 0
        or new.parent_phone is null or new.parent_consent_at is null then
       raise exception 'a parent''s name, phone and agreement are required under 18' using errcode = '23514';
+    end if;
+    -- Keep the first recorded agreement; stamp a new one with the server clock.
+    if tg_op = 'UPDATE' and old.parent_consent_at is not null then
+      new.parent_consent_at := old.parent_consent_at;
+    else
+      new.parent_consent_at := now();
     end if;
   end if;
   new.first_name := btrim(new.first_name);
