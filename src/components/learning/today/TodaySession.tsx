@@ -56,6 +56,7 @@ import {
   whyThisView,
 } from './todayViewModel';
 import ScopeNote from '../ScopeNote';
+import PlacementOffer from '../../placement/PlacementOffer';
 import { clearIntakeDeferral, isDeferralActive, readIntakeDeferral, writeIntakeDeferral } from './intakeDeferral';
 import '../../../styles/learning-today.css';
 
@@ -240,6 +241,12 @@ export default function TodaySession() {
           device has already been decided about, and nothing for a previous
           account's work. */}
       <AnonymousWorkClaim token={claimToken} variant="card" />
+
+      {/* The placement test, offered once the intake is answered or put off
+          and only while this account has not taken it (src/components/
+          placement/placement-offer.ts). Signed out it is an invitation to
+          sign in. "Not now" changes nothing about the staged samples. */}
+      <PlacementOffer intakeShowing={screen === 'intake'} />
 
       {screen === 'intake' && (
         <section className="today-card today-intake" aria-labelledby="today-heading">
