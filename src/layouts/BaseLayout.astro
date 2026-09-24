@@ -35,6 +35,8 @@ interface Props {
       key: the Worker resolves it against the real course registry and
       ignores anything that does not match, so it carries no authority. */
   lessonKey?: string;
+  /** Keep this page out of search engines (the owner-only admin page). */
+  noindex?: boolean;
 }
 
 const {
@@ -45,6 +47,7 @@ const {
   ogType = 'website',
   wide,
   lessonKey,
+  noindex = false,
 } = Astro.props;
 const pageTitle = title.replaceAll('IELTS Portal', 'IELTS is EZ');
 
@@ -74,6 +77,7 @@ const jsonLd = {
     <meta name="description" content={description} />
     <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
     <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <title>{pageTitle}</title>
 
     <meta property="og:type" content={ogType} />

@@ -30,6 +30,7 @@ export const strings: Record<string, string> = {
   'Study plan settings': 'Настройки учебного плана',
   'Saved and notes': 'Сохранённое и заметки',
   'Progress report': 'Отчёт о прогрессе',
+  'Admin panel': 'Панель администратора',
   'Lessons library': 'Библиотека уроков',
   'What each band needs': 'Что нужно для каждого балла',
   'Model answers': 'Образцы ответов',

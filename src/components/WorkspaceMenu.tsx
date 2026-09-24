@@ -17,6 +17,7 @@ import { isAuthConfigured } from '../lib/auth/supabase';
 import { signOut } from '../lib/auth/session';
 import { onAccountChange, startAccountLifecycle } from '../lib/auth/lifecycle';
 import { WORKSPACE_MENU } from '../lib/platform-nav';
+import { isAdminCached } from '../lib/admin';
 import { LOCALE_LABEL, SUPPORTED_LOCALES, switchLocale } from '../lib/i18n';
 import { useT } from '../lib/i18n/react';
 import AuthModal from './AuthModal';
@@ -49,6 +50,23 @@ export default function WorkspaceMenu() {
   useEffect(() => {
     if (user) setModalOpen(false);
   }, [user]);
+
+  /* The admin link is shown only to an account the database confirms as an
+     admin (src/lib/admin.ts). Hiding it is a courtesy, not the lock: the
+     admin page's data is refused server-side to everyone else. */
+  const [isAdmin, setIsAdmin] = useState(false);
+  const userId = user?.id ?? null;
+  useEffect(() => {
+    setIsAdmin(false);
+    if (!userId) return;
+    let cancelled = false;
+    void isAdminCached(userId).then((ok) => {
+      if (!cancelled) setIsAdmin(ok);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
 
   useEffect(() => {
     if (!open) return;
@@ -132,6 +150,18 @@ export default function WorkspaceMenu() {
               <span>{t('Signed in as')}</span>
               <strong>{user.email}</strong>
             </p>
+          )}
+          {isAdmin && (
+            <div className="ws-menu-group">
+              <a
+                role="menuitem"
+                href={withBase('/admin')}
+                style={{ '--i': step() } as React.CSSProperties}
+                onClick={() => setOpen(false)}
+              >
+                {t('Admin panel')}
+              </a>
+            </div>
           )}
           {WORKSPACE_MENU.map((group, i) => (
             <div className="ws-menu-group" key={i}>

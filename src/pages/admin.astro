@@ -1,0 +1,18 @@
+---
+/* The owner's admin panel. A static page like every other: what keeps it
+   private is the database, which only hands the student list to an account
+   in public.admins (supabase/migrations/2026-09-24-admin.sql). Kept out of
+   search engines and the sitemap as well. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminPanel from '../components/admin/AdminPanel';
+---
+
+<BaseLayout title="Admin · IELTS Portal" description="Site administration." noindex>
+  <div class="admin-page">
+    <AdminPanel client:load />
+  </div>
+</BaseLayout>
+
+<style is:global>
+  @import '../styles/admin.css';
+</style>

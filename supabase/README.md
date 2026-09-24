@@ -142,6 +142,36 @@ npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
 npx wrangler secret put OPENAI_API_KEY
 ```
 
+## Admin access (owner only)
+
+`migrations/2026-09-24-admin.sql` adds the lock behind the `/admin` page.
+The page itself is a static file anyone could open; the data is what is
+protected:
+
+- **`admins`**, one row per admin account (seeded with the site owner's
+  account, looked up by email when the file runs). Row security on and no
+  policy at all, and the browser roles' default table grants revoked, so no
+  browser can read it or add itself to it.
+- **`is_admin()`** answers "am I an admin?" for the caller only, from the
+  user id proved by their own access token. The account menu and the page
+  use it to decide what to show.
+- **`admin_list_users()`** returns every account with a summary of its study
+  (plan, counts, best bands, recent scored work, Mr EZ and live examiner
+  usage). It refuses anyone not in `admins` with SQLSTATE 42501, and it is
+  not callable at all by a signed-out visitor.
+
+Checked before it was applied, in a transaction that rolled itself back on
+the live project: the owner got the full list; a student got "admin only"
+and could not insert themselves into `admins`; a signed-out visitor got
+"permission denied" for both functions.
+
+To add another admin later, run once in the SQL editor:
+
+```sql
+insert into public.admins (user_id, note)
+select id, 'why they are an admin' from auth.users where email = 'their@email';
+```
+
 ## Personal learning tables (applied to production on 2026-09-24)
 Applied through the Supabase connector as migration `20260924080358`
 (`personal_learning_tables_2026_09_21`) after Alex's approval, and verified

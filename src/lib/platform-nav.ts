@@ -62,6 +62,7 @@ export const APP_ROUTE_PREFIXES = [
   '/speaking',
   '/writing',
   '/account',
+  '/admin',
   '/review',
   '/report',
   '/reset-password',
@@ -71,7 +72,7 @@ export const APP_ROUTE_PREFIXES = [
     library, or a row of cards that turns cramped at 880px. Matched exactly,
     not by prefix, so a single lesson or drill page inside one of these
     sections still gets the calmer reading width. */
-export const WIDE_ROUTES = ['/trainers', '/tests', '/learn', '/account', '/writing/models'];
+export const WIDE_ROUTES = ['/trainers', '/tests', '/learn', '/account', '/writing/models', '/admin'];
 
 function matches(prefix: string, route: string): boolean {
   return route === prefix || route.startsWith(`${prefix}/`);

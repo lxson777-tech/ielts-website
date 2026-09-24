@@ -37,7 +37,8 @@ export default defineConfig({
     '/tests/drills': '/ielts-website/trainers/reading',
     '/speaking/checker': '/ielts-website/speaking/examiner',
   },
-  integrations: [react(), sitemap()],
+  // The owner-only admin page is never advertised to search engines.
+  integrations: [react(), sitemap({ filter: (page) => !/\/admin\/?$/.test(page) })],
   vite: {
     plugins: [tailwindcss()],
   },
