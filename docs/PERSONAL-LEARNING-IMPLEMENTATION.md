@@ -319,9 +319,12 @@ the platform live: step 1 was done (main fast-forwarded to `2bd585b`, final
 code `c693b43`; GitHub Pages run 35958302071 succeeded; the live dashboard
 and the per-test data the Worker fetches answer), and step 3 was done (Mr EZ
 Worker version `047e03d2`, with `TUTOR_MAX_HELP_PER_USER_PER_DAY` at 60).
-Step 2, the learning tables, needs Alex's own Supabase login and is not
-applied; until then sync degrades to this-device-only with an honest
-status. Step 4, the paid live check, needs a local `.dev.vars` with the
+Step 2 was done the same morning after Alex authorised the Supabase
+connector: the migration was applied to the production project (IELTS
+Portal, ref nbeyxwjvytrqtzzeilev) as migration 20260924080358, and verified
+(three tables, row security on, two, three and three policies, the plan
+guard and the companions touch trigger, both functions present, every
+existing table untouched with its row counts unchanged). Step 4, the paid live check, needs a local `.dev.vars` with the
 model key in `workers/mr-ez/`, which does not exist here, so it is not run.
 The list below is kept as written.
 

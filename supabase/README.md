@@ -142,7 +142,10 @@ npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
 npx wrangler secret put OPENAI_API_KEY
 ```
 
-## Personal learning tables (proposal, not applied)
+## Personal learning tables (applied to production on 2026-09-24)
+Applied through the Supabase connector as migration `20260924080358`
+(`personal_learning_tables_2026_09_21`) after Alex's approval, and verified
+with the queries below. The section is kept as written for the record.
 
 `migrations/2026-09-21-learning.sql` adds three more tables for the personal
 learning build: `learning_events`, `learning_plan` and `learning_companions`.
