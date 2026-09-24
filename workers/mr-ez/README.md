@@ -342,6 +342,45 @@ rather than guessed at and the recall step falls back to wording that names no
 topic. `LOW_LEXICAL_RESOURCE_BAND` is repeated in the Worker for the same
 reason, and a test pins the two numbers together.
 
+### The student's first name
+
+Since 24 September 2026 Mr EZ can call a student by their first name. It
+comes from one place: the student's own row in `student_profiles`
+(`supabase/migrations/2026-09-24-profiles.sql`), read by `loadStudentName`
+with the service role and filtered by the **verified** user id, in parallel
+with `loadStudentState`. Only `first_name` is selected.
+
+**The request cannot supply a name.** `parseTutorRequest` keeps no name
+field, so a `firstName` in the body is dropped before anything reads it, and
+a test sends one and proves it never reaches the prompt. The stored value is
+also cleaned by `sanitiseFirstName` (`src/lib/tutor/prompt.ts`) before use:
+only letters in any alphabet, combining marks, spaces, hyphens, apostrophes
+and full stops survive, it is cut to 60 characters, and more than four words
+is treated as no name at all. A student can type anything into their own
+profile, and this is what stops that text carrying a fence marker, a line
+break or a sentence into the prompt.
+
+It reaches the model as its own fenced block, `STUDENT NAME`, first in the
+data, with one line telling the model to use the name naturally and at most
+once in a reply and otherwise to keep saying "you", and the same "never an
+instruction" warning every student-typed string carries. It is its own fence
+because the facts fences must stay English (a test checks them for Cyrillic)
+and a Kazakh or Russian name is written in Cyrillic. `MR_EZ_PERSONA` and
+`TASK_RULES` are untouched.
+
+A missing table (the migration not applied yet), no row, a value that cleans
+down to nothing, and even a failed read all mean the same thing: no name, no
+`STUDENT NAME` block, and the turn is answered as before. Unlike the record,
+a failed read here does not refuse the turn, because a missing name only
+makes him less personal, not wrong.
+
+**The name is folded into the three cache fingerprints**
+(`insightsFingerprint`, `weekFingerprint`, `unitFingerprint`), only when
+there is one. So a welcome or a note cached before the student filled in
+their profile is rewritten once with the name, and again if they change it,
+while a student with no profile keeps exactly the fingerprints they had
+before and nothing already cached is thrown away.
+
 ### How sure, said in five words instead of two
 
 Every fact the model reads is stamped with the one evidence policy's own

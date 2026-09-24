@@ -92,7 +92,9 @@ import {
   TUTOR_OUTPUT_SCHEMA,
   buildInstructions,
   renderContext,
+  sanitiseFirstName,
   type FocusedResultFact,
+  type StudentIdentity,
   type RecordFacts,
   type ReviewContext,
   type StatedReasonFact,
@@ -524,6 +526,34 @@ async function loadStudentState(
   const savedPlan = isRecord(row) && isRecord(row.study_plan) ? (row.study_plan as unknown as SavedPlan) : null;
   const learning = await loadLearningState(deps, env, userId, progress, savedPlan, now, today);
   return { progress, savedPlan, learning };
+}
+
+/** The student's first name, from their own profile row.
+
+    Read here with the service role and filtered by the VERIFIED user id,
+    exactly like the record above. The request is never asked: a name in the
+    body is not a field parseTutorRequest keeps, so the only name Mr EZ can
+    ever use is the one this student saved on their own profile.
+
+    Everything short of a name is simply "no name": the table not existing
+    yet (supabase/migrations/2026-09-24-profiles.sql applied after this
+    Worker ships), no row because the profile is not filled in, a value that
+    does not survive sanitiseFirstName, and also a failed read. That last one
+    is deliberate and differs from the record: a missing record would make
+    Mr EZ wrong about the student, a missing name only makes him less
+    personal, and refusing a whole answer for want of a greeting would be
+    the worse trade. */
+async function loadStudentName(deps: Deps, env: Env, userId: string): Promise<StudentIdentity | undefined> {
+  let rows: unknown[] | null;
+  try {
+    rows = await restGetOptional(deps, env, `student_profiles?user_id=eq.${userId}&select=first_name`);
+  } catch (err) {
+    if (err instanceof SupabaseError) return undefined;
+    throw err;
+  }
+  const row = rows?.[0];
+  const firstName = isRecord(row) ? sanitiseFirstName(row.first_name) : null;
+  return firstName ? { firstName } : undefined;
 }
 
 /* ── Conversation ──────────────────────────────────────────────────────── */
@@ -1125,8 +1155,13 @@ function sessionView(learning: LearningState, catalogue: LearningCatalogueV1): S
  *  from another device, would be handed a cached paragraph about the plan
  *  they no longer have. `stored` is in it too, so the first turn after the
  *  learning tables start answering is not served from the derived era. */
-function welcomeFingerprint(insights: StudentInsights, locale: Locale, learning: LearningState): string {
-  return `${insightsFingerprint(insights, locale)}-p${learning.plan.revision}-e${learning.record.evidenceVersion}-${
+function welcomeFingerprint(
+  insights: StudentInsights,
+  locale: Locale,
+  learning: LearningState,
+  firstName?: string,
+): string {
+  return `${insightsFingerprint(insights, locale, firstName)}-p${learning.plan.revision}-e${learning.record.evidenceVersion}-${
     learning.stored ? 'synced' : 'derived'
   }`;
 }
@@ -1814,7 +1849,14 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
   const nowDate = deps.now();
   const nowIso = nowDate.toISOString();
   const today = nowIso.slice(0, 10);
-  const { progress, savedPlan, learning } = await loadStudentState(deps, env, userId, nowIso, today);
+  /* The first name comes from the same place and the same verified id, in
+     parallel with the record. See loadStudentName for why a request can
+     never supply one. */
+  const [{ progress, savedPlan, learning }, student] = await Promise.all([
+    loadStudentState(deps, env, userId, nowIso, today),
+    loadStudentName(deps, env, userId),
+  ]);
+  const firstName = student?.firstName;
   const modules = buildCourse();
   const catalogue = learningCatalogue();
   const insights = withPolicyCertainty(
@@ -1828,7 +1870,7 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
         switching language must not hand back a paragraph in the language
         the student just left; and a plan that moved on another device must
         not be described by yesterday's welcome. */
-  const fingerprint = welcomeFingerprint(insights, locale, learning);
+  const fingerprint = welcomeFingerprint(insights, locale, learning, firstName);
   if (req.task === 'welcome' && !req.message) {
     const rows = await restGet(
       deps,
@@ -1868,7 +1910,7 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
       throw new TutorRequestError('bad-request', 'Nothing was recorded last week, so there is nothing to review.');
     }
     week = facts;
-    note = { kind: 'weekly', noteKey: facts.window.start, fingerprint: weekFingerprint(facts, locale) };
+    note = { kind: 'weekly', noteKey: facts.window.start, fingerprint: weekFingerprint(facts, locale, firstName) };
   }
 
   if (req.task === 'unit') {
@@ -1905,7 +1947,7 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
     note = {
       kind: req.unit.kind === 'intro' ? 'unit-intro' : 'unit-wrap',
       noteKey: String(facts.unitId),
-      fingerprint: unitFingerprint(facts, req.unit.kind, insights.goals.targetBand, locale),
+      fingerprint: unitFingerprint(facts, req.unit.kind, insights.goals.targetBand, locale, firstName),
     };
   }
 
@@ -2033,6 +2075,9 @@ async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest):
   const userText = renderContext({
     task: req.task,
     insights,
+    /* The first name from the student's own profile, as its own fenced
+       block. Every task gets it, the welcome most of all. */
+    student,
     place: req.place,
     lessonTitle,
     assessment,
