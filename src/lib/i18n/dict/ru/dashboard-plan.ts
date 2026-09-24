@@ -205,8 +205,6 @@ export const strings: Record<string, string> = {
 
   /* AccountOverview.tsx */
   'Synced across your devices': 'Синхронизировано на всех ваших устройствах',
-  'Saved on this device only. {loginLink} (top of the page) to sync across devices.':
-    'Сохранено только на этом устройстве. {loginLink} (вверху страницы), чтобы синхронизировать между устройствами.',
   'Log in': 'Войти',
   'Lessons done (of {total})': 'Пройдено уроков (из {total})',
   'Best {skill} band': 'Лучший балл {skill}',

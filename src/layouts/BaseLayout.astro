@@ -58,6 +58,9 @@ const route = toRoute(Astro.url.pathname, import.meta.env.BASE_URL);
 // the clean route is what the canonical link must point at.
 const canonicalUrl = new URL(withBase(route), Astro.site).toString();
 const isAppRoute = !bare && routeIsApp(route);
+// Nobody is signed in on the sign-in, sign-up and password pages, and Mr EZ
+// needs a signed-in student, so his launcher would only sit over the form.
+const isAuthPage = ['/sign-in', '/sign-up', '/forgot-password', '/reset-password'].includes(route);
 const isWide = wide ?? isWideRoute(route);
 
 const jsonLd = {
@@ -192,7 +195,7 @@ const jsonLd = {
             on app routes: the fullscreen test player and the mock exam use
             the `bare` layout, so Mr EZ is simply not present during a timed
             paper rather than relying on him declining to help. */}
-        <MrEzPanel client:load transition:persist="mr-ez" />
+        {!isAuthPage && <MrEzPanel client:load transition:persist="mr-ez" />}
       </>
     ) : (
       <>
