@@ -350,6 +350,7 @@ export default function MrEzPanel() {
         aria-label={t('Mr EZ, your IELTS tutor')}
         aria-modal="false"
         hidden={!open}
+        inert={!open}
       >
         <header className="mrez-head">
           <MrEzAvatar mood={mood} size={52} />

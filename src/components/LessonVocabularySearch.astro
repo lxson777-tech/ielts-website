@@ -1,0 +1,20 @@
+<label class="discovery-search" data-vocab-search-label><span data-i18n>Find a word in this lesson</span><input type="search" data-vocab-search /></label>
+<p class="discovery-empty" data-vocab-empty hidden data-i18n>No matches. Try another search.</p>
+<script>
+import { onLessonBodySwap } from '../lib/i18n/lesson-body';
+function setupWords() {
+ const input = document.querySelector<HTMLInputElement>('[data-vocab-search]');
+ if (!input) return;
+ const rows = [...document.querySelectorAll<HTMLTableRowElement>('.lesson-body .vocab-table tbody tr')];
+ const update = () => {
+  let count = 0;
+  for (const row of rows) {row.hidden = !row.textContent?.toLowerCase().includes(input.value.trim().toLowerCase());if (!row.hidden) count++;}
+  document.querySelector<HTMLElement>('[data-vocab-empty]')!.hidden = count > 0;
+ };
+ input.oninput = update;
+ update();
+}
+setupWords();
+document.addEventListener('astro:page-load',setupWords);
+onLessonBodySwap(setupWords);
+</script>

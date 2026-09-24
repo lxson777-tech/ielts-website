@@ -1,3 +1,4 @@
+import SmoothReveal from '../../SmoothReveal';
 /* Today: ONE session block. Replaces the old separate "Your next step" card,
    the separate Mr EZ welcome card and the competing "Your course" /
    "Weakest area" cards on /dashboard (architecture section 7, WP8).
@@ -247,7 +248,7 @@ export default function TodaySession() {
             {t("Let's set your goal")}
           </h2>
           <p className="today-intake-sub">
-            {t('One short question set makes every suggestion here specific to you instead of generic.')}
+            {t('A few choices to make your plan yours.')}
           </p>
           <Intake variant="first-visit" onDone={handleIntakeDone} onDefer={handleIntakeDefer} />
         </section>
@@ -398,6 +399,19 @@ function ActiveSessionCard({
         </h2>
       </header>
 
+      <p className="today-budget">
+        {t('About {n} minutes today.', { n: session.budgetMinutes })}
+        {session.regularDailyMinutes !== session.budgetMinutes && (
+          <span className="today-budget-note"> {t('Your regular day is {n} minutes.', { n: session.regularDailyMinutes })}</span>
+        )}
+      </p>
+
+      {current && (
+        <a className="today-start" href={withBase(current.href ?? '/dashboard')} onClick={startClick}>
+          {action === 'start' ? t('Start') : t('Continue')}
+        </a>
+      )}
+
       {!session.confirmed && (
         <p className="today-provisional-note">
           {t('Your plan is provisional until you set a goal.')}{' '}
@@ -413,13 +427,8 @@ function ActiveSessionCard({
 
       <ScopeNote note={session.scopeNote} />
 
-      <p className="today-budget">
-        {t('About {n} minutes today.', { n: session.budgetMinutes })}
-        {session.regularDailyMinutes !== session.budgetMinutes && (
-          <span className="today-budget-note"> {t('Your regular day is {n} minutes.', { n: session.regularDailyMinutes })}</span>
-        )}
-      </p>
-
+      <details className="today-agenda-details">
+        <summary>{t('Today’s activities')}</summary>
       <ol className="today-steps">
         {session.steps.map((step) => (
           <StepRow
@@ -430,12 +439,9 @@ function ActiveSessionCard({
           />
         ))}
       </ol>
+      </details>
 
-      {current && (
-        <a className="today-start" href={withBase(current.href ?? '/dashboard')} onClick={startClick}>
-          {action === 'start' ? t('Start') : t('Continue')}
-        </a>
-      )}
+
 
       {longerCommitment && (
         <div className="today-longer">
@@ -456,13 +462,13 @@ function ActiveSessionCard({
       )}
 
       <div className="today-secondary">
-        <button type="button" className="today-secondary-toggle" aria-expanded={showWhy} onClick={() => setShowWhy((v) => !v)}>
+        <button type="button" className="today-secondary-toggle" aria-expanded={showWhy} aria-controls="today-why-panel" onClick={() => setShowWhy((v) => !v)}>
           {t('Why this')}
         </button>
         <button
           type="button"
           className="today-secondary-toggle"
-          aria-expanded={showLessTime}
+          aria-expanded={showLessTime} aria-controls="today-less-time-panel"
           onClick={() => setShowLessTime((v) => !v)}
         >
           {t('I have less time today')}
@@ -470,7 +476,7 @@ function ActiveSessionCard({
         <button
           type="button"
           className="today-secondary-toggle"
-          aria-expanded={showOtherSkill}
+          aria-expanded={showOtherSkill} aria-controls="today-other-skill-panel"
           onClick={() => setShowOtherSkill((v) => !v)}
         >
           {t('Choose another skill')}
@@ -481,7 +487,7 @@ function ActiveSessionCard({
           thing in this card. This disclosure is the evidence behind the
           choice, then what is still unknown. Both halves are the planner's
           and the policy's own words, never a claim composed here. */}
-      {showWhy && (
+      <SmoothReveal open={showWhy} id="today-why-panel">
         <div className="today-why">
           {why.evidence.length > 0 && (
             <>
@@ -507,9 +513,9 @@ function ActiveSessionCard({
             </p>
           )}
         </div>
-      )}
+      </SmoothReveal>
 
-      {showLessTime && (
+      <SmoothReveal open={showLessTime} id="today-less-time-panel">
         <div className="today-less-time">
           <p>{t('Your regular {n} minutes a day is unchanged. This only shortens today.', { n: session.regularDailyMinutes })}</p>
           <div className="today-less-time-choices">
@@ -520,9 +526,9 @@ function ActiveSessionCard({
             ))}
           </div>
         </div>
-      )}
+      </SmoothReveal>
 
-      {showOtherSkill && (
+      <SmoothReveal open={showOtherSkill} id="today-other-skill-panel">
         <div className="today-other-skill">
           {ALL_PAPERS.filter((paper) => paper !== session.paper).map((paper) => (
             <button key={paper} type="button" onClick={() => pickOtherSkill(paper)}>
@@ -530,7 +536,7 @@ function ActiveSessionCard({
             </button>
           ))}
         </div>
-      )}
+      </SmoothReveal>
     </section>
   );
 }

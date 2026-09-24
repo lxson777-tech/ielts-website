@@ -22,10 +22,12 @@ import { withBase } from '../lib/url';
 import { ensureLearningWired, getCurrentSession, onLearnerRecordChange, onPersonalPlanChange, readPersonalPlan } from '../lib/learning';
 import type { PersonalPlanV1 } from '../lib/learning/contracts/plan';
 import { useT } from '../lib/i18n/react';
+import { planHistoryText } from '../lib/learning/plan-history';
 import { daysUntil } from './learning/today/todayViewModel';
 import ScopeNote from './learning/ScopeNote';
 import TodaySession from './learning/today/TodaySession';
 import WeekView from './plan/WeekView';
+import '../styles/today-polish.css';
 
 ensureLearningWired();
 
@@ -55,7 +57,7 @@ function routeSummaryText(
 }
 
 export default function Course() {
-  const { t, tn } = useT();
+  const { t, tn, locale } = useT();
   const [personalPlan, setPersonalPlan] = useState<PersonalPlanV1 | null>(null);
   const [ready, setReady] = useState(false);
 
@@ -84,9 +86,9 @@ export default function Course() {
   const recentChanges = [...(personalPlan?.history ?? [])].slice(-5).reverse();
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="course-route mx-auto max-w-4xl">
       {personalPlan && (
-        <div className="rounded-card border border-border bg-surface p-5 shadow-card sm:p-6">
+        <div className="course-plan-summary">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <span className="text-sm text-ink-muted">{routeSummaryText(personalPlan, t, tn)}</span>
             <a
@@ -110,7 +112,7 @@ export default function Course() {
         <WeekView />
 
         {milestones.length > 0 && (
-          <section className="rounded-card border border-border bg-surface p-5 shadow-card sm:p-6">
+          <section className="course-support-section">
             <h3 className="font-display text-lg font-bold">{t('Milestones ahead')}</h3>
             <ul className="mt-3 space-y-2.5">
               {milestones.map((milestone) => (
@@ -140,7 +142,7 @@ export default function Course() {
             hub and the progress report: the old stage-4 checklist named
             these directly, and losing that must not orphan the routes
             (brief acceptance scenario 14). Not a checklist, just links. */}
-        <section className="rounded-card border border-border bg-surface p-5 shadow-card sm:p-6">
+        <section className="course-support-section">
           <h3 className="font-display text-lg font-bold">{t('Exam practice')}</h3>
           <p className="mt-1 text-sm text-ink-muted">
             {t('Full timed papers and your record, whenever you want them, outside today\'s session.')}
@@ -159,12 +161,12 @@ export default function Course() {
         </section>
 
         {recentChanges.length > 0 && (
-          <section className="rounded-card border border-border bg-surface p-5 shadow-card sm:p-6">
+          <section className="course-support-section">
             <h3 className="font-display text-lg font-bold">{t('Why your plan changed recently')}</h3>
             <ul className="mt-3 space-y-3">
               {recentChanges.map((change) => (
                 <li key={`${change.at}-${change.toRevision}`} className="text-sm">
-                  <span className="text-ink">{change.summary}</span>
+                  <span className="text-ink">{planHistoryText(locale, change.summary)}</span>
                   <span className="ml-2 text-xs text-ink-muted">{change.at.slice(0, 10)}</span>
                 </li>
               ))}

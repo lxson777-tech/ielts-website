@@ -1,3 +1,4 @@
+import SmoothReveal from '../SmoothReveal';
 /* The owner's admin panel: every account on the platform and what each
    student has done. The first (and for now only) section is Students; later
    admin tools are meant to sit beside it on the same page.
@@ -9,7 +10,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { onAccountChange } from '../../lib/auth/lifecycle';
+import { useT } from '../../lib/i18n/react';
 import { withBase } from '../../lib/url';
+import { signInHref } from '../../lib/auth/profile';
 import {
   ageOf,
   checkIsAdmin,
@@ -100,6 +103,7 @@ function recentKind(r: AdminRecentItem): string {
 }
 
 export default function AdminPanel() {
+  const { t } = useT();
   const [gate, setGate] = useState<Gate>('checking');
   const [userId, setUserId] = useState<string | null>(null);
   const [users, setUsers] = useState<AdminUserRow[] | null>(null);
@@ -199,8 +203,9 @@ export default function AdminPanel() {
   if (gate === 'signed-out') {
     return (
       <div className="admin-gate">
-        <h1>Sign in to continue</h1>
-        <p>This page is only for the site owner. Sign in from the menu at the top right.</p>
+        <h1>{t('Sign in to continue')}</h1>
+        <p>{t('This page is only for the site owner.')}</p>
+        <a className="admin-button" href={signInHref('/admin')}>{t('Sign in')}</a>
       </div>
     );
   }
@@ -403,9 +408,9 @@ function StudentRow({ user: u, isYou, open, onToggle }: { user: AdminUserRow; is
         </svg>
       </button>
 
-      <div className="admin-detail" id={panelId} hidden={!open}>
-        {open && <StudentDetail user={u} />}
-      </div>
+      <SmoothReveal open={open} id={panelId}>
+        <div className="admin-detail"><StudentDetail user={u} /></div>
+      </SmoothReveal>
     </li>
   );
 }

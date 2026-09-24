@@ -142,7 +142,14 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   const gradingRef = useRef(false);
 
   useEffect(() => {
+    // React cleanup is not guaranteed on a browser refresh. Flush the
+    // existing owner-bound session before the document is discarded.
+    const flushDraft = () => editRef.current?.flush();
+    window.addEventListener('pagehide', flushDraft);
+    window.addEventListener('beforeunload', flushDraft);
     return () => {
+      window.removeEventListener('pagehide', flushDraft);
+      window.removeEventListener('beforeunload', flushDraft);
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
       /* A pending draft is written, not dropped: it is the essay's only copy. */
       editRef.current?.close();
@@ -421,6 +428,14 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
     const nextPrompt = pool.find((p) => p.id === id) ?? pool[0];
     setTaskType(task);
     setPrompt(nextPrompt);
+    // Keep the selected task addressable so refresh reopens this prompt's
+    // existing owner-scoped draft instead of advancing the rotation again.
+    if (nextPrompt && typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('task', nextPrompt.id);
+      url.searchParams.delete('type');
+      window.history.replaceState(window.history.state, '', url);
+    }
     // Restore an unfinished draft of this exact prompt if one is sitting
     // there from an earlier visit (a failed or abandoned grading attempt);
     // otherwise a genuinely fresh prompt starts blank, same as before. Either

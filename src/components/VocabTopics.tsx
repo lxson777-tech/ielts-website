@@ -43,6 +43,8 @@ function setUrlTopic(slug: string | null): void {
 
 export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
   const { t, tn } = useT();
+  const [search, setSearch] = useState('');
+  const [visibleCount, setVisibleCount] = useState(12);
   const [view, setView] = useState<View>('landing');
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
 
@@ -138,6 +140,7 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
     );
   }
 
+  const matchingTopics = summaries.filter(s => `${s.title} ${s.preview.join(' ')}`.toLowerCase().includes(search.trim().toLowerCase()));
   return (
     <div className="vocab-review-space">
       <div className="vocab-review-head">
@@ -148,8 +151,10 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
         <p>{t('Every IELTS topic, its vocabulary, meanings and examples. Pick a topic to see it all at once.')}</p>
       </div>
 
+      <label className="discovery-search">{t('Search vocabulary topics')}<input type="search" value={search} onChange={e => {setSearch(e.target.value);setVisibleCount(12);}} /></label>
+      <p className="discovery-count" aria-live="polite">{Math.min(visibleCount,matchingTopics.length)} / {matchingTopics.length} {t('results shown')}</p>
       <div className="vocab-topic-grid">
-        {summaries.map((s) => (
+        {matchingTopics.slice(0,visibleCount).map((s) => (
           <button key={s.slug} type="button" className="vocab-topic-card" onClick={() => openTopic(s.slug)}>
             <span className="vocab-topic-card-title">{s.title}</span>
             <span className="vocab-topic-card-count">
@@ -159,6 +164,8 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
           </button>
         ))}
       </div>
+      {matchingTopics.length === 0 && <p className="discovery-empty">{t('No matches. Try another search.')}</p>}
+      {matchingTopics.length > visibleCount && <button type="button" className="discovery-more" onClick={() => setVisibleCount(n => n + 12)}>{t('Show more')}</button>}
     </div>
   );
 }

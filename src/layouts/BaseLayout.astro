@@ -5,6 +5,8 @@ import '../styles/platform.css';
 import '../styles/workspace-redesign.css';
 import '../styles/mr-ez.css';
 import '../styles/study-surfaces.css';
+import '../styles/discovery.css';
+import '../styles/platform-motion.css';
 import '@fontsource-variable/manrope';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -171,6 +173,7 @@ const jsonLd = {
   </head>
   <body
     class:list={["flex min-h-screen flex-col bg-surface text-ink", { "workspace-v2": isAppRoute }]}
+    data-platform-motion={routeIsApp(route) ? 'true' : undefined}
     data-route={route}
     data-lesson-key={lessonKey}
     data-bare={bare ? 'true' : undefined}

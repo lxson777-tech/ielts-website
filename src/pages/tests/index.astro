@@ -1,4 +1,5 @@
 ---
+import CatalogueControls from '../../components/CatalogueControls.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import Badge from '../../components/Badge.astro';
@@ -250,7 +251,7 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
       </p>
     )}
 
-    <section class="test-catalog" aria-labelledby="catalog-heading">
+    <section data-discovery class="test-catalog" aria-labelledby="catalog-heading">
       <div class="test-catalog-heading">
         <div>
           <p class="platform-eyebrow" data-i18n>Browse the bank</p>
@@ -258,18 +259,21 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
         </div>
         <p>{readingTests.length} Reading · {listeningTests.length} Listening</p>
       </div>
+      <CatalogueControls />
       <div class="test-catalog-columns">
         {[{ label: 'Reading', tests: readingTests, tone: 'reading' }, { label: 'Listening', tests: listeningTests, tone: 'listening' }].map((group) => (
-          <div class={`test-catalog-group skill-${group.tone}`}>
+          <div data-discovery-group class={`test-catalog-group skill-${group.tone}`}>
             <h3>{group.label}<span>{group.tests.length} exams</span></h3>
             <ul>
               {group.tests.map((test, index) => (
-                <li><a href={withBase(`/tests/${test.id}`)} data-checkpoint-target={test.id}><span class="test-index">{String(index + 1).padStart(2, '0')}</span><span class="test-name">{test.title}</span><span class="test-meta">{test.id === 'listening-full-011' ? '39 scored questions' : `${questionCount(test)} questions`}</span></a></li>
+                <li data-discovery-item data-search={group.label}><a href={withBase(`/tests/${test.id}`)} data-checkpoint-target={test.id}><span class="test-index">{String(index + 1).padStart(2, '0')}</span><span class="test-name">{test.title}</span><span class="test-meta">{test.id === 'listening-full-011' ? '39 scored questions' : `${questionCount(test)} questions`}</span></a></li>
               ))}
             </ul>
           </div>
         ))}
       </div>
+      <p data-catalogue-empty hidden class="discovery-empty" data-i18n>No matches. Try another search.</p>
+      <button type="button" data-catalogue-more class="discovery-more" data-i18n>Show more</button>
     </section>
 
     <section id="analytics" class="mt-16 scroll-mt-20">

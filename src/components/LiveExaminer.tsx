@@ -1301,19 +1301,21 @@ export default function LiveExaminer({
         <p className="mx-auto mt-2 max-w-md text-sm text-ink-muted sm:text-[0.95rem]">
           {variant === 'drills'
             ? t(
-                "Pick a part. {name} asks questions out loud, listens to your answers, and follows up on what you say, exactly like the real test, just one part at a time. A coach panel with the answer structure, useful phrases, and topic vocabulary stays beside you, and you'll get a band report at the end.",
+                "Choose one part. Speak with {name}, use the coach when needed, then review your feedback.",
                 { name: EXAMINER_NAME },
               )
             : t(
-                "A real-time spoken interview, all three parts, ~12 minutes. {name} asks questions out loud, listens to your answers, and follows up on what you say, exactly like the real test. You'll get a full band report at the end.",
+                "Three parts, about 12 minutes. Speak with {name} and get feedback after your interview.",
                 { name: EXAMINER_NAME },
               )}
         </p>
+        <details className="support-disclosure speaking-tips"><summary>{t('Before you speak')}</summary>
         <ul className="mx-auto mt-4 max-w-md space-y-1 text-left text-xs text-ink-muted">
           <li>· {t('Use headphones if you can, in a quiet room')}</li>
           <li>· {t('Speak naturally, the examiner waits while you think')}</li>
           <li>· {t('You can ask her to repeat a question, and in Part 3 to rephrase it, exactly as in the real test')}</li>
         </ul>
+        </details>
         {needsSignIn && (
           <div className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-3 text-xs text-ink-muted">
             <p>{t('Sign in to use the live examiner (this keeps the paid voice service for real students).')}</p>

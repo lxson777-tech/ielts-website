@@ -837,3 +837,14 @@
   .lesson-body .quiz-select { order: 3; margin-left: 1.6rem; }
   .lesson-body .quiz-check-btn { min-height: 44px; }
 }
+
+.lesson-body [data-vocab-empty][hidden],.lesson-body .vocab-table tr[hidden] { display:none !important; }
+@media(max-width:600px) {
+ .lesson-body[data-vocabulary-lesson] .vocab-table { display:table; width:100%; overflow:visible; }
+ .lesson-body[data-vocabulary-lesson] .vocab-table thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+ .lesson-body[data-vocabulary-lesson] .vocab-table tbody { display:block; }
+ .lesson-body[data-vocabulary-lesson] .vocab-table tr { display:block; padding:14px; margin-bottom:12px; border:1px solid var(--color-border); border-radius:12px; background:var(--color-surface); }
+ .lesson-body[data-vocabulary-lesson] .vocab-table td { display:block; width:auto; padding:5px 0; border:0; }
+ .lesson-body[data-vocabulary-lesson] .vocab-table td:first-child { font-weight:750; font-size:16px; color:var(--color-brand); }
+ .lesson-body[data-vocabulary-lesson] .vocab-table td:last-child { margin-top:7px; padding-top:10px; border-top:1px solid var(--color-border); font-style:italic; }
+}
