@@ -70,3 +70,8 @@ Kept one compact library layout rather than adding an extra list/card toggle. It
 - English/Russian phone layouts have no horizontal overflow in tested routes. No page errors in the route pass. Prior batch's tutor dock, Course navigation and Progress print/local lesson checks remain recorded above.
 - BandReport rendered from the actual component with clearly labelled simulated data, styled with the final built CSS; criterion disclosure exercised at phone width. No synthetic assessment entered into student data.
 - graphify update completed. Build and check run sequentially to avoid their shared Astro cache collision. Preview verification waits for hydration after client-side navigation.
+
+
+## Platform motion pass
+
+Added a platform-only motion layer for buttons/links, field focus, selectable cards, dialogs, tabs, Course day content and native disclosures. Existing click handlers, editor instances, account ownership and Astro navigation remain unchanged. Native disclosure size interpolation provides real smooth opening and closing without JavaScript measurement loops, with a fade fallback on older browsers. Reduced-motion and print rules included. Verified actual intermediate open/close heights in browser, card hover, modal entry/dismissal, writing draft retention through mobile tabs, phone layouts and reduced-motion overrides. All2033tests pass. Build663pages. Local only, gates/trial excluded.

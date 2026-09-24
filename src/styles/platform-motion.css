@@ -1,0 +1,91 @@
+/* One motion language for learning routes, including the bare exam player.
+   Nothing delays a click or remounts an editor. Hover movement is pointer-only. */
+body[data-platform-motion] {
+  --motion-touch: 180ms;
+  --motion-control: 240ms;
+  --motion-panel: 320ms;
+  --motion-ease: cubic-bezier(.22, 1, .36, 1);
+}
+body[data-platform-motion] :is(a, button, summary, input, select, textarea, [role="button"], [role="tab"], .intake-capsule-label) {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform, translate, scale;
+  transition-duration: var(--motion-control);
+  transition-timing-function: var(--motion-ease);
+}
+body[data-platform-motion] :is(button, a, summary, [role="button"], [role="tab"]):focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 4px;
+}
+body[data-platform-motion] :is(button:not(:disabled), [role="button"]):active {
+  scale: .98;
+  transition-duration: 100ms;
+}
+body[data-platform-motion] :is(input, select, textarea):focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 13%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  body[data-platform-motion] :is(.library-card, .vocab-topic-card, .writing-choice-card, .practice-tile, a[data-discovery-item], .agenda-activity[href]) {
+    transition: translate var(--motion-control) var(--motion-ease), box-shadow var(--motion-control) var(--motion-ease), border-color var(--motion-control) var(--motion-ease), background-color var(--motion-control) var(--motion-ease);
+  }
+  body[data-platform-motion] :is(.library-card, .vocab-topic-card, .writing-choice-card, .practice-tile, a[data-discovery-item], .agenda-activity[href]):hover {
+    translate: 0 -2px;
+    border-color: color-mix(in srgb, var(--color-brand) 35%, var(--color-border));
+    box-shadow: 0 8px 22px -14px rgb(32 55 43 / .25);
+  }
+  body[data-platform-motion] :is(.ws-tab, .ws-tabbar a, .account-section-links a, .discovery-more, .intake-button):hover {
+    translate: 0 -1px;
+  }
+}
+@keyframes platform-panel-enter {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes platform-modal-enter {
+  from { opacity: 0; transform: translateY(8px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes platform-fade { from { opacity: 0; } to { opacity: 1; } }
+body[data-platform-motion] :is(.ma-content, .agenda-activities, [role="tabpanel"], .focused-wrong, .focused-explanation, .intake-status) {
+  animation: platform-panel-enter var(--motion-panel) var(--motion-ease) both;
+}
+body[data-platform-motion] [role="dialog"] { animation: platform-fade 200ms ease-out both; }
+body[data-platform-motion] [role="dialog"] > div { animation: platform-modal-enter var(--motion-panel) var(--motion-ease) both; }
+body[data-platform-motion] .writing-workspace[data-mobile-view="help"] > .writing-guidance,
+body[data-platform-motion] .writing-workspace[data-mobile-view="write"] > .writing-editor,
+body[data-platform-motion] .ma-sidebar.is-open {
+  animation: platform-panel-enter var(--motion-panel) var(--motion-ease) both;
+}
+/* Keep native disclosure semantics, keyboard handling and React ownership.
+   Only a disclosure's flow size animates. Browsers measure it themselves,
+   avoiding per-frame JavaScript layout reads or arbitrary max-height limits. */
+@supports (interpolate-size: allow-keywords) and (transition-behavior: allow-discrete) {
+  body[data-platform-motion] details::details-content {
+    interpolate-size: allow-keywords;
+    block-size: 0;
+    overflow: clip;
+    opacity: 0;
+    transition: block-size var(--motion-panel) var(--motion-ease), opacity 220ms ease, content-visibility var(--motion-panel) allow-discrete;
+  }
+  body[data-platform-motion] details[open]::details-content { block-size: auto; opacity: 1; }
+}
+@supports not (interpolate-size: allow-keywords) {
+  body[data-platform-motion] details[open] > :not(summary) { animation: platform-fade 220ms ease-out; }
+}
+/* Existing Astro navigation already preserves the tutor and owns focus/scroll. */
+:root:has(body[data-platform-motion])::view-transition-old(root) { animation: platform-fade 150ms ease-in reverse both; }
+:root:has(body[data-platform-motion])::view-transition-new(root) { animation: platform-fade 300ms ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  body[data-platform-motion] *, body[data-platform-motion] *::before, body[data-platform-motion] *::after,
+  body[data-platform-motion] details::details-content {
+    animation-duration: .01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  body[data-platform-motion] :is(button, a, summary, [role="button"]) { translate: none !important; scale: none !important; }
+  :root:has(body[data-platform-motion])::view-transition-old(root),
+  :root:has(body[data-platform-motion])::view-transition-new(root) { animation: none !important; }
+}
+@media print {
+  body[data-platform-motion] details::details-content { block-size:auto !important; content-visibility:visible !important; opacity:1 !important; overflow:visible; }
+}
