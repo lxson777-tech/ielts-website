@@ -336,6 +336,26 @@ build with the same variables (`npx astro build`), then
 7. **Payments, renewals, refunds, support, recording retention**: not built. The plans
    page says payment is not connected.
 
+## Next merge: the login rework (not yet published)
+
+Another session is rebuilding sign-in on `claude/login-rework-profiles` (from `main`
+`32cdeb4`): it removes `src/components/AuthModal.tsx` and magic links, and adds pages
+`/sign-in`, `/sign-up`, `/forgot-password` and `/profile`. When that reaches `main` and is
+merged here:
+- `src/components/trial/TrialJoin.tsx` and `TrialBlock.tsx` open `AuthModal`; switch them
+  to links built with `signInHref(next)` / `signUpHref(next)` from `src/lib/auth/profile.ts`
+  (`?next=` brings the student back to `/trial`, so the questionnaire round trip must be
+  rechecked).
+- `tools/mr-ez-dev-server.mjs` gains a `student_profiles` table and `PUT /auth/v1/user`
+  there; the trial's own additions to that file (`--trial`, the live examiner and graders)
+  sit elsewhere in it.
+- `src/lib/platform-nav.ts`: their routes go after `/account`, the trial's before
+  `/reset-password`, so both stay.
+- `LiveExaminer.tsx` gets one small edit where the modal opened; the trial's Speaking
+  changes sit elsewhere in it.
+- The browser journey signs up through the modal (`sign_up_in_modal`, `open_auth`) and
+  must move to the new pages.
+
 ## If Alex approves going live (each step separately)
 
 1. **Database**: in the Supabase SQL editor, paste the whole of
