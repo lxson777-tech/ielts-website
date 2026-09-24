@@ -234,7 +234,7 @@ export default function Intake({ variant, onDone, onDefer }: IntakeProps) {
 
   const perPaperField = (
     <details className="intake-details" open={showPerPaper} onToggle={(e) => setShowPerPaper(e.currentTarget.open)}>
-      <summary>{t('Set a different minimum for each paper')}</summary>
+      <summary>{t('Set a different minimum for each section')}</summary>
       <p className="intake-helper">
         {t(
           'Set these only if you need a minimum in every paper, for example 6.5 overall with nothing below 6.0. Leave one blank and it uses your overall target.',
@@ -413,7 +413,7 @@ export default function Intake({ variant, onDone, onDefer }: IntakeProps) {
           </select>
         </div>
         <div>
-          <label htmlFor="intake-self-paper">{t('Paper (optional)')}</label>
+          <label htmlFor="intake-self-paper">{t('Section (optional)')}</label>
           <select id="intake-self-paper" value={selfPaper} onChange={(e) => setSelfPaper(e.target.value as Paper | '')}>
             <option value="">{t('Overall')}</option>
             {PAPERS.map((paper) => (

@@ -17,7 +17,7 @@
 export const strings: Record<string, string> = {
   'What overall band are you aiming for?': 'На какой общий балл вы нацелены?',
   'This course currently covers Academic IELTS.': 'Этот курс сейчас охватывает Academic IELTS.',
-  'Set a different minimum for each paper': 'Задать свой минимум для каждого раздела',
+  'Set a different minimum for each section': 'Задать свой минимум для каждого раздела',
   'Set these only if you need a minimum in every paper, for example 6.5 overall with nothing below 6.0. Leave one blank and it uses your overall target.':
     'Указывайте это, только если вам нужен минимум по каждому разделу, например 6.5 в среднем и не ниже 6.0 по каждому разделу. Если поле пустое, используется ваш общий целевой балл.',
   Reading: 'Чтение',
@@ -47,7 +47,7 @@ export const strings: Record<string, string> = {
     'Это указано вами самостоятельно. Это помогает начать, но никогда не считается измеренным результатом.',
   'Band {band}, self-reported, {date}': 'Балл {band}, указан самостоятельно, {date}',
   Select: 'Выбрать',
-  'Paper (optional)': 'Раздел (необязательно)',
+  'Section (optional)': 'Раздел (необязательно)',
   Overall: 'Общий балл',
   'Date you took it': 'Дата сдачи',
   'Add this score': 'Добавить этот результат',
