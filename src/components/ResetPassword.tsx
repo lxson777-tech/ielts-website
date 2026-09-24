@@ -6,6 +6,7 @@
    Google or a magic link before). */
 
 import { useEffect, useState } from 'react';
+import AuthModal from './AuthModal';
 import { withBase } from '../lib/url';
 import { isAuthConfigured } from '../lib/auth/supabase';
 import { onAuthChange, updatePassword } from '../lib/auth/session';
@@ -16,6 +17,8 @@ type Status = 'checking' | 'signedOut' | 'ready' | 'saving' | 'done';
 export default function ResetPassword() {
   const { t } = useT();
   const [status, setStatus] = useState<Status>('checking');
+  const [requestReset, setRequestReset] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -51,17 +54,11 @@ export default function ResetPassword() {
       <div className="mx-auto max-w-sm rounded-card border border-border bg-surface p-6 text-center shadow-card sm:p-7">
         <h2 className="font-display text-lg font-extrabold">{t('Link expired or invalid')}</h2>
         <p className="mt-2 text-sm text-ink-muted">
-          {t('Password-reset links only work once and expire after a while. Open the site, click {login}, then {forgot} to request a fresh one.', {
-            login: t('Log in'),
-            forgot: t('Forgot password?'),
-          })}
+          {t('Request a fresh link to set your password.')}
         </p>
-        <a
-          href={withBase('/')}
-          className="mt-5 inline-block rounded-button bg-brand px-5 py-2.5 font-display text-sm font-bold text-white hover:bg-brand-hover"
-        >
-          {t('Back to home')}
-        </a>
+        <button type="button" onClick={() => setRequestReset(true)} className="discovery-more">{t('Send a new reset link')}</button>
+        {requestReset && <AuthModal initialMode="forgot" onClose={() => setRequestReset(false)} />}
+
       </div>
     );
   }
@@ -95,7 +92,7 @@ export default function ResetPassword() {
         </label>
         <input
           id="new-password"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           required
           minLength={6}
           value={password}
@@ -112,7 +109,7 @@ export default function ResetPassword() {
         </label>
         <input
           id="confirm-new-password"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           required
           minLength={6}
           value={confirmPassword}
@@ -123,7 +120,8 @@ export default function ResetPassword() {
         />
       </div>
 
-      {error && <p className="mt-3 text-sm text-error">{error}</p>}
+<label className="password-visibility"><input type="checkbox" checked={showPassword} onChange={e => setShowPassword(e.target.checked)} />{t('Show password')}</label>
+      {error && <p role="alert" className="mt-3 text-sm text-error">{error}</p>}
 
       <button
         type="submit"

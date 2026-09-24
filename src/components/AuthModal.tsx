@@ -7,7 +7,7 @@
    onAuthChange subscribers, so this component never needs to report success
    beyond closing. */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { withBase } from '../lib/url';
 import {
@@ -54,8 +54,12 @@ export default function AuthModal({
   onClose: () => void;
 }) {
   const { t } = useT();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [email, setEmail] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phase, setPhase] = useState<Phase>('idle');
@@ -65,6 +69,24 @@ export default function AuthModal({
 
   useEffect(() => {
     void getEnabledProviders().then((p) => setGoogleEnabled(p.google));
+  }, []);
+
+  useEffect(() => {
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const focusable = () => [...dialog.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), a[href], select:not(:disabled), [tabindex="0"]')].filter(el => el.getClientRects().length > 0);
+    focusable()[0]?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { event.preventDefault(); closeRef.current(); }
+      if (event.key !== 'Tab') return;
+      const controls = focusable();
+      const first = controls[0], last = controls[controls.length - 1];
+      if (event.shiftKey && (document.activeElement === first || !dialog.contains(document.activeElement))) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => { document.removeEventListener('keydown', onKey); if (previous?.isConnected) previous.focus(); };
   }, []);
 
   const redirectTo = typeof window !== 'undefined' ? window.location.href : '';
@@ -149,22 +171,24 @@ export default function AuthModal({
   return createPortal(
     <div
       className="fixed inset-0 z-[60] grid place-items-center bg-ink/50 p-4"
+      ref={dialogRef}
       role="dialog"
+      aria-labelledby="account-dialog-title"
       aria-modal="true"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm rounded-card border border-border bg-surface p-6 shadow-card-hover sm:p-7"
+        className="max-h-[90dvh] overflow-y-auto w-full max-w-sm rounded-card border border-border bg-surface p-6 shadow-card-hover sm:p-7"
         onClick={(e) => e.stopPropagation()}
       >
         {phase === 'done' ? (
           <>
-            <h2 className="font-display text-lg font-extrabold">{t('Check your email')}</h2>
+            <h2 id="account-dialog-title" className="font-display text-lg font-extrabold">{t('Check your email')}</h2>
             <div className="mt-4 rounded-card bg-brand-tint p-4 text-sm text-brand">{doneMessage}</div>
           </>
         ) : (
           <>
-            <h2 className="font-display text-lg font-extrabold">
+            <h2 id="account-dialog-title" className="font-display text-lg font-extrabold">
               {mode === 'forgot' ? t('Reset your password', undefined, 'modal') : t(MODE_COPY[mode].title)}
             </h2>
             <p className="mt-1 text-sm text-ink-muted">{t(MODE_COPY[mode].subtitle)}</p>
@@ -204,7 +228,7 @@ export default function AuthModal({
                   </div>
                   <input
                     id="account-password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     required
                     minLength={6}
                     value={password}
@@ -223,7 +247,7 @@ export default function AuthModal({
                   </label>
                   <input
                     id="account-confirm"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     required
                     minLength={6}
                     value={confirmPassword}
@@ -235,7 +259,8 @@ export default function AuthModal({
                 </div>
               )}
 
-              {error && <p className="text-sm text-error">{error}</p>}
+{(mode === 'signin' || mode === 'signup') && <label className="password-visibility"><input type="checkbox" checked={showPassword} onChange={e => setShowPassword(e.target.checked)} />{t('Show password')}</label>}
+              {error && <p role="alert" className="text-sm text-error">{error}</p>}
 
               <button
                 type="submit"

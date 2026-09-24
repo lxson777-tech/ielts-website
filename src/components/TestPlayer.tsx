@@ -1181,7 +1181,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
         <a href={hubUrl} className="shrink-0 whitespace-nowrap py-2 text-sm font-semibold text-ink-muted hover:text-ink">
           {/* "Tests" is the workspace tab's own word, translated once in
               dict/ru/shell.ts — no second entry here. */}
-          <span className="hidden sm:inline">{t('Tests')}</span>
+          <span>{t('Tests')}</span>
         </a>
         <span className="hidden truncate font-display text-sm font-bold md:block">{practiceTestTitle(test, t)}</span>
         <div
@@ -3089,7 +3089,7 @@ function InstructionsScreen({
   const unavailableTotal = numberedTotal - scoredTotal;
   return (
     <div className="grid min-h-dvh place-items-center bg-surface-alt p-4">
-      <div className="w-full max-w-lg rounded-card border border-border bg-surface p-8 shadow-card-hover">
+      <div className="study-preflight w-full max-w-lg rounded-card border border-border bg-surface p-6 shadow-card sm:p-8">
         <p className="text-xs font-bold uppercase tracking-wider text-brand">
           {listening ? t('Listening Practice Test') : t('Reading Test')}
         </p>
@@ -3113,6 +3113,9 @@ function InstructionsScreen({
           </div>
         </div>
 
+        <p className="preflight-essential">{t('The timer starts as soon as you begin and runs continuously.')} <strong>{t('You cannot pause.')}</strong></p>
+        {listening && <p className="text-sm text-ink-muted">{attemptKind === 'drill' ? t('Practice mode: pause and replay are available.') : t('Exam mode: the recording plays once.')}</p>}
+        <details className="support-disclosure"><summary>{t('Instructions and scoring')}</summary>
         <ul className="mt-6 space-y-2.5 text-sm text-ink">
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">⏱</span>
@@ -3190,6 +3193,7 @@ function InstructionsScreen({
             </span>
           </li>
         </ul>
+        </details>
 
         <div className="mt-8 flex items-center justify-between gap-3">
           <a href={hubUrl} className="inline-block px-1 py-2 -my-2 text-sm font-semibold text-ink-muted hover:text-ink">

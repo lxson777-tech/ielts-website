@@ -1086,6 +1086,7 @@ function StartScreen({
             the bold stays put and only the sentence after it is a key. Where a
             second <strong> sat mid sentence it had to go: Russian puts those
             words somewhere else (docs/I18N-GUIDE.md). */}
+        <details className="support-disclosure"><summary>{t('Paper details and scoring')}</summary>
         <ul className="mt-6 space-y-2.5 text-sm text-ink">
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="mt-0.5 shrink-0 text-ink-muted"><ListeningIcon /></span>
@@ -1119,6 +1120,7 @@ function StartScreen({
             </span>
           </li>
         </ul>
+        </details>
 
         <div className="mt-6 space-y-3 rounded-card border border-border bg-surface-alt p-4">
           <p className="text-sm font-semibold">{t('Choose your tests')}</p>

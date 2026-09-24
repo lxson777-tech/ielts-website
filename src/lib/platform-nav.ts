@@ -47,6 +47,7 @@ export const WORKSPACE_MENU: WorkspaceMenuItem[][] = [
     { href: '/learn/bands', label: nt('What each band needs') },
     { href: '/writing/models', label: nt('Model answers') },
     { href: '/speaking/cue-cards', label: nt('Cue cards') },
+    { href: '/help', label: nt('Help') },
   ],
 ];
 
@@ -66,6 +67,7 @@ export const APP_ROUTE_PREFIXES = [
   '/review',
   '/report',
   '/reset-password',
+  '/help',
 ];
 
 /** Routes whose content genuinely needs the wider 1100px column: a two-pane

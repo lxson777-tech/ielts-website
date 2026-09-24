@@ -1,4 +1,5 @@
 ---
+import { focusedSourceSupport } from '../../../lib/tests/focused-source-support';
 /* One focused exercise, resolved against the real material at build time.
  *
  * The data (src/data/focused-exercises.ts) names either a paper, a part and
@@ -236,8 +237,9 @@ if (isWrittenFocusedTask(exercise)) {
     tfng: ['True', 'False', 'Not Given'],
     'yes-no-notgiven': ['Yes', 'No', 'Not Given'],
   };
-  const isFreeText = group.type === 'sentence-completion' || group.type === 'table-completion';
-  const groupOptions = FIXED_GROUP_OPTIONS[group.type] ?? group.options ?? [];
+  const sourceSupport = focusedSourceSupport(part.stimulus.kind === 'audio' ? part.stimulus.questionHtml ?? '' : '', numberById.get(group.questions[0]!.id)!, group);
+  const isFreeText = sourceSupport.freeText;
+  const groupOptions = FIXED_GROUP_OPTIONS[group.type] ?? sourceSupport.options;
 
   const items: FocusedItemView[] = entry.items.map((item) => {
     const question = group.questions.find((candidate) => candidate.id === item.questionId);
@@ -344,7 +346,7 @@ if (isWrittenFocusedTask(exercise)) {
     instructionText: blockPlainText(group.instructionHtml ?? ''),
     ...stimulusView,
     instructionHtml: group.instructionHtml ?? '',
-    legendHtml: group.legendHtml,
+    legendHtml: sourceSupport.legendHtml,
     options: groupOptions,
     items,
     reasons: MISTAKE_REASONS[entry.reasons] ?? MISTAKE_REASONS.generic,

@@ -23,3 +23,50 @@ No external AI or signed-in student data exercised. Auth/paid service behavior r
 Searchable Reading/Listening banks, models/cue cards/vocabulary topic discovery; deeper active study/feedback states; Account/settings/auth finishing. Follow docs/audits/platform-design-2026-09-24/redesign-plan.md in the root workspace. Do not declare the entire redesign complete from this first batch.
 
 Final local proof: 2032 tests passed; Astro check has zero errors/warnings (20 existing hints); build662pages. Browser verified original and Russian390px layouts, all agenda selections, library search/empty/filter/pagination, tutor opening/closing within the navigation dock, and zero page errors. A real local lesson was marked studied to verify populated Progress; print opened all paper disclosures and restored the one previously open. Lesson first teaching card starts at523px in the sampled phone viewport. Optional vocabulary quiz still opens. The first populated-report fixture used the obsolete device-wide storage key and was correctly ignored by current account-scoped storage; verification was rerun through the real lesson control instead.
+
+
+## Final local implementation, 24 September 2026
+
+The remaining design pass is implemented in this isolated checkout. Preview: http://127.0.0.1:4372/ielts-website/dashboard. Not deployed.
+
+### Discovery and reference pages
+
+- Reading and Listening banks: shared search, question-type and duration controls, 12 initial results, progressive reveal, honest empty state and existing ?type links retained. Phone rows use full width and readable titles.
+- Full tests: searchable bank with progressive reveal, original rotation/resume handlers unchanged.
+- Practice hub: shorter purpose-first descriptions across all four skills.
+- Vocabulary: searchable topics and progressive reveal; vocabulary lesson terms searchable, phone tables restyled as readable rows/cards without editing source lesson content.
+- Models: searchable Task 1/2 selection, compact phone picker, optional full question, essay visible earlier. Write this one now uses the existing exact-task route.
+- Cue cards: search, family filters, progressive reveal, translated family labels and concise translated introduction. Existing rehearsal timer retained.
+- Missing H1s fixed on trainers, models, cue cards, band guide and password reset.
+
+### Study and feedback
+
+- Single-paper instructions and mock details are expandable, with the running-clock/no-pause rule visible before starting. Listening distinguishes replayable practice from one-play exam conditions.
+- Active test navigation has a visible, named Tests link on phones.
+- Speaking entry is shorter, with preparation tips optional. No voice lifecycle or service changes.
+- BandReport puts strengths and the next action plan before criterion detail; improvement guidance opens on demand.
+- Writing preserves the selected prompt in the URL. Immediate refresh flushes the existing owner-bound draft, fixing an autosave timing gap without changing the ownership system.
+- Real browser use exposed seven unusable imported Listening exercises: three categorisation menus had no choices, four diagram exercises had neither diagram nor typed answer field. A tested adapter now reads the relevant legend/image from the original numbered question sheet, never from answer keys, and renders the appropriate input. Original scoring and evidence identities retained.
+- Existing focused task layouts already support stimulus, answer, check/retry and account-bound recording. Kept that structure and exercised representative Reading/Listening answer-feedback flows instead of introducing a second player.
+
+### Account, settings and help
+
+- Account leads with identity/sync and saved work; paper histories are expandable and direct section links open the right history. Deeper progress analysis remains on Progress.
+- Study settings group goal and schedule, disclose preferences/memory, and show unsaved/saved states.
+- Sign-in and reset share password visibility; sign-in has a named dialog, keyboard focus loop, Escape dismissal and focus restoration. Expired links offer direct reset-request entry.
+- Help restored selectively from reviewed bb298d4, with bilingual collapsible answers and actual footer/menu links. No invented support address.
+- Admin signed-out entry translated and given a direct sign-in action. Owner-only data access, list, search/sort and expandable rows remain production's implementation. Private owner data was not accessed.
+
+### Plan decisions and boundaries
+
+Kept one compact library layout rather than adding an extra list/card toggle. It satisfies the search/readability goal with fewer controls. Existing band-guide selected styles remained readable in the hydrated browser, so no speculative contrast rewrite. Vocabulary examples remain directly readable in each phone card rather than adding a button to every word. Authenticated voice, real grading and private admin interiors remain external verification boundaries, not claims of live service validation. No accounts created, messages sent, recordings made, paid calls or deployment.
+
+### Final proof
+
+- 2033 tests passed, including a new regression over all seven affected imported Listening exercises.
+- Astro check: 0 errors, 0 warnings, 18 existing hints. Build: 663 pages.
+- Browser: phone/desktop discovery search, empty states, pagination, question-type deep links, model task filter, cue cards and vocab topics, lesson word search, account anchors, settings save/reload, Help, reset request and admin sign-in.
+- Browser: writing survives Help, resize and immediate refresh; keyboard focus/password visibility/Escape restoration; actual local Reading drill submit and answer review; representative focused practice feedback; restored diagram loads and typed answers work.
+- English/Russian phone layouts have no horizontal overflow in tested routes. No page errors in the route pass. Prior batch's tutor dock, Course navigation and Progress print/local lesson checks remain recorded above.
+- BandReport rendered from the actual component with clearly labelled simulated data, styled with the final built CSS; criterion disclosure exercised at phone width. No synthetic assessment entered into student data.
+- graphify update completed. Build and check run sequentially to avoid their shared Astro cache collision. Preview verification waits for hydration after client-side navigation.

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import LessonVocabularySearch from '../components/LessonVocabularySearch.astro';
 import Badge from '../components/Badge.astro';
 import { withBase } from '../lib/url';
 import { getLesson, SKILLS } from '../data/lessons';
@@ -100,8 +101,10 @@ const blockIds = bodyHtml ? segmentLessonBody(bodyHtml).map((block) => block.id)
     <article
       class="lesson-body mx-auto max-w-4xl px-4 py-10 sm:px-6"
       data-lesson-blocks={blockIds.length ? JSON.stringify(blockIds) : undefined}
+      data-vocabulary-lesson={lesson.skill === 'vocabulary' ? 'true' : undefined}
       data-lesson-title={lesson.title}
     >
+      {lesson.skill === 'vocabulary' && <LessonVocabularySearch />}
       <slot />
       <details class="lesson-optional-vocabulary">
         <summary data-i18n>Vocabulary quick check</summary>

@@ -250,8 +250,12 @@ export default function ModelAnswers() {
     () => WRITING_PROMPTS.filter((p) => getModelBands(p.id).length > 0),
     [],
   );
-  const task2Groups = useMemo(() => groupPrompts('task2', TASK2_GROUPS, promptsWithModels), [promptsWithModels]);
-  const task1Groups = useMemo(() => groupPrompts('task1', TASK1_GROUPS, promptsWithModels), [promptsWithModels]);
+  const [search, setSearch] = useState('');
+  const [taskFilter, setTaskFilter] = useState('');
+  const [chooserOpen, setChooserOpen] = useState(false);
+  const matchingPrompts = useMemo(() => promptsWithModels.filter(p => p.title.toLowerCase().includes(search.trim().toLowerCase()) && (!taskFilter || p.task === taskFilter)), [promptsWithModels, search, taskFilter]);
+  const task2Groups = useMemo(() => groupPrompts('task2', TASK2_GROUPS, matchingPrompts), [matchingPrompts]);
+  const task1Groups = useMemo(() => groupPrompts('task1', TASK1_GROUPS, matchingPrompts), [matchingPrompts]);
 
   /* ?task=<promptId> opens straight on one task, so a future caller (the
      Writing report, a session step) can send a student from their own
@@ -321,6 +325,8 @@ export default function ModelAnswers() {
 
   function selectPrompt(id: string) {
     setPromptId(id);
+    setChooserOpen(false);
+    document.querySelector<HTMLButtonElement>('.ma-picker-toggle')?.focus();
     const nextBands = getModelBands(id);
     setBand(nextBands[0] ?? null);
     setBandA(nextBands[0] ?? null);
@@ -367,7 +373,12 @@ export default function ModelAnswers() {
 
   return (
     <div className="ma-layout">
-      <nav className="ma-sidebar" aria-label={t('Model answer prompts')}>
+      <div className="ma-picker">
+      <button type="button" className="ma-picker-toggle" aria-expanded={chooserOpen} aria-controls="model-prompt-list" onClick={() => setChooserOpen(!chooserOpen)}>{t('Choose a model answer')}<span>{prompt.title}</span></button>
+      <nav id="model-prompt-list" className={`ma-sidebar${chooserOpen ? ' is-open' : ''}`} aria-label={t('Model answer prompts')}>
+        <label className="discovery-search">{t('Search model answers')}<input type="search" value={search} onChange={e => setSearch(e.target.value)} /></label>
+        <label className="discovery-search">{t('Task type')}<select value={taskFilter} onChange={e => setTaskFilter(e.target.value)}><option value="">{t('All types')}</option><option value="task1">Task 1</option><option value="task2">Task 2</option></select></label>
+        {matchingPrompts.length === 0 && <p className="discovery-empty">{t('No matches. Try another search.')}</p>}
         <PromptGroup title={t('Task 2 essays')} groups={task2Groups} activeId={promptId} onSelect={selectPrompt} />
         <PromptGroup
           title={t('Task 1 reports & letters')}
@@ -376,6 +387,7 @@ export default function ModelAnswers() {
           onSelect={selectPrompt}
         />
       </nav>
+      </div>
 
       <section className="ma-content" key={promptId}>
         {(showAttemptNote || showSessionNote) && (
@@ -383,12 +395,12 @@ export default function ModelAnswers() {
             {t(LIBRARY_REASON_SENTENCES[showAttemptNote ? 'after-writing-attempt' : 'from-session'])}
           </p>
         )}
-        <div className="ma-prompt-card">
-          <p className="ma-prompt-eyebrow">
-            {prompt.task === 'task2' ? 'Task 2' : 'Task 1'} · {prompt.title}
-          </p>
+        <details className="ma-prompt-card model-question">
+          <summary className="ma-prompt-eyebrow">
+            {t('View question')} · {prompt.task === 'task2' ? 'Task 2' : 'Task 1'} · {prompt.title}
+          </summary>
           <Html as="div" className="ma-prompt-html" html={prompt.promptHtml} />
-        </div>
+        </details>
 
         <div className="ma-controls">
           {!compare ? (
@@ -432,7 +444,7 @@ export default function ModelAnswers() {
                 {t('Compare bands')}
               </button>
             )}
-            <a href={withBase('/trainers/writing')} className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-hover">
+            <a href={`${withBase('/trainers/writing')}?task=${encodeURIComponent(promptId)}`} className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-hover">
               {t('Write this one')}
             </a>
           </div>

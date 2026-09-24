@@ -1,0 +1,115 @@
+---
+/* Help: how the platform works, in the student's terms.
+   Platform audit 2026-09-23: "Help" in the workspace footer pointed at the
+   site root, which redirects to Today, so help sent students back where they
+   started. Every answer here describes behaviour the site actually has (each
+   is noted with where it lives), so it can be checked rather than trusted.
+   Deliberately absent: a support contact or reporting route. How students
+   reach the centre is an open decision for Alex (docs/PLATFORM-IMPROVEMENT-
+   CONTRACTS.md), and inventing one here would promise a service nobody runs.
+   Presentation is Codex's; this uses the existing account/report page shell. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/url';
+import { nt } from '../lib/i18n/translate';
+
+const sections: { id: string; question: string; answers: string[] }[] = [
+  {
+    id: 'start',
+    question: nt('Where do I start?'),
+    answers: [
+      /* TodaySession: one current session with one main action. */
+      nt('Today shows one next step, with the reason it was chosen and about how long it takes. Press its main button and the platform takes you to the right lesson or practice.'),
+      /* Course (/start): the rolling week from the same plan. */
+      nt('Course shows the rest of your week. Only today is fixed; later days adjust as you finish work.'),
+      /* /learn */
+      nt('The lesson library lists every lesson if you want to choose for yourself.'),
+    ],
+  },
+  {
+    id: 'modes',
+    question: nt('What is the difference between a lesson, practice and a test?'),
+    answers: [
+      nt('A lesson explains a question type or skill, with examples and short checks.'),
+      /* Drills: replay allowed, answer notes, Mr EZ available afterwards. */
+      nt('Practice is one passage or one recording. In Listening practice you can pause and replay the recording.'),
+      /* TestPlayer full paper; mock exam. */
+      nt('A test is a full paper under exam conditions: a clock that cannot be paused, a Listening recording that plays once, and no tutor help until you submit.'),
+    ],
+  },
+  {
+    id: 'timer',
+    question: nt('What happens if I refresh or close the page during a test?'),
+    answers: [
+      /* TestPlayer instructions and test-session store. */
+      nt('Your answers are kept and the clock keeps running, so you come back with the time already used. The paper hands itself in when time runs out.'),
+      nt('In a full Listening paper, refreshing restarts the recording from the beginning.'),
+    ],
+  },
+  {
+    id: 'scores',
+    question: nt('Is my score an official IELTS band?'),
+    answers: [
+      /* bandEstimate; drills show no band (TestPlayer score modal). */
+      nt('No. A full practice paper gives an estimated band from the number of correct answers. A single practice passage or recording is too short for a band, so it shows your score only.'),
+      /* grade-essay / grade-speaking Workers use the public descriptors. */
+      nt('Writing and Speaking feedback is an AI estimate against the public IELTS band descriptors, not an official result.'),
+    ],
+  },
+  {
+    id: 'saving',
+    question: nt('Where is my progress saved?'),
+    answers: [
+      /* store-owner: local, owner-scoped; auth/sync. */
+      nt('On this device, in your browser. Sign in to keep it on your account and see it on your other devices.'),
+      /* Owner-scoped stores: another student's work is never shown to you. */
+      nt('If several people use one computer, each signed-in student sees only their own work.'),
+    ],
+  },
+  {
+    id: 'mr-ez',
+    question: nt('What can Mr EZ do?'),
+    answers: [
+      /* MrEzPanel: sign-in required; reads only the student's own record. */
+      nt('Mr EZ is your AI tutor. He explains results, suggests what to practise next and answers questions about your own work. He needs you to be signed in, because he only ever reads your own results.'),
+      /* HELP_BLOCKED_MODES */
+      nt('He does not help during a timed test. Once you submit, he can go through your mistakes with you.'),
+    ],
+  },
+  {
+    id: 'language',
+    question: nt('Can I use the platform in Russian?'),
+    answers: [
+      /* i18n: interface and explanations; exam material stays English. */
+      nt('Yes. Switch between EN and RU at the top of the page. Explanations and the interface change language; passages, recordings, questions and model answers stay in English, as in the real exam.'),
+    ],
+  },
+];
+---
+
+<BaseLayout title="Help · IELTS is EZ" description="How the IELTS is EZ platform works: where to start, tests and timers, scores, saving progress and Mr EZ.">
+  <div class="platform-hub mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <header class="mb-10 border-b border-border pb-8">
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl" data-i18n>How the platform works</h1>
+      <p class="mt-3 max-w-2xl text-ink-muted" data-i18n>Short answers about lessons, tests, scores, saving your work and Mr EZ.</p>
+    </header>
+
+    <div class="space-y-3">
+      {sections.map((section) => (
+        <details id={section.id} class="support-disclosure">
+          <summary data-i18n>{section.question}</summary>
+          {section.answers.map((answer) => (
+            <p class="mt-3 max-w-2xl text-ink" data-i18n>{answer}</p>
+          ))}
+        </details>
+      ))}
+    </div>
+
+    <p class="mt-12 border-t border-border pt-8">
+      <a href={withBase('/dashboard')} class="font-semibold text-brand hover:underline" data-i18n>Go to today's session</a>
+    </p>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  @import '../styles/platform-pages.css';
+</style>
