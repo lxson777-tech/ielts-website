@@ -64,9 +64,22 @@ runs anonymously — nothing breaks.
 
 ## Privacy
 
-The only personal data stored is the sign-in email (in Supabase's `auth.users`)
-and the student's own study plan/scores. No sensitive data. Keep it that way —
-some candidates are minors.
+What is stored about a student:
+
+- the sign-in email (in Supabase's `auth.users`);
+- their own study plan, scores and study history (`user_state` and the
+  tables below);
+- once the student profile is applied (see "Student profiles" below), the
+  details every student gives before using the course: first and last name,
+  date of birth, phone, city, school, university or job, and how they found
+  us;
+- for a student under 18, the name and phone of a parent or guardian and
+  the moment the "a parent agrees" box was ticked.
+
+Some candidates are minors, which is why that last item exists. Nothing more
+sensitive than this is collected (no ID numbers, no addresses, no payment
+details). Keep it that way. Each student can read and change only their own
+details; the owner sees everyone's through the admin panel.
 
 ## Live examiner sessions table
 
@@ -164,7 +177,13 @@ protected:
 - **`admin_list_users()`** returns every account with a summary of its study
   (plan, counts, best bands, recent scored work, Mr EZ and live examiner
   usage). It refuses anyone not in `admins` with SQLSTATE 42501, and it is
-  not callable at all by a signed-out visitor.
+  not callable at all by a signed-out visitor. Once the student profiles
+  migration below is applied, it also returns each student's details at the
+  end of the row: `first_name`, `last_name`, `date_of_birth`, `phone`,
+  `city`, `occupation`, `source`, `parent_name`, `parent_phone`,
+  `parent_consent_at` and `profile_updated_at` (all null for a student who
+  has not filled the profile in). The panel at `/admin` reads them when they
+  are present and shows "No details yet" when they are not.
 
 Checked before it was applied, in a transaction that rolled itself back on
 the live project: the owner got the full list; a student got "admin only"
@@ -177,6 +196,60 @@ To add another admin later, run once in the SQL editor:
 insert into public.admins (user_id, note)
 select id, 'why they are an admin' from auth.users where email = 'their@email';
 ```
+
+## Student profiles (proposed, not applied)
+
+**This has NOT been applied to the production project.** It is a reviewed
+proposal in `migrations/2026-09-24-profiles.sql`. Nobody but Alex applies it,
+and only after reading this section.
+
+### What it adds
+
+- **`student_profiles`**, one row per account with the details every student
+  gives before using the course: `first_name`, `last_name`, `date_of_birth`,
+  `phone`, `city`, `occupation` (school, university or job, free text) and
+  `source` (how they found us: `friend`, `instagram`, `centre` or `other`),
+  plus `parent_name`, `parent_phone` and `parent_consent_at` for a student
+  under 18. The row is deleted with the account. Checks in the table keep
+  names, city and occupation to a sensible length, phones to 7 to 15 digits
+  with an optional leading plus, and the source to the four allowed values.
+- **The under-18 rule is enforced by a trigger**
+  (`guard_student_profile_write`), not only by the form, so a modified
+  browser cannot skip it: the date of birth must be in the past and at least
+  five years ago, and for anyone under 18 on the day of saving a parent's
+  name, phone and agreement time are all required or the write is refused.
+  A trigger is used because a table check cannot compare against today's
+  date. The same trigger trims the text fields, and a second one keeps
+  `updated_at` current on every edit.
+
+### Who can see it
+
+- **The student**: their own row only, under Row Level Security, from the
+  user id proved by their own access token. They can read, add and change
+  it; there is no delete policy.
+- **The Worker** (Mr EZ, which greets students by first name) reads it with
+  the service role key, like every other table it uses.
+- **The owner**, through `admin_list_users()` (see "Admin access" above),
+  which checks the caller is in `admins` before answering. Nobody else can
+  see anyone else's row.
+
+### The admin function changes shape
+
+`admin_list_users()` gains eleven columns at the end. Postgres cannot change
+a function's return type in place, so the migration **drops the function and
+creates it again** with the new columns, then restores the same grants
+(signed-in callers only, refused inside unless admin). Everything else about
+it is unchanged. Between the drop and the create the admin panel would show
+its "couldn't load" message; run the file as one piece in the SQL Editor and
+that gap is a fraction of a second.
+
+### How to apply it (when Alex is ready)
+
+Supabase dashboard, SQL Editor, paste the whole of
+`migrations/2026-09-24-profiles.sql`, Run. It depends on `schema.sql` (for
+`touch_user_state_updated_at`) and on `migrations/2026-09-24-admin.sql` (for
+`is_admin`), both already on the live project. The file is idempotent, safe
+to run more than once.
 
 ## Personal learning tables (applied to production on 2026-09-24)
 Applied through the Supabase connector as migration `20260924080358`
