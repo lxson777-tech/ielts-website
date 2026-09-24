@@ -98,6 +98,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 750; line-height: 1.15; letter-spacing: -.
 .ws-menu-identity { margin: 0; padding: 8px 10px 10px; }
 .ws-menu-identity span { display: block; color: var(--color-ink-muted); font-size: .7rem; }
 .ws-menu-identity strong { display: block; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .78rem; font-weight: 700; }
+.ws-menu-identity .ws-menu-email { display: block; margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-ink-muted); font-size: .7rem; }
 .ws-menu-group + .ws-menu-group { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--color-border); }
 .ws-menu-identity + .ws-menu-group { margin-top: 0; padding-top: 6px; border-top: 1px solid var(--color-border); }
 .ws-menu a, .ws-menu button { display: block; width: 100%; padding: 8px 10px; border: 0; border-radius: 9px; background: none; color: var(--color-ink); font: inherit; font-size: .84rem; font-weight: 600; text-align: left; text-decoration: none; cursor: pointer; transition: background 200ms ease, color 200ms ease; }

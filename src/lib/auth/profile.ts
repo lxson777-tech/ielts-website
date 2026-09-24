@@ -372,9 +372,11 @@ export async function saveProfile(
 export const PROFILE_EXEMPT_ROUTES = ['/profile', '/sign-in', '/sign-up', '/forgot-password', '/reset-password'];
 
 /** Only a same-site path is ever used as a "next" destination, so a link
-    cannot bounce a student to another site after sign-in. */
+    cannot bounce a student to another site after sign-in.
+    A backslash or a control character is refused as well as `//`: browsers
+    read "/\evil.com" and "/<tab>/evil.com" as "//evil.com", another site. */
 export function safeNext(next: string | null | undefined, fallback = '/dashboard'): string {
-  if (!next || !next.startsWith('/') || next.startsWith('//') || /[\r\n]/.test(next)) return fallback;
+  if (!next || !next.startsWith('/') || next.startsWith('//') || /[\\\u0000-\u001f\u007f]/.test(next)) return fallback;
   return next;
 }
 

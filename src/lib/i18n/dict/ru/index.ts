@@ -28,6 +28,7 @@ import * as learningVocab from './learning-vocab';
 import * as learningFocusListening from './learning-focus-listening';
 import * as learningFocusReading from './learning-focus-reading';
 import * as learningObjectives from './learning-objectives';
+import * as profile from './profile';
 
 /** Every batch module, in merge order. The test imports this same list. */
 export const BATCHES = [
@@ -51,6 +52,7 @@ export const BATCHES = [
   learningFocusListening,
   learningFocusReading,
   learningObjectives,
+  profile,
 ];
 
 export const strings: Record<string, string> = Object.assign({}, ...BATCHES.map((b) => b.strings));

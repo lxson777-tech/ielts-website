@@ -120,7 +120,8 @@ import GradingProgress from './GradingProgress';
 import SpeakingCoachPanel from './SpeakingCoachPanel';
 import SpeakingPartCards from './SpeakingPartCards';
 import IdeaHints from './IdeaHints';
-import AuthModal from './AuthModal';
+import { signInHref } from '../lib/auth/profile';
+import { currentRoute } from '../lib/auth/next';
 import { recordSpeakingGradedFor } from '../lib/learning/store.browser';
 import { bindToCurrentOwner, runOwnedGrade, type OwnerBinding } from '../lib/store-owner';
 import {
@@ -228,7 +229,6 @@ export default function LiveExaminer({
   const [liveConfig, setLiveConfig] = useState<LiveConfig | null>(null);
   const [configError, setConfigError] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
   /* ── sign-in gate (openai only) ───────────────────────────────────────
      The paid OpenAI path requires a signed-in student; Gemini stays free
@@ -1319,7 +1319,7 @@ export default function LiveExaminer({
             <p>{t('Sign in to use the live examiner (this keeps the paid voice service for real students).')}</p>
             <button
               type="button"
-              onClick={() => setShowAuthModal(true)}
+              onClick={() => window.location.assign(signInHref(currentRoute()))}
               className="mt-2 rounded-button border border-border px-4 py-1.5 text-xs font-semibold hover:bg-surface-alt"
             >
               {t('Sign in')}
@@ -1365,7 +1365,6 @@ export default function LiveExaminer({
             {t('Start the interview')}
           </button>
         )}
-        {showAuthModal && <AuthModal initialMode="signin" onClose={() => setShowAuthModal(false)} />}
       </div>
     );
   } else if (phase === 'connecting') {

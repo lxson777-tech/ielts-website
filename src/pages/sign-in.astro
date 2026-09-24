@@ -1,0 +1,14 @@
+---
+/* Sign in (24 September 2026): email and password, or Google. Replaced the
+   old sign-in popup. `?next=<route>` says where to go afterwards. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SignInForm from '../components/auth/SignInForm';
+---
+
+<BaseLayout title="Sign in · IELTS Portal" description="Sign in to your IELTS is EZ account." noindex>
+  <SignInForm client:load />
+</BaseLayout>
+
+<style is:global>
+  @import '../styles/auth.css';
+</style>
