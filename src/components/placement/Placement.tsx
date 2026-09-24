@@ -64,6 +64,7 @@ import { PART_NAME, PartBrief, PlacementFrame, PlacementStepper } from './Placem
 import PlacementWriting from './PlacementWriting';
 import PlacementSpeaking from './PlacementSpeaking';
 import PlacementResults from './PlacementResults';
+import { placementScreen } from './placement-screen';
 import '../../styles/placement.css';
 
 ensureLearningWired();
@@ -76,8 +77,6 @@ export interface PlacementMaterialProps {
   writing: EssayPrompt | null;
   speaking: Part1Topic | null;
 }
-
-type Screen = 'loading' | 'signed-out' | 'unavailable' | 'intro' | 'part' | 'results';
 
 export default function Placement({ material }: { material: PlacementMaterialProps }) {
   const { t } = useT();
@@ -149,17 +148,7 @@ export default function Placement({ material }: { material: PlacementMaterialPro
   const signedIn = opened?.session.owner.kind === 'user';
   const materialMissing = !material.listening || !material.reading || !material.writing || !material.speaking;
 
-  const screen: Screen = !opened
-    ? 'loading'
-    : !signedIn
-      ? 'signed-out'
-      : (state && part === 'done') || (!state && taken)
-        ? 'results'
-        : materialMissing
-          ? 'unavailable'
-          : state
-            ? 'part'
-            : 'intro';
+  const screen = placementScreen({ opened: opened !== null, signedIn, state, taken, materialMissing });
 
   /* Before the results read a single estimate, the plan is rebuilt from the
      new evidence. onEvidenceRecorded replans only when what is known
