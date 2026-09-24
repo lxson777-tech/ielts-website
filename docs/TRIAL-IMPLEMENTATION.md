@@ -356,6 +356,16 @@ merged here:
 - The browser journey signs up through the modal (`sign_up_in_modal`, `open_auth`) and
   must move to the new pages.
 
+## Also coming: the placement test (not yet published)
+
+Another session is building a one-sitting placement test on
+`claude/student-placement-test-af18b3`. The placement session reports Alex saying it comes
+after a subscription, not inside the trial; this is not yet confirmed with the trial
+session. It is built with no trial code, so when it reaches `main` and is merged here its
+page is declared `trialGate={{ kind: 'locked', ... }}`. A future per-account paid status
+is to be read inside `trial_can_open`, so one place decides what a student may open; that
+session will coordinate before building it.
+
 ## If Alex approves going live (each step separately)
 
 1. **Database**: in the Supabase SQL editor, paste the whole of
