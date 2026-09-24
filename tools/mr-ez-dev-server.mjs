@@ -185,7 +185,38 @@ async function handleAuth(req, res, url) {
   const path = url.pathname.replace('/auth/v1', '');
 
   if (path === '/settings') {
-    return send(res, 200, { external: { email: true, google: false }, disable_signup: false });
+    return send(res, 200, { external: { email: true, google: true }, disable_signup: false });
+  }
+
+  // A pretend Google sign-in, so the "Continue with Google" path can be
+  // clicked through locally. The real project sends the browser to Google;
+  // here the browser is sent straight back to `redirect_to` with a session
+  // in the URL fragment, the same shape supabase-js reads after a real
+  // Google round trip, for one fixed demo account that carries the name
+  // Google would (so the profile form's pre-fill can be seen).
+  if (path === '/authorize' && req.method === 'GET') {
+    const provider = url.searchParams.get('provider');
+    if (provider !== 'google') return send(res, 400, { message: 'unsupported provider' });
+    const email = 'google-demo@example.test';
+    const user = db.users.get(email) ?? {
+      id: randomUUID(),
+      email,
+      password: null,
+      user_metadata: { full_name: 'Aigerim Google', given_name: 'Aigerim', family_name: 'Google', provider: 'google' },
+    };
+    db.users.set(email, user);
+    const s = session(user);
+    const back = url.searchParams.get('redirect_to') || 'http://127.0.0.1:4321/';
+    const fragment = new URLSearchParams({
+      access_token: s.access_token,
+      refresh_token: s.refresh_token,
+      expires_in: String(s.expires_in),
+      expires_at: String(s.expires_at),
+      token_type: 'bearer',
+      provider_token: 'local-google-demo',
+    });
+    res.writeHead(302, { Location: `${back}#${fragment.toString()}` });
+    return res.end();
   }
 
   if (path === '/signup') {
