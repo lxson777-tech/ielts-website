@@ -11,6 +11,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHandler } from '../workers/grade-essay/src/index.ts';
+import { bandStepsFor, readBandStepLocale } from '../src/lib/trial/band-steps.ts';
+import { SPEAKING_BAND_GUIDES, WRITING_BAND_GUIDES, guideFor, type BandStepGuide } from '../src/data/band-guides.ts';
+import { getWritingPrompt } from '../src/data/writing-prompts.ts';
+import { TRIAL_WRITING } from '../src/lib/trial/offer.ts';
 import { createTrialDb } from '../tools/trial-db.mjs';
 import { parseTrialStatus } from '../src/lib/trial/status.ts';
 import { createHandler as createSpeakingHandler } from '../workers/grade-speaking/src/index.ts';
@@ -49,7 +53,7 @@ async function world() {
   await db.addUser(A);
   await db.addUser(B);
   await db.rpc('trial_start', {}, { userId: A });
-  const calls = { openAi: 0 };
+  const calls = { openAi: 0, bodies: [] as string[] };
   const model = { status: 200 };
   const fetchFn = (async (input: unknown, init?: RequestInit) => {
     const url = String(input);
@@ -69,6 +73,7 @@ async function world() {
     }
     if (url.startsWith('https://api.openai.com/')) {
       calls.openAi += 1;
+      calls.bodies.push(String(init?.body ?? ''));
       return model.status === 200 ? new Response(JSON.stringify(envelope())) : new Response('{}', { status: model.status });
     }
     throw new Error(`unexpected fetch ${url}`);
@@ -84,13 +89,19 @@ async function world() {
       SUPABASE_SERVICE_ROLE_KEY: SERVICE_KEY,
       ...overrides,
     }) as never;
-  const submit = async (token: string | null, sitting?: string, overrides: Record<string, unknown> = {}) => {
+  const submit = async (
+    token: string | null,
+    sitting?: string,
+    overrides: Record<string, unknown> = {},
+    extra: Record<string, unknown> = {},
+  ) => {
     const headers: Record<string, string> = { Origin: ORIGIN, 'Content-Type': 'application/json' };
     if (token) headers.Authorization = `Bearer ${token}`;
     const body = {
       prompt: { task: 'task2', promptHtml: '<p>Discuss both views.</p>', minWords: 250 },
       essay: ESSAY,
       ...(sitting ? { trialSitting: sitting } : {}),
+      ...extra,
     };
     const response = await handler.fetch(new Request('https://grader.test/', { method: 'POST', headers, body: JSON.stringify(body) }), env(overrides));
     return { status: response.status, body: (await response.json()) as Record<string, unknown> };
@@ -124,6 +135,34 @@ test('a graded essay uses the Writing test, and it cannot be graded again', asyn
   assert.equal(again.body.code, 'trial-test-used');
   assert.equal(w.calls.openAi, 1);
   await w.db.close();
+});
+
+test('the trial essay is graded against the server’s own question, and returns only the band steps it earned, in the student’s language', async () => {
+  const w = await world();
+  await w.db.rpc('trial_test_begin', { p_section: 'writing', p_activity: 'writing-checker', p_request: 'sit-w-00009' }, { userId: A });
+  const graded = await w.submit('token-a', 'sit-w-00009', {}, { locale: 'ru' });
+  assert.equal(graded.status, 200);
+  const question = getWritingPrompt(TRIAL_WRITING.essayPromptId)!;
+  const sent = w.calls.bodies.join(' ');
+  assert.ok(!sent.includes('Discuss both views.'), 'the question the browser sent is not used');
+  assert.ok(sent.includes(question.title.slice(0, 30)), 'the trial question is');
+  const guides = graded.body.guides as Record<string, BandStepGuide>;
+  assert.deepEqual(Object.keys(guides).sort(), ['coherenceCohesion', 'grammaticalRange', 'lexicalResource', 'taskResponse']);
+  const english = guideFor(WRITING_BAND_GUIDES.taskResponse, 6)!;
+  assert.equal(guides.taskResponse.from, 6, 'the step for the band given (6), and no other');
+  assert.notEqual(guides.taskResponse.whatChanges, english.whatChanges, 'in Russian');
+  assert.match(guides.taskResponse.whatChanges, /[А-Яа-я]/);
+  assert.equal(guides.taskResponse.example.before, english.example.before, 'the example sentences stay English');
+  await w.db.close();
+});
+
+test('band steps: one per criterion for the band given, in English or Russian', () => {
+  const en = bandStepsFor('speaking', { fluencyCoherence: 7, pronunciation: 4.5, unknown: 6, lexicalResource: 'x' }, 'en');
+  assert.deepEqual(Object.keys(en).sort(), ['fluencyCoherence', 'pronunciation']);
+  assert.equal(en.fluencyCoherence.from, 7);
+  assert.equal(en.fluencyCoherence.whatChanges, guideFor(SPEAKING_BAND_GUIDES.fluencyCoherence, 7)!.whatChanges);
+  assert.equal(readBandStepLocale('ru'), 'ru');
+  assert.equal(readBandStepLocale('de'), 'en');
 });
 
 test('a failed grade leaves the Writing test available to submit again', async () => {

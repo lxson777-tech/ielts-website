@@ -17,6 +17,8 @@
  *                                 questions, answers, explanations)
  *   explanations/ru/<id>.json     the Russian answer explanations
  *   practice/<set id>.json        a Reading or Listening lesson's practice quiz
+ *   prompts/<prompt id>.json      a Writing question
+ *   models/<prompt id>.json       a Band 8 model with its question
  *   data/tests/<id>.json          the compact paper Mr EZ reads (toSiteTest)
  *   data/lesson-blocks/<slug>.json  the lesson blocks Mr EZ reads
  *   manifest.json                 every key, for checking an upload
@@ -86,6 +88,18 @@ export async function buildGatedContent(out = DEFAULT_OUT) {
   const { LISTENING_PRACTICE } = await import('../src/data/listening-practice.ts');
   for (const [slug, set] of Object.entries(READING_PRACTICE)) put(`practice/practice-reading-${slug}.json`, JSON.stringify(set));
   for (const [slug, set] of Object.entries(LISTENING_PRACTICE)) put(`practice/practice-listening-${slug}.json`, JSON.stringify(set));
+
+  // Writing questions and Band 8 models (Alex, 24 September 2026: lock the
+  // remaining material). Every question, and every model with its question,
+  // for the gate's /prompt/<id> and /model/<id>; the trial opens only its
+  // own essay question and its one example.
+  const { WRITING_PROMPTS } = await import('../src/data/writing-prompts.ts');
+  const { getModelAnswers } = await import('../src/data/model-answers.ts');
+  for (const prompt of WRITING_PROMPTS) {
+    put(`prompts/${prompt.id}.json`, JSON.stringify(prompt));
+    const model = getModelAnswers(prompt.id)[0];
+    if (model) put(`models/${prompt.id}.json`, JSON.stringify({ prompt, model }));
+  }
 
   // Russian answer explanations, published exactly as the open site does.
   const explained = resolve(REPO, 'src/data/tests/ru');

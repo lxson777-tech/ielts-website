@@ -18,6 +18,12 @@
      GET /explanations/<locale>/<id>     a paper's translated explanations
      GET /practice/<set id>              a lesson's practice quiz (JSON),
                                          opened with its lesson
+     GET /prompt/<prompt id>             a Writing question (JSON); the
+                                         trial's own essay question opens
+                                         with its Writing test
+     GET /model/<prompt id>              a Band 8 model answer with its
+                                         question (JSON); the trial's one
+                                         example opens with its lesson
      GET /data/tests/<id>.json           Mr EZ's compact paper   } service
      GET /data/lesson-blocks/<key>.json  Mr EZ's lesson blocks   } key only
 
@@ -29,6 +35,7 @@
    store (tools/mr-ez-dev-server.mjs --trial, tests/trial-content.test.ts). */
 
 import { bearer, serviceRpc, verifyAccessToken, TrialServiceError } from '../../../src/lib/trial/gate';
+import { TRIAL_OFFER, TRIAL_WRITING } from '../../../src/lib/trial/offer';
 
 /** What the handler needs from the private store: R2Bucket.get's shape. */
 export interface ContentStore {
@@ -107,6 +114,18 @@ export function route(url: URL): Route {
     const match = /^practice-(reading|listening)-([a-z0-9][a-z0-9-]{0,80})$/.exec(parts[1]);
     if (!match) return null;
     return { kind: 'student', item: `lesson:${match[1]}-${match[2]}`, key: `practice/${parts[1]}.json`, type: json };
+  }
+  /* Writing material (Alex, 24 September 2026). The trial includes exactly
+     two pieces: its essay question, which opens with the Writing test, and
+     one Band 8 example, which opens with the Task 2 lesson. Any other
+     question or model is its own item, which the trial does not include. */
+  if (parts.length === 2 && parts[0] === 'prompt' && SAFE.test(parts[1])) {
+    const item = parts[1] === TRIAL_WRITING.essayPromptId ? `test:${TRIAL_OFFER.writing.testId}` : `writing-prompt:${parts[1]}`;
+    return { kind: 'student', item, key: `prompts/${parts[1]}.json`, type: json };
+  }
+  if (parts.length === 2 && parts[0] === 'model' && SAFE.test(parts[1])) {
+    const item = parts[1] === TRIAL_WRITING.examplePromptId ? `lesson:${TRIAL_OFFER.writing.lessonKey}` : `writing-model:${parts[1]}`;
+    return { kind: 'student', item, key: `models/${parts[1]}.json`, type: json };
   }
   if (parts.length === 3 && parts[0] === 'data' && (parts[1] === 'tests' || parts[1] === 'lesson-blocks')) {
     const id = parts[2].replace(/\.json$/, '');

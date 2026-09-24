@@ -4,7 +4,7 @@
     {
       "file": "^_astro/words\\.[A-Za-z0-9_-]+\\.js$",
       "items": "^lesson(-ru)?:vocabulary-",
-      "reason": "The 146-word word-of-the-day sampler (src/data/words.ts), shown site-wide in lesson headers and on the dashboard. Some of its example sentences also appear in vocabulary lessons. Kept public as a free taster pending Alex's decision; remove this entry to treat it as locked."
+      "reason": "The 146-word word-of-the-day sampler (src/data/words.ts), shown site-wide in lesson headers and on the dashboard. Some of its example sentences also appear in vocabulary lessons. Kept public as a free taster: Alex decided on 24 September 2026. Remove this entry to treat it as locked."
     }
   ]
 }

@@ -26,6 +26,8 @@ export class GraderRefusal extends Error {
 export interface TrialGrading {
   token: string;
   sitting: string;
+  /** The language of the band guide steps the grader sends back. */
+  locale?: 'en' | 'ru';
 }
 
 /* Remote grader — POSTs to our Cloudflare Worker, which holds the API key and
@@ -54,7 +56,7 @@ class RemoteGrader implements EssayGrader {
         },
         essay: input.essay,
         mechanics,
-        ...(this.trial ? { trialSitting: this.trial.sitting } : {}),
+        ...(this.trial ? { trialSitting: this.trial.sitting, locale: this.trial.locale ?? 'en' } : {}),
       }),
       // Three reasoning-model runs are taken and the median kept; allow three minutes.
       signal: AbortSignal.timeout(180000),

@@ -4,6 +4,7 @@
    (Claude / Gemini / open model) without touching anything else. */
 
 import type { NextBandAdvice } from '../grading/next-band';
+import type { BandStepGuide } from '../../data/band-guides';
 export type { NextBandAction, NextBandAdvice } from '../grading/next-band';
 
 export type WritingTask = 'task1' | 'task2';
@@ -133,13 +134,17 @@ export interface GradeResult {
   /** Which grader actually produced this result (the configured one may have
       failed over to the offline stub) — drives the AI/sample badge. */
   grader: { name: string; live: boolean };
+  /** A trial grade only: the band guide step for each band given, sent by
+      the grader because a trial build's browser carries no band guides
+      (src/lib/trial/band-steps.ts). Already in the student's language. */
+  guides?: Partial<Record<CriterionKey, BandStepGuide>>;
 }
 
 /** The portion a language model produces; the rest of GradeResult is
     heuristic (`mechanics`) and the assembled `overallBand`. */
 export type EssayAssessment = Pick<
   GradeResult,
-  'criteria' | 'moments' | 'strengths' | 'improvements' | 'actionPlan'
+  'criteria' | 'moments' | 'strengths' | 'improvements' | 'actionPlan' | 'guides'
 >;
 
 /** The swappable model boundary. Implementations may use any provider — the

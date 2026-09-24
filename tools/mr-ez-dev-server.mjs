@@ -1283,7 +1283,7 @@ const gateBase = () => `http://127.0.0.1:${server.address()?.port ?? PORT}/conte
     student sees says SIMULATED. */
 function simulatedSpeakingModel(url) {
   const note = 'SIMULATED: no AI examiner was called. This local stand-in is not a grade.';
-  const criterion = { evidence: note, band: 6, comment: note, tip: note };
+  const criterion = { evidence: note, band: 6, comment: note, tip: note, nextBand: simulatedNextBand(note) };
   if (url === 'https://api.openai.com/v1/audio/transcriptions') {
     const text = 'SIMULATED transcript of the local stand-in interview.';
     return { text, duration: 40, words: [], segments: [{ type: 'speech', text, speaker: 'A', start: 0, end: 40, id: 'seg_0' }] };
@@ -1334,9 +1334,14 @@ function liveSessionsRest(url, init) {
   return new Response(JSON.stringify(rows), { headers: { 'Content-Type': 'application/json' } });
 }
 
+/* A real grade also says how to reach the next band on each criterion, and
+   the band report shows the band guide step beneath that advice; the
+   stand-in says it too, labelled, so the local report takes the same path. */
+const simulatedNextBand = (note) => ({ target: 7, gap: note, actions: [{ do: note, from: 'SIMULATED', to: 'SIMULATED' }] });
+
 function simulatedAssessment() {
   const note = 'SIMULATED: no AI examiner was called. This local stand-in is not a grade.';
-  const criterion = { evidence: note, band: 6, comment: note, tip: note };
+  const criterion = { evidence: note, band: 6, comment: note, tip: note, nextBand: simulatedNextBand(note) };
   return {
     criteria: { taskResponse: criterion, coherenceCohesion: criterion, lexicalResource: criterion, grammaticalRange: criterion },
     moments: [{ quote: 'SIMULATED', note }],

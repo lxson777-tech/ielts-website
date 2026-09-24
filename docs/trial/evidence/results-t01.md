@@ -1,9 +1,9 @@
 # Trial journey (t01), local stand-in
 
-Run 1790237227. Site http://localhost:4331/ielts-website, backend http://127.0.0.1:8795 (--trial: real migration in PGlite, real Workers,
+Run 1790238523. Site http://localhost:4331/ielts-website, backend http://127.0.0.1:8795 (--trial: real migration in PGlite, real Workers,
 simulated tutor replies, SIMULATED essay assessment). Synthetic accounts only. Nothing billed.
 
-**82 of 82 checks passed.**
+**86 of 86 checks passed.**
 
 | Result | Check | Detail |
 |---|---|---|
@@ -14,7 +14,7 @@ simulated tutor replies, SIMULATED essay assessment). Synthetic accounts only. N
 | PASS | join: questionnaire carried through the sign-in round trip |  |
 | PASS | join: no trial exists before the student presses start |  |
 | PASS | no trial yet: lesson covered with a start invitation |  |
-| PASS | start: server recorded the trial with the questionnaire | {"user_id": "622a52fc-3008-4281-a4ed-36da3b1fd7d0", "started_at": "2026-09-24T08:07:34.075Z", "ends_at": "2026-09-27T08:07:34.075Z", "questionnaire": {"band": " |
+| PASS | start: server recorded the trial with the questionnaire | {"user_id": "967e5199-f355-493e-bb9a-418a12cd9653", "started_at": "2026-09-24T08:29:05.987Z", "ends_at": "2026-09-27T08:29:05.987Z", "questionnaire": {"band": " |
 | PASS | dashboard: time left from the server clock |  |
 | PASS | dashboard: suggested section tab (Writing) opens first |  |
 | PASS | keyboard: ArrowRight moves to Speaking and focuses it |  |
@@ -54,23 +54,27 @@ simulated tutor replies, SIMULATED essay assessment). Synthetic accounts only. N
 | PASS | trial test: result shown after submitting |  |
 | PASS | trial test: submission settled the Reading test on the server |  |
 | PASS | trial test: reopening says the section's test is used |  |
-| PASS | two tabs: one Listening sitting between them | [{"user_id": "622a52fc-3008-4281-a4ed-36da3b1fd7d0", "kind": "test", "section": "listening", "request_id": "sit-944968ad-a5a5-4f49-a848-75c0bb7b7510", "activity |
+| PASS | two tabs: one Listening sitting between them | [{"user_id": "967e5199-f355-493e-bb9a-418a12cd9653", "kind": "test", "section": "listening", "request_id": "sit-9dff31db-8a7c-46c0-908a-9282bb880704", "activity |
+| PASS | writing lesson: one Band 8 example, fetched through the door, and no 'Another example' |  |
 | PASS | writing: checker says it is the one Writing test |  |
+| PASS | writing: only the trial's Task 2 question is offered (no Task 1) |  |
 | PASS | writing: begun on the server when the task started |  |
+| PASS | writing: the question is the trial's fixed one, fetched through the door |  |
 | PASS | writing: a failed grade leaves the test available and says so |  |
 | PASS | writing: a successful grade uses the test on the server |  |
 | PASS | writing: the stand-in's assessment is visibly SIMULATED |  |
+| PASS | writing: the report shows the band guide steps the grader returned |  |
 | PASS | speaking: the part-by-part Speaking trainer is not in the trial |  |
 | PASS | speaking: the examiner page opens as the trial's Part 1 test |  |
 | PASS | speaking: the cue-card bank (not in the trial) is not offered |  |
 | PASS | speaking: nothing reserved before Start |  |
-| PASS | speaking: Start begins the test on the server; a voice session that failed to open is given back | [{"user_id": "622a52fc-3008-4281-a4ed-36da3b1fd7d0", "kind": "test", "section": "speaking", "request_id": "sit-9e117b98-0591-4b09-8913-c6c6f4e20a36", "activity_ |
-| PASS | speaking: a session that opened but never connected gives the interview back | {"created": {"plan": {"mode": "part1", "part1TopicIds": ["p1-2026-36"]}, "trialSitting": "sit-9e117b98-0591-4b09-8913-c6c6f4e20a36", "status": 201}, "rows": [{" |
+| PASS | speaking: Start begins the test on the server; a voice session that failed to open is given back | [{"user_id": "967e5199-f355-493e-bb9a-418a12cd9653", "kind": "test", "section": "speaking", "request_id": "sit-7b14c0af-25e0-47ec-a433-9321c751d03d", "activity_ |
+| PASS | speaking: a session that opened but never connected gives the interview back | {"created": {"plan": {"mode": "part1", "part1TopicIds": ["p1-2026-11"]}, "trialSitting": "sit-7b14c0af-25e0-47ec-a433-9321c751d03d", "status": 201}, "rows": [{" |
 | PASS | speaking: the interview runs as Part 1 |  |
-| PASS | speaking: the session request carries the begun test and a Part 1 plan | {"plan": {"mode": "part1", "part1TopicIds": ["p1-2026-18"]}, "trialSitting": "sit-9e117b98-0591-4b09-8913-c6c6f4e20a36", "status": 201} |
-| PASS | speaking: a grade that fails on our side keeps the test (one interview counted) | [{"user_id": "622a52fc-3008-4281-a4ed-36da3b1fd7d0", "kind": "test", "section": "speaking", "request_id": "sit-9e117b98-0591-4b09-8913-c6c6f4e20a36", "activity_ |
+| PASS | speaking: the session request carries the begun test and a Part 1 plan | {"plan": {"mode": "part1", "part1TopicIds": ["p1-2026-30"]}, "trialSitting": "sit-7b14c0af-25e0-47ec-a433-9321c751d03d", "status": 201} |
+| PASS | speaking: a grade that fails on our side keeps the test (one interview counted) | [{"user_id": "967e5199-f355-493e-bb9a-418a12cd9653", "kind": "test", "section": "speaking", "request_id": "sit-7b14c0af-25e0-47ec-a433-9321c751d03d", "activity_ |
 | PASS | speaking: after the failure the test can be started again |  |
-| PASS | speaking: a graded interview uses the test on the server (two interviews in all) | [{"user_id": "622a52fc-3008-4281-a4ed-36da3b1fd7d0", "kind": "test", "section": "speaking", "request_id": "sit-9e117b98-0591-4b09-8913-c6c6f4e20a36", "activity_ |
+| PASS | speaking: a graded interview uses the test on the server (two interviews in all) | [{"user_id": "967e5199-f355-493e-bb9a-418a12cd9653", "kind": "test", "section": "speaking", "request_id": "sit-7b14c0af-25e0-47ec-a433-9321c751d03d", "activity_ |
 | PASS | speaking: the stand-in's report is visibly SIMULATED |  |
 | PASS | speaking: back on the page, the Speaking test is used | Live AI Examiner /  / Speaking /  / Part 1 of the Speaking test as a real conversation: the examiner speaks, listens, and asks follow-up questions based on what |
 | PASS | plans: approved prices shown, payment plainly unavailable |  |

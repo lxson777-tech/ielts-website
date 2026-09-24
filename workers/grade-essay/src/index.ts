@@ -17,7 +17,9 @@
    The Worker is the ONLY provider-specific code in the project, the site
    talks to this endpoint through the provider-agnostic RemoteGrader. */
 
-import { parseAccessMode } from '../../../src/lib/trial/offer';
+import { TRIAL_WRITING, parseAccessMode } from '../../../src/lib/trial/offer';
+import { bandStepsFor, readBandStepLocale } from '../../../src/lib/trial/band-steps';
+import { getWritingPrompt } from '../../../src/data/writing-prompts';
 import {
   TrialRefusal,
   bearer,
@@ -66,6 +68,9 @@ interface GradeRequest {
   essay: string;
   /** Trial mode only: the id the student's Writing test was begun under. */
   trialSitting?: string;
+  /** Trial mode only: the language of the band guide steps returned with
+      the grade ('en' or 'ru'). */
+  locale?: string;
   mechanics?: {
     wordCount?: number;
     underLength?: boolean;
@@ -966,6 +971,16 @@ export function createHandler(deps: { fetch: typeof fetch }) {
           if (!userId) return json({ error: 'Sign in to have your essay graded.', code: 'sign-in-required' }, 401, cors);
           const sitting = readSittingId(body.trialSitting);
           if (!sitting) throw refusal('trial-no-test');
+          /* The trial essay answers the trial's own question, read here from
+             the server's copy, never from the request (Alex, 24 September). */
+          const question = getWritingPrompt(TRIAL_WRITING.essayPromptId);
+          if (!question) throw refusal('trial-not-included');
+          body.prompt = {
+            task: question.task,
+            variant: question.variant,
+            promptHtml: question.promptHtml,
+            minWords: question.minWords,
+          };
           const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
           await leaseTrialTest(rpc, userId, 'writing', sitting);
           trial = { rpc, userId, sitting };
@@ -1023,7 +1038,12 @@ export function createHandler(deps: { fetch: typeof fetch }) {
         /* Graded: the Writing test is used. Settled here, on the server, so
            a browser that closes now does not get it back. */
         await settleUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);
-        return json({ ...median, trial: { section: 'writing', test: 'used' } }, 200, cors);
+        /* The band guide step for each band given, in the student's
+           language: a trial build's browser carries no band guides. */
+        const criteria = (median.criteria ?? {}) as Record<string, { band?: unknown }>;
+        const bands = Object.fromEntries(Object.entries(criteria).map(([key, value]) => [key, value?.band]));
+        const guides = bandStepsFor('writing', bands, readBandStepLocale(body.locale));
+        return json({ ...median, guides, trial: { section: 'writing', test: 'used' } }, 200, cors);
       }
       return json(median, 200, cors);
     },

@@ -18,6 +18,7 @@ import { tmpdir } from 'node:os';
 import { createHandler, route } from '../workers/content-gate/src/index.ts';
 import { createTrialDb } from '../tools/trial-db.mjs';
 import { buildGatedContent } from '../tools/build-gated-content.mjs';
+import { TRIAL_WRITING } from '../src/lib/trial/offer.ts';
 
 const ORIGIN = 'https://lxson777-tech.github.io';
 const SUPABASE_URL = 'https://proj.supabase.co';
@@ -39,6 +40,10 @@ const STORE: Record<string, string> = {
   'practice/practice-reading-paraphrase.json': '{"questions":[]}',
   'practice/practice-reading-tfng.json': '{"questions":[]}',
   'data/tests/reading-full-002.json': '{"compact":true}',
+  [`prompts/${TRIAL_WRITING.essayPromptId}.json`]: '{"id":"essay"}',
+  'prompts/pte-wt-121-task2.json': '{"id":"another question"}',
+  [`models/${TRIAL_WRITING.examplePromptId}.json`]: '{"model":"the one example"}',
+  [`models/${TRIAL_WRITING.essayPromptId}.json`]: '{"model":"the essay question answered"}',
 };
 
 async function world(opts: { dbDown?: boolean } = {}) {
@@ -119,6 +124,23 @@ test('a trial opens its own lesson, quiz and tests, and nothing else', async () 
   await w.db.close();
 });
 
+test('Writing: the trial opens its one essay question and its one example, and no other question or model', async () => {
+  const w = await world();
+  const essay = `/prompt/${TRIAL_WRITING.essayPromptId}`;
+  const example = `/model/${TRIAL_WRITING.examplePromptId}`;
+  assert.equal((await w.get(essay, 'token-a')).code, 'trial-required', 'no trial, no question');
+  await w.db.rpc('trial_start', {}, { userId: A });
+  assert.equal((await w.get(essay, 'token-a')).status, 200, 'the essay question opens with the Writing test');
+  assert.equal((await w.get(example, 'token-a')).status, 200, 'the example opens with the Task 2 lesson');
+  for (const locked of ['/prompt/pte-wt-121-task2', `/model/${TRIAL_WRITING.essayPromptId}`, '/model/pte-wt-121-task2']) {
+    const r = await w.get(locked, 'token-a');
+    assert.deepEqual([r.status, r.code], [403, 'not-included'], locked);
+  }
+  assert.notEqual(TRIAL_WRITING.essayPromptId, TRIAL_WRITING.examplePromptId, 'never a model answer to the question being tested');
+  assert.equal((await w.get(essay)).status, 401, 'nothing without a sign-in');
+  await w.db.close();
+});
+
 test('after the trial ends: nothing new, but a test begun before the end stays readable', async () => {
   const w = await world();
   await w.db.rpc('trial_start', {}, { userId: A });
@@ -173,10 +195,17 @@ test('the build step writes every kind of item the gate serves', async () => {
     'practice/practice-listening-part1.json',
     'data/tests/reading-full-001.json',
     'data/lesson-blocks/reading-paraphrase.json',
+    `prompts/${TRIAL_WRITING.essayPromptId}.json`,
+    `models/${TRIAL_WRITING.examplePromptId}.json`,
   ]) {
     assert.ok(existsSync(join(out, key)), key);
   }
   const paper = JSON.parse(readFileSync(join(out, 'tests/reading-full-001.json'), 'utf8'));
   assert.ok(paper.parts.length > 0, 'the whole paper, not a summary');
+  const question = JSON.parse(readFileSync(join(out, `prompts/${TRIAL_WRITING.essayPromptId}.json`), 'utf8'));
+  assert.equal(question.task, 'task2', 'the trial essay is a Task 2 question');
+  assert.ok(question.promptHtml.length > 50, 'the whole question');
+  const shown = JSON.parse(readFileSync(join(out, `models/${TRIAL_WRITING.examplePromptId}.json`), 'utf8'));
+  assert.ok(shown.model.text.length > 2 && shown.prompt.promptHtml, 'the example with its question');
   assert.ok(!readFileSync(join(out, 'lessons/en/reading-paraphrase.html'), 'utf8').includes('../pics/'), 'image paths rewritten');
 });

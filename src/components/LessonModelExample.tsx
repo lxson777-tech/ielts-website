@@ -9,9 +9,20 @@
 
    Deliberately collapsed by default. The lesson's job is to teach the method
    first; the example is there for the student who wants to see it land, and
-   for the one who comes back to the lesson after writing their own. */
+   for the one who comes back to the lesson after writing their own.
 
-import { useState } from 'react';
+   A TRIAL build (Alex, 24 September 2026) carries no model answers: the
+   trial's Task 2 lesson shows exactly one, fetched through the content gate
+   (TRIAL_WRITING.examplePromptId), with no "Another example" and no links to
+   the trainer or the model bank, which the trial does not include. Every
+   other writing lesson shows none. */
+
+import { useEffect, useState } from 'react';
+import { contentIsGated, fetchGated } from '../lib/trial/content';
+import { TRIAL_OFFER, TRIAL_WRITING } from '../lib/trial/offer';
+import { useTrial } from '../lib/trial/react';
+import { accountBlock } from './trial/TrialBlock';
+import type { EssayPrompt } from '../lib/writing/schema';
 import { WRITING_PROMPTS } from '../data/writing-prompts';
 import { getModelAnswers, type ModelAnswer } from '../data/model-answers';
 import { countWords } from '../lib/writing/mechanics';
@@ -42,17 +53,71 @@ const CRITERION_LABEL: { key: keyof ModelAnswer['criteria']; label: string }[] =
 ];
 
 export default function LessonModelExample({ lesson }: { lesson: string }) {
-  const { t, tn } = useT();
+  return contentIsGated() ? <TrialLessonModel lesson={lesson} /> : <OpenLessonModel lesson={lesson} />;
+}
+
+function OpenLessonModel({ lesson }: { lesson: string }) {
   const variants = LESSON_VARIANTS[lesson] ?? [];
   const examples = WRITING_PROMPTS.filter((p) => variants.includes(p.variant))
     .map((p) => ({ prompt: p, model: getModelAnswers(p.id)[0] }))
     .filter((x): x is { prompt: (typeof WRITING_PROMPTS)[number]; model: ModelAnswer } => Boolean(x.model));
-
   const [index, setIndex] = useState(0);
-  const [open, setOpen] = useState(false);
-
   if (examples.length === 0) return null;
   const { prompt, model } = examples[Math.min(index, examples.length - 1)]!;
+  return (
+    <ModelView
+      prompt={prompt}
+      model={model}
+      onAnother={examples.length > 1 ? () => setIndex((i) => (i + 1) % examples.length) : undefined}
+      links
+    />
+  );
+}
+
+/** The trial's one example, from the content gate, on its Task 2 lesson only. */
+function TrialLessonModel({ lesson }: { lesson: string }) {
+  const trial = useTrial();
+  const account = accountBlock(trial);
+  const included = `writing-${lesson}` === TRIAL_OFFER.writing.lessonKey;
+  const [example, setExample] = useState<{ prompt: EssayPrompt; model: ModelAnswer } | null>(null);
+
+  useEffect(() => {
+    if (!included || account || example) return;
+    let live = true;
+    void fetchGated(`model/${TRIAL_WRITING.examplePromptId}`).then((result) => {
+      if (!live || !result.ok) return;
+      try {
+        const parsed = JSON.parse(result.text) as { prompt: EssayPrompt; model: ModelAnswer };
+        if (parsed?.prompt?.promptHtml && Array.isArray(parsed?.model?.text)) setExample(parsed);
+      } catch {
+        /* nothing shown: the lesson itself is unaffected */
+      }
+    });
+    return () => {
+      live = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [included, account, trial.userId, trial.status]);
+
+  if (!included || !example) return null;
+  return <ModelView prompt={example.prompt} model={example.model} links={false} />;
+}
+
+function ModelView({
+  prompt,
+  model,
+  onAnother,
+  links,
+}: {
+  prompt: EssayPrompt;
+  model: ModelAnswer;
+  /** Shows "Another example"; absent when there is only one. */
+  onAnother?: () => void;
+  /** The links to the trainer and the model bank (not in a trial). */
+  links: boolean;
+}) {
+  const { t, tn } = useT();
+  const [open, setOpen] = useState(false);
 
   return (
     <section className="mt-10 rounded-card border border-border bg-surface shadow-card">
@@ -63,11 +128,11 @@ export default function LessonModelExample({ lesson }: { lesson: string }) {
             {t("A real exam task of this type, answered at Band 8, with the examiner's reasons.")}
           </p>
         </div>
-        {examples.length > 1 && (
+        {onAnother && (
           <button
             type="button"
             onClick={() => {
-              setIndex((i) => (i + 1) % examples.length);
+              onAnother();
               setOpen(true);
             }}
             className="shrink-0 rounded-button border border-border px-3.5 py-2 text-xs font-bold transition-colors hover:bg-surface-alt"
@@ -90,12 +155,14 @@ export default function LessonModelExample({ lesson }: { lesson: string }) {
             >
               {t('Show the Band 8 answer')}
             </button>
-            <a
-              href={withBase(`/trainers/writing?task=${encodeURIComponent(prompt.id)}`)}
-              className="text-sm font-semibold text-brand hover:underline"
-            >
-              {t('Or write this one yourself first')}
-            </a>
+            {links && (
+              <a
+                href={withBase(`/trainers/writing?task=${encodeURIComponent(prompt.id)}`)}
+                className="text-sm font-semibold text-brand hover:underline"
+              >
+                {t('Or write this one yourself first')}
+              </a>
+            )}
           </div>
         ) : (
           <>
@@ -119,7 +186,7 @@ export default function LessonModelExample({ lesson }: { lesson: string }) {
               ))}
             </div>
 
-            <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
+            {links && <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
               <a
                 href={withBase(`/trainers/writing?type=${prompt.task}`)}
                 className="rounded-button bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-hover"
@@ -132,7 +199,7 @@ export default function LessonModelExample({ lesson }: { lesson: string }) {
               >
                 {t('Open it with the phrases highlighted')}
               </a>
-            </div>
+            </div>}
           </>
         )}
       </div>

@@ -15,7 +15,25 @@ import { loadEnv } from 'vite';
    gate. The open site is untouched: without the setting this does nothing. */
 const env = { ...loadEnv(process.env.NODE_ENV === 'production' ? 'production' : 'development', process.cwd(), 'PUBLIC_'), ...process.env };
 const TRIAL_BUILD = String(env.PUBLIC_ACCESS_MODE ?? '').trim().toLowerCase() === 'trial';
-const LIGHT_TESTS = fileURLToPath(new URL('./src/lib/trial/tests-light.ts', import.meta.url));
+const light = (path) => fileURLToPath(new URL(path, import.meta.url));
+
+/* Every module whose content a trial build must not ship to the browser,
+   with its stand-in (src/lib/trial/light/README.md), keyed by the real
+   file's path under src/. Alex, 24 September 2026: lock the remaining study
+   material too (model answers, questions, band guides, the writing coach). */
+const TRIAL_SWAPS = new Map([
+  ['data/tests/index.ts', light('./src/lib/trial/tests-light.ts')],
+  ['data/model-answers.ts', light('./src/lib/trial/light/model-answers.ts')],
+  ['data/writing-prompts-imported.ts', light('./src/lib/trial/light/writing-prompts-imported.ts')],
+  ['data/writing-structures.ts', light('./src/lib/trial/light/writing-structures.ts')],
+  ['data/writing-plans.ts', light('./src/lib/trial/light/writing-plans.ts')],
+  ['data/band-guides.ts', light('./src/lib/trial/light/band-guides.ts')],
+  ['lib/i18n/dict/ru/parts/band-guides.ts', light('./src/lib/trial/light/dict-part-empty.ts')],
+  ['lib/i18n/dict/ru/parts/structures.ts', light('./src/lib/trial/light/dict-part-empty.ts')],
+]);
+/* A cheap look at the import text first, before asking Vite to resolve it:
+   the last path segment of every swapped module. */
+const SWAP_NAMES = new Set(['tests', 'index', 'model-answers', 'writing-prompts-imported', 'writing-structures', 'writing-plans', 'band-guides', 'structures']);
 
 function trialBrowserContent() {
   return {
@@ -23,10 +41,12 @@ function trialBrowserContent() {
     enforce: 'pre',
     async resolveId(source, importer, options) {
       if (!TRIAL_BUILD || options?.ssr || !importer) return null;
-      if (!/data[\\/]tests(?:[\\/]index(?:\.ts)?)?$/.test(source)) return null;
+      const last = source.split(/[\\/]/).pop()?.replace(/\.ts$/, '') ?? '';
+      if (!SWAP_NAMES.has(last)) return null;
       const resolved = await this.resolve(source, importer, { ...options, skipSelf: true });
-      if (resolved && /[\\/]src[\\/]data[\\/]tests[\\/]index\.ts$/.test(resolved.id)) return LIGHT_TESTS;
-      return null;
+      if (!resolved) return null;
+      const under = /[\\/]src[\\/](.+)$/.exec(resolved.id.split('?')[0]);
+      return (under && TRIAL_SWAPS.get(under[1].replaceAll('\\', '/'))) ?? null;
     },
     /* The vocabulary review deck pulls every vocabulary LESSON into the
        browser to build its cards. Vocabulary is not in the trial, so a

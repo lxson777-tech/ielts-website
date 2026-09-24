@@ -23,7 +23,8 @@ import { GraderRefusal, gradeEssay, isGraderConfigured, type TrialGrading } from
 import TrialBlock from './trial/TrialBlock';
 import { useTrialTest } from './trial/useTrialTest';
 import { refreshTrial } from '../lib/trial/client';
-import { TRIAL_OFFER } from '../lib/trial/offer';
+import { TRIAL_OFFER, TRIAL_WRITING } from '../lib/trial/offer';
+import { fetchGated } from '../lib/trial/content';
 import { getAccessToken } from '../lib/auth/session';
 import { WRITING_PROMPTS } from '../data/writing-prompts';
 import { getModelAnswers } from '../data/model-answers';
@@ -31,6 +32,7 @@ import { nextInRotation } from '../lib/rotation';
 import { withBase } from '../lib/url';
 import { recordWritingAttemptFor } from '../lib/progress';
 import { useT } from '../lib/i18n/react';
+import { getLocale } from '../lib/i18n/locale';
 import BandReport from './BandReport';
 import Html from './Html';
 import WritingCoachPanel from './WritingCoachPanel';
@@ -106,6 +108,10 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
      the open site). The practice trainer is not in the trial, and its page
      is covered by the layout's gate. */
   const trialTest = useTrialTest(TRIAL_OFFER.writing.testId, variant !== 'checker');
+  /* A trial build's checker gets its one fixed Task 2 question from the
+     content gate (the browser carries no questions); this says why it did
+     not arrive. */
+  const [trialPromptError, setTrialPromptError] = useState<string | null>(null);
   const [taskType, setTaskType] = useState<'task1' | 'task2' | null>(null);
   const [prompt, setPrompt] = useState<EssayPrompt | null>(null);
   const [essay, setEssay] = useState('');
@@ -305,7 +311,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
     if (trialTest.active) {
       const token = await getAccessToken();
       const sitting = trialTest.sittingId();
-      if (token && sitting) trialGrading = { token, sitting };
+      if (token && sitting) trialGrading = { token, sitting, locale: getLocale() === 'ru' ? 'ru' : 'en' };
     }
     try {
       await runOwnedGrade(binding, () => gradeEssay({ prompt: submitted.prompt, essay: submitted.essay }, trialGrading), {
@@ -460,6 +466,34 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
     restartTimer();
   }
 
+  /* The trial's Writing test (Alex, 24 September 2026): one fixed Task 2
+     question. Start binds the test on the server first (nothing is used if
+     that fails), then fetches the question through the content gate, which
+     hands it only to a student whose trial includes it. */
+  async function startTrialEssay() {
+    setTrialPromptError(null);
+    if (!(await trialTest.begin())) return;
+    const got = await fetchGated(`prompt/${TRIAL_WRITING.essayPromptId}`);
+    let fixed: EssayPrompt | null = null;
+    if (got.ok) {
+      try {
+        fixed = JSON.parse(got.text) as EssayPrompt;
+      } catch {
+        fixed = null;
+      }
+    }
+    if (!fixed?.id || !fixed.promptHtml) {
+      setTrialPromptError(t('The question could not be loaded just now. Your test has not been used: press Start again.'));
+      return;
+    }
+    setTaskType('task2');
+    setPrompt(fixed);
+    setEssay(openEditor(fixed.id));
+    setResult(null);
+    setOwnerNote(null);
+    restartTimer();
+  }
+
   function newTask() {
     if (essay.trim() && !window.confirm(t('Get a different task? Your current answer will be cleared.'))) return;
     // A confirmed "clear it" is a deliberate discard, not a failure or a
@@ -506,7 +540,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   /* ── 1. Start screen ── */
   if (!prompt) {
     const t1Pool = TASK1_PROMPTS;
-    const taskCards = [
+    const allTaskCards = [
       {
         task: 'task1' as const,
         title: 'Task 1',
@@ -524,6 +558,8 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         minutes: TASK2_PROMPTS[0]?.suggestedMinutes,
       },
     ];
+    /* The trial's Writing test is one Task 2 essay. */
+    const taskCards = trialTest.active ? allTaskCards.filter((card) => card.task === 'task2') : allTaskCards;
     return (
       <div className="writing-choice screen-in">
         <h3>{coached ? t('Choose your writing practice') : t('Choose your writing task')}</h3>
@@ -537,9 +573,9 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             {t('This is your one Writing test for the trial. It is used when your essay is graded; if grading fails, you can submit again.')}
           </p>
         )}
-        {trialTest.error && (
+        {(trialTest.error || trialPromptError) && (
           <p className="choice-description" role="alert">
-            {trialTest.error}
+            {trialTest.error ?? trialPromptError}
           </p>
         )}
         <div className="writing-choice-grid">
@@ -552,9 +588,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
                 /* A trial build binds the Writing test on the server before
                    the clock starts; if that fails nothing is used. */
                 if (!trialTest.active) return startTask(card.task);
-                void trialTest.begin().then((ok) => {
-                  if (ok) startTask(card.task);
-                });
+                void startTrialEssay();
               }}
               className="writing-choice-card group"
             >
@@ -577,10 +611,12 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           ))}
         </div>
 
-        <p className="mt-5 text-xs text-ink-muted">
-          {tn(t1Pool.length, { one: '{n} Task 1 prompt', other: '{n} Task 1 prompts' })} ·{' '}
-          {tn(TASK2_PROMPTS.length, { one: '{n} Task 2 prompt', other: '{n} Task 2 prompts' })} · {t('free')}
-        </p>
+        {!trialTest.active && (
+          <p className="mt-5 text-xs text-ink-muted">
+            {tn(t1Pool.length, { one: '{n} Task 1 prompt', other: '{n} Task 1 prompts' })} ·{' '}
+            {tn(TASK2_PROMPTS.length, { one: '{n} Task 2 prompt', other: '{n} Task 2 prompts' })} · {t('free')}
+          </p>
+        )}
       </div>
     );
   }
@@ -623,7 +659,9 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           )}
           criteria={CRITERIA.map((c) => {
             const score = result.criteria[c.key];
-            const guide = guideFor(WRITING_BAND_GUIDES[c.key], score.band);
+            /* A trial grade brings its own steps (a trial build carries no
+               band guides); otherwise the static playbook, as always. */
+            const guide = result.guides?.[c.key] ?? guideFor(WRITING_BAND_GUIDES[c.key], score.band);
             return {
               key: c.key,
               label: criterionLabel(c, prompt.task),

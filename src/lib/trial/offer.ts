@@ -60,6 +60,16 @@ export interface TrialSectionOffer {
   testEnabled: boolean;
 }
 
+/** The trial's Writing material (Alex, 24 September 2026): the Writing
+    Checker essay is one fixed Task 2 question, and the Task 2 lesson shows
+    one Band 8 example. Two different questions, so no student reads a model
+    answer to the question they are tested on. Both are opinion essays, the
+    type the Task 2 lesson teaches first. */
+export const TRIAL_WRITING = {
+  essayPromptId: 'pte-wt-122-task2',
+  examplePromptId: 'pte-wt-129-task2',
+} as const;
+
 /** Confirmed by Alex, 23 September 2026. */
 export const TRIAL_OFFER: Record<TrialSection, TrialSectionOffer> = {
   reading: {

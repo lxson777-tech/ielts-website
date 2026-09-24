@@ -517,9 +517,24 @@ def run():
         p2.close()
 
         # ── 7. Writing: used when graded; a failed grade keeps it ──
+        # The Task 2 lesson shows exactly one Band 8 example, from the door.
+        example_title = "The best way to provide enough homes"
+        essay_title = "The working week should be shorter"
+        lesson_src = page.request.get(BASE + "/lessons/writing/task2-method").text()
+        goto(page, "/lessons/writing/task2-method")
+        shown = wait_text(page, "What a Band 8 answer looks like")
+        check("writing lesson: one Band 8 example, fetched through the door, and no 'Another example'",
+              shown and page.get_by_text(example_title).count() > 0
+              and page.get_by_role("button", name="Another example").count() == 0
+              and example_title not in lesson_src)
+        shot(page, "t19-writing-lesson-one-example", full=False)
+        checker_src = page.request.get(BASE + "/writing/checker").text()
         goto(page, "/writing/checker")
         wait_text(page, "This is your one Writing test")
         check("writing: checker says it is the one Writing test", page.get_by_text("This is your one Writing test").count() > 0)
+        check("writing: only the trial's Task 2 question is offered (no Task 1)",
+              page.get_by_role("button", name="Start Task 1").count() == 0
+              and page.get_by_role("button", name="Start Task 2").count() > 0)
         click_until(page, lambda: page.get_by_role("button", name="Start Task 2"),
                     lambda: page.locator("textarea:not(#mrez-input)").count() > 0)
         essay = ("Many people believe that studying abroad is valuable because it broadens the mind. " * 8).strip()
@@ -527,6 +542,8 @@ def run():
         page.wait_for_timeout(800)
         check("writing: begun on the server when the task started",
               len(usage(a_email, "test", "writing", "reserved")) == 1)
+        check("writing: the question is the trial's fixed one, fetched through the door",
+              page.get_by_text(essay_title).count() > 0 and essay_title not in checker_src)
         standin("/__force", {"fail": "grader"})
         try_click(page.get_by_role("button", name="Check my essay"), timeout=8000)
         page.wait_for_timeout(5000)
@@ -540,6 +557,8 @@ def run():
         check("writing: a successful grade uses the test on the server",
               len(usage(a_email, "test", "writing", "settled")) == 1)
         check("writing: the stand-in's assessment is visibly SIMULATED", page.get_by_text("SIMULATED").count() > 0)
+        check("writing: the report shows the band guide steps the grader returned",
+              page.get_by_text("Full guide: band 6 to 7").count() > 0)
         shot(page, "t10-writing-graded-simulated", full=False)
 
         # ── 8. Speaking: Part 1, about five minutes (Alex's decision) ──

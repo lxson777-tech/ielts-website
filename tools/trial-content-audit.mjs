@@ -13,10 +13,17 @@
  * however a page stores text: inside HTML, inside an island's JSON props,
  * inside a JavaScript chunk.
  *
+ * Since 24 September 2026 (Alex: lock the remaining study material too) it
+ * also reads the supporting material the trial does not include: every Band 8
+ * model answer, every Writing question, the writing coach's structures,
+ * phrase bank and per-question plans, every band guide step, and the Russian
+ * translations of the band guides and the coach.
+ *
  * Two kinds of finding:
  *   LEAK    any phrase of a practice paper (passage, transcript, answer
- *           notes), or two or more phrases of the same lesson in one file:
- *           real content in a public file. Exits 1.
+ *           notes), or two or more phrases of the same lesson or the same
+ *           piece of material in one file: real content in a public file.
+ *           Exits 1.
  *   SHARED  a single phrase of a lesson, found once: a line the lesson
  *           shares with something public by design (a cue-card question in
  *           the public question list, a one-line strategy tip). Reported,
@@ -88,7 +95,45 @@ async function sentinels() {
       }
     }
   }
+  await materialSentinels(list);
   return list;
+}
+
+/** Every string inside a value, joined: plans and guides are nested data. */
+function allStrings(value) {
+  if (typeof value === 'string') return value;
+  if (Array.isArray(value)) return value.map(allStrings).join(' ');
+  if (value && typeof value === 'object') return Object.values(value).map(allStrings).join(' ');
+  return '';
+}
+
+/** The supporting material (kinds other than test, answers and lesson). */
+async function materialSentinels(list) {
+  const add = (kind, id, text, count) => {
+    for (const p of phrases(text, count)) list.push({ kind, id, phrase: p });
+  };
+  const { MODEL_ANSWERS } = await import('../src/data/model-answers.ts');
+  for (const m of MODEL_ANSWERS) add('model', m.promptId, m.text.join(' '), 3);
+  const { WRITING_PROMPTS } = await import('../src/data/writing-prompts.ts');
+  for (const p of WRITING_PROMPTS) add('prompt', p.id, p.promptHtml, 2);
+  const { WRITING_STRUCTURES } = await import('../src/data/writing-structures.ts');
+  for (const [variant, s] of Object.entries(WRITING_STRUCTURES)) add('coach', `writing-${variant}`, allStrings(s), 4);
+  const { WRITING_PLANS } = await import('../src/data/writing-plans.ts');
+  for (const [id, plan] of Object.entries(WRITING_PLANS)) add('plan', id, allStrings(plan), 3);
+  const { WRITING_BAND_GUIDES, SPEAKING_BAND_GUIDES } = await import('../src/data/band-guides.ts');
+  for (const [skill, ladders] of [['writing', WRITING_BAND_GUIDES], ['speaking', SPEAKING_BAND_GUIDES]]) {
+    for (const [criterion, steps] of Object.entries(ladders)) {
+      for (const step of steps) {
+        add('guide', `${skill}-${criterion}-${step.from}`, `${step.whatChanges} ${step.doThis.join(' ')} ${step.practice}`, 2);
+      }
+    }
+  }
+  for (const part of ['band-guides', 'structures']) {
+    const { strings } = await import(`../src/lib/i18n/dict/ru/parts/${part}.ts`);
+    const values = Object.values(strings).filter((v) => typeof v === 'string' && v.length > 60);
+    // In groups of ten translations, so one shared sentence never counts as a leak.
+    for (let i = 0; i < values.length; i += 10) add(`${part}-ru`, `${part}-${i / 10 + 1}`, values.slice(i, i + 10).join(' '), 4);
+  }
 }
 
 function* files(dir) {
@@ -135,7 +180,8 @@ async function main() {
   const summary = {
     build: relative(REPO, DIST) || '.',
     phrasesChecked: marks.length,
-    tests: new Set(marks.filter((m) => m.kind !== 'lesson' && m.kind !== 'lesson-ru').map((m) => m.id)).size,
+    tests: new Set(marks.filter((m) => m.kind === 'test' || m.kind === 'answers').map((m) => m.id)).size,
+    material: new Set(marks.filter((m) => !['test', 'answers', 'lesson', 'lesson-ru'].includes(m.kind)).map((m) => `${m.kind}:${m.id}`)).size,
     lessonBodies: new Set(marks.filter((m) => m.kind.startsWith('lesson')).map((m) => `${m.kind}:${m.id}`)).size,
     filesLeaking: found.filter((f) => f.verdict === 'LEAK').length,
     filesSharingALine: found.filter((f) => f.verdict === 'SHARED').length,
@@ -144,7 +190,9 @@ async function main() {
   };
   if (AS_JSON) console.log(JSON.stringify(summary, null, 2));
   else {
-    console.log(`Checked ${summary.phrasesChecked} phrases from ${summary.tests} papers and ${summary.lessonBodies} lesson bodies against ${summary.build}.`);
+    console.log(
+      `Checked ${summary.phrasesChecked} phrases from ${summary.tests} papers, ${summary.lessonBodies} lesson bodies and ${summary.material} pieces of supporting material against ${summary.build}.`,
+    );
     console.log(
       `${summary.filesLeaking} file(s) leak locked content; ${summary.filesSharingALine} share a single line; ${summary.filesAllowed} named exception(s).`,
     );

@@ -194,6 +194,8 @@ export const strings: Record<string, string> = {
   'You have started your trial Speaking test. You can begin the interview again.':
     'Вы уже начали пробный тест по Speaking. Интервью можно начать снова.',
   'Start the Speaking test': 'Начать тест по Speaking',
+  'The question could not be loaded just now. Your test has not been used: press Start again.':
+    'Сейчас не удалось загрузить задание. Ваш тест не засчитан: нажмите «Начать» ещё раз.',
   'The Speaking test could not start just now. Nothing was used: press Start again.':
     'Сейчас не удалось начать тест по Speaking. Ничего не засчитано: нажмите «Начать» ещё раз.',
   'Both interviews for your trial Speaking test have been started, so a new one cannot open. Your test has not been used.':
