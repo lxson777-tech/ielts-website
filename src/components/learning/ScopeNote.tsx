@@ -1,3 +1,4 @@
+import SmoothReveal from '../SmoothReveal';
 /* The plan's scope note, shown the same way everywhere it appears.
  *
  * `scopeNote` is the planner's honest account of what will and will not fit
@@ -33,7 +34,7 @@ export default function ScopeNote({
   const view: ScopeNoteView | null = scopeNoteView(note);
   if (!view) return null;
   return (
-    <p className={className}>
+    <div className={className}>
       {view.headline}
       {view.inline.map((sentence) => (
         <span key={sentence}> {sentence}</span>
@@ -49,15 +50,15 @@ export default function ScopeNote({
           >
             {expanded ? t('Show less') : t('and {n} more', { n: view.collapsed.length })}
           </button>
-          {expanded && (
+          <SmoothReveal open={expanded}>
             <span className="today-scope-more">
               {view.collapsed.map((sentence) => (
                 <span key={sentence}> {sentence}</span>
               ))}
             </span>
-          )}
+          </SmoothReveal>
         </>
       )}
-    </p>
+    </div>
   );
 }

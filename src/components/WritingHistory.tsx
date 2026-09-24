@@ -1,3 +1,4 @@
+import SmoothReveal from './SmoothReveal';
 import { Fragment, useEffect, useState } from 'react';
 import { getWritingAttempts, onProgressChange, type WritingAttempt } from '../lib/progress';
 import { WRITING_PROMPTS } from '../data/writing-prompts';
@@ -194,10 +195,14 @@ export default function WritingHistory() {
                       )}
                     </td>
                   </tr>
-                  {openEssay === i && canOpen && (
-                    <tr className="border-t border-border bg-surface-alt/60">
-                      <td colSpan={5} className="px-4 py-5 sm:px-6">
-                        <EssayReviewPanel row={r} onClose={() => setOpenEssay(null)} />
+                  {canOpen && (
+                    <tr className="bg-surface-alt/60">
+                      <td colSpan={5} className="p-0">
+                        <SmoothReveal open={openEssay === i}>
+                          <div className="border-t border-border px-4 py-5 sm:px-6">
+                            <EssayReviewPanel row={r} onClose={() => setOpenEssay(null)} />
+                          </div>
+                        </SmoothReveal>
                       </td>
                     </tr>
                   )}

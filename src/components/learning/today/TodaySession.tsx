@@ -1,3 +1,4 @@
+import SmoothReveal from '../../SmoothReveal';
 /* Today: ONE session block. Replaces the old separate "Your next step" card,
    the separate Mr EZ welcome card and the competing "Your course" /
    "Weakest area" cards on /dashboard (architecture section 7, WP8).
@@ -461,13 +462,13 @@ function ActiveSessionCard({
       )}
 
       <div className="today-secondary">
-        <button type="button" className="today-secondary-toggle" aria-expanded={showWhy} onClick={() => setShowWhy((v) => !v)}>
+        <button type="button" className="today-secondary-toggle" aria-expanded={showWhy} aria-controls="today-why-panel" onClick={() => setShowWhy((v) => !v)}>
           {t('Why this')}
         </button>
         <button
           type="button"
           className="today-secondary-toggle"
-          aria-expanded={showLessTime}
+          aria-expanded={showLessTime} aria-controls="today-less-time-panel"
           onClick={() => setShowLessTime((v) => !v)}
         >
           {t('I have less time today')}
@@ -475,7 +476,7 @@ function ActiveSessionCard({
         <button
           type="button"
           className="today-secondary-toggle"
-          aria-expanded={showOtherSkill}
+          aria-expanded={showOtherSkill} aria-controls="today-other-skill-panel"
           onClick={() => setShowOtherSkill((v) => !v)}
         >
           {t('Choose another skill')}
@@ -486,7 +487,7 @@ function ActiveSessionCard({
           thing in this card. This disclosure is the evidence behind the
           choice, then what is still unknown. Both halves are the planner's
           and the policy's own words, never a claim composed here. */}
-      {showWhy && (
+      <SmoothReveal open={showWhy} id="today-why-panel">
         <div className="today-why">
           {why.evidence.length > 0 && (
             <>
@@ -512,9 +513,9 @@ function ActiveSessionCard({
             </p>
           )}
         </div>
-      )}
+      </SmoothReveal>
 
-      {showLessTime && (
+      <SmoothReveal open={showLessTime} id="today-less-time-panel">
         <div className="today-less-time">
           <p>{t('Your regular {n} minutes a day is unchanged. This only shortens today.', { n: session.regularDailyMinutes })}</p>
           <div className="today-less-time-choices">
@@ -525,9 +526,9 @@ function ActiveSessionCard({
             ))}
           </div>
         </div>
-      )}
+      </SmoothReveal>
 
-      {showOtherSkill && (
+      <SmoothReveal open={showOtherSkill} id="today-other-skill-panel">
         <div className="today-other-skill">
           {ALL_PAPERS.filter((paper) => paper !== session.paper).map((paper) => (
             <button key={paper} type="button" onClick={() => pickOtherSkill(paper)}>
@@ -535,7 +536,7 @@ function ActiveSessionCard({
             </button>
           ))}
         </div>
-      )}
+      </SmoothReveal>
     </section>
   );
 }

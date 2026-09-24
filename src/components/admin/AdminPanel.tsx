@@ -1,3 +1,4 @@
+import SmoothReveal from '../SmoothReveal';
 /* The owner's admin panel: every account on the platform and what each
    student has done. The first (and for now only) section is Students; later
    admin tools are meant to sit beside it on the same page.
@@ -375,9 +376,9 @@ function StudentRow({ user: u, isYou, open, onToggle }: { user: AdminUserRow; is
         </svg>
       </button>
 
-      <div className="admin-detail" id={panelId} hidden={!open}>
-        {open && <StudentDetail user={u} />}
-      </div>
+      <SmoothReveal open={open} id={panelId}>
+        <div className="admin-detail"><StudentDetail user={u} /></div>
+      </SmoothReveal>
     </li>
   );
 }

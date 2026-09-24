@@ -75,3 +75,10 @@ Kept one compact library layout rather than adding an extra list/card toggle. It
 ## Platform motion pass
 
 Added a platform-only motion layer for buttons/links, field focus, selectable cards, dialogs, tabs, Course day content and native disclosures. Existing click handlers, editor instances, account ownership and Astro navigation remain unchanged. Native disclosure size interpolation provides real smooth opening and closing without JavaScript measurement loops, with a fade fallback on older browsers. Reduced-motion and print rules included. Verified actual intermediate open/close heights in browser, card hover, modal entry/dismissal, writing draft retention through mobile tabs, phone layouts and reduced-motion overrides. All2033tests pass. Build663pages. Local only, gates/trial excluded.
+
+
+## Controlled disclosure follow-up
+
+The first motion pass did not fix conditional React content, which still unmounted immediately on close. Added a shared SmoothReveal with animated flow height and opacity, immediate inert state on closing, lazy mounting and live reduced-motion preference handling. Applied to Today's three secondary options, scope notes, Course skill sections, writing-history rows and admin student details. Account menu now retains its closing transition; Mr EZ uses a discrete display transition. Existing coach accordions share the same pacing. Mobile model picker and reading passage animate their bounded visible height rather than the entire hidden scroll content.
+
+Runtime checks measured intermediate opening and closing heights on Today, Course, writing history (isolated local fixture), mobile model picker and reading passage. Checked menu exit, tutor close, reduced motion, native details, cards, retained writing draft across tabs and phone layouts. Admin interior remains unverified with a real signed-in administrator. Tests: 2033 passing; check: no errors or warnings (18 existing hints); build: 663 pages. No paid requests or deployment.

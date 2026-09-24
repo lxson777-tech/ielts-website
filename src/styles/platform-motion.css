@@ -3,7 +3,7 @@
 body[data-platform-motion] {
   --motion-touch: 180ms;
   --motion-control: 240ms;
-  --motion-panel: 320ms;
+  --motion-panel: 380ms;
   --motion-ease: cubic-bezier(.22, 1, .36, 1);
 }
 body[data-platform-motion] :is(a, button, summary, input, select, textarea, [role="button"], [role="tab"], .intake-capsule-label) {
@@ -23,10 +23,10 @@ body[data-platform-motion] :is(input, select, textarea):focus-visible {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 13%, transparent);
 }
 @media (hover: hover) and (pointer: fine) {
-  body[data-platform-motion] :is(.library-card, .vocab-topic-card, .writing-choice-card, .practice-tile, a[data-discovery-item], .agenda-activity[href]) {
+  body[data-platform-motion] :is(.dash-card[href], .library-card, .vocab-topic-card, .writing-choice-card, .practice-tile, a[data-discovery-item], .agenda-activity[href]) {
     transition: translate var(--motion-control) var(--motion-ease), box-shadow var(--motion-control) var(--motion-ease), border-color var(--motion-control) var(--motion-ease), background-color var(--motion-control) var(--motion-ease);
   }
-  body[data-platform-motion] :is(.library-card, .vocab-topic-card, .writing-choice-card, .practice-tile, a[data-discovery-item], .agenda-activity[href]):hover {
+  body[data-platform-motion] :is(.dash-card[href], .library-card, .vocab-topic-card, .writing-choice-card, .practice-tile, a[data-discovery-item], .agenda-activity[href]):hover {
     translate: 0 -2px;
     border-color: color-mix(in srgb, var(--color-brand) 35%, var(--color-border));
     box-shadow: 0 8px 22px -14px rgb(32 55 43 / .25);
@@ -73,6 +73,56 @@ body[data-platform-motion] .ma-sidebar.is-open {
 /* Existing Astro navigation already preserves the tutor and owns focus/scroll. */
 :root:has(body[data-platform-motion])::view-transition-old(root) { animation: platform-fade 150ms ease-in reverse both; }
 :root:has(body[data-platform-motion])::view-transition-new(root) { animation: platform-fade 300ms ease-out both; }
+/* Controlled disclosures share the same calm pacing as native details. */
+body[data-platform-motion] .grid-reveal {
+  transition: grid-template-rows var(--motion-panel) var(--motion-ease), opacity var(--motion-panel) ease;
+  opacity: 0;
+}
+body[data-platform-motion] .grid-reveal.is-open { opacity: 1; }
+body[data-platform-motion] tbody tr {
+  transition: background-color var(--motion-control) ease, border-color var(--motion-control) ease;
+}
+@supports (interpolate-size: allow-keywords) {
+  @media (max-width: 767px) {
+    body[data-platform-motion] .ma-picker .ma-sidebar {
+      display: block; interpolate-size: allow-keywords; height: 0;
+      padding-block: 0; margin-top: 0; border-width: 0; visibility: hidden;
+      overflow: hidden; opacity: 0;
+      transition: height 380ms var(--motion-ease), padding 380ms var(--motion-ease), margin 380ms var(--motion-ease), opacity 250ms ease, visibility 380ms;
+    }
+    body[data-platform-motion] .ma-picker .ma-sidebar.is-open {
+      height: 45vh; padding-block: 16px; margin-top: 8px; border-width: 1px;
+      visibility: visible; overflow: auto; opacity: 1; animation: none;
+    }
+  }
+  @media (max-width: 899px) {
+    body[data-platform-motion] .focused-passage-text {
+      interpolate-size: allow-keywords; height: calc-size(auto, min(size, 58vh)); overflow: auto;
+      transition: height 380ms var(--motion-ease), padding 380ms var(--motion-ease), opacity 250ms ease;
+    }
+    body[data-platform-motion] .focused-passage.is-collapsed .focused-passage-text {
+      display: block; height: 0; padding-block: 0; opacity: 0; overflow: hidden;
+    }
+  }
+}
+@supports (height: calc-size(auto, min(size, 42vh))) {
+  @media (max-width: 480px) {
+    body[data-platform-motion] .focused-passage:not(.is-collapsed) .focused-passage-text { height: calc-size(auto, min(size, 42vh)); }
+  }
+}
+/* Discrete display transitions retain the tutor during its closing fade,
+   while the hidden attribute still removes it from accessibility navigation. */
+@supports (transition-behavior: allow-discrete) {
+  body[data-platform-motion] .mrez-panel {
+    animation: none; opacity: 1; translate: 0 0;
+    transition: opacity 280ms ease, translate 380ms var(--motion-ease), display 380ms allow-discrete;
+  }
+  body[data-platform-motion] .mrez-panel > div { animation: none; }
+  body[data-platform-motion] .mrez-panel[hidden] { opacity: 0; translate: 0 12px; }
+  @starting-style {
+    body[data-platform-motion] .mrez-panel:not([hidden]) { opacity: 0; translate: 0 12px; }
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   body[data-platform-motion] *, body[data-platform-motion] *::before, body[data-platform-motion] *::after,
   body[data-platform-motion] details::details-content {

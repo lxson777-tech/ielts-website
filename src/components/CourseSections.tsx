@@ -1,3 +1,4 @@
+import SmoothReveal from './SmoothReveal';
 /* The Course tab's "By section" view: every lesson grouped by skill instead
    of the guided stage order Course.tsx walks. Same lessons, same completion
    source (progress.lessons via isLessonDone), just grouped the way a student
@@ -93,8 +94,8 @@ export default function CourseSections() {
               </span>
             </button>
 
-            {isOpen && (
-              <ul id={panelId} className="mt-4 space-y-1">
+            <SmoothReveal open={isOpen} id={panelId}>
+              <ul className="mt-4 space-y-1">
                 {section.lessons.map((lesson) => {
                   const done = mounted && isLessonDone(prog, lesson.key);
                   return (
@@ -134,7 +135,7 @@ export default function CourseSections() {
                   );
                 })}
               </ul>
-            )}
+            </SmoothReveal>
           </div>
         );
       })}

@@ -1,3 +1,5 @@
+import { AnimatePresence, motion } from 'framer-motion';
+import { usePlatformReducedMotion } from './SmoothReveal';
 /* The avatar button at the right of the workspace header, and the compact
    menu it opens: everything that used to live in the left sidebar but is not
    one of the five daily tabs.
@@ -32,6 +34,7 @@ function initialsFor(email: string | undefined): string {
 }
 
 export default function WorkspaceMenu() {
+  const reduceMotion = usePlatformReducedMotion();
   const { t, locale } = useT();
   const [user, setUser] = useState<User | null>(null);
   const [open, setOpen] = useState(false);
@@ -143,8 +146,15 @@ export default function WorkspaceMenu() {
         )}
       </button>
 
+      <div inert={!open}>
+      <AnimatePresence>
       {open && (
-        <div className="ws-menu" role="menu">
+        <motion.div className="ws-menu" role="menu"
+          initial={{ opacity: 0, y: -5, scale: .98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -3, scale: .99 }}
+          transition={{ duration: reduceMotion ? 0 : .2 }}
+          style={{ animation: "none" }}>
           {user?.email && (
             <p className="ws-menu-identity" style={{ '--i': step() } as React.CSSProperties}>
               <span>{t('Signed in as')}</span>
@@ -235,8 +245,10 @@ export default function WorkspaceMenu() {
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
+      </div>
 
       {modalOpen && <AuthModal onClose={() => setModalOpen(false)} />}
     </div>
