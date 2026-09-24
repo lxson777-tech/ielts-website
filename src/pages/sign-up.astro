@@ -1,0 +1,14 @@
+---
+/* Create an account (24 September 2026). After it, the student gives their
+   details on /profile and then goes on to `?next=<route>`. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SignUpForm from '../components/auth/SignUpForm';
+---
+
+<BaseLayout title="Create an account · IELTS Portal" description="Create a free IELTS is EZ account." noindex>
+  <SignUpForm client:load />
+</BaseLayout>
+
+<style is:global>
+  @import '../styles/auth.css';
+</style>

@@ -231,6 +231,13 @@ os.environ.setdefault("IELTS_SHOT_PREFIX", "unfinished11-")
 from playwright.sync_api import sync_playwright  # noqa: E402
 
 import f20_account_journey as journey  # noqa: E402
+
+# This script signs students in and out while a sitting is open on the page,
+# as the old sign-in popup allowed. Since the 24 September 2026 login rework
+# sign-in is a page of its own, so the shared helpers sign in from a second
+# tab of the same browser instead and this page hears it without moving (see
+# SIGN_IN_IN_PLACE in f20_account_journey.py).
+journey.SIGN_IN_IN_PLACE = True
 from final_helpers import (  # noqa: E402
     BASE_URL,
     attach_diagnostics,

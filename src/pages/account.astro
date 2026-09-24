@@ -8,6 +8,7 @@ import ScoreHistory from '../components/ScoreHistory';
 import WritingHistory from '../components/WritingHistory';
 import SpeakingHistory from '../components/SpeakingHistory';
 import SavedItems from '../components/SavedItems';
+import AccountSettings from '../components/AccountSettings';
 import { withBase } from '../lib/url';
 ---
 
@@ -25,6 +26,10 @@ import { withBase } from '../lib/url';
         Progress report
       </a>
     </header>
+
+    {/* Your details, email, password and devices. Signed-in only; renders
+        nothing otherwise. */}
+    <AccountSettings client:load />
 
     <div class="mb-6">
       <CurrentLevel client:load />
@@ -77,4 +82,5 @@ import { withBase } from '../lib/url';
 
 <style is:global>
   @import '../styles/platform-pages.css';
+  @import '../styles/auth.css';
 </style>

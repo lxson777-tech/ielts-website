@@ -60,7 +60,8 @@ import { fetchLiveConfig, type LiveConfig } from '../lib/speaking/live/link';
 import Html from './Html';
 import TestPlayer from './TestPlayer';
 import LiveExaminer from './LiveExaminer';
-import AuthModal from './AuthModal';
+import { signInHref } from '../lib/auth/profile';
+import { currentRoute } from '../lib/auth/next';
 
 /* The stages, and the shape one finished paper takes, are declared in
    src/lib/tests/mock.ts, because a sitting is written down as it goes and
@@ -1431,7 +1432,6 @@ function SpeakingBriefScreen({
   const { t } = useT();
   const [user, setUser] = useState<User | null>(null);
   const [liveConfig, setLiveConfig] = useState<LiveConfig | null>(null);
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => onAuthChange(setUser), []);
 
@@ -1479,7 +1479,7 @@ function SpeakingBriefScreen({
             <p>{t('Sign in to take the speaking test (this keeps the paid voice service for real students).')}</p>
             <button
               type="button"
-              onClick={() => setShowAuthModal(true)}
+              onClick={() => window.location.assign(signInHref(currentRoute()))}
               className="mt-2 rounded-button border border-border px-4 py-1.5 text-xs font-semibold hover:bg-surface-alt"
             >
               {/* "Sign in" is translated once, in dict/ru/shell.ts. */}
@@ -1511,8 +1511,6 @@ function SpeakingBriefScreen({
             {t('Skip speaking')}
           </button>
         </div>
-
-        {showAuthModal && <AuthModal initialMode="signin" onClose={() => setShowAuthModal(false)} />}
       </div>
     </div>
   );

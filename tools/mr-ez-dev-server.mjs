@@ -72,12 +72,17 @@ const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 /* ── In-memory database ────────────────────────────────────────────────── */
 
 const db = {
-  /** email -> { id, email, password } */
+  /** email -> { id, email, password, user_metadata, new_email? } */
   users: new Map(),
   /** access token -> user id */
   tokens: new Map(),
   /** user id -> { progress, study_plan } */
   userState: new Map(),
+  /** student_profiles rows, keyed by user_id (supabase/migrations/
+      2026-09-24-profiles.sql): one row per account, own row only for an
+      anon-key caller, every row for the service role, and the same rules
+      the guard_student_profile_write() trigger enforces. */
+  profiles: new Map(),
   conversations: [],
   messages: [],
   turns: [],
@@ -121,7 +126,7 @@ function send(res, status, body, extraHeaders = {}) {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
     'Access-Control-Expose-Headers': 'content-range',
     ...extraHeaders,
   });
@@ -140,6 +145,23 @@ async function readBody(req) {
   }
 }
 
+/** The user object Supabase's auth API returns. */
+function publicUser(user) {
+  return {
+    id: user.id,
+    aud: 'authenticated',
+    role: 'authenticated',
+    email: user.email,
+    ...(user.new_email ? { new_email: user.new_email } : {}),
+    email_confirmed_at: new Date().toISOString(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    app_metadata: { provider: 'email', providers: ['email'] },
+    user_metadata: user.user_metadata ?? {},
+    identities: [],
+  };
+}
+
 function session(user) {
   const accessToken = `local-${randomUUID()}`;
   db.tokens.set(accessToken, user.id);
@@ -149,19 +171,12 @@ function session(user) {
     expires_in: 3600,
     expires_at: Math.floor(Date.now() / 1000) + 3600,
     refresh_token: `refresh-${randomUUID()}`,
-    user: {
-      id: user.id,
-      aud: 'authenticated',
-      role: 'authenticated',
-      email: user.email,
-      email_confirmed_at: new Date().toISOString(),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      app_metadata: { provider: 'email', providers: ['email'] },
-      user_metadata: {},
-      identities: [],
-    },
+    user: publicUser(user),
   };
+}
+
+function userById(id) {
+  return [...db.users.values()].find((u) => u.id === id) ?? null;
 }
 
 /* ── Supabase: auth ────────────────────────────────────────────────────── */
@@ -180,9 +195,20 @@ async function handleAuth(req, res, url) {
     // Sign-up doubles as sign-in here: a local dev server has no inbox, so
     // waiting for a confirmation link would make the flow untestable.
     const existing = db.users.get(email);
-    const user = existing ?? { id: randomUUID(), email, password: body.password };
+    const user = existing ?? { id: randomUUID(), email, password: body.password, user_metadata: {} };
+    // `options.data` in supabase-js arrives as `data` and becomes the
+    // account's user_metadata, as in the real project.
+    if (body.data && typeof body.data === 'object') user.user_metadata = { ...(user.user_metadata ?? {}), ...body.data };
     db.users.set(email, user);
     return send(res, 200, session(user));
+  }
+
+  // "Forgot password": the real project emails a link; there is no inbox
+  // here, so it only answers the way Supabase does (always 200, whether or
+  // not the address has an account, so nobody can probe for accounts).
+  if (path === '/recover') {
+    await readBody(req);
+    return send(res, 200, {});
   }
 
   if (path === '/token') {
@@ -198,13 +224,44 @@ async function handleAuth(req, res, url) {
   if (path === '/user') {
     const userId = userByToken(req);
     if (!userId) return send(res, 401, { message: 'invalid token' });
-    const user = [...db.users.values()].find((u) => u.id === userId);
-    return send(res, 200, session(user).user);
+    const user = userById(userId);
+    if (!user) return send(res, 401, { message: 'invalid token' });
+    if (req.method === 'PUT') {
+      // updateUser(): a new password takes effect at once; a new email is
+      // only recorded as pending, because the real project changes it only
+      // once the link sent to that address is opened; `data` merges into
+      // user_metadata.
+      const body = await readBody(req);
+      if (typeof body.password === 'string') {
+        if (body.password === user.password) {
+          return send(res, 422, { code: 'same_password', message: 'New password should be different from the old password.' });
+        }
+        user.password = body.password;
+      }
+      if (typeof body.email === 'string' && body.email.trim()) {
+        const next = body.email.trim().toLowerCase();
+        if (next !== user.email) user.new_email = next;
+      }
+      if (body.data && typeof body.data === 'object') user.user_metadata = { ...(user.user_metadata ?? {}), ...body.data };
+      return send(res, 200, publicUser(user));
+    }
+    return send(res, 200, publicUser(user));
   }
 
   if (path === '/logout') {
     const auth = req.headers.authorization ?? '';
-    db.tokens.delete(auth.slice(7).trim());
+    const token = auth.slice(7).trim();
+    const scope = url.searchParams.get('scope') ?? 'global';
+    const userId = db.tokens.get(token);
+    if (userId && (scope === 'global' || scope === 'others')) {
+      // Every session this account holds, on every device, or every one but
+      // this, exactly as supabase-js's signOut({ scope }) asks.
+      for (const [other, owner] of [...db.tokens]) {
+        if (owner === userId && (scope === 'global' || other !== token)) db.tokens.delete(other);
+      }
+    } else {
+      db.tokens.delete(token);
+    }
     return send(res, 204, null);
   }
 
@@ -220,6 +277,78 @@ function filters(url) {
     if (typeof value === 'string' && value.startsWith('eq.')) out[key] = value.slice(3);
   }
   return out;
+}
+
+/** supabase-js's .single() / .maybeSingle() on a write ask PostgREST for one
+    object rather than an array with this Accept header. */
+function wantsObject(req) {
+  return String(req.headers.accept ?? '').includes('application/vnd.pgrst.object+json');
+}
+
+const PROFILE_PHONE = /^\+?[0-9]{7,15}$/;
+const PROFILE_SOURCES = ['friend', 'instagram', 'centre', 'other'];
+
+/** The rules supabase/migrations/2026-09-24-profiles.sql enforces, as the
+    table's CHECK constraints and its guard_student_profile_write() trigger
+    do: lengths, the phone shape, a known source, a date of birth in the
+    past and at least 5 years ago, and under 18 a parent's name, phone and
+    agreement. Returns the row to store (trimmed, stamped) or the message
+    Postgres would raise. */
+function guardProfileRow(row, existing) {
+  const text = (value) => (typeof value === 'string' ? value.trim() : '');
+  const lengths = { first_name: 60, last_name: 60, city: 80, occupation: 120 };
+  for (const [column, max] of Object.entries(lengths)) {
+    const value = text(row[column]);
+    if (value.length < 1 || value.length > max) {
+      return { error: `new row for relation "student_profiles" violates check constraint "student_profiles_${column}_len"` };
+    }
+  }
+  if (!PROFILE_SOURCES.includes(row.source)) {
+    return { error: 'new row for relation "student_profiles" violates check constraint "student_profiles_source"' };
+  }
+  if (typeof row.phone !== 'string' || !PROFILE_PHONE.test(row.phone)) {
+    return { error: 'new row for relation "student_profiles" violates check constraint "student_profiles_phone_shape"' };
+  }
+  if (row.parent_phone != null && !PROFILE_PHONE.test(String(row.parent_phone))) {
+    return { error: 'new row for relation "student_profiles" violates check constraint "student_profiles_parent_phone_shape"' };
+  }
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(row.date_of_birth ?? ''));
+  if (!match) return { error: 'invalid input syntax for type date' };
+  const [y, m, d] = [Number(match[1]), Number(match[2]), Number(match[3])];
+  const birth = new Date(Date.UTC(y, m - 1, d));
+  if (birth.getUTCFullYear() !== y || birth.getUTCMonth() !== m - 1 || birth.getUTCDate() !== d) {
+    return { error: 'date/time field value out of range' };
+  }
+  if (y < 1900 || (y === 1900 && m === 1 && d === 1)) {
+    return { error: 'new row for relation "student_profiles" violates check constraint "student_profiles_dob_range"' };
+  }
+  const now = new Date();
+  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  if (birth.getTime() >= today) return { error: 'date of birth must be in the past' };
+  let age = now.getFullYear() - y;
+  if (now.getMonth() + 1 < m || (now.getMonth() + 1 === m && now.getDate() < d)) age -= 1;
+  if (age < 5) return { error: 'date of birth is too recent' };
+  if (age < 18 && (!text(row.parent_name) || row.parent_phone == null || row.parent_consent_at == null)) {
+    return { error: "a parent's name, phone and agreement are required under 18" };
+  }
+  const stamp = new Date().toISOString();
+  return {
+    row: {
+      user_id: row.user_id,
+      first_name: text(row.first_name),
+      last_name: text(row.last_name),
+      date_of_birth: row.date_of_birth,
+      phone: row.phone,
+      city: text(row.city),
+      occupation: text(row.occupation),
+      source: row.source,
+      parent_name: row.parent_name == null ? null : text(row.parent_name),
+      parent_phone: row.parent_phone ?? null,
+      parent_consent_at: row.parent_consent_at ?? null,
+      created_at: existing?.created_at ?? stamp,
+      updated_at: stamp,
+    },
+  };
 }
 
 /* The service role bypasses row security; the anon key does not. The dev
@@ -318,6 +447,15 @@ async function handleRest(req, res, url) {
       } else {
         rows = visible(db.learningCompanions);
         if (where.kind) rows = rows.filter((c) => c.kind === where.kind);
+      }
+    } else if (table === 'student_profiles') {
+      // "student_profiles select own": an anon-key caller sees their own row
+      // and nothing else, whatever user_id they ask for.
+      rows = visible([...db.profiles.values()]);
+      if (where.user_id) rows = rows.filter((r) => r.user_id === where.user_id);
+      if (wantsObject(req)) {
+        if (rows.length !== 1) return send(res, 406, { code: 'PGRST116', message: 'JSON object requested, multiple (or no) rows returned' });
+        return send(res, 200, rows[0]);
       }
     }
 
@@ -431,6 +569,33 @@ async function handleRest(req, res, url) {
       return send(res, 201, wantsRepresentation ? written : []);
     }
 
+    if (table === 'student_profiles') {
+      // Upsert on the primary key (`?on_conflict=user_id` with
+      // `Prefer: resolution=merge-duplicates`, which is what supabase-js's
+      // upsert sends). Without merge-duplicates a second row for the same
+      // student is a unique violation, as in Postgres.
+      const body = await readBody(req);
+      const items = Array.isArray(body) ? body : [body];
+      if (!service && items.some((item) => item.user_id !== caller)) {
+        return send(res, 403, { code: '42501', message: 'new row violates row-level security policy for table "student_profiles"' });
+      }
+      const prefer = String(req.headers.prefer ?? '');
+      const merge = prefer.includes('resolution=merge-duplicates') || url.searchParams.get('on_conflict') === 'user_id';
+      const written = [];
+      for (const item of items) {
+        const existing = db.profiles.get(item.user_id) ?? null;
+        if (existing && !merge) {
+          return send(res, 409, { code: '23505', message: 'duplicate key value violates unique constraint "student_profiles_pkey"' });
+        }
+        const result = guardProfileRow({ ...(existing ?? {}), ...item }, existing);
+        if (result.error) return send(res, 400, { code: '23514', message: result.error });
+        db.profiles.set(result.row.user_id, result.row);
+        written.push(result.row);
+      }
+      if (!prefer.includes('return=representation')) return send(res, 201, null);
+      return send(res, 201, wantsObject(req) ? written[0] : written);
+    }
+
     const body = await readBody(req);
     const items = Array.isArray(body) ? body : [body];
     const stamped = items.map((item) => ({
@@ -467,6 +632,20 @@ async function handleRest(req, res, url) {
 
   if (req.method === 'PATCH') {
     const body = await readBody(req);
+    if (table === 'student_profiles') {
+      // "student_profiles update own": an anon-key caller naming someone
+      // else's user_id matches no rows, a successful no-op, as in Postgres.
+      const owner = service ? where.user_id : caller;
+      if (!owner || (!service && where.user_id && where.user_id !== caller)) return send(res, 204, null);
+      const existing = db.profiles.get(owner);
+      if (!existing) return send(res, 204, null);
+      const result = guardProfileRow({ ...existing, ...body, user_id: owner }, existing);
+      if (result.error) return send(res, 400, { code: '23514', message: result.error });
+      db.profiles.set(owner, result.row);
+      const prefer = String(req.headers.prefer ?? '');
+      if (!prefer.includes('return=representation')) return send(res, 204, null);
+      return send(res, 200, wantsObject(req) ? result.row : [result.row]);
+    }
     if (table === 'mr_ez_turns') {
       // Mirrors the column-scoped grant in supabase/schema.sql: a student may
       // blank the stored reply on their own rows and nothing else. Any other

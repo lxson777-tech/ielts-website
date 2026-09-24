@@ -38,6 +38,7 @@ export interface WorkspaceMenuItem {
 export const WORKSPACE_MENU: WorkspaceMenuItem[][] = [
   [
     { href: '/account', label: nt('Account') },
+    { href: '/profile', label: nt('My details') },
     { href: '/plan-settings', label: nt('Study plan settings') },
     { href: '/account#saved', label: nt('Saved and notes') },
     { href: '/report', label: nt('Progress report') },
@@ -63,6 +64,10 @@ export const APP_ROUTE_PREFIXES = [
   '/writing',
   '/account',
   '/admin',
+  '/sign-in',
+  '/sign-up',
+  '/forgot-password',
+  '/profile',
   '/review',
   '/report',
   '/reset-password',

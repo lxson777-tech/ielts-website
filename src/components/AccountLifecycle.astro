@@ -17,9 +17,17 @@
 ---
 
 <script>
-  import { startAccountLifecycle } from '../lib/auth/lifecycle';
+  import { startAccountLifecycle, onAccountChange } from '../lib/auth/lifecycle';
+  import { startProfileGate } from '../lib/auth/profile-gate';
 
   /* Idempotent, and the module stays loaded across a client-side navigation,
      so this is one call per visit rather than one per page. */
   startAccountLifecycle();
+
+  /* The profile gate (24 September 2026): a signed-in student whose profile
+     is not filled in is sent to /profile once, and brought back after. It
+     only READS the account state above; it never decides whose work this
+     is. See the header of src/lib/auth/profile-gate.ts for when it stays
+     quiet (a paper on screen, the full-screen pages, the auth pages). */
+  startProfileGate({ onAccountChange });
 </script>
