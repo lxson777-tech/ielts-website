@@ -1,0 +1,361 @@
+/* The site's own date picker (src/components/plan/DatePicker.tsx).
+
+   Built from the same tokens as the intake around it: warm white surface,
+   forest ink for the chosen day (the approved selected state), the brand
+   colour only for the keyboard focus ring and the small mark under today,
+   Bricolage for the month title. No new colours.
+
+   Desktop: a popover card under the field. Under 640px: a sheet that rises
+   from the bottom of the screen over a soft backdrop, with day cells big
+   enough for a thumb. Reduced motion: no rise, no fade, no slide (foot of
+   this file). */
+
+.dp {
+  position: relative;
+  --dp-ease: var(--ease-out-expo, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+/* ── The field ───────────────────────────────────────────────────────── */
+
+.dp-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 14px 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    box-shadow 240ms var(--dp-ease),
+    transform 240ms var(--dp-ease);
+}
+.dp-field:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-ink) 50%, var(--color-border));
+  box-shadow: 0 10px 22px -16px rgb(38 60 53 / 50%);
+}
+.dp.is-open .dp-field {
+  border-color: var(--color-ink);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-ink) 10%, transparent);
+}
+.dp-field:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+.dp-field:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.dp-field-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--color-surface-alt);
+  color: var(--color-ink);
+}
+.dp-field.has-value .dp-field-icon {
+  background: var(--color-ink);
+  color: var(--color-surface);
+}
+.dp-field-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.dp-field-value {
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.3;
+  color: var(--color-ink-muted);
+}
+.dp-field.has-value .dp-field-value {
+  color: var(--color-ink);
+}
+.dp-field-sub {
+  font-size: 12px;
+  font-weight: 550;
+  color: var(--color-ink-muted);
+}
+.dp-field-chevron {
+  flex: 0 0 auto;
+  color: var(--color-ink-muted);
+  transition: transform 260ms var(--dp-ease);
+}
+.dp.is-open .dp-field-chevron {
+  transform: rotate(180deg);
+}
+
+/* ── The popover ─────────────────────────────────────────────────────── */
+
+.dp-backdrop {
+  display: none;
+}
+.dp-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 60;
+  width: 336px;
+  padding: 16px 16px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-surface);
+  box-shadow:
+    0 24px 48px -20px rgb(38 60 53 / 30%),
+    0 2px 6px rgb(38 60 53 / 6%);
+  transform-origin: top left;
+  animation: dp-pop 220ms var(--dp-ease) both;
+}
+@keyframes dp-pop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+.dp-sheet-handle {
+  display: none;
+}
+
+.dp-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.dp-title {
+  margin: 0;
+  font-family: var(--font-display-ui);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+}
+.dp-nav {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background-color 180ms ease, border-color 180ms ease, opacity 180ms ease;
+}
+.dp-nav:hover:not(:disabled) {
+  border-color: var(--color-border);
+  background: var(--color-surface-alt);
+}
+.dp-nav:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+.dp-nav:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* ── The month grid ──────────────────────────────────────────────────── */
+
+.dp-grid {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 2px;
+  table-layout: fixed;
+}
+.dp-grid.is-slide-next {
+  animation: dp-slide-next 260ms var(--dp-ease) both;
+}
+.dp-grid.is-slide-prev {
+  animation: dp-slide-prev 260ms var(--dp-ease) both;
+}
+@keyframes dp-slide-next {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes dp-slide-prev {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: none; }
+}
+.dp-grid th {
+  padding: 6px 0 8px;
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: var(--color-ink-muted);
+}
+.dp-grid td {
+  padding: 0;
+  text-align: center;
+}
+.dp-day {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  max-height: 44px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease,
+    transform 200ms var(--dp-ease);
+}
+.dp-day:hover:not(:disabled):not(.is-selected) {
+  background: var(--color-surface-alt);
+  border-color: var(--color-border);
+}
+.dp-day:active:not(:disabled) {
+  transform: scale(0.94);
+}
+.dp-day.is-today::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 5px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 999px;
+  background: var(--color-brand);
+}
+.dp-day.is-today {
+  font-weight: 750;
+}
+.dp-day.is-selected {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-surface);
+}
+.dp-day.is-selected.is-today::after {
+  background: var(--color-surface);
+}
+.dp-day:disabled {
+  color: color-mix(in srgb, var(--color-ink-muted) 45%, transparent);
+  cursor: default;
+  text-decoration: none;
+}
+.dp-day:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 1px;
+  z-index: 1;
+}
+
+.dp-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
+}
+.dp-foot-button {
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+.dp-foot-button:hover:not(:disabled) {
+  background: var(--color-surface-alt);
+  color: var(--color-ink);
+}
+.dp-foot-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.dp-foot-button:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* ── Phone: a bottom sheet ───────────────────────────────────────────── */
+
+@media (max-width: 639px) {
+  .dp-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: rgb(32 37 34 / 28%);
+    animation: dp-fade 220ms ease both;
+  }
+  .dp-popover {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 91;
+    width: auto;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 10px 18px calc(16px + env(safe-area-inset-bottom, 0px));
+    border-width: 1px 0 0;
+    border-radius: 24px 24px 0 0;
+    box-shadow: 0 -18px 40px -18px rgb(38 60 53 / 35%);
+    animation: dp-rise 320ms var(--dp-ease) both;
+  }
+  .dp-sheet-handle {
+    display: block;
+    width: 40px;
+    height: 4px;
+    margin: 0 auto 12px;
+    border-radius: 999px;
+    background: var(--color-border);
+  }
+  .dp-title {
+    font-size: 18px;
+  }
+  .dp-nav {
+    width: 44px;
+    height: 44px;
+  }
+  .dp-day {
+    max-height: 48px;
+    font-size: 15px;
+  }
+  .dp-foot-button {
+    min-height: 44px;
+  }
+}
+@keyframes dp-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes dp-rise {
+  from { transform: translateY(100%); }
+  to { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dp *,
+  .dp {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
