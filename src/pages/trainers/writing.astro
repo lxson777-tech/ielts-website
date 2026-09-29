@@ -4,6 +4,15 @@ import SectionHeading from '../../components/SectionHeading.astro';
 import WritingTester from '../../components/WritingTester';
 import WritingHistory from '../../components/WritingHistory';
 import { withBase } from '../../lib/url';
+import { nt } from '../../lib/i18n/translate';
+import { ACCESS_MODE } from '../../lib/trial/mode';
+
+/* The gated build needs an account for everything, so attempts are kept
+   with it; only the open build works without one (audit F03). */
+const historySubtitle =
+  ACCESS_MODE === 'trial'
+    ? nt('Your attempts are saved with your account, so you see them on any device you sign in on.')
+    : nt('Attempts are stored in your browser, no account needed.');
 ---
 
 <BaseLayout
@@ -42,7 +51,7 @@ import { withBase } from '../../lib/url';
     </a>
 
     <section id="history" class="mt-16 scroll-mt-20">
-      <SectionHeading title="Your score history" subtitle="Attempts are stored in your browser, no account needed." />
+      <SectionHeading title="Your score history" subtitle={historySubtitle} />
       <WritingHistory client:load />
     </section>
   </div>

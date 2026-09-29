@@ -119,6 +119,7 @@ import { parseAccessMode } from '../../../src/lib/trial/offer';
 import {
   TrialRefusal,
   TrialServiceError,
+  paidAccessRunning,
   refusal,
   releaseUse,
   reserveTutorMessage,
@@ -1893,12 +1894,20 @@ async function withTrial<T extends { cached?: boolean }>(
 ): Promise<WithTrialNote<T>> {
   if (parseAccessMode(env.ACCESS_MODE) !== 'trial') return run();
 
+  const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL as string, env.SUPABASE_SERVICE_ROLE_KEY as string);
+  /* Paid access first (docs/paid-access/CONTRACT.md): a running grant
+     skips the trial's allowance and scope entirely, and the request is
+     answered exactly as the open site answers it, under this Worker's
+     existing per-student daily limits. Alex, 29 September 2026: paid use is
+     "unlimited, fair daily caps", and those existing limits are the caps.
+     When the grant ends this is false and the trial rules below apply. */
+  if (await paidAccessRunning(rpc, userId)) return run();
+
   const scope = tutorScope(req);
   if (!scope) throw refusal('trial-not-included');
   const requestId = req.idempotencyKey;
   if (!requestId) throw new TutorRequestError('bad-request', 'A request id is required.');
 
-  const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL as string, env.SUPABASE_SERVICE_ROLE_KEY as string);
   const reservation = await reserveTutorMessage(rpc, userId, scope, requestId);
   const note = (used: number): TrialUsageNote => ({ section: scope.section, used, limit: reservation.limit });
 

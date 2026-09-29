@@ -8,8 +8,11 @@
    tools/build-gated-content.mjs), which the public cannot list or read.
 
    Every request is answered by one question to the database
-   (`trial_can_open` in supabase/migrations/2026-09-23-trial.sql): may this
-   signed-in student open this item right now? The browser names only WHAT
+   (`trial_can_open` in supabase/migrations/2026-09-23-trial.sql, made
+   paid-aware by 2026-09-30-paid-access.sql): may this signed-in student
+   open this item right now? A running paid grant opens every lesson, test,
+   practice set, Writing question, model answer and pack; when it ends the
+   trial's own rules apply again. The browser names only WHAT
    it wants; WHO is asking comes from the verified sign-in, never from the
    request. Anything the database cannot answer is refused (fails closed).
 
@@ -24,6 +27,8 @@
      GET /model/<prompt id>              a Band 8 model answer with its
                                          question (JSON); the trial's one
                                          example opens with its lesson
+     GET /pack/<name>                    one module's paid material (JSON),
+                                         for a running paid grant only
      GET /audio/<file>?exp=&sig=         a listening recording, by a signed
                                          link only (see "Recordings" below)
      GET /data/tests/<id>.json           Mr EZ's compact paper   } service
@@ -159,6 +164,14 @@ export function route(url: URL): Route {
   if (parts.length === 2 && parts[0] === 'model' && SAFE.test(parts[1])) {
     const item = parts[1] === TRIAL_WRITING.examplePromptId ? `lesson:${TRIAL_OFFER.writing.lessonKey}` : `writing-model:${parts[1]}`;
     return { kind: 'student', item, key: `models/${parts[1]}.json`, type: json };
+  }
+  /* Paid content (docs/paid-access/CONTRACT.md). A pack is one module's
+     material the trial build's browser does not carry (written by
+     tools/build-gated-content.mjs into packs/<name>.json). Only a running
+     paid grant opens a pack: trial_can_open answers not-included to anyone
+     else, signed out, trial, ended or paid-ended. */
+  if (parts.length === 2 && parts[0] === 'pack' && SAFE.test(parts[1])) {
+    return { kind: 'student', item: `pack:${parts[1]}`, key: `packs/${parts[1]}.json`, type: json };
   }
   if (parts.length === 2 && parts[0] === 'audio' && AUDIO_FILE.test(parts[1])) {
     const exp = url.searchParams.get('exp') ?? '';
@@ -308,7 +321,7 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
     let text = await object.text();
     /* A paper or quiz the student may open: its recordings become signed
        links of this gate, so a trial build needs no public audio. */
-    if (target.key.startsWith('tests/') || target.key.startsWith('practice/')) {
+    if (target.key.startsWith('tests/') || target.key.startsWith('practice/') || target.key.startsWith('packs/')) {
       text = await signRecordings(text, env, env.AUDIO_BASE_URL ?? url.origin, nowMs);
     }
     return reply(text, 200, target.type, cors);

@@ -9,7 +9,8 @@
      <Count class="chip" phrase={ntn(questions, { one: '{n} question', other: '{n} questions' })} />
 
    Never write `{n} questions` straight into a template: tests/i18n-templates.test.ts
-   fails on it, because Russian cannot be made from "40" and "questions". */
+   fails on it, because Russian cannot be made from "40" and "questions".
+   Any other attribute (hidden, data-access-copy, ...) is passed through. */
 import { tn, type CountedPhrase } from '../lib/i18n/translate';
 
 interface Props {
@@ -17,9 +18,10 @@ interface Props {
   class?: string;
   /** The element to render; a span unless the phrase is a whole paragraph. */
   as?: 'span' | 'p' | 'strong' | 'small';
+  [attribute: string]: unknown;
 }
 
-const { phrase, class: className, as: Tag = 'span' } = Astro.props;
+const { phrase, class: className, as: Tag = 'span', ...rest } = Astro.props;
 const english = tn(phrase.n, phrase, undefined, 'en');
 ---
-<Tag class={className} data-i18n-n={phrase.n} data-i18n-one={phrase.one} data-i18n-other={phrase.other}>{english}</Tag>
+<Tag class={className} {...rest} data-i18n-n={phrase.n} data-i18n-one={phrase.one} data-i18n-other={phrase.other}>{english}</Tag>

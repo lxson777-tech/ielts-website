@@ -13,6 +13,19 @@ import SectionHeading from '../../components/SectionHeading.astro';
 import WritingTester from '../../components/WritingTester';
 import WritingHistory from '../../components/WritingHistory';
 import { withBase } from '../../lib/url';
+import { nt } from '../../lib/i18n/translate';
+import { ACCESS_MODE } from '../../lib/trial/mode';
+import { TRIAL_OFFER } from '../../lib/trial/offer';
+
+/* The gated build: an account holds every essay, and the Writing Trainer
+   is not part of the trial, so neither is offered in words (audit F03). */
+const trialBuild = ACCESS_MODE === 'trial';
+const introSubtitle = trialBuild
+  ? nt('Exam conditions: you get a task and a clock, nothing else. Write your answer and an AI examiner grades it against the four official IELTS Writing criteria.')
+  : nt('Exam conditions: you get a task and a clock, nothing else. Write your answer and an AI examiner grades it against the four official IELTS Writing criteria. Want structures, phrases and vocabulary while you write? Use the Writing Trainer instead.');
+const historySubtitle = trialBuild
+  ? nt('Saved with your account, so you see them on any device you sign in on.')
+  : nt('Saved on this device, no account needed.');
 ---
 
 <BaseLayout
@@ -23,18 +36,24 @@ import { withBase } from '../../lib/url';
     <SectionHeading
       eyebrow="Writing"
       title="Writing Checker"
-      subtitle="Exam conditions: you get a task and a clock, nothing else. Write your answer and an AI examiner grades it against the four official IELTS Writing criteria. Want structures, phrases and vocabulary while you write? Use the Writing Trainer instead."
+      subtitle={introSubtitle}
     />
     <WritingTester client:load variant="checker" />
 
     <p class="mt-6 text-center text-sm">
-      <a href={withBase('/trainers/writing')} class="font-semibold text-brand hover:underline" data-i18n>
-        Still learning the format? Practice with the coached Writing Trainer
-      </a>
+      {trialBuild ? (
+        <a href={withBase(TRIAL_OFFER.writing.lessonHref)} class="font-semibold text-brand hover:underline" data-i18n>
+          Still learning the format? Read how to answer Task 2 first
+        </a>
+      ) : (
+        <a href={withBase('/trainers/writing')} class="font-semibold text-brand hover:underline" data-i18n>
+          Still learning the format? Practice with the coached Writing Trainer
+        </a>
+      )}
     </p>
 
     <section id="history" class="mt-16 scroll-mt-20">
-      <SectionHeading title="Your past essays" subtitle="Saved on this device, no account needed." />
+      <SectionHeading title="Your past essays" subtitle={historySubtitle} />
       <WritingHistory client:load />
     </section>
   </div>

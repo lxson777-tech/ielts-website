@@ -115,7 +115,9 @@ test('general chat and anything outside the trial are refused with no model call
     assert.equal(response.status, 403);
     assert.equal(payload.code, 'trial-not-included');
     assert.equal(recorder.openAiCalls.length, 0);
-    assert.equal(recorder.urls.some((u) => u.includes('/rpc/')), false);
+    /* Only the paid-access question is asked (paid access comes first,
+       docs/paid-access/CONTRACT.md); nothing is reserved. */
+    assert.equal(recorder.urls.some((u) => u.includes('/rpc/trial_')), false);
   }
   await db.close();
 });

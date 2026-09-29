@@ -171,7 +171,14 @@ function attr(node: AstroNode, name: string): AstroAttr | undefined {
 
 /** Is this element's own text handled by one of the translation markers? */
 function marksText(node: AstroNode): boolean {
-  return Boolean(attr(node, 'data-i18n') || attr(node, 'data-i18n-n') || attr(node, 'data-sales'));
+  return Boolean(
+    attr(node, 'data-i18n') ||
+      attr(node, 'data-i18n-n') ||
+      attr(node, 'data-sales') ||
+      // A trial hub control: src/lib/trial/hub.ts writes its label with t()
+      // as soon as the page loads (the trial state decides which label).
+      attr(node, 'data-trial-section'),
+  );
 }
 
 function frontmatter(ast: AstroNode): string {

@@ -128,6 +128,35 @@
 }
 .trial-ui .trial-sug b { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
 
+/* ── Folded details on Today: what the trial includes, and the
+   questionnaire's suggested three days (audit F03 and F08) ─────────── */
+.trial-ui .trial-disclosure { margin: 16px 0 0; border-top: 1px solid var(--trial-line-soft); }
+.trial-ui .trial-disclosure > summary {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; padding: 14px 0;
+  font-size: 14px; font-weight: 500; cursor: pointer; list-style: none;
+  transition: color 200ms ease;
+}
+.trial-ui .trial-disclosure > summary::-webkit-details-marker { display: none; }
+.trial-ui .trial-disclosure > summary::before {
+  content: ''; align-self: center; width: 7px; height: 7px; margin-right: 2px;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg); transition: transform 200ms ease;
+}
+.trial-ui .trial-disclosure[open] > summary::before { transform: rotate(45deg); }
+.trial-ui .trial-disclosure > summary:hover { color: var(--trial-rust); }
+.trial-ui .trial-disclosure > summary small { font-weight: 400; }
+.trial-ui .trial-disclosure .trial-includes { margin: 4px 0 18px; font-size: 14px; }
+.trial-ui .trial-disclosure > .trial-fine { margin: 0 0 8px; max-width: 720px; }
+.trial-ui .trial-routine-days { list-style: none; margin: 0 0 12px; padding: 0; }
+.trial-ui .trial-routine-days li {
+  display: flex; justify-content: space-between; align-items: center; gap: 24px;
+  padding: 18px 0; border-top: 1px dashed var(--trial-line-soft);
+}
+.trial-ui .trial-routine-days h3 { font-size: 16px; margin: 4px 0 6px; }
+.trial-ui .trial-routine-days p { font-size: 14px; line-height: 1.7; color: var(--trial-ink); margin: 0 0 6px; max-width: 680px; }
+.trial-ui .trial-routine-days small + small { margin-top: 2px; }
+.trial-ui .trial-routine-days .trial-btn { font-size: 12px; min-height: 40px; flex-shrink: 0; }
+
 /* ── The gate on a lesson, test or trainer page ──────────── */
 .trial-ui.trial-gate { max-width: 740px; margin: 24px auto 40px; }
 .trial-ui.trial-gate .trial-card { padding: 36px; }
@@ -193,6 +222,7 @@ body[data-trial-gate='locked'] [data-trial-protected] { display: none !important
   .trial-ui .trial-card, .trial-ui.trial-gate .trial-card { padding: 24px; }
   .trial-ui .trial-tabs { gap: 6px; display: grid; grid-template-columns: 1fr 1fr; }
   .trial-ui .trial-row { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .trial-ui .trial-routine-days li { align-items: flex-start; flex-direction: column; gap: 12px; }
   .trial-ui .trial-prices { grid-template-columns: 1fr; }
   .trial-ui.trial-join { grid-template-columns: 1fr; padding-top: 8px; }
   .trial-ui.trial-join h1 { font-size: 34px; }

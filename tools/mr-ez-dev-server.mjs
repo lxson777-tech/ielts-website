@@ -82,6 +82,21 @@
  *   trial tables. POST /__force {fail: 'grader'} makes the next essay grades
  *   fail; {fail: 'save-turn', times: 2} makes Mr EZ's next two saves fail after
  *   his answer (two, because the site retries a failed request once).
+ *
+ *   PAID ACCESS (docs/paid-access/CONTRACT.md), also only with --trial:
+ *   - the paid-access migration (supabase/migrations/2026-09-30-paid-access.sql)
+ *     runs after the trial one, so /rest/v1/rpc/access_* and the paid-aware
+ *     trial_status / trial_can_open answer for real;
+ *   - /payments/* is the REAL payments Worker with its SIMULATED provider
+ *     (point the site at it with PUBLIC_PAYMENTS_URL=http://127.0.0.1:<port>/payments
+ *     and PUBLIC_PAYMENTS_SIMULATED=1);
+ *   - /__pay/<orderId> is the SIMULATED provider's page, with Pay, Fail and
+ *     Cancel; each sends a signed webhook to the Worker and then returns the
+ *     browser to <MR_EZ_SITE_ORIGIN>/ielts-website/plans/return?order=<id>;
+ *   - POST /__pay/refund {orderId} sends a signed refund; POST /__pay/expire
+ *     {email} ends that student's paid access now; GET /__trial/state lists
+ *     orders and grants too.
+ *   No money moves, and every screen says SIMULATED.
  */
 
 import { createServer } from 'node:http';
@@ -1395,6 +1410,9 @@ const SITE_ORIGIN = process.env.MR_EZ_SITE_ORIGIN || 'http://localhost:4321';
 const withSiteOrigin = (list) =>
   [...new Set([...list.split(','), SITE_ORIGIN, SITE_ORIGIN.replace('//localhost', '//127.0.0.1')])].join(',');
 const LIVE_SITE_DATA_URL = `${SITE_ORIGIN}/ielts-website/data/tests`;
+/** Where the simulated provider sends the student back (the site's return
+    page, built by the purchase UI); `?order=<id>` is added. */
+const PAYMENTS_RETURN_URL = `${SITE_ORIGIN}/ielts-website/plans/return`;
 /* And the published lesson blocks, which contextual help is grounded in.
    Same Astro dev server, same reasoning. */
 const LIVE_LESSON_BLOCKS_URL = `${SITE_ORIGIN}/ielts-website/data/lesson-blocks`;
@@ -1492,7 +1510,14 @@ const liveSessions = [];
     disk, only with --trial. */
 let contentHandler = null;
 const CONTENT_SERVICE_KEY = 'local-content-service-key';
-const gateBase = () => `http://127.0.0.1:${server.address()?.port ?? PORT}/content`;
+const selfBase = () => `http://127.0.0.1:${server.address()?.port ?? PORT}`;
+const gateBase = () => `${selfBase()}/content`;
+/** The payments Worker (workers/payments) with the SIMULATED provider, only
+    with --trial. */
+let paymentsHandler = null;
+let signPayment = null;
+let paymentsSignatureHeader = 'X-Simulated-Signature';
+const PAYMENTS_WEBHOOK_SECRET = 'local-simulated-webhook-secret';
 
 /** The speaking grader's three model calls, answered here. Every text the
     student sees says SIMULATED. */
@@ -1777,6 +1802,29 @@ async function initTrial() {
   };
   speakingHandler = (request) => speaking.fetch(request, speakingEnv);
 
+  /* Payments: the REAL payments Worker (workers/payments) with its
+     SIMULATED provider, which the Worker accepts only because both local
+     switches are set here. No money moves; the provider's page is
+     /__pay/<orderId> below, and every screen says SIMULATED. */
+  const paymentsModule = await import('../workers/payments/src/index.ts');
+  const payments = paymentsModule.createHandler({
+    fetch: bridgeFetch({ onModel: async () => { throw new Error('payments never call a model'); } }),
+  });
+  signPayment = (raw) => paymentsModule.signSimulatedEvent(PAYMENTS_WEBHOOK_SECRET, raw);
+  paymentsSignatureHeader = paymentsModule.SIMULATED_SIGNATURE_HEADER;
+  paymentsHandler = (request) =>
+    payments.fetch(request, {
+      ALLOWED_ORIGINS: withSiteOrigin(localOrigins),
+      SUPABASE_URL: STUB_SUPABASE,
+      SUPABASE_ANON_KEY: 'local-anon-key',
+      SUPABASE_SERVICE_ROLE_KEY: 'local-service-role-key',
+      PAYMENTS_PROVIDER: 'simulated',
+      PAYMENTS_ALLOW_SIMULATED: 'local',
+      PAYMENTS_WEBHOOK_SECRET,
+      PAYMENTS_RETURN_URL: PAYMENTS_RETURN_URL,
+      SIMULATED_PAY_URL: `${selfBase()}/__pay`,
+    });
+
   essayHandler = (bodyText, authHeader) =>
     essay.fetch(
       new Request('http://localhost:4321/grade-essay', {
@@ -1786,6 +1834,144 @@ async function initTrial() {
       }),
       essayEnv,
     );
+}
+
+/* -- Payments (--trial) ----------------------------------------------------
+   /payments/*        the REAL payments Worker, SIMULATED provider
+   /__pay/<orderId>   the SIMULATED provider's payment page: Pay, Fail, Cancel.
+                      Each button sends a signed webhook to the Worker, the
+                      way a provider's server would, then sends the browser
+                      back to <site>/ielts-website/plans/return?order=<id>.
+   POST /__pay/refund {orderId}   a signed refund, for tests
+   POST /__pay/expire {email}     ends that student's paid access now, for tests
+   Nothing here takes or moves money. */
+
+const escapeHtml = (value) =>
+  String(value).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+
+async function readRaw(req) {
+  const chunks = [];
+  for await (const chunk of req) chunks.push(chunk);
+  return Buffer.concat(chunks).toString('utf8');
+}
+
+async function orderRow(orderId) {
+  if (!/^[0-9a-f-]{36}$/i.test(orderId)) return null;
+  const rows = await trialDb.select(
+    'select id, user_id, plan_id, amount, currency, status, provider_ref from public.payment_orders where id = $1',
+    [orderId],
+    { role: 'service_role' },
+  );
+  return rows[0] ?? null;
+}
+
+/** Sends one signed event to the payments Worker, as the provider would. */
+async function simulatedWebhook(event) {
+  const raw = JSON.stringify(event);
+  const resp = await paymentsHandler(
+    new Request('http://payments.local/webhook/simulated', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', [paymentsSignatureHeader]: await signPayment(raw) },
+      body: raw,
+    }),
+  );
+  return { status: resp.status, body: await resp.json().catch(() => null) };
+}
+
+function simulatedPayPage(order, returnUrl) {
+  const emailOf = [...db.users.values()].find((u) => u.id === order.user_id)?.email ?? 'unknown account';
+  const amount = `${Number(order.amount).toLocaleString('en-US')} ${escapeHtml(order.currency)}`;
+  const button = (action, label, tone) =>
+    `<form method="post" action="/__pay/${escapeHtml(order.id)}/${action}"><input type="hidden" name="return" value="${escapeHtml(returnUrl)}"><button class="${tone}" type="submit">${label}</button></form>`;
+  const open = order.status === 'created' || order.status === 'pending';
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SIMULATED payment</title>
+<style>
+  :root { color-scheme: light; --ink: #17332b; --muted: #5d6b66; --line: #e4dfd6; --canvas: #f6f3ee; --warn: #8a4b00; --warn-bg: #fff2dc; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: var(--canvas); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; padding: 24px 16px; }
+  main { width: 100%; max-width: 440px; background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 28px; box-shadow: 0 12px 40px rgba(23, 51, 43, 0.08); }
+  .banner { background: var(--warn-bg); color: var(--warn); border-radius: 12px; padding: 12px 14px; font-weight: 600; font-size: 14px; margin-bottom: 20px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  p { margin: 0 0 16px; color: var(--muted); }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 0 0 24px; font-size: 15px; }
+  dt { color: var(--muted); } dd { margin: 0; font-weight: 600; word-break: break-all; }
+  .actions { display: grid; gap: 10px; }
+  button { width: 100%; border: 0; border-radius: 999px; padding: 13px 18px; font: inherit; font-weight: 600; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+  button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(23, 51, 43, 0.12); }
+  .pay { background: var(--ink); color: #fff; } .fail { background: #f3e1de; color: #7a1f12; } .cancel { background: #eeeae3; color: var(--ink); }
+  form { margin: 0; }
+</style></head><body><main>
+<div class="banner" role="note">SIMULATED payment provider. No money is taken and no card is asked for. Local stand-in only.</div>
+<h1>SIMULATED checkout</h1>
+<p>This page stands in for a real payment provider so the purchase can be tested end to end.</p>
+<dl><dt>Plan</dt><dd>${escapeHtml(order.plan_id)}</dd><dt>Amount</dt><dd>${amount}</dd><dt>Account</dt><dd>${escapeHtml(emailOf)}</dd><dt>Order</dt><dd>${escapeHtml(order.id)}</dd><dt>Status</dt><dd id="order-status">${escapeHtml(order.status)}</dd></dl>
+${open ? `<div class="actions">${button('pay', 'Pay (SIMULATED)', 'pay')}${button('fail', 'Payment fails (SIMULATED)', 'fail')}${button('cancel', 'Cancel (SIMULATED)', 'cancel')}</div>` : `<p>This order is already ${escapeHtml(order.status)}.</p><form method="get" action="${escapeHtml(returnUrl)}"><button class="cancel" type="submit">Back to the site</button></form>`}
+</main></body></html>`;
+}
+
+/** The return address a pay page may send the browser to: the site's own
+    return page for this order, never anywhere a query names. */
+function payReturnUrl(orderId, asked) {
+  const fallback = `${PAYMENTS_RETURN_URL}?order=${orderId}`;
+  return typeof asked === 'string' && asked === fallback ? asked : fallback;
+}
+
+async function handlePay(req, res, url) {
+  if (!paymentsHandler) return send(res, 404, { message: 'the simulated payment provider runs only with --trial' });
+  const parts = url.pathname.split('/').filter(Boolean); // ['__pay', ...]
+  if (req.method === 'POST' && parts[1] === 'refund') {
+    const body = await readBody(req);
+    const order = await orderRow(String(body.orderId ?? ''));
+    if (!order) return send(res, 404, { message: 'no such order' });
+    const answer = await simulatedWebhook({ event: 'refunded', orderId: order.id, providerRef: order.provider_ref ?? `sim_${order.id.replace(/-/g, '')}` });
+    return send(res, answer.status, { simulated: true, ...answer.body });
+  }
+  if (req.method === 'POST' && parts[1] === 'expire') {
+    const body = await readBody(req);
+    const user = db.users.get(String(body.email ?? '').trim().toLowerCase());
+    if (!user) return send(res, 404, { message: 'no such local user' });
+    const grants = await trialDb.expirePaid(user.id);
+    return send(res, 200, { simulated: true, expired: user.email, grants });
+  }
+  const order = parts[1] ? await orderRow(parts[1]) : null;
+  if (!order) return send(res, 404, { message: 'no such order' });
+  if (req.method === 'GET' && parts.length === 2) {
+    const page = simulatedPayPage(order, payReturnUrl(order.id, url.searchParams.get('return')));
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+    return res.end(page);
+  }
+  if (req.method === 'POST' && parts.length === 3 && ['pay', 'fail', 'cancel'].includes(parts[2])) {
+    const form = new URLSearchParams(await readRaw(req));
+    const providerRef = order.provider_ref ?? `sim_${order.id.replace(/-/g, '')}`;
+    const event =
+      parts[2] === 'pay'
+        ? { event: 'paid', orderId: order.id, providerRef, amount: order.amount, currency: order.currency }
+        : parts[2] === 'fail'
+          ? { event: 'failed', orderId: order.id, providerRef, reason: 'declined (simulated)' }
+          : { event: 'cancelled', orderId: order.id, providerRef };
+    const answer = await simulatedWebhook(event);
+    const back = payReturnUrl(order.id, form.get('return'));
+    if (String(req.headers.accept ?? '').includes('application/json')) {
+      return send(res, answer.status, { simulated: true, webhook: answer.body, returnUrl: back });
+    }
+    res.writeHead(303, { Location: back, 'Cache-Control': 'no-store' });
+    return res.end();
+  }
+  return send(res, 404, { message: 'not found' });
+}
+
+async function handlePayments(req, res, url) {
+  if (!paymentsHandler) return send(res, 404, { message: 'the payments Worker runs only with --trial' });
+  const headers = {};
+  for (const name of ['authorization', 'origin', 'content-type']) if (req.headers[name]) headers[name] = req.headers[name];
+  const body = req.method === 'POST' ? await readRaw(req) : undefined;
+  const resp = await paymentsHandler(
+    new Request(`http://payments.local${url.pathname.slice('/payments'.length) || '/'}${url.search}`, { method: req.method, headers, body }),
+  );
+  const text = await resp.text();
+  res.writeHead(resp.status, Object.fromEntries(resp.headers));
+  return res.end(text);
 }
 
 const server = createServer(async (req, res) => {
@@ -1837,6 +2023,8 @@ const server = createServer(async (req, res) => {
       res.writeHead(resp.status, Object.fromEntries(resp.headers));
       return res.end(text);
     }
+    if (url.pathname === '/payments' || url.pathname.startsWith('/payments/')) return await handlePayments(req, res, url);
+    if (url.pathname.startsWith('/__pay/')) return await handlePay(req, res, url);
     if (url.pathname === '/__trial/rewind' && req.method === 'POST') {
       // Local only: age one student's trial, to see the ended state.
       if (!trialDb) return send(res, 404, { message: 'start with --trial' });
@@ -1855,9 +2043,21 @@ const server = createServer(async (req, res) => {
         [],
         { role: 'service_role' },
       );
+      const orders = await trialDb.select(
+        'select id, user_id, plan_id, amount, currency, provider, provider_ref, status, created_at, paid_at, refunded_at, receipt_number from public.payment_orders order by created_at',
+        [],
+        { role: 'service_role' },
+      );
+      const grants = await trialDb.select(
+        'select id, user_id, order_id, plan_id, starts_at, ends_at, revoked_at, (revoked_at is null and starts_at <= now() and ends_at > now()) as running from public.access_grants order by starts_at',
+        [],
+        { role: 'service_role' },
+      );
       return send(res, 200, {
         accounts: accounts.map((a) => ({ ...a, email: emailOf(a.user_id) })),
         usage: usage.map((u) => ({ ...u, email: emailOf(u.user_id) })),
+        orders: orders.map((o) => ({ ...o, email: emailOf(o.user_id) })),
+        grants: grants.map((g) => ({ ...g, email: emailOf(g.user_id) })),
       });
     }
     if (url.pathname === '/__force') {
@@ -1921,6 +2121,7 @@ server.listen(PORT, '127.0.0.1', () => {
     console.log('  Content gate      : /content/*  (real Worker, private copy in gated-content/)');
     console.log('  Live examiner     : /live  (real Worker, ACCESS_MODE=trial, SIMULATED session, no voice call)');
     console.log('  Speaking grader   : /grade-speaking  (real Worker, ACCESS_MODE=trial, SIMULATED assessment)');
+    console.log('  Payments          : /payments  (real Worker, SIMULATED provider at /__pay, no money moves)');
   } else if (LIVE) {
     console.log('  Tutor             : /tutor  *** LIVE: real Worker, real model, REAL MONEY ***');
     console.log('                      roughly $0.0005 per message');

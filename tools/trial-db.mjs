@@ -15,7 +15,12 @@
  *   - `auth.users` and `auth.uid()`, which reads the signed-in user from the
  *     request's JWT claim exactly as Supabase's own definition does.
  *
- * Used by tests/trial-sql.test.ts, tests/trial-worker.test.ts and
+ * Both migrations are applied, in order: the trial file and then the paid
+ * access file (supabase/migrations/2026-09-30-paid-access.sql), because that
+ * is what a real project would run. The trial tests therefore also prove the
+ * trial still behaves the same with paid access installed.
+ *
+ * Used by tests/trial-*.test.ts, tests/paid-*.test.ts and
  * tools/mr-ez-dev-server.mjs. Never by the site or a Worker.
  *
  * Local only. Nothing here can reach a real database.
@@ -28,6 +33,9 @@ import { PGlite } from '@electric-sql/pglite';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const TRIAL_MIGRATION = resolve(REPO, 'supabase/migrations/2026-09-23-trial.sql');
+/** Paid access (docs/paid-access/CONTRACT.md). Runs after the trial file,
+    whose trial_state and trial_can_open it redefines. */
+export const PAID_MIGRATION = resolve(REPO, 'supabase/migrations/2026-09-30-paid-access.sql');
 
 const SUPABASE_STUB = `
   create role anon nologin;
@@ -64,12 +72,13 @@ function toDbError(err) {
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const NAME_RE = /^[a-z_][a-z0-9_]{0,62}$/;
 
-/** Boots a fresh database with the migration applied. Every call is a new,
+/** Boots a fresh database with the migrations applied (both, in order, by
+    default; `migration` alone runs just that one file). Every call is a new,
     empty world, so tests cannot leak into one another. */
-export async function createTrialDb({ migration = TRIAL_MIGRATION } = {}) {
+export async function createTrialDb({ migration = null, migrations = [TRIAL_MIGRATION, PAID_MIGRATION] } = {}) {
   const db = new PGlite();
   await db.exec(SUPABASE_STUB);
-  await db.exec(readFileSync(migration, 'utf8'));
+  for (const file of migration ? [migration] : migrations) await db.exec(readFileSync(file, 'utf8'));
 
   /** Runs `work` as `role`, with `userId` as the signed-in user when given,
       inside one transaction, the way a PostgREST request runs. */
@@ -134,6 +143,31 @@ export async function createTrialDb({ migration = TRIAL_MIGRATION } = {}) {
         `update public.trial_usage
            set reserved_at = reserved_at - make_interval(mins => $2::int),
                lease_until = case when lease_until is null then null else lease_until - make_interval(mins => $2::int) end
+         where user_id = $1`,
+        [userId, minutes],
+      );
+    },
+
+    /** Test and stand-in only: ends one student's paid access now, as if
+        every grant had run out a minute ago. Grants stay (unrevoked), so the
+        student is "paid before, now ended". Never exposed to the site. */
+    async expirePaid(userId) {
+      const result = await db.query(
+        `update public.access_grants
+           set starts_at = least(starts_at, now() - interval '2 minutes'),
+               ends_at = now() - interval '1 minute'
+         where user_id = $1 and revoked_at is null and ends_at > now() - interval '1 minute'`,
+        [userId],
+      );
+      return result.affectedRows ?? 0;
+    },
+
+    /** Test only: moves one student's grants back in time by `minutes`. */
+    async rewindPaid(userId, minutes) {
+      await db.query(
+        `update public.access_grants
+           set starts_at = starts_at - make_interval(mins => $2::int),
+               ends_at = ends_at - make_interval(mins => $2::int)
          where user_id = $1`,
         [userId, minutes],
       );

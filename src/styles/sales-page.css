@@ -125,6 +125,10 @@
 @media(max-width:760px){.lang-switch{padding:0;border:0}.lang-switch button[aria-pressed=true]{display:none}.lang-switch button{min-width:38px;min-height:38px;padding:0 6px;border:1px solid color-mix(in srgb,currentColor 22%,transparent)}}
 @media(prefers-reduced-motion:reduce){.lang-switch button{transition:none}}
 
+/* The feature list describes full access, not the trial: a small label says so. */
+.trial-includes .includes-label{margin-top:24px;color:#efa260;font-size:11px}
+.trial-includes .includes-label+ul{margin-top:10px}
+
 /* A FAQ question sits in its own span (so its language can be swapped
    without touching the "+" beside it); only the "+" turns and is large. */
 .faq-list summary>.faq-q{font-size:inherit;font-weight:inherit;transition:none}

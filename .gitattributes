@@ -1,0 +1,3 @@
+# Generated files are compared byte for byte by their tests; keep LF on every
+# checkout (Windows autocrlf otherwise rewrites them in fresh worktrees).
+src/data/generated/*.json text eol=lf

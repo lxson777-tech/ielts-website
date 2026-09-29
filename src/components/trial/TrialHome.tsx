@@ -15,7 +15,15 @@ import { useT } from '../../lib/i18n/react';
 import { withBase } from '../../lib/url';
 import { refreshTrial } from '../../lib/trial/client';
 import type { TrialLibrarySection } from '../../lib/trial/library';
-import { TRIAL_SECTIONS, type TrialSection } from '../../lib/trial/offer';
+import {
+  TRIAL_OFFER,
+  TRIAL_SECTIONS,
+  TRIAL_SUMMARY,
+  TRIAL_SUMMARY_ORDER,
+  type TrialQuestionnaire,
+  type TrialSection,
+} from '../../lib/trial/offer';
+import { trialRoutine, type RoutineDay } from '../../lib/trial/routine';
 import { useTrial } from '../../lib/trial/react';
 import {
   lessonAccess,
@@ -193,6 +201,115 @@ export function SectionTabs({
   );
 }
 
+/** What the trial includes, in the one shared wording (TRIAL_SUMMARY in
+    src/lib/trial/offer.ts), folded away under the lead. */
+function TrialIncludes() {
+  const { t } = useT();
+  return (
+    <details className="trial-disclosure">
+      <summary>{t('What your trial includes')}</summary>
+      <ul className="trial-includes">
+        {TRIAL_SUMMARY_ORDER.map((key) => (
+          <li key={key}>{t(TRIAL_SUMMARY[key])}</li>
+        ))}
+      </ul>
+    </details>
+  );
+}
+
+/** "Your suggested three days" (audit F08): the questionnaire's own three
+    days (src/lib/trial/routine.ts, from the sales page's generator), each
+    linked only to something the trial opens. Nothing is shown to a student
+    who skipped the questionnaire: Today already offers the lesson and the
+    test, and a routine built from answers they never gave would be made up. */
+function SuggestedDays({
+  q,
+  status,
+  now,
+  sectionLabel,
+}: {
+  q: TrialQuestionnaire;
+  status: TrialStatus;
+  now: number;
+  sectionLabel: string;
+}) {
+  const { t } = useT();
+  const routine = trialRoutine(q);
+  if (!routine) return null;
+  const section = routine.section;
+  const test = testAccess(status, section, TRIAL_OFFER[section].testId, now);
+
+  function action(day: RoutineDay) {
+    if (day.link.kind === 'lesson') {
+      return (
+        <a className="trial-btn" href={withBase(day.link.href)}>
+          {t('Open the lesson')}
+        </a>
+      );
+    }
+    if (day.link.kind === 'practice') {
+      return (
+        <a className="trial-btn" href={withBase(day.link.href)}>
+          {t('Practise in the lesson')}
+        </a>
+      );
+    }
+    if (test === 'available' || test === 'in-progress') {
+      return (
+        <a className="trial-btn" href={withBase(day.link.href)}>
+          {test === 'available' ? t('Start your {section} test', { section: sectionLabel }) : t('Continue test')}
+        </a>
+      );
+    }
+    if (test === 'used') {
+      return (
+        <a className="trial-btn" href={withBase('/report')}>
+          {t('See my results')}
+        </a>
+      );
+    }
+    return null;
+  }
+
+  return (
+    <details className="trial-disclosure trial-routine">
+      <summary>
+        {t('Your suggested three days')}
+        <small>{t('{section}, about {minutes} minutes a day', { section: sectionLabel, minutes: routine.dailyMinutes })}</small>
+      </summary>
+      <p className="trial-fine">
+        {routine.testLongerThanDaily
+          ? t('Short daily practice and a timed test need different time. Your {section} test is a separate sitting of about {minutes} minutes, so choose a day when you have that time.', {
+              section: sectionLabel,
+              minutes: routine.testMinutes,
+            })
+          : t('Your {section} test takes about {minutes} minutes, so it fits inside a day of practice.', {
+              section: sectionLabel,
+              minutes: routine.testMinutes,
+            })}
+      </p>
+      <ol className="trial-routine-days">
+        {routine.days.map((day) => (
+          <li key={day.day}>
+            <div>
+              <span className="trial-eyebrow">
+                {day.timed
+                  ? t('Day {day} · timed test, about {minutes} minutes', { day: day.day, minutes: day.minutes })
+                  : t('Day {day} · about {minutes} minutes', { day: day.day, minutes: day.minutes })}
+              </span>
+              <h3>{t(day.title)}</h3>
+              <p>{t(day.text)}</p>
+              {day.where && <small>{t(day.where)}</small>}
+              <small>{t('Take away: {outcome}', { outcome: t(day.outcome) })}</small>
+            </div>
+            {action(day)}
+          </li>
+        ))}
+      </ol>
+    </details>
+  );
+}
+
 /** The trial state the account alone decides (signed out, checking, ...),
     worded for a page whose whole content is the trial. */
 function TrialAccountState({ reason }: { reason: NonNullable<ReturnType<typeof accountBlock>> }) {
@@ -270,6 +387,7 @@ export default function TrialHome({ sections }: { sections: TrialLibrarySection[
 
       <h1>{t('A little practice. A clearer next step.')}</h1>
       <p className="trial-lead">{t('Your trial gives you a focused introduction to each part of IELTS.')}</p>
+      <TrialIncludes />
 
       {q && !ended && (
         <p className="trial-sug">
@@ -280,6 +398,14 @@ export default function TrialHome({ sections }: { sections: TrialLibrarySection[
             band: q.band === '8' ? '8.0+' : Number(q.band).toFixed(1),
           })}
         </p>
+      )}
+      {q && !ended && (
+        <SuggestedDays
+          q={q}
+          status={status}
+          now={trial.now}
+          sectionLabel={sections.find((s) => s.section === q.skill)?.label ?? q.skill}
+        />
       )}
 
       <SectionTabs sections={sections} selected={current} onSelect={setSelected} idPrefix="trial-home" />

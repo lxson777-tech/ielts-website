@@ -111,10 +111,13 @@ test('keys built from a template in the markup all exist', () => {
 test('the corrected trial wording is on the page in both languages', () => {
   const start = SALES_COPY['faq.start.a'];
   assert.match(start.en, /one lesson and one test in each section/);
-  assert.match(start.en, /Part 1, about five minutes/);
+  assert.match(start.en, /one Writing Task 2 essay, and a Speaking Part 1 interview of about five minutes/);
+  assert.match(SALES_COPY['faq.trial.a'].en, /Academic IELTS/);
+  assert.match(SALES_COPY['faq.trial.a'].ru, /Speaking Part 1/);
   assert.doesNotMatch(start.en, /full test in each section/);
   assert.match(start.ru, /один урок и один тест в каждой части/);
-  assert.match(start.ru, /Part 1/);
+  assert.match(start.ru, /одно эссе Writing Task 2 и собеседование Speaking Part 1/);
+  assert.match(SALES_COPY['faq.unlimited.a'].en, /fair daily limits on Mr EZ and the live examiner/);
   assert.match(start.en + SALES_COPY['price.includes.1'].en, /Academic IELTS/);
   assert.match(start.ru + SALES_COPY['price.includes.1'].ru, /Academic IELTS/);
   // Alex, 29 September 2026: fixed periods, no automatic renewal, no refunds.

@@ -397,6 +397,7 @@ export const SALES_COPY = {
     en: 'Three days to try your study space: one lesson and one test in each IELTS section.',
     ru: 'Три дня, чтобы попробовать учебное пространство: один урок и один тест в каждой части IELTS.',
   },
+  'price.includes.full': { en: 'Full access includes', ru: 'В полный доступ входит' },
   'price.includes.1': {
     en: 'An Academic IELTS course: Reading, Listening, Writing and Speaking lessons',
     ru: 'Курс Academic IELTS: уроки по Reading, Listening, Writing и Speaking',
@@ -406,8 +407,8 @@ export const SALES_COPY = {
   'price.includes.4': { en: 'AI speaking practice with an examiner', ru: 'Практика Speaking с ИИ-экзаменатором' },
   'price.includes.5': { en: 'Mr EZ, your personal AI study companion', ru: 'Mr EZ, ваш личный ИИ-помощник в учёбе' },
   'price.includes.small': {
-    en: 'Trial: 1 Reading + 1 Listening + 1 Writing + 1 Speaking test (Speaking is Part 1, about five minutes), and {tutorMessages} per section. Paid access then gives unlimited normal study, with fair daily safety limits.',
-    ru: 'Пробный период: по одному тесту Reading, Listening, Writing и Speaking (Speaking: Part 1, около пяти минут) и {tutorMessages} на каждую часть. Платный доступ после него даёт обычную учёбу без ограничений, с разумными дневными лимитами для безопасности.',
+    en: 'Trial tests: a full Reading test, a full Listening test, one Writing Task 2 essay, and a Speaking Part 1 interview of about five minutes. Plus {tutorMessages} per section. Paid access gives unlimited study, with fair daily limits on Mr EZ and the live examiner.',
+    ru: 'Тесты пробного периода: полный тест Reading, полный тест Listening, одно эссе Writing Task 2 и собеседование Speaking Part 1 примерно на пять минут. Плюс {tutorMessages} на каждую часть. Платный доступ даёт занятия без ограничений; у Mr EZ и устного экзаменатора есть разумные дневные лимиты.',
   },
   'price.options': { en: 'Access after your trial', ru: 'Доступ после пробного периода' },
   'price.one.title': { en: 'One month', ru: 'Один месяц' },
@@ -433,8 +434,8 @@ export const SALES_COPY = {
   'faq.title': { en: 'A few things<br />you might wonder.', ru: 'Несколько вопросов,<br />которые могут возникнуть.' },
   'faq.trial.q': { en: 'How does the 3-day free trial work?', ru: 'Как работает бесплатный пробный период на 3 дня?' },
   'faq.trial.a': {
-    en: 'Sign up to try the platform for three days. No payment card is required. Your trial includes one lesson and one test in each section (Reading, Listening, Writing and Speaking), four tests in total. The Speaking test is Part 1, about five minutes. You choose whether to buy access afterwards.',
-    ru: 'Зарегистрируйтесь и пользуйтесь платформой три дня. Банковская карта не нужна. В пробный период входят один урок и один тест в каждой части (Reading, Listening, Writing и Speaking), всего четыре теста. Тест по Speaking проходит в формате Part 1 и длится около пяти минут. Покупать ли доступ потом, решаете вы.',
+    en: 'Sign up to try Academic IELTS preparation for three days. No payment card is required. Your trial includes one lesson in each section and one test in each section: a full Reading test, a full Listening test, one Writing Task 2 essay, and a Speaking Part 1 interview of about five minutes. You choose whether to buy access afterwards.',
+    ru: 'Зарегистрируйтесь и готовьтесь к Academic IELTS три дня бесплатно. Банковская карта не нужна. В пробный период входят один урок и один тест в каждой части. Тесты: полный тест Reading, полный тест Listening, одно эссе Writing Task 2 и собеседование Speaking Part 1 примерно на пять минут. Покупать ли доступ потом, решаете вы.',
   },
   'faq.cost.q': { en: 'What does access cost after the trial?', ru: 'Сколько стоит доступ после пробного периода?' },
   'faq.cost.a': {
@@ -448,13 +449,13 @@ export const SALES_COPY = {
   },
   'faq.unlimited.q': { en: 'Is AI practice unlimited?', ru: 'Практика с ИИ без ограничений?' },
   'faq.unlimited.a': {
-    en: 'During the three-day trial you get one test in each of the four IELTS sections and {tutorMessages} per section. Paid access gives unlimited normal study, with fair daily safety limits on AI use.',
-    ru: 'В пробный период у вас по одному тесту в каждой из четырёх частей IELTS и {tutorMessages} на каждую часть. Платный доступ даёт обычную учёбу без ограничений, с разумными дневными лимитами на использование ИИ для безопасности.',
+    en: 'During the three-day trial you get one test in each of the four IELTS sections and {tutorMessages} per section. Paid access gives unlimited study, with fair daily limits on Mr EZ and the live examiner.',
+    ru: 'В пробный период у вас по одному тесту в каждой из четырёх частей IELTS и {tutorMessages} на каждую часть. Платный доступ даёт занятия без ограничений; у Mr EZ и устного экзаменатора есть разумные дневные лимиты.',
   },
   'faq.start.q': { en: 'Where should I start?', ru: 'С чего начать?' },
   'faq.start.a': {
-    en: 'Start the free trial. For three days you get one lesson and one test in each section, with Mr EZ beside you; the Speaking test is Part 1, about five minutes. Full access then opens the whole Academic IELTS course, every test and a study plan built around your exam date.',
-    ru: 'Начните с бесплатного пробного периода. Три дня у вас будет один урок и один тест в каждой части, а рядом Mr EZ. Тест по Speaking проходит в формате Part 1 и длится около пяти минут. Полный доступ открывает весь курс Academic IELTS, все тесты и учебный план, построенный вокруг даты вашего экзамена.',
+    en: 'Start the free trial. For three days you get one lesson and one test in each section, with Mr EZ beside you. The tests are a full Reading test, a full Listening test, one Writing Task 2 essay, and a Speaking Part 1 interview of about five minutes. Full access then opens the whole Academic IELTS course, every test and a study plan built around your exam date.',
+    ru: 'Начните с бесплатного пробного периода. Три дня у вас будет один урок и один тест в каждой части, а рядом Mr EZ. Тесты: полный тест Reading, полный тест Listening, одно эссе Writing Task 2 и собеседование Speaking Part 1 примерно на пять минут. Полный доступ открывает весь курс Academic IELTS, все тесты и учебный план, построенный вокруг даты вашего экзамена.',
   },
   'faq.account.q': { en: 'Do I need an account?', ru: 'Нужен ли аккаунт?' },
   'faq.account.a': {
