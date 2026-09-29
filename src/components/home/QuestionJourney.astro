@@ -1,0 +1,39 @@
+---
+import { withBase } from '../../lib/url';
+const questions = [
+ {id:'band', title:'What are you aiming for?', note:'Start with the destination.', options:[['7','Band 7.0','A strong next step'],['7.5','Band 7.5','Room for bigger plans'],['8','Band 8.0+','Aim a little higher']]},
+ {id:'skill', title:'Which section feels hardest?', note:'We will start where a little support matters most.', options:[['speaking','Speaking','Finding the words out loud'],['writing','Writing','Turning ideas into an answer'],['reading','Reading','Finding the right evidence'],['listening','Listening','Keeping up with the recording']]},
+ {id:'focus', title:'What gets in your way?', note:'Choose the one you would most like to change.', options:[['method','Knowing how to answer','I need a clear method'],['confidence','Putting it into practice','I know the basics, but get stuck']]},
+ {id:'time', title:'What fits into your day?', note:'A routine you can return to is a good place to begin.', options:[['15','15 minutes','A small daily step'],['30','30 minutes','Time to practise and reflect'],['60','60 minutes','Recommended by your teacher']]},
+];
+---
+<section id="the-approach" class="question-journey" aria-labelledby="journey-title" data-question-journey>
+ <div class="journey-atmosphere" aria-hidden="true"><canvas class="journey-shader"></canvas></div>
+ <div class="content-wrap journey-intro" id="your-plan"><p class="section-note">Your ambition. Your starting point.</p><h2 id="journey-title">A big dream.<br /><span>A plan that feels like you.</span></h2><p>Choose an answer to move to the next question. Your plan is waiting at the end.</p><a class="journey-skip" href="#your-classroom">Just exploring? Take a look inside </a></div>
+ <noscript><p class="content-wrap">Enable JavaScript to build your suggested plan, or <a href="#pricing">see trial and pricing details</a>.</p></noscript>
+ <div class="content-wrap journey-layout" data-journey-interactive hidden>
+  <div class="journey-answer-trail" aria-label="Your answers">{questions.map((q,i)=><button type="button" data-edit-step={i} hidden><span>{['Goal','Section','Focus','Daily time'][i]}</span><b data-answer-chip={q.id}></b></button>)}</div>
+
+  <form class="journey-questions" onsubmit="return false">
+   {questions.map((q,i)=><fieldset class="journey-step" id={`journey-${q.id}`} data-question={q.id}>
+    <legend><span class="section-note">0{i+1} / YOUR {['GOAL','CHALLENGE','FOCUS','PACE'][i]}</span><span class="journey-question-title" tabindex="-1">{q.title}</span></legend>
+    <p class="journey-note">{q.note}</p>
+    <div class={`journey-options ${q.id==='skill'?'journey-options-grid':''}`}>{q.options.map(([value,label,detail])=><label class="journey-option"><input type="radio" name={q.id} value={value}/><span><b>{label}</b><small>{detail}</small></span><span class="journey-check" aria-hidden="true"></span></label>)}</div>
+   </fieldset>)}
+  </form>
+ </div>
+ <div class="content-wrap journey-result-wrap" data-journey-interactive hidden>
+  <section id="journey-result" class="journey-result" aria-labelledby="journey-result-title" tabindex="-1">
+   <div class="journey-result-intro"><p class="section-note">Your suggested starting plan</p><h2 id="journey-result-title">Make your goal a daily habit.</h2><p data-result-description aria-live="polite">Four choices. One clear place to start.</p></div>
+   <div class="journey-plan" data-plan-card hidden>
+    <div class="journey-plan-summary"><span data-plan-label></span><span data-plan-title></span></div>
+    <ol data-plan-steps></ol><details class="journey-copy"><summary>How to use your daily time</summary><p data-daily-routine></p></details>
+    <div class="journey-plan-action"><div><h3>Put your plan into practice.</h3><p>Your first three days have a direction. Start your free trial with this plan as your starting point.</p></div><a class="button" data-plan-link data-trial-link href={withBase('/trial')}>Start my free trial</a></div>
+    <details class="journey-copy"><summary>Keep a copy of my plan</summary><label for="journey-copy-text">Select the plan and copy it to your notes.</label><textarea id="journey-copy-text" data-copy-plan readonly rows="8"></textarea></details><small>A suggested routine, not a level assessment or guaranteed band. Starting your trial from here takes your answers with you as a suggestion you can change.</small>
+   </div>
+   <div class="journey-plan-placeholder" data-plan-placeholder><p>Choose your goal, your hardest section and your daily pace. Your short practice plan will appear here.</p><a href="#journey-band" data-plan-complete>Find my starting point</a></div>
+  </section>
+ </div>
+</section>
+<script>import '../../scripts/question-journey';</script>
+<style is:global>@import '../../styles/question-journey.css';</style>

@@ -1,0 +1,112 @@
+/* Sales additions inherit the campus page's forest, apricot and cream identity. */
+.sales-review-note{position:relative;padding:10px 24px;background:#fae5d1;color:#193335;font:12px/1.5 Inter,sans-serif;text-align:center}
+.sales-demo{background:#fffcf6;color:#193335}
+.sales-demo-heading,.teaching-layout{display:grid;grid-template-columns:1.1fr 1fr;gap:70px;align-items:start}
+.sales-demo h2,.sales-teaching h2,.trial-pricing h2{font-size:clamp(34px,4.2vw,58px);line-height:1.12;letter-spacing:-.035em;font-weight:500;text-wrap:balance}
+.sales-demo h2 span,.sales-teaching h2 span{color:#53665b}
+.sales-demo-heading p{font-size:18px;line-height:1.7;max-width:440px}
+.sales-demo-heading .text-link{display:inline-block;margin-top:20px}
+.sales-demo-tabs{display:flex;gap:8px;margin-top:42px;border-bottom:1px solid #deded1;padding-bottom:14px;flex-wrap:wrap}
+.sales-demo-tabs button{border:1px solid transparent;background:transparent;color:#193335;padding:12px 18px;border-radius:30px;font-family:inherit;font-size:14px;font-weight:500;line-height:1.4;cursor:pointer}
+.sales-demo-tabs button[aria-selected=true]{background:#193335;color:#fffcf6}
+.sales-demo-tabs button:hover:not([aria-selected=true]){background:#fae5d1}
+.sales-demo-tabs button:focus-visible,.price-option button:focus-visible{outline:2px solid #995024;outline-offset:4px}
+.sales-demo-panel{display:grid;grid-template-columns:.7fr 1.3fr;gap:48px;align-items:center;padding-top:32px}
+.sales-demo-panel[hidden]{display:none}
+.sales-demo-panel h3{font-size:29px;line-height:1.2;letter-spacing:-.025em;font-weight:500;margin-bottom:18px}
+.sales-demo-panel p{font-size:15px;line-height:1.8;color:#53665b}
+.sales-demo-panel .text-link{display:inline-block;margin-top:20px}
+.sales-demo-panel small{display:block;font-size:11px;line-height:1.7;color:#53665b;margin-top:24px}
+.sales-demo-panel img{display:block;width:100%;height:auto;border:1px solid #deded1;border-radius:12px;box-shadow:0 16px 36px -24px #19333555}
+.sales-teaching{background:#efe9dd;color:#193335}
+.teaching-layout p{font-size:15px;line-height:1.8;margin-bottom:20px;color:#53665b}
+.teaching-layout .teacher-lead{font-size:25px;line-height:1.5;color:#193335;letter-spacing:-.025em}
+.trial-pricing{background:#193335;color:#fffcf6;scroll-margin-top:90px}
+.pricing-heading{display:flex;justify-content:space-between;align-items:end;gap:40px;margin-bottom:60px}
+.trial-pricing h2 span{color:#efa260}
+.pricing-heading>p{font-size:17px;line-height:1.8;color:#d7e0d5;max-width:390px}
+.pricing-layout{display:grid;grid-template-columns:.9fr 1.4fr;gap:70px}
+.trial-includes h3{font-size:25px;font-weight:500;margin-bottom:14px}
+.trial-includes p,.trial-includes li{font-size:14px;line-height:1.75;color:#d7e0d5}
+.trial-includes ul{list-style:none;padding:0;margin:25px 0}
+.trial-includes li{padding:10px 0;border-bottom:1px solid #ffffff20}
+.trial-includes small{display:block;font-size:12px;line-height:1.7;color:#d7e0d5}
+.trial-includes .button{margin-top:24px;background:#efa260;color:#193335}
+.trial-includes .trial-preview-note{margin-top:14px;font-size:11px}
+.price-options{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
+.price-option{display:flex;flex-direction:column;align-items:start;background:#fffcf6;color:#193335;border-radius:18px;padding:30px 25px;min-width:0}
+.price-option-long{background:#fae5d1}
+.price-option h3{font-size:24px;font-weight:500;margin-bottom:10px}
+.price-option p{font-size:13px;line-height:1.65;color:#53665b}
+.price-option .price-amount{font-size:clamp(30px,3vw,42px);letter-spacing:-.035em;line-height:1.2;color:#193335;margin:34px 0 20px;white-space:nowrap}
+.price-amount small{display:block;font-size:12px;letter-spacing:0;margin-top:12px}
+.price-option .price-saving{font-size:12px;color:#78441f;margin-bottom:20px}
+.price-option button{margin-top:auto;width:100%;padding:14px 10px;border:1px solid #718079;border-radius:30px;background:transparent;color:#53665b;font:inherit;font-size:13px;cursor:not-allowed}
+.checkout-status{font-size:12px;line-height:1.7;color:#d7e0d5;border-top:1px solid #ffffff30;padding-top:22px;margin-top:38px;max-width:800px}
+.journey-trial-link{font-size:13px;text-decoration:underline;text-underline-offset:4px;color:#193335;white-space:nowrap}
+@media(max-width:1050px){.sales-demo-heading,.teaching-layout{gap:35px}.pricing-layout{grid-template-columns:1fr;gap:36px}.trial-includes{max-width:650px}.price-options{max-width:760px}.sales-demo-panel{gap:28px}}
+@media(max-width:760px){.sales-demo-heading,.sales-demo-panel,.teaching-layout{grid-template-columns:1fr;gap:26px}.sales-demo-heading p,.pricing-heading>p{font-size:15px}.sales-demo-tabs{margin-top:26px;gap:4px}.sales-demo-tabs button{padding:12px;font-size:12px}.sales-demo-panel h3{font-size:27px}.sales-demo-panel small{margin-top:14px}.pricing-heading{display:block;margin-bottom:34px}.pricing-heading>p{margin-top:24px}.price-options{grid-template-columns:1fr}.price-option{padding:28px}.price-option .price-amount{font-size:42px;margin:26px 0}.price-option button{margin-top:18px}.journey-plan-action{flex-wrap:wrap}.sales-review-note{font-size:11px;padding:10px 16px}}
+@media(scripting:none){.sales-demo-tabs{display:none}.sales-demo-panel[hidden]{display:grid!important}}
+.journey-plan-action .journey-trial-link{color:#efa260;display:inline-block;margin-top:14px}
+.journey-download{display:inline-block;border:0;background:transparent;color:#193335;text-decoration:underline;text-underline-offset:4px;font:inherit;font-size:13px;cursor:pointer;margin-top:20px;padding:10px 0}
+.journey-download:focus-visible{outline:2px solid #995024;outline-offset:4px}
+.journey-copy{margin-top:22px;color:#193335;font-size:13px}.journey-copy summary{cursor:pointer;padding:10px 0;text-decoration:underline;text-underline-offset:4px}.journey-copy label{display:block;margin:12px 0}.journey-copy textarea{display:block;width:100%;padding:16px;font:inherit;line-height:1.7;border:1px solid #bcc7bb;border-radius:10px;background:#fffcf6;color:#193335;resize:vertical}.journey-copy textarea:focus-visible{outline:2px solid #995024;outline-offset:3px}
+
+.sales-trial-detail{display:block;margin-top:12px;font-size:12px;line-height:1.6;color:#53665b}
+@media(max-width:420px){.nav-actions .button-small{font-size:10px;padding-inline:12px}}
+
+/* One shared footprint prevents jumps while the three previews crossfade. */
+.sales-demo-stage{display:grid;isolation:isolate}
+.sales-demo-stage>.sales-demo-panel{grid-area:1/1;align-self:start;min-width:0}
+.sales-demo-stage>.sales-demo-panel[hidden]{display:grid!important;visibility:hidden;pointer-events:none}
+.sales-demo-stage>.sales-demo-panel[inert]{pointer-events:none}
+.sales-demo-panel img{aspect-ratio:1264/760;object-fit:contain;background:#f7f1e7}
+.sales-demo-tabs button{transition:background-color 240ms ease,color 240ms ease}
+@media(prefers-reduced-motion:reduce){.sales-demo-tabs button{transition:none}}
+@media(scripting:none){.sales-demo-stage{display:block}.sales-demo-stage>.sales-demo-panel[hidden]{visibility:visible;pointer-events:auto}}
+
+/* The page explains once, then lets visitors choose their next step. */
+.tutor-example{margin:28px 0;font-size:15px;line-height:1.7}
+.tutor-example-label{font-size:12px;color:#53665b;margin-bottom:16px}
+.tutor-student{padding:18px 22px;background:#fae5d1;border-radius:16px 16px 4px 16px;margin-left:30px}
+.tutor-example b{display:block;font-size:12px;margin-bottom:6px;color:#193335}
+.tutor-reply{padding:22px 0 12px;max-width:56ch}
+.tutor-reply .tutor-next{margin-top:16px;padding-top:14px;border-top:1px solid #19333525;color:#78441f;font-size:13px}
+.tutor-example>small{display:block;font-size:11px;line-height:1.7;color:#53665b}
+.mobile-skill-method{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.journey-plan li::before{display:none}
+.journey-plan li .plan-outcome{margin-top:18px;padding-top:14px;border-top:1px solid #19333520;color:#78441f}
+.journey-copy p{line-height:1.8;margin:12px 0 24px}
+.question-journey .journey-step{min-height:0;padding-top:32px;padding-bottom:32px}
+.question-journey .journey-intro{padding-bottom:36px}
+@media(max-width:760px){
+ .classroom .skill-accordion .skill-tabs{display:grid;grid-template-columns:1fr 1fr;height:auto;gap:8px;margin-bottom:20px}
+ .classroom .skill-accordion .skill-tabs button{padding:15px 10px;border-radius:10px;background:transparent;border:1px solid #9eaca0;color:#193335;min-height:50px;transition:background-color .2s}
+ .classroom .skill-accordion .skill-tabs button[aria-selected=true]{background:#193335;color:#fffcf6;border-color:#193335}
+ .classroom .skill-accordion .skill-tabs button::after{display:none}
+ .classroom .skill-accordion .skill-tabs button>.skill-card-top{position:static;transform:none;font-size:15px;display:block;color:inherit;text-shadow:none;white-space:normal}
+ .classroom .skill-accordion .skill-method{display:none}
+ .classroom .skill-orbit-hint{display:none}
+ .classroom .skill-panel{padding:24px;background:#fffcf6;border-radius:14px}
+ .classroom .skill-detail{display:flex;flex-direction:column}
+ .classroom .skill-detail h3{font-size:25px;order:0}
+ .classroom .skill-detail>p{order:1}
+ .classroom .mobile-skill-method{position:static;width:auto;height:auto;overflow:visible;clip-path:none;order:2;list-style:decimal;padding-left:20px;margin:22px 0 0}
+ .mobile-skill-method li{font-size:14px;line-height:1.7;margin-bottom:14px;padding-left:6px}
+ .mobile-skill-method li::marker{color:#995024}
+ .question-journey .journey-step{padding-bottom:24px}
+}
+
+.question-journey .journey-questions{gap:78px}
+@media(max-width:760px){.question-journey .journey-questions{gap:64px}}
+
+.sales-nav-anchor{position:relative;z-index:30}
+.question-journey .journey-plan li::before{display:none}
+
+/* The header's own "Sign in" is hidden at 1050px and below, so the menu
+   carries it there instead: a returning student never has to scroll to the
+   bottom of the page to sign in. */
+.checkout-status a{text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.chapter-nav .menu-sign-in{display:none}
+@media(max-width:1050px){.chapter-nav .menu-sign-in{display:block}}
+@media(max-width:760px){.chapter-nav .menu-sign-in{border-top:1px solid #dde4d8;margin-top:6px}}

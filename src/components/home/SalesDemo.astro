@@ -1,0 +1,56 @@
+---
+import { withBase } from '../../lib/url';
+const screens = [
+ { id:'speaking', label:'Practise speaking', title:'Say it out loud. Find your confidence.', text:'Work through an IELTS-style conversation with the AI examiner. Keep answer structures and useful phrases beside you while you practise.', image:'platform-speaking-inside.png', alt:'Speaking trainer showing a Part 2 cue card, notes and examiner controls', route:'/trainers/speaking' },
+ { id:'coach', label:'Get a little guidance', title:'A method to use when you get stuck.', text:'Open the coach beside your practice. See how to organise an answer, choose useful language and avoid common mistakes.', image:'platform-speaking-coach.png', alt:'Speaking coach with answer planning, phrases, vocabulary and common mistakes', route:'/trainers/speaking' },
+ { id:'lessons', label:'Learn the method', title:'Know what to practise next.', text:'Explore clear lessons for all four IELTS skills. Learn a method, work through the exercises, then put it to use in practice.', image:'platform-learn.jpg', alt:'IELTS lesson library with lessons organised by skill', route:'/learn' },
+];
+---
+<section class="sales-demo section-pad" id="see-it-work" aria-labelledby="sales-demo-title">
+ <div class="content-wrap">
+  <div class="sales-demo-heading"><h2 id="sales-demo-title">A big ambition.<br /><span>A practical way forward.</span></h2><div><p>Prepare for IELTS 7.5+ with guided practice, AI feedback, and a clear next step.</p></div></div>
+  <div class="sales-demo-tabs" role="tablist" aria-label="See how IELTS is EZ works">{screens.map((screen,i)=><button type="button" role="tab" id={`demo-tab-${screen.id}`} aria-controls={`demo-panel-${screen.id}`} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} data-demo-tab={screen.id}>{screen.label}</button>)}</div>
+  <div class="sales-demo-stage">
+  {screens.map((screen,i)=><div class="sales-demo-panel" id={`demo-panel-${screen.id}`} role="tabpanel" aria-labelledby={`demo-tab-${screen.id}`} hidden={i!==0} aria-hidden={i!==0?"true":undefined} inert={i!==0} tabindex="0"><div><h3>{screen.title}</h3><p>{screen.text}</p><small>Actual platform screenshots, captured in preview mode. No live AI session is running here.</small></div><a href={withBase(`/pics/next-chapter/${screen.image}`)} target="_blank" rel="noopener" aria-label={`View full-size screenshot: ${screen.alt}`}><img src={withBase(`/pics/next-chapter/${screen.image}`)} alt={screen.alt} loading="lazy" width="1264" height="760" /></a></div>)}
+  </div>
+ </div>
+</section>
+<script>
+ const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-demo-tab]'));
+ const panels = tabs.map(tab=>document.getElementById(tab.getAttribute('aria-controls')!)!);
+ const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+ let active = 0;
+ let transition = 0;
+ let motions: Animation[] = [];
+ function settle() {
+  motions.forEach(motion=>motion.cancel());
+  motions=[];
+  panels.forEach((panel,i)=>{
+   panel.hidden=i!==active;
+   panel.inert=i!==active;
+   if(i===active) panel.removeAttribute('aria-hidden');
+   else panel.setAttribute('aria-hidden','true');
+  });
+ }
+ function choose(index:number) {
+  if(index===active)return;
+  const previous=active;
+  const version=++transition;
+  settle();
+  active=index;
+  tabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(index===i));tab.tabIndex=index===i?0:-1;});
+  settle();
+  if(reduce.matches)return;
+  const outgoing=panels[previous], incoming=panels[index];
+  // Outgoing content stays visible only for the fade, never interactive or announced.
+  outgoing.hidden=false;
+  const direction=index>previous?1:-1;
+  motions=[
+   outgoing.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:`translateY(${-6*direction}px)`}],{duration:200,easing:'ease-out',fill:'forwards'}),
+   incoming.animate([{opacity:0,transform:`translateY(${10*direction}px)`},{opacity:1,transform:'translateY(0)'}],{duration:480,easing:'cubic-bezier(.16,1,.3,1)',fill:'both'})
+  ];
+  Promise.all(motions.map(motion=>motion.finished)).then(()=>{if(version===transition)settle();}).catch(()=>{/* A newer selection or reduced-motion change supersedes this fade. */});
+ }
+ reduce.addEventListener('change',()=>{++transition;settle();});
+ tabs.forEach((tab,index)=>{tab.addEventListener('click',()=>choose(index));tab.addEventListener('keydown',event=>{let next=index;if(event.key==='ArrowRight')next=(index+1)%tabs.length;else if(event.key==='ArrowLeft')next=(index+tabs.length-1)%tabs.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=tabs.length-1;else return;event.preventDefault();choose(next);tabs[next].focus();});});
+</script>
