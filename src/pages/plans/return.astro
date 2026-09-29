@@ -1,0 +1,13 @@
+---
+/* Where the payment provider sends a student back after paying (or not):
+   /plans/return?order=<id>. Builder A2, audit remediation F01. The page only
+   READS the order as the signed-in student, so reloading it is always safe.
+   Rendered in the browser only: everything on it depends on the address
+   and the signed-in account. Kept out of search. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PurchaseReturn from '../../components/access/PurchaseReturn';
+---
+
+<BaseLayout noindex title="Your purchase · IELTS is EZ" description="The result of your purchase.">
+  <PurchaseReturn client:only="react" />
+</BaseLayout>
