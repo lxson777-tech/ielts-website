@@ -5,7 +5,12 @@
    empty and every lookup finds nothing. The small helpers and the reason
    lists a student picks from after a wrong answer stay, because the open
    test screens use them; the lists come from src/data/mistake-reasons.ts,
-   which holds no exercise content. */
+   which holds no exercise content.
+
+   A paid account's browser receives the registries through the gate (pack
+   `focused-exercises`, src/lib/trial/packs.ts); fillFocusedExercises puts
+   them in place and every lookup below then answers as the real module's
+   does. */
 
 import type {
   AnyFocusedExercise,
@@ -18,6 +23,7 @@ import type {
 } from '../../../data/focused-exercises';
 import type { Subskill } from '../../learning/contracts/catalog';
 import { paperItemId } from '../../learning/evidence';
+import { packArray, packObject, replaceArray } from './fill';
 
 export type * from '../../../data/focused-exercises';
 export { MAX_REASON_NOTE_CHARS, MISTAKE_REASONS } from '../../../data/mistake-reasons';
@@ -54,22 +60,49 @@ export const SPOKEN_FOCUSED_TASKS: readonly SpokenFocusedTask[] = [];
 export const RESERVED_CHECK_PAPER_IDS: readonly string[] = [];
 export const RESERVED_CHECK_PROMPT_IDS: readonly string[] = [];
 
-export function findFocusedExercise(_id: string): AnyFocusedExercise | undefined {
-  return undefined;
+export function findFocusedExercise(id: string): AnyFocusedExercise | undefined {
+  return ALL_FOCUSED_EXERCISES.find((exercise) => exercise.id === id);
 }
 
-export function focusedExercisesFor(_subskill: Subskill, _role?: FocusedExerciseRole): readonly AnyFocusedExercise[] {
-  return [];
+export function focusedExercisesFor(subskill: Subskill, role?: FocusedExerciseRole): readonly AnyFocusedExercise[] {
+  return ALL_FOCUSED_EXERCISES.filter(
+    (exercise) => exercise.subskill === subskill && (role === undefined || exercise.role === role),
+  );
 }
 
 export function focusedExerciseHref(id: string): string {
   return `/trainers/focused/${id}`;
 }
 
-export function findSpokenFocusedTask(_id: string): SpokenFocusedTask | undefined {
-  return undefined;
+export function findSpokenFocusedTask(id: string): SpokenFocusedTask | undefined {
+  return SPOKEN_FOCUSED_TASKS.find((task) => task.id === id);
 }
 
 export function spokenFocusedTaskHref(id: string): string {
   return `/trainers/speaking-focus/${id}`;
+}
+
+/** Paid access only: the pack `focused-exercises` ({ FOCUSED_EXERCISES,
+    WRITTEN_FOCUSED_TASKS, AUTHORED_FOCUSED_EXERCISES, SPOKEN_FOCUSED_TASKS }).
+    The combined list and the two reserved lists are derived here by the
+    real module's own rules. */
+export function fillFocusedExercises(data: unknown): void {
+  const pack = packObject(data, ['FOCUSED_EXERCISES', 'WRITTEN_FOCUSED_TASKS', 'AUTHORED_FOCUSED_EXERCISES', 'SPOKEN_FOCUSED_TASKS']);
+  const items = packArray<FocusedExercise>(pack.FOCUSED_EXERCISES, 'FOCUSED_EXERCISES');
+  const written = packArray<WrittenFocusedTask>(pack.WRITTEN_FOCUSED_TASKS, 'WRITTEN_FOCUSED_TASKS');
+  const authored = packArray<AuthoredFocusedExercise>(pack.AUTHORED_FOCUSED_EXERCISES, 'AUTHORED_FOCUSED_EXERCISES');
+  const spoken = packArray<SpokenFocusedTask>(pack.SPOKEN_FOCUSED_TASKS, 'SPOKEN_FOCUSED_TASKS');
+  replaceArray(FOCUSED_EXERCISES, items);
+  replaceArray(WRITTEN_FOCUSED_TASKS, written);
+  replaceArray(AUTHORED_FOCUSED_EXERCISES, authored);
+  replaceArray<AnyFocusedExercise>(ALL_FOCUSED_EXERCISES, [...items, ...written, ...authored]);
+  replaceArray(SPOKEN_FOCUSED_TASKS, spoken);
+  replaceArray(
+    RESERVED_CHECK_PAPER_IDS,
+    [...new Set(items.filter((exercise) => exercise.role === 'independent-check').map((exercise) => exercise.source.testId))].sort(),
+  );
+  replaceArray(
+    RESERVED_CHECK_PROMPT_IDS,
+    [...new Set(written.filter((task) => task.role === 'independent-check').map((task) => task.source.promptId))].sort(),
+  );
 }

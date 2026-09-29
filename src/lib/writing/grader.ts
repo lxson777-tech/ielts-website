@@ -7,6 +7,8 @@ import type { EssayAssessment, EssayGrader, EssayInput, GradeResult, MechanicsRe
 import { overallBand } from './schema';
 import { analyzeEssay } from './mechanics';
 import { t } from '../i18n/translate';
+import { getLocale } from '../i18n/locale';
+import { gatedSignIn } from '../trial/content';
 
 /** A grading failure the Worker named with a code: a trial refusal
     ('trial-test-used', 'trial-no-test', ...) or 'sign-in-required'. The
@@ -42,10 +44,14 @@ class RemoteGrader implements EssayGrader {
   ) {}
 
   async grade(input: EssayInput, mechanics: MechanicsReport): Promise<EssayAssessment> {
+    /* A gated build's grader needs the sign-in for every essay: the trial's
+       one test sends it with its sitting; any other essay (paid access)
+       sends it alone, and the Worker checks the account's paid access. */
+    const signIn = this.trial ? this.trial.token : await gatedSignIn();
     const resp = await fetch(this.endpoint, {
       method: 'POST',
-      headers: this.trial
-        ? { 'Content-Type': 'application/json', Authorization: `Bearer ${this.trial.token}` }
+      headers: signIn
+        ? { 'Content-Type': 'application/json', Authorization: `Bearer ${signIn}` }
         : { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         prompt: {
@@ -56,7 +62,11 @@ class RemoteGrader implements EssayGrader {
         },
         essay: input.essay,
         mechanics,
-        ...(this.trial ? { trialSitting: this.trial.sitting, locale: this.trial.locale ?? 'en' } : {}),
+        ...(this.trial
+          ? { trialSitting: this.trial.sitting, locale: this.trial.locale ?? 'en' }
+          : signIn
+            ? { locale: getLocale() === 'ru' ? 'ru' : 'en' }
+            : {}),
       }),
       // Three reasoning-model runs are taken and the median kept; allow three minutes.
       signal: AbortSignal.timeout(180000),

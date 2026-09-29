@@ -87,7 +87,13 @@ function trialBrowserContent() {
       if (samePath(file, LEARNING_INDEX)) return resolved.id.includes('?') ? null : TRIAL_INDEX_ID;
       if (samePath(file, RU_DICTIONARY)) return TRIAL_RU_ID;
       const under = /[\\/]src[\\/](.+)$/.exec(file);
-      return (under && TRIAL_SWAPS.get(under[1].replaceAll('\\', '/'))) ?? null;
+      /* The stand-in's id with forward slashes, the form Vite gives the same
+         file when something imports it directly (src/lib/trial/packs.ts
+         does, to fill it for a paid account). A Windows path here would make
+         a second copy of the module, and the fill would miss the one the
+         page reads. */
+      const swap = under && TRIAL_SWAPS.get(under[1].replaceAll('\\', '/'));
+      return swap ? swap.replaceAll('\\', '/') : null;
     },
     load(id) {
       if (id === TRIAL_RU_ID) {

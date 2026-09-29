@@ -63,7 +63,7 @@ import { ACCESS_MODE } from '../../lib/trial/mode';
 import { TRIAL_OFFER, isTrialLesson, isTrialSection, lessonSection, type TrialSection } from '../../lib/trial/offer';
 import { refreshTrial } from '../../lib/trial/client';
 import { useTrial } from '../../lib/trial/react';
-import { tutorAllowance } from '../../lib/trial/status';
+import { hasPaidAccess, tutorAllowance } from '../../lib/trial/status';
 
 const SECTION_LABEL: Record<TrialSection, string> = {
   reading: 'Reading',
@@ -129,7 +129,9 @@ function suggestionsFor(place: TutorPlace, t: Translator['t']): string[] {
 export default function MrEzPanel() {
   const { t, tn } = useT();
   const trial = useTrial();
-  const trialMode = ACCESS_MODE === 'trial';
+  /* Paid access (docs/paid-access/CONTRACT.md): no trial allowance, no
+     per-section line; the Worker applies its ordinary per-student limits. */
+  const trialMode = ACCESS_MODE === 'trial' && !(trial.status !== null && hasPaidAccess(trial.status, trial.now));
   const [open, setOpen] = useState(false);
   const [state, setState] = useState<ConversationState>(EMPTY_CONVERSATION);
   const [draft, setDraft] = useState('');

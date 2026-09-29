@@ -7,6 +7,12 @@ import SpeakingHistory from '../../components/SpeakingHistory';
 import { withBase } from '../../lib/url';
 import { nt } from '../../lib/i18n/translate';
 import { ACCESS_MODE } from '../../lib/trial/mode';
+import PaidContent from '../../components/trial/PaidContent';
+
+/* The gated build (PUBLIC_ACCESS_MODE=trial) writes none of this page's
+   material into it: a paid account's browser receives it through the content
+   gate, and PaidContent mounts the tool once it is in. */
+const gated = ACCESS_MODE === 'trial';
 
 /* The trainer is the live examiner scoped to one part (same tech as
    /speaking/examiner). When the live token service isn't configured at
@@ -24,7 +30,7 @@ const historySubtitle =
 
 <BaseLayout
   title="Speaking Trainer · IELTS Portal"
-  trialGate={{ kind: 'locked', title: 'Speaking Trainer' }}
+  trialGate={{ kind: 'locked', title: 'Speaking Trainer', paidContent: true }}
   description="Practice IELTS Speaking Part 1, 2 or 3 as a live voice conversation with an AI examiner, with an interactive coach panel of structures, phrases and topic vocabulary, and a full band report."
 >
   <div class="skill-speaking mx-auto max-w-4xl px-4 py-12 sm:px-6">
@@ -33,7 +39,13 @@ const historySubtitle =
       title="Speaking Trainer"
 
     />
-    {liveConfigured ? <LiveExaminer client:load variant="drills" /> : <SpeakingTester client:load />}
+    {gated ? (
+      <PaidContent client:load view={{ name: 'speaking-trainer', live: liveConfigured }} />
+    ) : liveConfigured ? (
+      <LiveExaminer client:load variant="drills" />
+    ) : (
+      <SpeakingTester client:load />
+    )}
 
     <a href={withBase('/speaking/cue-cards')} class="skill-resource-card">
       <span class="skill-resource-card-title" data-i18n>Cue-card bank (for study, not a test)</span>

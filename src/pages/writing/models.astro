@@ -7,11 +7,18 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import ModelAnswers from '../../components/ModelAnswers';
+import PaidContent from '../../components/trial/PaidContent';
+import { ACCESS_MODE } from '../../lib/trial/mode';
+
+/* The gated build (PUBLIC_ACCESS_MODE=trial) writes none of this page's
+   material into it: a paid account's browser receives it through the content
+   gate, and PaidContent mounts the tool once it is in. */
+const gated = ACCESS_MODE === 'trial';
 ---
 
 <BaseLayout
   title="Essay Model Answers · IELTS Portal"
-  trialGate={{ kind: 'locked', title: 'Model answers' }}
+  trialGate={{ kind: 'locked', title: 'Model answers', paidContent: true }}
   description="Band 6, 7 and 8 model essays for every Writing Task 2 prompt, and Band 7 and 8.5 model reports and letters for every Task 1 prompt, with examiner notes and highlighted phrases."
 >
   <div class="skill-writing mx-auto max-w-6xl px-4 py-12 sm:px-6">
@@ -20,7 +27,7 @@ import ModelAnswers from '../../components/ModelAnswers';
       title="Essay Model Answers"
       subtitle="Read a model answer, explore its highlighted phrases, and learn what earns the band."
     />
-    <ModelAnswers client:load />
+    {gated ? <PaidContent client:load view={{ name: 'model-answers' }} /> : <ModelAnswers client:load />}
   </div>
 </BaseLayout>
 

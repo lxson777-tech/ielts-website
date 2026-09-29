@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LearningDashboard from '../components/LearningDashboard';
-import TrialHome from '../components/trial/TrialHome';
+import AccessHome from '../components/trial/AccessHome';
 import { ACCESS_MODE } from '../lib/trial/mode';
 import { trialLibrary } from '../lib/trial/library';
 import { ALL_TESTS } from '../data/tests';
@@ -9,12 +9,14 @@ import { ALL_TESTS } from '../data/tests';
 /* A trial build (PUBLIC_ACCESS_MODE=trial) shows the trial's own Today:
    time left, the four sections, each section's one lesson, test and Mr EZ
    allowance. The personal course's Today would recommend lessons the trial
-   does not open, so it waits for full access. The open site is unchanged. */
+   does not open, so it waits for full access: a paid account gets the
+   personal Today (AccessHome switches on the account). The open site is
+   unchanged. */
 const trial = ACCESS_MODE === 'trial';
 const sections = trial ? trialLibrary((id) => ALL_TESTS.find((test) => test.id === id)?.title) : [];
 ---
 <BaseLayout wide title="Dashboard · IELTS is EZ" description="Your IELTS preparation dashboard.">
-  {trial ? <TrialHome client:load sections={sections} /> : <LearningDashboard client:load />}
+  {trial ? <AccessHome client:load page="dashboard" sections={sections} /> : <LearningDashboard client:load />}
 </BaseLayout>
 
 <style is:global>

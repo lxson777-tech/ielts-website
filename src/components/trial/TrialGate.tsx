@@ -12,11 +12,18 @@
    content; a determined student can read it from the page source. The
    database and the Workers are what refuse paid work and count allowances.
    Closing the content itself needs the hosting change described in
-   docs/TRIAL-IMPLEMENTATION.md. */
+   docs/TRIAL-IMPLEMENTATION.md.
+
+   PAID ACCESS (docs/paid-access/CONTRACT.md) opens every kind: a paid
+   account may read every lesson, sit the full Speaking test and use every
+   page the trial locks. Such a page carries no locked material in the gated
+   build (`paidContent`); its tool is mounted by PaidContent once the
+   material has arrived through the content gate. When paid access ends the
+   trial's own rules apply again, and saved results stay. */
 
 import { useEffect } from 'react';
 import { useTrial } from '../../lib/trial/react';
-import { lessonAccess, testAccess } from '../../lib/trial/status';
+import { hasPaidAccess, lessonAccess, paidAccessEnded, testAccess } from '../../lib/trial/status';
 import { TRIAL_OFFER } from '../../lib/trial/offer';
 import { ACCESS_MODE } from '../../lib/trial/mode';
 import TrialBlock, { accountBlock, type TrialBlockReason } from './TrialBlock';
@@ -25,8 +32,12 @@ export type TrialGateSpec =
   /** A course lesson: open when it is the section's trial lesson. */
   | { kind: 'lesson'; lessonKey: string; title: string }
   /** A page the trial does not include at all (trainers, drills, the mock
-      exam, focused exercises, supporting libraries). */
-  | { kind: 'locked'; title: string }
+      exam, focused exercises, supporting libraries). `paidContent`: the
+      page's markup carries no locked material and its tool is mounted by
+      PaidContent for a paid account, so BaseLayout keeps the markup (hidden
+      until this opens it). Without it a gated build leaves the page's
+      content out entirely, which is the safe default for a new page. */
+  | { kind: 'locked'; title: string; paidContent?: boolean }
   /** The trial's Speaking test page (the live examiner). Open to a student
       whose trial includes it; the examiner itself says when the test is
       used or has ended, so its report stays on screen after grading. */
@@ -44,6 +55,7 @@ export default function TrialGate({ spec }: { spec: TrialGateSpec }) {
   else {
     const account = accountBlock(trial);
     if (account) reason = account;
+    else if (hasPaidAccess(trial.status!, trial.now)) reason = 'open';
     else if (spec.kind === 'speaking') {
       const access = testAccess(trial.status!, 'speaking', TRIAL_OFFER.speaking.testId, trial.now);
       reason = access === 'unavailable' ? 'speaking-unavailable' : access === 'no-trial' ? 'no-trial' : access === 'locked' ? 'locked' : 'open';
@@ -54,6 +66,10 @@ export default function TrialGate({ spec }: { spec: TrialGateSpec }) {
       reason = access === 'included' ? 'open' : access === 'ended' ? 'ended' : access === 'locked' ? 'locked' : 'no-trial';
     }
   }
+
+  /* Paid access that has ended: the ended rules apply, and the page says
+     so in those words rather than as a trial. */
+  if ((reason === 'locked' || reason === 'ended') && trial.status && paidAccessEnded(trial.status, trial.now)) reason = 'paid-ended';
 
   useEffect(() => {
     setGate(reason === 'open' ? 'open' : reason === 'checking' ? 'pending' : 'locked');

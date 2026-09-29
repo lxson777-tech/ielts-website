@@ -14,6 +14,7 @@
    request body. */
 
 import { t } from '../i18n/translate';
+import { gatedSignIn } from '../trial/content';
 import type {
   AudioMechanicsReport,
   SpeakingAssessment,
@@ -46,9 +47,12 @@ class RemoteSpeakingGrader implements SpeakingGrader {
             mechanics: wireMechanics(mechanics),
           };
 
+    /* A gated build's grader needs the sign-in (paid access is checked by
+       the Worker); the open site sends exactly what it always sent. */
+    const signIn = await gatedSignIn();
     const resp = await fetch(this.endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: signIn ? { 'Content-Type': 'application/json', Authorization: `Bearer ${signIn}` } : { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
       // The Worker transcribes the audio, grades the transcript and then judges
       // pronunciation from the audio, one call after another. A full 14-minute

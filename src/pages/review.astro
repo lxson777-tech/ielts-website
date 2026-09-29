@@ -3,6 +3,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import VocabTopics from '../components/VocabTopics';
 import { VOCABULARY_PARTS } from '../data/vocabulary';
 import { buildVocabTopicData, type VocabTopicData } from '../lib/vocab-review';
+import PaidContent from '../components/trial/PaidContent';
+import { ACCESS_MODE } from '../lib/trial/mode';
+
+/* The gated build (PUBLIC_ACCESS_MODE=trial) writes no vocabulary into this
+   page: the topics are the vocabulary lessons themselves. A paid account's
+   browser receives them through the content gate (the pack `vocabulary`),
+   and PaidContent mounts the page once they are in. */
+const gated = ACCESS_MODE === 'trial';
 
 // Same import.meta.glob pattern as src/pages/lessons/vocabulary/[part].astro:
 // read every topic's lesson body at build time, then hand the typed,
@@ -14,14 +22,14 @@ const fragments = import.meta.glob<string>('../content/lesson-bodies/vocabulary-
   eager: true,
 });
 
-const topicsData: VocabTopicData[] = VOCABULARY_PARTS.map((part) => {
+const topicsData: VocabTopicData[] = gated ? [] : VOCABULARY_PARTS.map((part) => {
   const raw = fragments[`../content/lesson-bodies/vocabulary-${part.slug}.html`];
   if (!raw) throw new Error(`Missing fragment for vocabulary topic: ${part.slug}`);
   return buildVocabTopicData(raw, part.slug, part.title);
 });
 ---
-<BaseLayout trialGate={{ kind: 'locked', title: 'Vocabulary' }} title="Vocabulary · IELTS is EZ" description="Every IELTS topic word, grouped by topic, with meanings and examples.">
-  <VocabTopics client:load topics={topicsData} />
+<BaseLayout trialGate={{ kind: 'locked', title: 'Vocabulary', paidContent: true }} title="Vocabulary · IELTS is EZ" description="Every IELTS topic word, grouped by topic, with meanings and examples.">
+  {gated ? <PaidContent client:load view={{ name: 'vocab-topics' }} /> : <VocabTopics client:load topics={topicsData} />}
 </BaseLayout>
 
 <style is:global>

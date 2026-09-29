@@ -813,8 +813,12 @@ test('source scan: the live examiner writes the placement grade as diagnostic ev
 
 test('source scan: the placement material ids live in src/data/placement.ts and the page resolves them without crashing on a missing one', () => {
   const page = source('../src/pages/placement.astro');
-  assert.match(page, /getDrill\(drillId\)/);
-  assert.match(page, /\?\? null/);
+  /* Resolved in src/lib/placement/material.ts since 29 September 2026, so
+     the gated build's paid pack is built by the same function. */
+  const material = source('../src/lib/placement/material.ts');
+  assert.match(page, /placementMaterial\(\)/);
+  assert.match(material, /getDrill\(drillId\)/);
+  assert.match(material, /\?\? null/);
   const components = fs
     .readdirSync(new URL('../src/components/placement/', import.meta.url))
     .map((file) => source(`../src/components/placement/${file}`))
@@ -822,6 +826,7 @@ test('source scan: the placement material ids live in src/data/placement.ts and 
   for (const id of [PLACEMENT.listening.drillId, PLACEMENT.reading.drillId, PLACEMENT.writing.promptId, PLACEMENT.speaking.topicId]) {
     assert.ok(!components.includes(id), `${id} is spelled in a component, not only in src/data/placement.ts`);
     assert.ok(!page.includes(id), `${id} is spelled in the page, not only in src/data/placement.ts`);
+    assert.ok(!material.includes(id), `${id} is spelled in src/lib/placement/material.ts, not only in src/data/placement.ts`);
   }
   assert.equal(currentOwner().kind, 'user');
 });

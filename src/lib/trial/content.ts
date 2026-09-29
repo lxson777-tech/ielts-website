@@ -17,6 +17,16 @@ export function contentIsGated(): boolean {
   return ACCESS_MODE === 'trial';
 }
 
+/** The signed-in student's token for a Worker call, in a gated build only
+    (null on the open site, which sends exactly what it always sent). A
+    gated build's Workers need to know who is asking before they do paid
+    work: a paid account is graded because the Worker finds its running
+    grant, never because the browser says so. */
+export async function gatedSignIn(): Promise<string | null> {
+  if (!contentIsGated()) return null;
+  return getAccessToken().catch(() => null);
+}
+
 export type GatedResult =
   | { ok: true; text: string }
   | { ok: false; status: number; code: string };
