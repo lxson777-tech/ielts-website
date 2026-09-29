@@ -21,8 +21,17 @@ item right now (`trial_can_open` in `supabase/migrations/2026-09-23-trial.sql`)?
 | `GET /explanations/<locale>/<id>` | translated answer notes | with the paper (or, for a quiz, its lesson) |
 | `GET /prompt/<prompt id>` | a Writing question | the trial's essay question, with its Writing test |
 | `GET /model/<prompt id>` | a Band 8 model with its question | the trial's one example, with its Task 2 lesson |
+| `GET /pack/<name>` | one module's paid material (`packs/<name>.json`) | a running paid grant only |
 | `GET /audio/<file>?exp=&sig=` | a listening recording, byte ranges supported | anyone holding a link the gate signed, until it expires |
 | `GET /data/tests/<id>.json`, `GET /data/lesson-blocks/<key>.json` | Mr EZ's data | the Mr EZ Worker only, with `CONTENT_SERVICE_KEY` |
+
+**Paid access** (`supabase/migrations/2026-09-30-paid-access.sql`,
+`docs/paid-access/CONTRACT.md`): while an account holds a running paid grant,
+`trial_can_open` opens every lesson, test, practice set, Writing question, model answer
+and pack, whatever the trial includes. A grant exists only once the payments Worker
+(`workers/payments`) has recorded a confirmed payment. When it ends, or is refunded,
+the trial's own rules apply again (an ended trial stays ended), and packs are refused.
+A pack that has not been built yet is 404.
 
 Who is asking comes only from the verified sign-in; the request names only what it
 wants. An unreachable database is a refusal (503), never an open door. Every reply is

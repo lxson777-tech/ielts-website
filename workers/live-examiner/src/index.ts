@@ -111,6 +111,7 @@ import {
 import {
   TRIAL_REFUSAL_TEXT,
   TrialRefusal,
+  paidAccessRunning,
   readSittingId,
   refusal,
   releaseSpeakingSession,
@@ -571,12 +572,20 @@ async function handleOpenAiCreate(deps: Deps, request: Request, env: Env, cors: 
   let trial: { rpc: TrialRpc; sitting: string } | null = null;
   if (parseAccessMode(env.ACCESS_MODE) === 'trial') {
     try {
-      if (plan.mode !== TRIAL_SPEAKING_MODE) throw refusal('trial-not-included');
-      const sitting = readSittingId(parsed.value.trialSitting);
-      if (!sitting) throw refusal('trial-no-test');
       const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL as string, env.SUPABASE_SERVICE_ROLE_KEY as string);
-      await startSpeakingSession(rpc, userId, sitting);
-      trial = { rpc, sitting };
+      /* Paid access first (docs/paid-access/CONTRACT.md): a running grant
+         opens any interview, exactly as the open site does, under the daily
+         and concurrency limits checked above (Alex, 29 September 2026: paid
+         use is "unlimited, fair daily caps", and these are the caps).
+         Otherwise the trial's rules. */
+      if (!(await paidAccessRunning(rpc, userId))) {
+        if (!TRIAL_OFFER.speaking.testEnabled) throw refusal('trial-not-included');
+        if (plan.mode !== TRIAL_SPEAKING_MODE) throw refusal('trial-not-included');
+        const sitting = readSittingId(parsed.value.trialSitting);
+        if (!sitting) throw refusal('trial-no-test');
+        await startSpeakingSession(rpc, userId, sitting);
+        trial = { rpc, sitting };
+      }
     } catch (err) {
       if (err instanceof TrialRefusal) return json({ error: err.message, code: err.code }, 403, cors);
       return json({ error: 'The live examiner service is temporarily unavailable.' }, 503, cors);
@@ -926,11 +935,10 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
        In the trial, sessions exist only for the Speaking test (switched on
        in TRIAL_OFFER) and only on the signed-in OpenAI path: the Gemini
        rollback has no sign-in, so it cannot be tied to a student's test. */
-    if (
-      (path === '/' || path === '/direct') &&
-      parseAccessMode(env.ACCESS_MODE) === 'trial' &&
-      (!TRIAL_OFFER.speaking.testEnabled || resolveProvider(env) !== 'openai')
-    ) {
+    /* Whether the Speaking test itself is switched on is checked after
+       sign-in (handleOpenAiCreate), because a paid account opens the
+       examiner whatever the trial includes. */
+    if ((path === '/' || path === '/direct') && parseAccessMode(env.ACCESS_MODE) === 'trial' && resolveProvider(env) !== 'openai') {
       return json({ error: TRIAL_REFUSAL_TEXT['trial-not-included'], code: 'trial-not-included' }, 403, cors);
     }
 
@@ -962,12 +970,24 @@ export async function closeOverdueTrialSessions(deps: Deps, env: Env): Promise<{
   const rows = await fetchRows(
     deps,
     env,
-    `ended_at=is.null&provider_session_id=not.is.null&created_at=lt.${encodeURIComponent(cutoff)}&select=id,provider_session_id`,
+    `ended_at=is.null&provider_session_id=not.is.null&created_at=lt.${encodeURIComponent(cutoff)}&select=id,provider_session_id,user_id`,
   );
   let closed = 0;
   let failed = 0;
+  /* A paid account's interview is not the trial's five-minute test: it is
+     left to run, as on the open site. Asked once per student per sweep. If
+     the database cannot say, the session is treated as a trial one and
+     closed: the cut-off exists to bound spending, so it fails closed. */
+  const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL as string, env.SUPABASE_SERVICE_ROLE_KEY as string);
+  const paidUsers = new Map<string, boolean>();
+  const isPaid = async (userId: unknown): Promise<boolean> => {
+    if (typeof userId !== 'string') return false;
+    if (!paidUsers.has(userId)) paidUsers.set(userId, await paidAccessRunning(rpc, userId).catch(() => false));
+    return paidUsers.get(userId)!;
+  };
   for (const row of rows) {
     if (!isRecord(row) || typeof row.id !== 'string' || typeof row.provider_session_id !== 'string') continue;
+    if (await isPaid(row.user_id)) continue;
     const result = await deps.sideband(env, row.provider_session_id, { type: 'session.close', event_id: `close_${crypto.randomUUID()}` });
     // A closed socket is the expected answer to a close; anything else is a
     // failure to report, and the row stays open so the next minute retries.

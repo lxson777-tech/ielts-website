@@ -2,8 +2,9 @@
    answer, release after a failure.
 
    SHARED with the Workers only (mr-ez, grade-essay, grade-speaking). It calls
-   the database functions in supabase/migrations/2026-09-23-trial.sql with the
-   service role key, which only a Worker holds. The database decides; this
+   the database functions in supabase/migrations/2026-09-23-trial.sql (and,
+   for paid access, 2026-09-30-paid-access.sql) with the service role key,
+   which only a Worker holds. The database decides; this
    file only asks it and turns its answer into a refusal a Worker can return.
 
    THE SECTION IS NEVER TAKEN FROM A LABEL. A tutor request names a lesson, a
@@ -116,6 +117,24 @@ function refuseFrom(result: Record<string, unknown>): never {
   const code = REASON_TO_CODE[String(result.reason ?? '')];
   if (!code) throw new TrialServiceError(`trial: unexpected refusal ${String(result.reason)}`);
   throw refusal(code);
+}
+
+/* ── Paid access ──────────────────────────────────────────────────────── */
+
+/** Whether the account's paid access is running right now, by the
+    database's clock (`access_paid_now` in
+    supabase/migrations/2026-09-30-paid-access.sql). Asked FIRST by every
+    trial check: a running grant skips the trial's allowances, and the Worker
+    then applies only its existing per-student daily limits (Alex, 29
+    September 2026: paid use is "unlimited, fair daily caps", and the
+    existing limits are those caps). When paid access ends this
+    answers false and the trial's own rules apply again, ended trial
+    included. Throws TrialServiceError when the database cannot be asked:
+    the caller fails closed, it never assumes either answer. */
+export async function paidAccessRunning(rpc: TrialRpc, userId: string): Promise<boolean> {
+  const result = await rpc('access_paid_now', { p_user: userId });
+  if (typeof result.paid !== 'boolean') throw new TrialServiceError('trial: access_paid_now answered unreadably');
+  return result.paid;
 }
 
 /* ── Mr EZ ────────────────────────────────────────────────────────────── */

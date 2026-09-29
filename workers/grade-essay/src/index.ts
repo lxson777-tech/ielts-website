@@ -24,6 +24,7 @@ import {
   TrialRefusal,
   bearer,
   leaseTrialTest,
+  paidAccessRunning,
   readSittingId,
   refusal,
   releaseUse,
@@ -961,6 +962,10 @@ export function createHandler(deps: { fetch: typeof fetch }) {
          now. The lease is what stops two submissions of the one test both
          being paid for. */
       let trial: { rpc: TrialRpc; userId: string; sitting: string } | null = null;
+      /* A paid account in a trial build: graded exactly as the open grader
+         grades (the student's own question, no trial test used), plus the
+         band guide steps a trial build's browser does not carry. */
+      let paid = false;
       if (parseAccessMode(env.ACCESS_MODE) === 'trial') {
         if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
           return json({ error: 'The essay grader is not configured' }, 503, cors);
@@ -969,21 +974,28 @@ export function createHandler(deps: { fetch: typeof fetch }) {
           const token = bearer(request);
           const userId = token ? await verifyAccessToken(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, token) : null;
           if (!userId) return json({ error: 'Sign in to have your essay graded.', code: 'sign-in-required' }, 401, cors);
-          const sitting = readSittingId(body.trialSitting);
-          if (!sitting) throw refusal('trial-no-test');
-          /* The trial essay answers the trial's own question, read here from
-             the server's copy, never from the request (Alex, 24 September). */
-          const question = getWritingPrompt(TRIAL_WRITING.essayPromptId);
-          if (!question) throw refusal('trial-not-included');
-          body.prompt = {
-            task: question.task,
-            variant: question.variant,
-            promptHtml: question.promptHtml,
-            minWords: question.minWords,
-          };
           const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
-          await leaseTrialTest(rpc, userId, 'writing', sitting);
-          trial = { rpc, userId, sitting };
+          /* Paid access first (docs/paid-access/CONTRACT.md). Alex, 29
+             September 2026: paid use is "unlimited, fair daily caps" with
+             the Workers' EXISTING per-student limits. This grader has none
+             today, so a paid essay is graded as the open grader grades it. */
+          paid = await paidAccessRunning(rpc, userId);
+          if (!paid) {
+            const sitting = readSittingId(body.trialSitting);
+            if (!sitting) throw refusal('trial-no-test');
+            /* The trial essay answers the trial's own question, read here from
+               the server's copy, never from the request (Alex, 24 September). */
+            const question = getWritingPrompt(TRIAL_WRITING.essayPromptId);
+            if (!question) throw refusal('trial-not-included');
+            body.prompt = {
+              task: question.task,
+              variant: question.variant,
+              promptHtml: question.promptHtml,
+              minWords: question.minWords,
+            };
+            await leaseTrialTest(rpc, userId, 'writing', sitting);
+            trial = { rpc, userId, sitting };
+          }
         } catch (err) {
           if (err instanceof TrialRefusal) {
             return json({ error: err.message, code: err.code }, err.code === 'trial-in-flight' ? 409 : 403, cors);
@@ -1044,6 +1056,11 @@ export function createHandler(deps: { fetch: typeof fetch }) {
         const bands = Object.fromEntries(Object.entries(criteria).map(([key, value]) => [key, value?.band]));
         const guides = bandStepsFor('writing', bands, readBandStepLocale(body.locale));
         return json({ ...median, guides, trial: { section: 'writing', test: 'used' } }, 200, cors);
+      }
+      if (paid) {
+        const criteria = (median.criteria ?? {}) as Record<string, { band?: unknown }>;
+        const bands = Object.fromEntries(Object.entries(criteria).map(([key, value]) => [key, value?.band]));
+        return json({ ...median, guides: bandStepsFor('writing', bands, readBandStepLocale(body.locale)) }, 200, cors);
       }
       return json(median, 200, cors);
     },
