@@ -23,7 +23,7 @@
 
 import { useEffect } from 'react';
 import { useTrial } from '../../lib/trial/react';
-import { hasPaidAccess, lessonAccess, testAccess } from '../../lib/trial/status';
+import { hasPaidAccess, lessonAccess, paidAccessEnded, testAccess } from '../../lib/trial/status';
 import { TRIAL_OFFER } from '../../lib/trial/offer';
 import { ACCESS_MODE } from '../../lib/trial/mode';
 import TrialBlock, { accountBlock, type TrialBlockReason } from './TrialBlock';
@@ -66,6 +66,10 @@ export default function TrialGate({ spec }: { spec: TrialGateSpec }) {
       reason = access === 'included' ? 'open' : access === 'ended' ? 'ended' : access === 'locked' ? 'locked' : 'no-trial';
     }
   }
+
+  /* Paid access that has ended: the ended rules apply, and the page says
+     so in those words rather than as a trial. */
+  if ((reason === 'locked' || reason === 'ended') && trial.status && paidAccessEnded(trial.status, trial.now)) reason = 'paid-ended';
 
   useEffect(() => {
     setGate(reason === 'open' ? 'open' : reason === 'checking' ? 'pending' : 'locked');

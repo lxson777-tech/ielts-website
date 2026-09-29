@@ -9,7 +9,7 @@ import type { ReactNode } from 'react';
 import { useT } from '../../lib/i18n/react';
 import { withBase } from '../../lib/url';
 import { refreshTrial, type TrialView } from '../../lib/trial/client';
-import { hasPaidAccess } from '../../lib/trial/status';
+import { hasPaidAccess, paidAccessEnded } from '../../lib/trial/status';
 import { signInHref } from '../../lib/auth/profile';
 import { currentRoute } from '../../lib/auth/next';
 
@@ -22,6 +22,9 @@ export type TrialBlockReason =
   | 'no-trial'
   | 'locked'
   | 'ended'
+  /** Paid access has ended (the account paid before). Said as it is, never
+      as a trial the student may not have had. */
+  | 'paid-ended'
   | 'speaking-unavailable'
   /* The section's test only. */
   | 'test-used'
@@ -38,7 +41,11 @@ export function accountBlock(trial: TrialView): TrialBlockReason | null {
   if (trial.phase === 'no-accounts') return 'no-accounts';
   if (trial.phase === 'error') return trial.failure === 'offline' ? 'error-offline' : 'error-server';
   if (!trial.status) return 'no-trial';
-  if (trial.status.state === 'none' && !hasPaidAccess(trial.status, Date.now() + trial.offsetMs)) return 'no-trial';
+  if (trial.status.state === 'none') {
+    const now = Date.now() + trial.offsetMs;
+    if (paidAccessEnded(trial.status, now)) return 'paid-ended';
+    if (!hasPaidAccess(trial.status, now)) return 'no-trial';
+  }
   return null;
 }
 
@@ -137,6 +144,18 @@ export default function TrialBlock({
         <>
           {plans}
           {home}
+        </>
+      );
+      break;
+    case 'paid-ended':
+      heading = t('Your full access has ended');
+      body = t('Your results and your work are saved. Choose a plan to open the full course again.');
+      actions = (
+        <>
+          {plans}
+          <a className="trial-btn" href={withBase('/report')}>
+            {t('See my results')}
+          </a>
         </>
       );
       break;

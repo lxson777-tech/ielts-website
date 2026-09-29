@@ -3,7 +3,8 @@
 
    Covers: the in-between screens of paid material (src/components/trial/
    PaidStates.tsx), shown while a paid account's material arrives through
-   the content gate or when it could not be fetched.
+   the content gate or when it could not be fetched, and the gate's words
+   once paid access has ended (src/components/trial/TrialBlock.tsx).
 
    See docs/I18N-GUIDE.md for the style rules and the glossary. */
 
@@ -14,6 +15,9 @@ export const strings: Record<string, string> = {
   'Your access and your work are safe. Please try again in a moment.':
     'Ваш доступ и ваши работы в сохранности. Пожалуйста, попробуйте ещё раз чуть позже.',
   'Please sign in again': 'Пожалуйста, войдите снова',
+  'Your full access has ended': 'Ваш полный доступ закончился',
+  'Your results and your work are saved. Choose a plan to open the full course again.':
+    'Ваши результаты и работы сохранены. Выберите тариф, чтобы снова открыть весь курс.',
   'Your session has expired. Sign in and this page opens again, with your access and your work as they were.':
     'Срок вашего сеанса истёк. Войдите, и эта страница снова откроется, а ваш доступ и ваши работы останутся прежними.',
 };
