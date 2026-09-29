@@ -31,6 +31,7 @@ import * as learningObjectives from './learning-objectives';
 import * as trial from './trial';
 import * as profile from './profile';
 import * as placement from './placement';
+import * as cRemediation from './c-remediation';
 import * as a1Remediation from './a1-remediation';
 import * as bRemediation from './b-remediation';
 import * as dRemediation from './d-remediation';
@@ -62,6 +63,7 @@ export const BATCHES = [
   trial,
   profile,
   placement,
+  cRemediation,
   a1Remediation,
   bRemediation,
   dRemediation,

@@ -1,22 +1,21 @@
 ---
 import { withBase } from '../../lib/url';
-import { FULL_ACCESS_PRICES_KZT, TRIAL_TUTOR_PER_SECTION } from '../../lib/trial/offer';
-/* Prices come from the one approved source (also used by /plans). Payment
+import { sales } from '../../marketing/sales-copy';
+/* Prices come from the one approved source (also used by /plans), through
+   src/marketing/sales-copy.ts, which formats them for each language. Payment
    is not connected anywhere, so the purchase buttons stay unavailable and
    the page says so; the trial button opens the real trial page. */
-const tenge = (amount: number) => `₸${amount.toLocaleString('en-US')}`;
-const { oneMonth, threeMonths } = FULL_ACCESS_PRICES_KZT;
 ---
 <section class="trial-pricing section-pad" id="pricing" aria-labelledby="pricing-title">
  <div class="content-wrap">
-  <div class="pricing-heading"><h2 id="pricing-title">Your first 3 days.<br /><span>On us.</span></h2><p>Get to know your study space before you pay.<br />Sign up to start. No payment card required.</p></div>
+  <div class="pricing-heading"><h2 id="pricing-title" data-sales="price.title" set:html={sales('price.title')} /><p data-sales="price.lead" set:html={sales('price.lead')} /></div>
   <div class="pricing-layout">
-   <div class="trial-includes"><h3>One place to prepare.</h3><p>Three days to try your study space. One test in each IELTS section.</p><ul><li>Reading, Listening, Writing and Speaking lessons</li><li>Guided exercises and timed practice tests</li><li>AI writing and speaking feedback</li><li>AI speaking practice with an examiner</li><li>Mr EZ, your personal AI study companion</li></ul><small>Trial: 1 Reading + 1 Listening + 1 Writing + 1 Speaking test, and {TRIAL_TUTOR_PER_SECTION} Mr EZ messages per section. Paid-plan allowances are still being finalised.</small><a class="button" href={withBase('/trial')} data-trial-link>Start your free trial</a></div>
-   <div class="price-options" aria-label="Access after your trial">
-    <article class="price-option"><div><h3>One month</h3><p>Room to build your routine.</p></div><p class="price-amount">{tenge(oneMonth)} <small>for 1 month</small></p><button type="button" disabled aria-describedby="checkout-status">Choose one month</button></article>
-    <article class="price-option price-option-long"><div><h3>Three months</h3><p>More time to put it into practice.</p></div><p class="price-amount">{tenge(threeMonths)} <small>for 3 months, total</small></p><p class="price-saving">Save {tenge(oneMonth * 3 - threeMonths)} compared with three monthly purchases.</p><button type="button" disabled aria-describedby="checkout-status">Choose three months</button></article>
+   <div class="trial-includes"><h3 data-sales="price.includes.title">{sales('price.includes.title')}</h3><p data-sales="price.includes.lead">{sales('price.includes.lead')}</p><p class="section-note includes-label" data-sales="price.includes.full">{sales('price.includes.full')}</p><ul><li data-sales="price.includes.1">{sales('price.includes.1')}</li><li data-sales="price.includes.2">{sales('price.includes.2')}</li><li data-sales="price.includes.3">{sales('price.includes.3')}</li><li data-sales="price.includes.4">{sales('price.includes.4')}</li><li data-sales="price.includes.5">{sales('price.includes.5')}</li></ul><small data-sales="price.includes.small">{sales('price.includes.small')}</small><a class="button" href={withBase('/trial')} data-trial-link data-sales="nav.trial">{sales('nav.trial')}</a></div>
+   <div class="price-options" aria-label={sales('price.options')} data-sales-attr="aria-label:price.options">
+    <article class="price-option"><div><h3 data-sales="price.one.title">{sales('price.one.title')}</h3><p data-sales="price.one.text">{sales('price.one.text')}</p></div><p class="price-amount" data-sales="price.one.amount" set:html={sales('price.one.amount')} /><button type="button" disabled aria-describedby="checkout-status" data-sales="price.one.cta">{sales('price.one.cta')}</button></article>
+    <article class="price-option price-option-long"><div><h3 data-sales="price.three.title">{sales('price.three.title')}</h3><p data-sales="price.three.text">{sales('price.three.text')}</p></div><p class="price-amount" data-sales="price.three.amount" set:html={sales('price.three.amount')} /><p class="price-saving" data-sales="price.three.saving">{sales('price.three.saving')}</p><button type="button" disabled aria-describedby="checkout-status" data-sales="price.three.cta">{sales('price.three.cta')}</button></article>
    </div>
   </div>
-  <p class="checkout-status" id="checkout-status">Checkout is not connected and no payment can be taken. Renewal, refund and access-expiry terms must be confirmed before launch. <a href={withBase('/plans')}>See the plans</a></p>
+  <p class="checkout-status" id="checkout-status"><span data-sales="price.status">{sales('price.status')}</span> <a href={withBase('/plans')} data-sales="price.plans">{sales('price.plans')}</a></p>
  </div>
 </section>

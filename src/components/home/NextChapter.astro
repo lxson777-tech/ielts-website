@@ -4,65 +4,60 @@ import QuestionJourney from './QuestionJourney.astro';
 import SalesDemo from './SalesDemo.astro';
 import TrialPricing from './TrialPricing.astro';
 import { signInHref } from '../../lib/auth/profile';
-import { FULL_ACCESS_PRICES_KZT, TRIAL_TUTOR_PER_SECTION } from '../../lib/trial/offer';
+import { sales, type SalesKey } from '../../marketing/sales-copy';
 /* Every way in goes to the real platform: the trial page (which carries the
    questionnaire's answers once they are chosen, see question-journey.ts),
    the sign-in page, or the plans page. Prices come from the one approved
-   source so this page and /plans cannot disagree. */
+   source (via src/marketing/sales-copy.ts) so this page and /plans cannot
+   disagree.
+
+   Every sentence lives in src/marketing/sales-copy.ts, in English and
+   Russian. Here the English is rendered; data-sales / data-sales-attr let
+   src/marketing/sales-i18n.ts swap in the visitor's language. */
 const trialHref = withBase('/trial');
 const signIn = signInHref();
-const tenge = (amount: number) => `₸${amount.toLocaleString('en-US')}`;
-const { oneMonth, threeMonths } = FULL_ACCESS_PRICES_KZT;
 const asset = (name: string) => withBase(`/pics/next-chapter/${name}`);
 const skills = [
-  { id: 'reading', name: 'Reading', number: '01', headline: 'Find the meaning. Then the answer.', text: 'Learn to spot paraphrases, follow an argument, and find the evidence that makes an answer right.', detail: 'Question types, explained. Strategies you can actually practise.', route: '/lessons/reading/paraphrase', action: 'Explore Reading' },
-  { id: 'listening', name: 'Listening', number: '02', headline: 'Know what to listen for.', text: 'Predict the missing detail, follow the signposts, and catch the moment a speaker changes their mind.', detail: 'Everyday conversations to academic lectures, one skill at a time.', route: '/lessons/listening/section1', action: 'Explore Listening' },
-  { id: 'writing', name: 'Writing', number: '03', headline: 'Give your ideas a clear direction.', text: 'Make a plan, develop your argument, and practise with useful phrases and structure beside you.', detail: 'Guided Task 1 and Task 2 practice, with AI feedback when you finish.', route: '/trainers/writing', action: 'Explore Writing' },
-  { id: 'speaking', name: 'Speaking', number: '04', headline: 'Find your words. Keep your voice.', text: 'Build fuller, more natural answers with a simple structure, then put them into practice out loud.', detail: 'Part 1, Part 2 and Part 3, with recorded practice and AI speaking tools.', route: '/lessons/speaking/part1', action: 'Explore Speaking' },
+  { id: 'reading', name: 'Reading', number: '01' },
+  { id: 'listening', name: 'Listening', number: '02' },
+  { id: 'writing', name: 'Writing', number: '03' },
+  { id: 'speaking', name: 'Speaking', number: '04' },
 ];
-const methods: Record<string, string[]> = {
- reading: ['Recognise paraphrases and question types.', 'Find the evidence in the passage.', 'Apply the method in focused exercises and timed tests.'],
- listening: ['Predict the detail you need before listening.', 'Follow signposts and notice distractors.', 'Practise with recordings, then review the answers.'],
- writing: ['Plan a clear answer with guided structures.', 'Develop your ideas using examples and useful phrases.', 'Use AI feedback to choose what to revise next.'],
- speaking: ['Build an answer with a reason and an example.', 'Practise out loud with structures and vocabulary nearby.', 'Review AI feedback and focus your next attempt.'],
-};
-const faqs = [
-  ['How does the 3-day free trial work?', 'Sign up to try the platform for three days. No payment card is required. Your trial includes one test each for Reading, Listening, Writing and Speaking, four tests in total. You choose whether to buy access afterwards.'],
-  ['What does access cost after the trial?', `One month costs ${tenge(oneMonth)}. Three months cost ${tenge(threeMonths)} total, saving ${tenge(oneMonth * 3 - threeMonths)} compared with three monthly purchases. You choose whether to purchase access after trying the platform.`],
-  ['Is AI practice unlimited?', `The three-day trial includes one test in each of the four IELTS sections and ${TRIAL_TUTOR_PER_SECTION} Mr EZ messages per section. Paid-plan allowances will be confirmed before launch.`],
-
-  ['Where should I start?', 'Start the free trial. For three days you get one lesson and one full test in each section, with Mr EZ beside you. Full access then opens the whole course, every test and a study plan built around your exam date.'],
-  ['Do I need an account?', 'Yes, create an account for the three-day trial and personal AI features. You can view the product demonstrations on this page without signing up.'],
-  ['Is the AI feedback an official IELTS score?', 'No. Writing and speaking feedback includes estimated practice bands and suggestions for improvement. Only an official IELTS test can give you an official result.'],
-  ['Can I practise under exam conditions?', 'Yes. The platform includes timed reading and listening tests, plus separate writing and speaking assessment routes. Guided trainers keep teaching help nearby; test routes let you practise independently.'],
-  ['Can I use it on my phone?', 'Yes. Lessons and practice pages work on a phone. For longer writing tasks, you may find a laptop more comfortable. Speaking practice needs microphone permission.'],
-  ['How quickly will I get feedback?', 'Exercise checks give you an immediate result. AI writing and recorded speaking assessments process your submission before showing the report, so the wait depends on its length and service availability. You do not need to book a marking session.'],
-];
+const methodKeys = (id: string) => (['m1', 'm2', 'm3'] as const).map((m) => `skill.${id}.${m}` as SalesKey);
+const faqs = ['trial', 'cost', 'refund', 'unlimited', 'start', 'account', 'official', 'exam', 'phone', 'speed'];
+const k = (key: string) => key as SalesKey;
 ---
-<aside class="sales-review-note">Sales page preview: prices are agreed. Payment and purchase policies are not connected yet.</aside>
+<aside class="sales-review-note" data-sales="review.note">{sales('review.note')}</aside>
 <div class="sales-nav-anchor"><header class="story-nav" data-story-nav>
-  <a class="wordmark" href="#main" aria-label="IELTS is EZ home">IELTS<span>is</span><b>EZ</b></a>
-  <nav class="chapter-nav" aria-label="Main navigation" id="chapter-nav">
-    <a href="#meet-mr-ez">AI tutor</a>
-    <a href="#feedback">AI feedback</a>
-    <a href="#your-classroom">Inside the platform</a>
-    <a href="#your-plan">Your plan</a><a href="#pricing">Pricing</a>
-    <a class="menu-sign-in" href={signIn}>Sign in</a>
+  <a class="wordmark" href="#main" aria-label={sales('nav.home')} data-sales-attr="aria-label:nav.home">IELTS<span>is</span><b>EZ</b></a>
+  <nav class="chapter-nav" aria-label={sales('nav.main')} data-sales-attr="aria-label:nav.main" id="chapter-nav">
+    <a href="#meet-mr-ez" data-sales="nav.tutor">{sales('nav.tutor')}</a>
+    <a href="#feedback" data-sales="nav.feedback">{sales('nav.feedback')}</a>
+    <a href="#your-classroom" data-sales="nav.inside">{sales('nav.inside')}</a>
+    <a href="#your-plan" data-sales="nav.plan">{sales('nav.plan')}</a><a href="#pricing" data-sales="nav.pricing">{sales('nav.pricing')}</a>
+    <a class="menu-sign-in" href={signIn} data-sales="nav.signIn">{sales('nav.signIn')}</a>
   </nav>
-  <div class="nav-actions"><a class="workspace-link" href={signIn}>Sign in</a><a class="button button-small" href={trialHref} data-trial-link>Start your free trial </a><button class="menu-toggle" aria-label="Open menu" aria-controls="chapter-nav" aria-expanded="false"><span></span><span></span></button></div>
+  <div class="nav-actions">
+    {/* The language switch. Each language is named in its own language and
+        never translated; the choice is the workspace's stored choice. */}
+    <div class="lang-switch" role="group" aria-label={sales('lang.group')} data-sales-attr="aria-label:lang.group">
+      <button type="button" lang="en" title="English" data-lang-option="en" aria-pressed="true">EN</button>
+      <button type="button" lang="ru" title="Русский" data-lang-option="ru" aria-pressed="false">RU</button>
+    </div>
+    <a class="workspace-link" href={signIn} data-sales="nav.signIn">{sales('nav.signIn')}</a><a class="button button-small" href={trialHref} data-trial-link data-sales="nav.trial">{sales('nav.trial')}</a><button class="menu-toggle" aria-label={sales('nav.menuOpen')} data-sales-attr="aria-label:nav.menuOpen" aria-controls="chapter-nav" aria-expanded="false"><span></span><span></span></button></div>
 </header></div>
 <main id="main" data-next-chapter>
   <section class="campus-story" aria-labelledby="hero-title" data-campus-scene data-sc-act="flow">
     <div class="campus-stage" data-sc-stage data-sc-verify-state="opening">
       <div class="campus-atmosphere"><picture><source media="(max-width:1050px)" srcset={asset('university-campus-mobile.jpg')} /><img class="campus-back" src={asset('university-campus.jpg')} width="1536" height="1024" alt="" fetchpriority="high" data-campus-back /></picture><video class="campus-motion" data-campus-life data-src={asset('campus-life-loop.mp4')} muted playsinline loop preload="none" aria-hidden="true" tabindex="-1"></video></div>
       <div class="hero-copy" data-hero-copy>
-        <p class="hero-product-label">AI-powered IELTS practice</p>
-        <h1 id="hero-title" data-sc-copy>Open the gates<br />to <em>your future.</em></h1>
+        <p class="hero-product-label" data-sales="hero.label">{sales('hero.label')}</p>
+        <h1 id="hero-title" data-sc-copy data-sales="hero.title" set:html={sales('hero.title')} />
       </div>
       <div class="platform-window hero-window" data-hero-window>
-        <div class="window-bar"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>IELTS is EZ <span class="bar-divider">/</span> Your study space</span><span class="preview-tag">Platform preview</span></div>
-        <img src={asset('platform-learn.jpg')} width="1264" height="760" alt="The real IELTS is EZ lesson library, with Reading, Writing, Speaking and Listening lessons" fetchpriority="high" />
-        <span class="window-open">Your study space</span>
+        <div class="window-bar"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span data-sales="hero.bar" set:html={sales('hero.bar')} /><span class="preview-tag" data-sales="hero.preview">{sales('hero.preview')}</span></div>
+        <img src={asset('platform-learn.jpg')} width="1264" height="760" alt={sales('hero.alt')} data-sales-attr="alt:hero.alt" fetchpriority="high" />
+        <span class="window-open" data-sales="hero.open">{sales('hero.open')}</span>
       </div>
       <div class="university-gates" data-campus-front aria-hidden="true">
         <div class="gate-leaf gate-left"><img src={asset('university-gates.webp')} width="1536" height="1024" alt="" /></div>
@@ -79,62 +74,66 @@ const faqs = [
   <section class="mr-ez-intro section-pad" id="meet-mr-ez" aria-labelledby="mr-ez-title">
     <div class="content-wrap mr-ez-grid">
       <div class="mr-ez-portrait">
-        <div class="mr-ez-art"><img src={asset('mr-ez-approved.png')} width="1024" height="1536" loading="lazy" alt="Mr EZ, your friendly AI tutor, wearing glasses and a forest-green hoodie with orange Mr EZ lettering." /></div>
-        <div class="mr-ez-name"><span class="mr-ez-status" aria-hidden="true"></span><span>Mr EZ <small>Your AI study companion</small></span></div>
+        <div class="mr-ez-art"><img src={asset('mr-ez-approved.png')} width="1024" height="1536" loading="lazy" alt={sales('ez.alt')} data-sales-attr="alt:ez.alt" /></div>
+        <div class="mr-ez-name"><span class="mr-ez-status" aria-hidden="true"></span><span data-sales="ez.name" set:html={sales('ez.name')} /></div>
       </div>
       <div class="mr-ez-copy">
-        <p class="section-note">A little guidance. A lot more clarity.</p>
-        <h2 id="mr-ez-title">Meet Mr EZ.<br /><span>Your next step,<br />made clearer.</span></h2>
-        <p class="mr-ez-lead">Getting a score is one thing. Knowing what to do next is another. Mr EZ is your AI tutor, here to help you understand your practice and keep moving towards your goal.</p>
-        <div class="tutor-example" aria-label="Example conversation with Mr EZ">
-          <p class="tutor-example-label">Example conversation</p>
-          <p class="tutor-student"><b>You</b>My answers are too short. What should I add?</p>
-          <div class="tutor-reply"><b>Mr EZ</b><p>Start with your answer, add a reason, then give one specific example. Try it with “Do you enjoy studying with other people?”</p><p class="tutor-next">Your next practice: developing a Part 1 answer.</p></div>
-          <small>Illustrative conversation, not a live chat. Mr EZ can explain results, help with study questions and suggest relevant practice.</small>
+        <p class="section-note" data-sales="ez.note">{sales('ez.note')}</p>
+        <h2 id="mr-ez-title" data-sales="ez.title" set:html={sales('ez.title')} />
+        <p class="mr-ez-lead" data-sales="ez.lead">{sales('ez.lead')}</p>
+        <div class="tutor-example" aria-label={sales('ez.example')} data-sales-attr="aria-label:ez.example">
+          <p class="tutor-example-label" data-sales="ez.example.label">{sales('ez.example.label')}</p>
+          <p class="tutor-student" data-sales="ez.student" set:html={sales('ez.student')} />
+          <div class="tutor-reply"><b>Mr EZ</b><p data-sales="ez.reply" set:html={sales('ez.reply')} /><p class="tutor-next" data-sales="ez.next">{sales('ez.next')}</p></div>
+          <small data-sales="ez.disclaimer">{sales('ez.disclaimer')}</small>
         </div>
-        <small class="mr-ez-access">Your personal tutor is available after sign-in. Usage limits apply.</small>
+        <small class="mr-ez-access" data-sales="ez.access">{sales('ez.access')}</small>
       </div>
     </div>
   </section>
 
   <section id="your-classroom" class="classroom section-pad" data-sc-act="flow">
     <div class="content-wrap">
-      <div class="section-heading"><div><p class="section-note">Come on in</p><h2 data-sc-copy>One space.<br />Every part of IELTS.</h2></div><p>Less searching for what to study.<br />More time actually getting somewhere.</p></div>
-      <div class="skill-accordion" aria-label="Choose a skill"><div class="skill-tabs" role="tablist" aria-label="Explore IELTS skills">{skills.map((skill,index) => <button type="button" id={`tab-${skill.id}`} role="tab" aria-label={skill.name} aria-selected={index===0?'true':'false'} aria-controls={`panel-${skill.id}`} tabindex={index===0?0:-1} data-skill-tab={skill.id} data-position={index===3?-1:index}><span class="skill-card-top"><span aria-hidden="true">{skill.number}</span><span>{skill.name}</span></span><span class="skill-method" aria-hidden="true"><span class="skill-method-label">How we teach it</span>{methods[skill.id].map((step,i)=><span class="skill-method-step"><span>0{i+1}</span><span>{step}</span></span>)}</span></button>)}</div></div>
-      <p class="skill-orbit-hint">Choose a section. Find your next step.</p>
+      <div class="section-heading"><div><p class="section-note" data-sales="room.note">{sales('room.note')}</p><h2 data-sc-copy data-sales="room.title" set:html={sales('room.title')} /></div><p data-sales="room.lead" set:html={sales('room.lead')} /></div>
+      <div class="skill-accordion" aria-label={sales('room.choose')} data-sales-attr="aria-label:room.choose"><div class="skill-tabs" role="tablist" aria-label={sales('room.tabs')} data-sales-attr="aria-label:room.tabs">{skills.map((skill,index) => <button type="button" id={`tab-${skill.id}`} role="tab" aria-label={skill.name} aria-selected={index===0?'true':'false'} aria-controls={`panel-${skill.id}`} tabindex={index===0?0:-1} data-skill-tab={skill.id} data-position={index===3?-1:index}><span class="skill-card-top"><span aria-hidden="true">{skill.number}</span><span>{skill.name}</span></span><span class="skill-method" aria-hidden="true"><span class="skill-method-label" data-sales="room.method">{sales('room.method')}</span>{methodKeys(skill.id).map((key,i)=><span class="skill-method-step"><span>0{i+1}</span><span data-sales={key}>{sales(key)}</span></span>)}</span></button>)}</div></div>
+      <p class="skill-orbit-hint" data-sales="room.hint">{sales('room.hint')}</p>
       <div class="skill-panels">{skills.map((skill,index) => <article class="skill-panel" id={`panel-${skill.id}`} role="tabpanel" aria-labelledby={`tab-${skill.id}`} hidden={index!==0} tabindex="0">
-        <div class="skill-detail"><h3>{skill.headline}</h3><p>{skill.text}</p><ol class="mobile-skill-method">{methods[skill.id].map(step=><li>{step}</li>)}</ol></div>
+        <div class="skill-detail"><h3 data-sales={k(`skill.${skill.id}.headline`)}>{sales(k(`skill.${skill.id}.headline`))}</h3><p data-sales={k(`skill.${skill.id}.text`)}>{sales(k(`skill.${skill.id}.text`))}</p><ol class="mobile-skill-method">{methodKeys(skill.id).map(key=><li data-sales={key}>{sales(key)}</li>)}</ol></div>
 
       </article>)}</div>
-      <div class="classroom-foot"><span>Learn at your pace. Come back when you're ready.</span></div>
+      <div class="classroom-foot"><span data-sales="room.foot">{sales('room.foot')}</span></div>
     </div>
   </section>
 
   <section class="feedback section-pad" id="feedback" data-sc-act="flow">
     <div class="content-wrap feedback-grid">
-      <div class="feedback-art" aria-label="Illustrative writing feedback">
-        <div class="essay-paper"><div class="paper-top"><span>Your idea, in progress</span><span>Writing · Task 2</span></div><p>“Universities should provide more study spaces because they are <mark>good for students.</mark>”</p><span class="annotation-line" aria-hidden="true"></span><div class="feedback-comment"><span class="coach-symbol" aria-hidden="true">✳</span><div><b>Make the benefit specific.</b><p>What can students do in that space? Why does that matter?</p></div></div><div class="revision"><span>One possible next draft</span><p>“Quiet study spaces help students use gaps between classes for focused revision.”</p></div><span class="sample-label">Illustrative feedback, not a live assessment</span></div>
+      <div class="feedback-art" aria-label={sales('fb.art')} data-sales-attr="aria-label:fb.art">
+        {/* The essay sentence and the redraft are English on purpose: they are
+            the English a student is meant to learn from. */}
+        <div class="essay-paper"><div class="paper-top"><span data-sales="fb.progress">{sales('fb.progress')}</span><span>Writing · Task 2</span></div><p lang="en">“Universities should provide more study spaces because they are <mark>good for students.</mark>”</p><span class="annotation-line" aria-hidden="true"></span><div class="feedback-comment"><span class="coach-symbol" aria-hidden="true">✳</span><div><b data-sales="fb.comment.title">{sales('fb.comment.title')}</b><p data-sales="fb.comment.text">{sales('fb.comment.text')}</p></div></div><div class="revision"><span data-sales="fb.draft">{sales('fb.draft')}</span><p lang="en">“Quiet study spaces help students use gaps between classes for focused revision.”</p></div><span class="sample-label" data-sales="fb.sample">{sales('fb.sample')}</span></div>
       </div>
       <div class="feedback-copy" data-sc-in>
-        <p class="section-note">AI built into your practice</p>
-        <h2 data-sc-copy>Understand your band.<br /><span>Know your next step.</span></h2>
-        <p>Write an essay. Record an answer. Get personal AI feedback on demand, without booking a marking session.</p>
+        <p class="section-note" data-sales="fb.note">{sales('fb.note')}</p>
+        <h2 data-sc-copy data-sales="fb.title" set:html={sales('fb.title')} />
+        <p data-sales="fb.lead">{sales('fb.lead')}</p>
         <ul class="feedback-list">
-          <li><div><b>A band estimate with a reason behind it.</b><p>Your writing and speaking are assessed against the official public IELTS band descriptors, with feedback for each criterion.</p></div></li>
-          <li><div><b>Advice about your actual answer.</b><p>Get specific changes for your essay or recording, including pronunciation feedback from your audio.</p></div></li>
-          <li><div><b>Know what the next band asks of you.</b><p>Choose one improvement, practise it, then try again.</p></div></li>
+          <li><div><b data-sales="fb.1.title">{sales('fb.1.title')}</b><p data-sales="fb.1.text">{sales('fb.1.text')}</p></div></li>
+          <li><div><b data-sales="fb.2.title">{sales('fb.2.title')}</b><p data-sales="fb.2.text">{sales('fb.2.text')}</p></div></li>
+          <li><div><b data-sales="fb.3.title">{sales('fb.3.title')}</b><p data-sales="fb.3.text">{sales('fb.3.text')}</p></div></li>
         </ul>
-        
-        <p class="score-note">AI assessments take time to process. Bands are practice estimates, not official results or a guarantee of your test score.</p>
+
+        <p class="score-note" data-sales="fb.score">{sales('fb.score')}</p>
       </div>
     </div>
     <div class="content-wrap ai-proof">
       <details class="criteria-explainer">
-        <summary><span><b>Official criteria. Transparent practice estimates.</b><small>See what your writing and speaking are assessed on.</small></span><span class="criteria-plus" aria-hidden="true">+</span></summary>
+        <summary><span><b data-sales="fb.criteria.title">{sales('fb.criteria.title')}</b><small data-sales="fb.criteria.text">{sales('fb.criteria.text')}</small></span><span class="criteria-plus" aria-hidden="true">+</span></summary>
         <div class="criteria-body">
-          <div><h3>Writing</h3><ul><li>Task Achievement (Task 1) or Task Response (Task 2)</li><li>Coherence and Cohesion</li><li>Lexical Resource</li><li>Grammatical Range and Accuracy</li></ul></div>
-          <div><h3>Speaking</h3><ul><li>Fluency and Coherence</li><li>Lexical Resource</li><li>Grammatical Range and Accuracy</li><li>Pronunciation</li></ul></div>
-          <p>Our AI uses these published descriptors to guide its assessments. IELTS does not endorse this platform or issue our practice estimates.</p>
+          {/* Official criterion names stay English (docs/I18N-GUIDE.md): the
+              student meets these exact words in the band descriptors. */}
+          <div><h3>Writing</h3><ul lang="en"><li>Task Achievement (Task 1) or Task Response (Task 2)</li><li>Coherence and Cohesion</li><li>Lexical Resource</li><li>Grammatical Range and Accuracy</li></ul></div>
+          <div><h3>Speaking</h3><ul lang="en"><li>Fluency and Coherence</li><li>Lexical Resource</li><li>Grammatical Range and Accuracy</li><li>Pronunciation</li></ul></div>
+          <p data-sales="fb.criteria.foot">{sales('fb.criteria.foot')}</p>
         </div>
       </details>
     </div>
@@ -143,13 +142,12 @@ const faqs = [
 
   <TrialPricing />
 
-  <section class="questions section-pad" id="questions" data-sc-act="flow"><div class="content-wrap questions-grid"><div><p class="section-note">Before your first step</p><h2 data-sc-copy>A few things<br />you might wonder.</h2></div><div class="faq-list">{faqs.map(([question, answer]) => <details><summary>{question}<span aria-hidden="true">+</span></summary><p>{answer}</p></details>)}</div></div></section>
+  <section class="questions section-pad" id="questions" data-sc-act="flow"><div class="content-wrap questions-grid"><div><p class="section-note" data-sales="faq.note">{sales('faq.note')}</p><h2 data-sc-copy data-sales="faq.title" set:html={sales('faq.title')} /></div><div class="faq-list">{faqs.map((id) => <details><summary><span class="faq-q" data-sales={k(`faq.${id}.q`)}>{sales(k(`faq.${id}.q`))}</span><span aria-hidden="true">+</span></summary><p data-sales={k(`faq.${id}.a`)}>{sales(k(`faq.${id}.a`))}</p></details>)}</div></div></section>
 
   <section class="next-chapter-close" aria-labelledby="close-title" data-sc-act="flow">
     <img src={asset('university-campus.jpg')} width="1536" height="1024" loading="lazy" alt="" />
-    <div class="close-card"><p class="section-note">Your next chapter is yours to write.</p><h2 data-sc-copy id="close-title">Your next chapter.<br />Your first 3 days, free.</h2><p>Create an account. Explore your study space.<br />No payment card required.</p><a class="button" href={trialHref} data-trial-link>Start your free trial </a><a class="close-secondary" href={signIn}>Already have an account? Sign in.</a></div>
+    <div class="close-card"><p class="section-note" data-sales="close.note">{sales('close.note')}</p><h2 data-sc-copy id="close-title" data-sales="close.title" set:html={sales('close.title')} /><p data-sales="close.lead" set:html={sales('close.lead')} /><a class="button" href={trialHref} data-trial-link data-sales="nav.trial">{sales('nav.trial')}</a><a class="close-secondary" href={signIn} data-sales="close.signIn">{sales('close.signIn')}</a></div>
   </section>
 </main>
-<footer class="story-footer"><div class="footer-top content-wrap"><a class="wordmark" href="#main" aria-label="IELTS is EZ home">IELTS<span>is</span><b>EZ</b></a><p>A little guidance.<br />A world of possibility.</p><nav aria-label="Footer navigation"><a href="#your-classroom">How we teach</a><a href="#meet-mr-ez">Meet Mr EZ</a><a href="#pricing">Pricing</a><a href="#questions">Questions</a></nav></div><div class="footer-bottom content-wrap"><span>© {new Date().getFullYear()} IELTS is EZ</span><span>Independent preparation. Not affiliated with or endorsed by IELTS.</span><a href="#main">Back to top </a></div></footer>
+<footer class="story-footer"><div class="footer-top content-wrap"><a class="wordmark" href="#main" aria-label={sales('nav.home')} data-sales-attr="aria-label:nav.home">IELTS<span>is</span><b>EZ</b></a><p data-sales="foot.tagline" set:html={sales('foot.tagline')} /><nav aria-label={sales('foot.nav')} data-sales-attr="aria-label:foot.nav"><a href="#your-classroom" data-sales="foot.teach">{sales('foot.teach')}</a><a href="#meet-mr-ez" data-sales="foot.ez">{sales('foot.ez')}</a><a href="#pricing" data-sales="nav.pricing">{sales('nav.pricing')}</a><a href="#questions" data-sales="foot.questions">{sales('foot.questions')}</a><a href={withBase('/privacy')} data-sales="foot.privacy">{sales('foot.privacy')}</a><a href={withBase('/terms')} data-sales="foot.terms">{sales('foot.terms')}</a></nav></div><div class="footer-bottom content-wrap"><span>© {new Date().getFullYear()} IELTS is EZ</span><span data-sales="foot.independent">{sales('foot.independent')}</span><a href="#main" data-sales="foot.top">{sales('foot.top')}</a></div></footer>
 <script>import '../../scripts/next-chapter';</script>
-

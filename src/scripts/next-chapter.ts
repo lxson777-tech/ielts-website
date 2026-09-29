@@ -1,4 +1,5 @@
 import { mountCampusLife } from './campus-life';
+import { applySalesAttrs } from '../marketing/sales-i18n';
 import '../../scrollcraft/builds/next-chapter/scrollcraft.js';
 
 declare global {
@@ -81,13 +82,19 @@ if (root) {
 
   const menu = document.querySelector<HTMLButtonElement>('.menu-toggle')!;
   const nav = document.querySelector<HTMLElement>('.chapter-nav')!;
+  // The label names what the button will do next, in the visitor's language
+  // (src/marketing/sales-copy.ts); a language switch re-applies it.
+  function labelMenu(open: boolean) {
+    menu.setAttribute('data-sales-attr', open ? 'aria-label:nav.menuClose' : 'aria-label:nav.menuOpen');
+    applySalesAttrs(menu);
+  }
   function closeMenu(restoreFocus = false) {
-    nav.classList.remove('is-open'); menu.setAttribute('aria-expanded', 'false'); menu.setAttribute('aria-label', 'Open menu');
+    nav.classList.remove('is-open'); menu.setAttribute('aria-expanded', 'false'); labelMenu(false);
     if (restoreFocus) menu.focus();
   }
   menu.addEventListener('click', () => {
     const open = menu.getAttribute('aria-expanded') !== 'true';
-    nav.classList.toggle('is-open', open); menu.setAttribute('aria-expanded', String(open)); menu.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    nav.classList.toggle('is-open', open); menu.setAttribute('aria-expanded', String(open)); labelMenu(open);
   });
   nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => closeMenu()));
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && menu.getAttribute('aria-expanded') === 'true') closeMenu(true); });

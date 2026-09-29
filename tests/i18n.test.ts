@@ -64,6 +64,7 @@ import * as learningObjectives from '../src/lib/i18n/dict/ru/learning-objectives
 import * as trialBatch from '../src/lib/i18n/dict/ru/trial.ts';
 import * as profile from '../src/lib/i18n/dict/ru/profile.ts';
 import * as placementBatch from '../src/lib/i18n/dict/ru/placement.ts';
+import * as cRemediation from '../src/lib/i18n/dict/ru/c-remediation.ts';
 import * as a1RemediationBatch from '../src/lib/i18n/dict/ru/a1-remediation.ts';
 import * as bRemediation from '../src/lib/i18n/dict/ru/b-remediation.ts';
 import * as dRemediation from '../src/lib/i18n/dict/ru/d-remediation.ts';
@@ -100,6 +101,7 @@ const BATCH_FILES: { file: string; mod: { strings: Record<string, string>; plura
   { file: 'dict/ru/trial.ts', mod: trialBatch },
   { file: 'dict/ru/profile.ts', mod: profile },
   { file: 'dict/ru/placement.ts', mod: placementBatch },
+  { file: 'dict/ru/c-remediation.ts', mod: cRemediation },
   { file: 'dict/ru/a1-remediation.ts', mod: a1RemediationBatch },
   { file: 'dict/ru/b-remediation.ts', mod: bRemediation },
   { file: 'dict/ru/d-remediation.ts', mod: dRemediation },
@@ -427,7 +429,9 @@ function extractFromFile(rel: string): Extracted[] {
     }
   }
 
-  for (const args of findCalls(source, 'tn')) {
+  // tn(n, forms) in code, and ntn(n, forms): the same counted phrase kept as
+  // data and rendered later (src/components/Count.astro, data-i18n-n).
+  for (const args of [...findCalls(source, 'tn'), ...findCalls(source, 'ntn')]) {
     const forms = args[1];
     if (!forms) continue;
     const other = /\bother\s*:\s*('([^']*)'|"([^"]*)")/.exec(forms);
@@ -491,6 +495,7 @@ test('the extractor finds what it is supposed to find', () => {
   assert.ok(keys.has('Skip to content'), 'data-i18n in src/layouts/BaseLayout.astro should be extracted');
   assert.ok(keys.has('Workspace'), 'data-i18n-attr in src/components/WorkspaceHeader.astro should be extracted');
   assert.ok(keys.has('Help'), 'data-i18n in src/components/WorkspaceFooter.astro should be extracted');
+  assert.ok(keys.has('{n} drills'), 'ntn() in src/pages/trainers/index.astro should be extracted as a counted phrase');
 });
 
 /** The dictionary an extracted string has to be translated in, and the file

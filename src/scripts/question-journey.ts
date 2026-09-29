@@ -1,5 +1,7 @@
 import {createJourneyShader} from './journey-shader';
-import {journeySkills as skills, journeySteps, journeyDays, trialQuery, validJourney, type JourneyAnswers} from '../lib/journey-plan';
+import {journeySkill, journeySteps, journeyDays, trialQuery, validJourney, type JourneyAnswers} from '../lib/journey-plan';
+import {salesText, type SalesKey} from '../marketing/sales-copy';
+import {salesLocale, SALES_LOCALE_EVENT} from '../marketing/sales-i18n';
 /* Every "start your free trial" link on the page carries the four answers
    once all are chosen, so the trial page can offer them as a suggested
    starting point (src/lib/trial/offer.ts, questionnaireFromSearch). */
@@ -24,7 +26,8 @@ if(root){
  document.addEventListener('visibilitychange',updateMotion);
  new IntersectionObserver(([entry])=>{inView=entry.isIntersecting;updateMotion();}).observe(root);
  updateMotion();
- const labels:Record<string,string>={method:'A clear method',confidence:'More confident practice'};
+ // Every sentence below is written whole in both languages (sales-copy.ts and journey-plan.ts).
+ const say=(key:SalesKey,vars?:Record<string,string|number>)=>salesText(key,salesLocale(),vars);
  const panels=Array.from(root.querySelectorAll<HTMLElement>('[data-question]'));
  const result=root.querySelector<HTMLElement>('.journey-result-wrap')!;
  let advanceTimer:number|undefined;
@@ -78,26 +81,29 @@ if(root){
   (root!.querySelector('[data-plan-card]') as HTMLElement).hidden=!ready;
   (root!.querySelector('[data-plan-placeholder]') as HTMLElement).hidden=ready;
   if(!ready){
-   root!.querySelector('#journey-result-title')!.textContent='Make your goal a daily habit.';
-   root!.querySelector('[data-result-description]')!.textContent=`${count} of 4 choices made. Finish the questions to see your suggested plan.`;
+   root!.querySelector('#journey-result-title')!.textContent=say('journey.result.title');
+   root!.querySelector('[data-result-description]')!.textContent=say('journey.progress',{count});
    return;
   }
-  const skill=skills[answers.skill],time=Number(answers.time),method=answers.focus==='method';
-  root!.querySelector('#journey-result-title')!.textContent=`Your Band ${answers.band==='8'?'8.0+':Number(answers.band).toFixed(1)} goal. Your first 3 days.`;
-  root!.querySelector('[data-result-description]')!.textContent=`Start with ${skill.name.toLowerCase()}, the section you want most help with. Set aside ${time} minutes each day. Learn one method, practise it, then try a fresh task.`;
-  root!.querySelector('[data-plan-label]')!.textContent=`${skill.name} / ${time} minutes a day`;
-  root!.querySelector('[data-plan-title]')!.textContent=labels[answers.focus];
-  const days=journeyDays(answers as JourneyAnswers);
-  const routine=journeySteps(answers as JourneyAnswers);
-  root!.querySelector<HTMLTextAreaElement>('[data-copy-plan]')!.value=`IELTS is EZ: suggested three-day plan\nTarget Band ${answers.band}, ${skill.name}, ${time} minutes daily\n\n${days.map(day=>`Day ${day.day}: ${day.title} (${day.minutes} min)\n${day.text}\nTake away: ${day.outcome}`).join('\n\n')}\n\nDaily time guide\n${routine.join('\n')}`;
+  const locale=salesLocale();
+  const skill=journeySkill(answers.skill,locale),time=Number(answers.time);
+  // "Start with speaking" in English, "Начните с Speaking" in Russian: the paper name stays English there.
+  const skillInSentence=locale==='ru'?skill.name:skill.name.toLowerCase();
+  root!.querySelector('#journey-result-title')!.textContent=say('journey.plan.title',{band:answers.band==='8'?'8.0+':Number(answers.band).toFixed(1)});
+  root!.querySelector('[data-result-description]')!.textContent=say('journey.plan.lead',{skill:skillInSentence,time});
+  root!.querySelector('[data-plan-label]')!.textContent=say('journey.plan.label',{skill:skill.name,time});
+  root!.querySelector('[data-plan-title]')!.textContent=say(answers.focus==='method'?'journey.plan.focus.method':'journey.plan.focus.confidence');
+  const days=journeyDays(answers as JourneyAnswers,locale);
+  const routine=journeySteps(answers as JourneyAnswers,locale);
+  root!.querySelector<HTMLTextAreaElement>('[data-copy-plan]')!.value=`${say('journey.copy.heading')}\n${say('journey.copy.target',{band:answers.band,skill:skill.name,time})}\n\n${days.map(day=>`${say('journey.copy.day',{day:day.day,title:day.title,minutes:day.minutes})}\n${day.text}\n${say('journey.plan.outcome',{outcome:day.outcome})}`).join('\n\n')}\n\n${say('journey.copy.guide')}\n${routine.join('\n')}`;
   root!.querySelector('[data-daily-routine]')!.textContent=routine.join(' ');
   const list=root!.querySelector('[data-plan-steps]')!;
   list.replaceChildren(...days.map(day=>{
    const li=document.createElement('li');
-   const duration=document.createElement('span');duration.className='plan-duration';duration.textContent=`Day ${day.day} / ${day.minutes} minutes`;
+   const duration=document.createElement('span');duration.className='plan-duration';duration.textContent=say('journey.plan.day',{day:day.day,minutes:day.minutes});
    const heading=document.createElement('h3');heading.textContent=day.title;
    const detail=document.createElement('p');detail.textContent=day.text;
-   const outcome=document.createElement('p');outcome.className='plan-outcome';outcome.textContent=`Take away: ${day.outcome}`;
+   const outcome=document.createElement('p');outcome.className='plan-outcome';outcome.textContent=say('journey.plan.outcome',{outcome:day.outcome});
    li.append(duration,heading,detail,outcome);return li;
   }));
  }
@@ -142,4 +148,6 @@ if(root){
  panels.forEach(panel=>reveal.observe(panel));
  reveal.observe(result);
  render();
+ // The visitor switched language: rewrite the plan (the answer chips read the translated option labels).
+ document.addEventListener(SALES_LOCALE_EVENT,()=>render());
 }

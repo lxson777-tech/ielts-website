@@ -167,7 +167,7 @@ export default function ScoreHistory({
     return (
       <div className="rounded-card border border-dashed border-border bg-surface-alt p-8 text-center text-ink-muted">
         <p className="font-display font-semibold text-ink">{t('No attempts yet')}</p>
-        <p className="mt-1 text-sm">{t('Finish a {skill} test and your scores will appear here.', { skill })}</p>
+        <p className="mt-1 text-sm">{t('Finish a {skill} test and your scores will appear here.', { skill: skill === 'reading' ? 'Reading' : 'Listening' })}</p>
       </div>
     );
   }

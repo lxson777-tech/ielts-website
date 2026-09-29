@@ -119,6 +119,45 @@ is chosen with `Intl.PluralRules`, so 1, 21 and 101 take `one`; 2 and 22 take
 Never hand-roll `count === 1 ? 'lesson' : 'lessons'` in a string you are
 translating. Never build a counted phrase by concatenation.
 
+### Counts in an `.astro` page
+
+An `.astro` page has no `tn()` at render time, so a count is kept as data with
+`ntn()` and printed by `src/components/Count.astro`, which writes the English
+and lets the runtime (`data-i18n-n` in `src/lib/i18n/dom.ts`) pick the Russian
+form on the device:
+
+```astro
+<Count class="chip" phrase={ntn(questions, { one: '{n} question', other: '{n} questions' })} />
+```
+
+`{n} questions` written straight into a template, or `` `${n} drills` `` in a
+frontmatter array, is exactly what the 29 September 2026 audit found left in
+English (F05). `tests/i18n-templates.test.ts` now fails on both.
+
+## The second checker: text nobody marked
+
+`tests/i18n.test.ts` can only see text someone marked. `tests/i18n-templates.test.ts`
+reads the templates themselves (the Astro compiler and the TypeScript parser,
+not regular expressions) and fails on: English text in an `.astro` template
+that is not in a `data-i18n` (or `Count`, or sales-page `data-sales`)
+element; an English `aria-label`, `alt`, `title` or `placeholder` that
+`data-i18n-attr` does not cover; a plain string prop passed to a component
+that renders that prop with `data-i18n` (PartGrid's `heading="Topic Lists"`)
+when the dictionary has no Russian for it; a count glued to a word in a
+template literal; and English JSX text outside `t()` in a React island.
+Paper names, IELTS, Mr EZ, Task / Part numbers and official question type and
+criterion names are allowed through. English kept on purpose (an essay
+sample, criterion lists) is marked `lang="en"`, which is also right for
+screen readers. A file can be exempted only with a written reason.
+
+## The sales page
+
+The trial build's front page has its own bilingual table,
+`src/marketing/sales-copy.ts` (English and Russian side by side, with the few
+tags the headlines need), and its own runtime, `src/marketing/sales-i18n.ts`.
+It shares the stored choice (`ielts.locale.v1`) with the workspace, so the
+language travels both ways. `tests/sales-copy.test.ts` guards it.
+
 ## When to use `ctx`
 
 Only when the same English text needs two different Russian words. The

@@ -1,0 +1,27 @@
+---
+/* A counted phrase in an .astro page: "40 questions", "1 drill".
+
+   Astro renders the English at build time; the translation runtime
+   (src/lib/i18n/dom.ts, data-i18n-n) swaps in the right Russian form on the
+   student's device: 1 вопрос, 2 вопроса, 40 вопросов. Build the phrase with
+   ntn() where the count is known, so the coverage test sees its English:
+
+     <Count class="chip" phrase={ntn(questions, { one: '{n} question', other: '{n} questions' })} />
+
+   Never write `{n} questions` straight into a template: tests/i18n-templates.test.ts
+   fails on it, because Russian cannot be made from "40" and "questions".
+   Any other attribute (hidden, data-access-copy, ...) is passed through. */
+import { tn, type CountedPhrase } from '../lib/i18n/translate';
+
+interface Props {
+  phrase: CountedPhrase;
+  class?: string;
+  /** The element to render; a span unless the phrase is a whole paragraph. */
+  as?: 'span' | 'p' | 'strong' | 'small';
+  [attribute: string]: unknown;
+}
+
+const { phrase, class: className, as: Tag = 'span', ...rest } = Astro.props;
+const english = tn(phrase.n, phrase, undefined, 'en');
+---
+<Tag class={className} {...rest} data-i18n-n={phrase.n} data-i18n-one={phrase.one} data-i18n-other={phrase.other}>{english}</Tag>

@@ -855,7 +855,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             <div className="flex items-start justify-between gap-3">
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
                 {prompt.task === 'task2' ? 'Writing Task 2' : 'Writing Task 1'}{' '}
-                · ~{prompt.suggestedMinutes} min
+                · ~{t('{n} min', { n: prompt.suggestedMinutes })}
               </span>
               <div className="flex shrink-0 items-center gap-2">
                 {timerStartedRef.current && (

@@ -87,6 +87,26 @@ export interface CountForms {
   other: string;
 }
 
+/** A counted phrase kept as data: the count and its two English forms. */
+export interface CountedPhrase extends CountForms {
+  n: number;
+}
+
+/**
+ * Mark a counted phrase for translation without translating it here: the
+ * `tn()` of data. For a count written in a data registry or an .astro
+ * page's frontmatter and rendered somewhere else, usually through
+ * `src/components/Count.astro`, which prints the English and lets the page's
+ * runtime (src/lib/i18n/dom.ts, `data-i18n-n`) swap in the right Russian
+ * form. The coverage test extracts it exactly like `tn()`, so the Russian
+ * plural entry is still required.
+ *
+ *     stats: ntn(ALL_DRILLS.length, { one: '{n} drill', other: '{n} drills' })
+ */
+export function ntn(n: number, forms: CountForms): CountedPhrase {
+  return { n, one: forms.one, other: forms.other };
+}
+
 const pluralRules = new Map<string, Intl.PluralRules>();
 
 function rulesFor(locale: Locale): Intl.PluralRules {
