@@ -1,0 +1,64 @@
+{
+ "suite": "repro-expire",
+ "base": "http://localhost:4492/ielts-website",
+ "standin": "http://127.0.0.1:8492",
+ "passed": 2,
+ "total": 5,
+ "failed": [
+  {
+   "combo": "en-1440",
+   "check": "same browser, straight after expiry: lesson locked",
+   "pass": false,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSS\nSkip to content\nTrue / False / Not Given\nYour full access has ended\n\nYour results and your work are saved. Choose a plan to open the full course again.\n\nView plans\nSee my results\n\nNeed a hand? Ask a person\n\nIELTS is EZ\nHelp\nReport a problem"
+  },
+  {
+   "combo": "en-1440",
+   "check": "same browser, after visiting /account: lesson locked",
+   "pass": false,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSS\nSkip to content\nTrue / False / Not Given\nYour full access has ended\n\nYour results and your work are saved. Choose a plan to open the full course again.\n\nView plans\nSee my results\n\nNeed a hand? Ask a person\n\nIELTS is EZ\nHelp\nReport a problem"
+  },
+  {
+   "combo": "en-1440",
+   "check": "fresh browser after expiry: lesson locked",
+   "pass": false,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSS\nSkip to content\nTrue / False / Not Given\nYour full access has ended\n\nYour results and your work are saved. Choose a plan to open the full course again.\n\nView plans\nSee my results\n\nNeed a hand? Ask a person\n\nIELTS is EZ\nHelp\nReport a problem"
+  }
+ ],
+ "page_errors": [
+  "http://localhost:4492/ielts-website/dashboard: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.",
+  "http://localhost:4492/ielts-website/account: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+ ],
+ "pack_requests": {},
+ "results": [
+  {
+   "combo": "en-1440",
+   "check": "paid: lesson open",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "same browser, straight after expiry: lesson locked",
+   "pass": false,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSS\nSkip to content\nTrue / False / Not Given\nYour full access has ended\n\nYour results and your work are saved. Choose a plan to open the full course again.\n\nView plans\nSee my results\n\nNeed a hand? Ask a person\n\nIELTS is EZ\nHelp\nReport a problem"
+  },
+  {
+   "combo": "en-1440",
+   "check": "same browser, after visiting /account: lesson locked",
+   "pass": false,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSS\nSkip to content\nTrue / False / Not Given\nYour full access has ended\n\nYour results and your work are saved. Choose a plan to open the full course again.\n\nView plans\nSee my results\n\nNeed a hand? Ask a person\n\nIELTS is EZ\nHelp\nReport a problem"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Today is the trial's/ended view, not full Today",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "fresh browser after expiry: lesson locked",
+   "pass": false,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSS\nSkip to content\nTrue / False / Not Given\nYour full access has ended\n\nYour results and your work are saved. Choose a plan to open the full course again.\n\nView plans\nSee my results\n\nNeed a hand? Ask a person\n\nIELTS is EZ\nHelp\nReport a problem"
+  }
+ ]
+}

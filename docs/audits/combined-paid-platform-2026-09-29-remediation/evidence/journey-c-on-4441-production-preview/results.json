@@ -1,0 +1,139 @@
+{
+ "suite": "journey-c-on-4441-production-preview",
+ "base": "http://localhost:4441/ielts-website",
+ "standin": "http://127.0.0.1:8841",
+ "passed": 17,
+ "total": 17,
+ "failed": [],
+ "page_errors": [
+  "http://localhost:4441/ielts-website/dashboard: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+ ],
+ "pack_requests": {
+  "trial-before-buying-en-1440": [
+   "http://127.0.0.1:8841/content/pack/learning-index",
+   "http://127.0.0.1:8841/content/pack/focused-exercises",
+   "http://127.0.0.1:8841/content/pack/vocabulary",
+   "http://127.0.0.1:8841/content/pack/learning-index",
+   "http://127.0.0.1:8841/content/pack/writing-prompts-imported",
+   "http://127.0.0.1:8841/content/pack/band-guides",
+   "http://127.0.0.1:8841/content/pack/model-answers",
+   "http://127.0.0.1:8841/content/pack/learning-index",
+   "http://127.0.0.1:8841/content/pack/cue-cards",
+   "http://127.0.0.1:8841/content/pack/learning-index",
+   "http://127.0.0.1:8841/content/pack/model-answers",
+   "http://127.0.0.1:8841/content/pack/writing-prompts-imported",
+   "http://127.0.0.1:8841/content/pack/learning-index",
+   "http://127.0.0.1:8841/content/pack/band-guides",
+   "http://127.0.0.1:8841/content/pack/learning-index",
+   "http://127.0.0.1:8841/content/pack/focused-exercises",
+   "http://127.0.0.1:8841/content/pack/focused-reading-tfng-guided",
+   "http://127.0.0.1:8841/content/pack/learning-index",
+   "http://127.0.0.1:8841/content/pack/vocabulary",
+   "http://127.0.0.1:8841/content/pack/learning-index"
+  ]
+ },
+ "results": [
+  {
+   "combo": "en-1440",
+   "check": "trial started",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "trial: zero pack requests before buying",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "/plans: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "bought one month: return page confirms",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "Today is the full Today (not the trial home)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "previously locked lesson opens (reading/tfng)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "Writing checker offers the full question choice (Task 1 and Task 2)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "cue cards open (24 cards)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "model answer page shows a Band 8 answer",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "band guide shows real steps",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "focused exercise answered and checked start to finish",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "vocabulary review topics open",
+   "pass": true,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSS\nSkip to content\n\nDashboard\n\nVocabulary\n\nEvery IELTS topic, i"
+  },
+  {
+   "combo": "en-1440",
+   "check": "placement material arrived and can start",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "placement: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "account: Your access shows full access",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "account: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "pack requests observed after buying (count; 404s expected on a stale gated-content folder)",
+   "pass": true,
+   "detail": "0"
+  }
+ ]
+}

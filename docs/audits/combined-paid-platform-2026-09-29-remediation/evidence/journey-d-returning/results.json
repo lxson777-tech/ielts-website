@@ -1,0 +1,278 @@
+{
+ "suite": "journey-d-returning",
+ "base": "http://localhost:4442/ielts-website",
+ "standin": "http://127.0.0.1:8841",
+ "passed": 43,
+ "total": 43,
+ "failed": [],
+ "page_errors": [],
+ "pack_requests": {
+  "trial-returning": []
+ },
+ "results": [
+  {
+   "combo": "en-1440",
+   "check": "returning account exists (made in an earlier, closed browser)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "lesson: Mr EZ panel offers Sign in to a signed-out student",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "sign-in page keeps the lesson as the next step and the language",
+   "pass": true,
+   "detail": "http://localhost:4442/ielts-website/sign-in?next=%2Flessons%2Freading%2Fparaphrase"
+  },
+  {
+   "combo": "en-1440",
+   "check": "sign-in: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "signed in and landed back on the lesson",
+   "pass": true,
+   "detail": "/lessons/reading/paraphrase"
+  },
+  {
+   "combo": "en-1440",
+   "check": "sign-in offers 'Forgot password?'",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "forgot-password screen opens in the chosen language",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "reset request: confirmation names the email, generic about account existence (local, no email really sent)",
+   "pass": true,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSkip to content\nCheck your email\n\nWe sent a password-reset link to verify-d-en-1440-1790709369@example."
+  },
+  {
+   "combo": "en-1440",
+   "check": "second device: signed in, account shows the same person (name and email)",
+   "pass": true,
+   "detail": "/account"
+  },
+  {
+   "combo": "en-1440",
+   "check": "account: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "returning account exists (made in an earlier, closed browser)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "lesson: Mr EZ panel offers Sign in to a signed-out student",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "sign-in page keeps the lesson as the next step and the language",
+   "pass": true,
+   "detail": "http://localhost:4442/ielts-website/sign-in?next=%2Flessons%2Freading%2Fparaphrase"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "sign-in: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "signed in and landed back on the lesson",
+   "pass": true,
+   "detail": "/lessons/reading/paraphrase"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "sign-in offers 'Forgot password?'",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "forgot-password screen opens in the chosen language",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "reset request: confirmation names the email, generic about account existence (local, no email really sent)",
+   "pass": true,
+   "detail": "IELTS is EZ\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nEN\nRU\nПерейти к содержимому\nПроверьте почту\n\nМы отправили ссылку для сброса пароля на verify-d-ru-1440-179070936"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "second device: signed in, account shows the same person (name and email)",
+   "pass": true,
+   "detail": "/account"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "account: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "returning account exists (made in an earlier, closed browser)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "lesson: Mr EZ panel offers Sign in to a signed-out student",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "sign-in page keeps the lesson as the next step and the language",
+   "pass": true,
+   "detail": "http://localhost:4442/ielts-website/sign-in?next=%2Flessons%2Freading%2Fparaphrase"
+  },
+  {
+   "combo": "en-390",
+   "check": "sign-in: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "signed in and landed back on the lesson",
+   "pass": true,
+   "detail": "/lessons/reading/paraphrase"
+  },
+  {
+   "combo": "en-390",
+   "check": "sign-in offers 'Forgot password?'",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "forgot-password screen opens in the chosen language",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "reset request: confirmation names the email, generic about account existence (local, no email really sent)",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nToday\nCourse\nPractice\nTests\nVocabulary\nSkip to content\nCheck your email\n\nWe sent a password-reset link to verify-d-en-390-1790709369@example.t"
+  },
+  {
+   "combo": "en-390",
+   "check": "second device: signed in, account shows the same person (name and email)",
+   "pass": true,
+   "detail": "/account"
+  },
+  {
+   "combo": "en-390",
+   "check": "account: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "returning account exists (made in an earlier, closed browser)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "lesson: Mr EZ panel offers Sign in to a signed-out student",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "sign-in page keeps the lesson as the next step and the language",
+   "pass": true,
+   "detail": "http://localhost:4442/ielts-website/sign-in?next=%2Flessons%2Freading%2Fparaphrase"
+  },
+  {
+   "combo": "ru-390",
+   "check": "sign-in: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "signed in and landed back on the lesson",
+   "pass": true,
+   "detail": "/lessons/reading/paraphrase"
+  },
+  {
+   "combo": "ru-390",
+   "check": "sign-in offers 'Forgot password?'",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "forgot-password screen opens in the chosen language",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "reset request: confirmation names the email, generic about account existence (local, no email really sent)",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nПерейти к содержимому\nПроверьте почту\n\nМы отправили ссылку для сброса пароля на verify-d-ru-390-1790709369"
+  },
+  {
+   "combo": "ru-390",
+   "check": "second device: signed in, account shows the same person (name and email)",
+   "pass": true,
+   "detail": "/account"
+  },
+  {
+   "combo": "ru-390",
+   "check": "account: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "trial-en-1440",
+   "check": "trial-site account made",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "trial-en-1440",
+   "check": "trial site, signed out, included lesson: covered with a Sign in link",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "trial-en-1440",
+   "check": "NOTE after sign-in from the trial lesson, the student landed on /lessons/reading/paraphrase",
+   "pass": null,
+   "detail": ""
+  },
+  {
+   "combo": "trial-en-1440",
+   "check": "trial site: signed in from a lesson and returned to it (or to the trial start if no trial yet)",
+   "pass": true,
+   "detail": "/lessons/reading/paraphrase"
+  }
+ ]
+}

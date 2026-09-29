@@ -1,0 +1,60 @@
+{
+ "suite": "cross-cutting-rerun-today",
+ "base": "http://localhost:4442/ielts-website",
+ "standin": "http://127.0.0.1:8842",
+ "passed": 8,
+ "total": 8,
+ "failed": [],
+ "page_errors": [],
+ "pack_requests": {},
+ "results": [
+  {
+   "combo": "en-390",
+   "check": "fresh student, Today first screen (goal questions stage): at most one filled primary action",
+   "pass": true,
+   "detail": "[{'text': 'Next', 'bg': 'rgb(38, 60, 53)', 'lum': 0.21}]"
+  },
+  {
+   "combo": "en-390",
+   "check": "goal questions answered",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "Today first phone screen: exactly one filled primary action",
+   "pass": true,
+   "detail": "[{'text': 'Start', 'bg': 'rgb(224, 235, 188)', 'lum': 0.9}]"
+  },
+  {
+   "combo": "en-390",
+   "check": "Today first phone screen: today's Start fully visible above the dock",
+   "pass": true,
+   "detail": "{'dockTop': 767, 'filled': [{'text': 'Start', 'bg': 'rgb(224, 235, 188)', 'lum': 0.9}], 'start': {'top': 591, 'bottom': 639}, 'offer': True}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "fresh student, Today first screen (goal questions stage): at most one filled primary action",
+   "pass": true,
+   "detail": "[{'text': 'Next', 'bg': 'rgb(38, 60, 53)', 'lum': 0.21}]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "goal questions answered",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "Today first phone screen: exactly one filled primary action",
+   "pass": true,
+   "detail": "[{'text': 'Начать', 'bg': 'rgb(224, 235, 188)', 'lum': 0.9}]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Today first phone screen: today's Start fully visible above the dock",
+   "pass": true,
+   "detail": "{'dockTop': 767, 'filled': [{'text': 'Начать', 'bg': 'rgb(224, 235, 188)', 'lum': 0.9}], 'start': {'top': 692, 'bottom': 740}, 'offer': True}"
+  }
+ ]
+}

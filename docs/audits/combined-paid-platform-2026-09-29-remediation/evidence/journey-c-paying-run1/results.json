@@ -1,0 +1,879 @@
+{
+ "suite": "journey-c-paying",
+ "base": "http://localhost:4492/ielts-website",
+ "standin": "http://127.0.0.1:8492",
+ "passed": 110,
+ "total": 114,
+ "failed": [
+  {
+   "combo": "en-1440",
+   "check": "expire: previously paid lesson locked again",
+   "pass": false,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "expire: saved results still on the report",
+   "pass": false,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSS\nSkip to content\n\nPROGRESS REPORT\n\nYour progress, one page.\n\nEverything from your account page laid o"
+  },
+  {
+   "combo": "ru-390",
+   "check": "expire: previously paid lesson locked again",
+   "pass": false,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "expire: saved results still on the report",
+   "pass": false,
+   "detail": "IELTS is EZ\nEN\nRU\nSS\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nПерейти к содержимому\n\nОТЧЁТ О ПРОГРЕССЕ\n\nВаш прогресс на одной странице.\n\nВсё с вашей страницы аккаунт"
+  }
+ ],
+ "page_errors": [
+  "http://localhost:4492/ielts-website/trial: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.",
+  "http://localhost:4492/ielts-website/dashboard: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.",
+  "http://localhost:4492/ielts-website/dashboard: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.",
+  "http://localhost:4492/ielts-website/dashboard: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.",
+  "http://localhost:4492/ielts-website/dashboard: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.",
+  "http://localhost:4492/ielts-website/trial: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.",
+  "http://localhost:4492/ielts-website/dashboard: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.",
+  "http://localhost:4492/ielts-website/plans: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.",
+  "http://localhost:4492/ielts-website/dashboard: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.",
+  "http://localhost:4492/ielts-website/account: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+ ],
+ "pack_requests": {
+  "signed-out-visitor": [],
+  "trial-before-buying-en-1440": [
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/focused-exercises",
+   "http://127.0.0.1:8492/content/pack/vocabulary",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/focused-exercises",
+   "http://127.0.0.1:8492/content/pack/vocabulary",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/writing-prompts-imported",
+   "http://127.0.0.1:8492/content/pack/band-guides",
+   "http://127.0.0.1:8492/content/pack/model-answers",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/cue-cards",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/model-answers",
+   "http://127.0.0.1:8492/content/pack/writing-prompts-imported",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/band-guides",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/focused-exercises",
+   "http://127.0.0.1:8492/content/pack/focused-reading-tfng-guided"
+  ],
+  "paid-en-1440": [
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/focused-exercises",
+   "http://127.0.0.1:8492/content/pack/vocabulary",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/focused-exercises",
+   "http://127.0.0.1:8492/content/pack/vocabulary",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/writing-prompts-imported",
+   "http://127.0.0.1:8492/content/pack/band-guides",
+   "http://127.0.0.1:8492/content/pack/model-answers",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/cue-cards",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/model-answers",
+   "http://127.0.0.1:8492/content/pack/writing-prompts-imported",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/band-guides",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/focused-exercises",
+   "http://127.0.0.1:8492/content/pack/focused-reading-tfng-guided"
+  ],
+  "second-browser-en-1440": [
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/focused-exercises",
+   "http://127.0.0.1:8492/content/pack/vocabulary"
+  ],
+  "refund-en-1440": [],
+  "trial-before-buying-ru-1440": [
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/focused-exercises",
+   "http://127.0.0.1:8492/content/pack/vocabulary",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/writing-prompts-imported",
+   "http://127.0.0.1:8492/content/pack/band-guides",
+   "http://127.0.0.1:8492/content/pack/model-answers",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/cue-cards",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/model-answers",
+   "http://127.0.0.1:8492/content/pack/writing-prompts-imported",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/band-guides",
+   "http://127.0.0.1:8492/content/pack/learning-index"
+  ],
+  "trial-before-buying-en-390": [
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/focused-exercises",
+   "http://127.0.0.1:8492/content/pack/vocabulary",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/writing-prompts-imported",
+   "http://127.0.0.1:8492/content/pack/band-guides",
+   "http://127.0.0.1:8492/content/pack/model-answers",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/cue-cards",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/model-answers",
+   "http://127.0.0.1:8492/content/pack/writing-prompts-imported",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/band-guides",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/focused-exercises",
+   "http://127.0.0.1:8492/content/pack/focused-reading-tfng-guided",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/vocabulary",
+   "http://127.0.0.1:8492/content/pack/learning-index"
+  ],
+  "trial-before-buying-ru-390": [
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/focused-exercises",
+   "http://127.0.0.1:8492/content/pack/vocabulary",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/focused-exercises",
+   "http://127.0.0.1:8492/content/pack/vocabulary",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/writing-prompts-imported",
+   "http://127.0.0.1:8492/content/pack/band-guides",
+   "http://127.0.0.1:8492/content/pack/model-answers",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/cue-cards",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/model-answers",
+   "http://127.0.0.1:8492/content/pack/writing-prompts-imported"
+  ],
+  "paid-ru-390": [
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/focused-exercises",
+   "http://127.0.0.1:8492/content/pack/vocabulary",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/focused-exercises",
+   "http://127.0.0.1:8492/content/pack/vocabulary",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/writing-prompts-imported",
+   "http://127.0.0.1:8492/content/pack/band-guides",
+   "http://127.0.0.1:8492/content/pack/model-answers",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/cue-cards",
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/model-answers",
+   "http://127.0.0.1:8492/content/pack/writing-prompts-imported"
+  ],
+  "second-browser-ru-390": [
+   "http://127.0.0.1:8492/content/pack/learning-index",
+   "http://127.0.0.1:8492/content/pack/ru-dictionary",
+   "http://127.0.0.1:8492/content/pack/focused-exercises",
+   "http://127.0.0.1:8492/content/pack/vocabulary"
+  ],
+  "refund-ru-390": []
+ },
+ "results": [
+  {
+   "combo": "en-390",
+   "check": "signed-out visitor made ZERO /content/pack/ requests",
+   "pass": true,
+   "detail": "[]"
+  },
+  {
+   "combo": "en-1440",
+   "check": "trial started",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "trial account visiting locked pages made ZERO /content/pack/ requests",
+   "pass": true,
+   "detail": "[]"
+  },
+  {
+   "combo": "en-1440",
+   "check": "/plans (trial): both Buy buttons enabled",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "/plans: SIMULATED banner visible",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "/plans: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "simulated provider page (/__pay) reached, labelled SIMULATED",
+   "pass": true,
+   "detail": "http://127.0.0.1:8492/__pay/6aeef27f-4ce2-4390-a474-ab49d66d90df?return=http%3A%2F%2Flocalhost%3A4492%2Fielts-website%2Fplans%2Freturn%3Forder%3D6aeef27f-4ce2-4390-a474-ab49d66d90df"
+  },
+  {
+   "combo": "en-1440",
+   "check": "/plans/return: 'You're in' after the provider confirmed",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "server: order paid at 10,000 KZT with exactly one grant",
+   "pass": true,
+   "detail": "{\"id\": \"6aeef27f-4ce2-4390-a474-ab49d66d90df\", \"user_id\": \"ee13fd60-de4e-48a7-862d-c20b59c32b7d\", \"plan_id\": \"month-1\", \"amount\": 10000, \"currency\": \"KZT\", \"provider\": \"simulated\", \"provider_ref\": \"si"
+  },
+  {
+   "combo": "en-1440",
+   "check": "return page states the access-until date from the server grant",
+   "pass": true,
+   "detail": "30 October 2026"
+  },
+  {
+   "combo": "en-1440",
+   "check": "reloading the return page is safe (no second grant)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "Today is the full Today (not the trial home)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "previously locked lesson opens (reading/tfng)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "Writing checker offers the full question choice (Task 1 and Task 2)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "cue cards open (24 cards)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "model answer page shows a Band 8 answer",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "band guide shows real steps",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "focused exercise answered and checked start to finish",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "vocabulary review topics open",
+   "pass": true,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSS\nSkip to content\n\nDashboard\n\nVocabulary\n\nEvery IELTS topic, i"
+  },
+  {
+   "combo": "en-1440",
+   "check": "placement material arrived and can start",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "placement test started",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "placement: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "paid browsing fetched packs through the door",
+   "pass": true,
+   "detail": "25"
+  },
+  {
+   "combo": "en-1440",
+   "check": "account: Your access with end date and a purchase history row",
+   "pass": true,
+   "detail": "Your access\n\nWhat your account can open, and every purchase you have made.\n\nFull access until 30 October 2026\nBuying again adds more time after this date. Nothing renews by itself.\nAdd more time\n\nFull"
+  },
+  {
+   "combo": "en-1440",
+   "check": "account: receipt link present",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "receipt: number, amount and status shown, marked SIMULATED",
+   "pass": true,
+   "detail": "SIMULATED payment\nNo money was taken. This receipt is a local test, not a real one.\n\nIELTS IS EZ\nReceipt\nReceipt number\n2026-000009\nDate\n30 September 2026\nPlan\nOne month\nAccess period\n30 September 202"
+  },
+  {
+   "combo": "en-1440",
+   "check": "three months extends: new grant starts when the first ends (+90 days)",
+   "pass": true,
+   "detail": "[{\"id\": \"3e55acd8-2d1c-4e99-b639-ff0d92698239\", \"user_id\": \"ee13fd60-de4e-48a7-862d-c20b59c32b7d\", \"order_id\": \"69816c7b-ba02-483b-a53f-27248bb997cd\", \"plan_id\": \"month-3\", \"starts_at\": \"2026-10-29T19"
+  },
+  {
+   "combo": "en-1440",
+   "check": "second fresh browser: signed in and /plans shows paid access",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "second browser: previously locked lesson open",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "second browser: full Today",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "Fail: 'Payment was not completed', access unchanged",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "Cancel: order cancelled on the server and the page says so",
+   "pass": true,
+   "detail": "cancelled"
+  },
+  {
+   "combo": "en-1440",
+   "check": "interrupted: back on /plans the pending order is shown with Check again",
+   "pass": true,
+   "detail": "/plans"
+  },
+  {
+   "combo": "en-1440",
+   "check": "interrupted order is 'pending' on the server, grants unchanged",
+   "pass": true,
+   "detail": "pending"
+  },
+  {
+   "combo": "en-1440",
+   "check": "student B paid: door open for the paid lesson",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "refund: the lesson is locked again on screen",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "refund: the door refuses the paid lesson (403)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "refund: account shows the order refunded and no paid access",
+   "pass": true,
+   "detail": "Your access\n\nWhat your account can open, and every purchase you have made.\n\nYour free trial runs until 3 October, 00:17\nFull access starts as soon as your payment is confirmed.\nView plans\n\nFull access"
+  },
+  {
+   "combo": "en-1440",
+   "check": "paid student submitted a paid-only paper (result to keep)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "expire: account says 'ended on' and results are kept",
+   "pass": true,
+   "detail": "Your access\n\nWhat your account can open, and every purchase you have made.\n\nYour full access ended on 30 September 2026\nYour results are kept. Choose a plan to continue.\nBuy access again\n\nFull access "
+  },
+  {
+   "combo": "en-1440",
+   "check": "expire: previously paid lesson locked again",
+   "pass": false,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "expire: saved results still on the report",
+   "pass": false,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSS\nSkip to content\n\nPROGRESS REPORT\n\nYour progress, one page.\n\nEverything from your account page laid o"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "trial started",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "trial: zero pack requests before buying",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "/plans: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "bought one month: return page confirms",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Today is the full Today (not the trial home)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "previously locked lesson opens (reading/tfng)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Writing checker offers the full question choice (Task 1 and Task 2)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "cue cards open (24 cards)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "model answer page shows a Band 8 answer",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "band guide shows real steps",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "focused exercise answered and checked start to finish",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "vocabulary review topics open",
+   "pass": true,
+   "detail": "IELTS is EZ\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nEN\nRU\nSS\nПерейти к содержимому\n\nДашборд\n\nСловарь\n\nКаждая тема IELTS, её "
+  },
+  {
+   "combo": "ru-1440",
+   "check": "placement material arrived and can start",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "placement: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "account: Your access shows full access",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "account: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "trial started",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "trial: zero pack requests before buying",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "/plans: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "bought one month: return page confirms",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "Today is the full Today (not the trial home)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "previously locked lesson opens (reading/tfng)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "Writing checker offers the full question choice (Task 1 and Task 2)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "cue cards open (24 cards)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "model answer page shows a Band 8 answer",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "band guide shows real steps",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "focused exercise answered and checked start to finish",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "vocabulary review topics open",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nSS\nToday\nCourse\nPractice\nTests\nVocabulary\nSkip to content\n\nDashboard\n\nVocabulary\n\nEvery IELTS topic, i"
+  },
+  {
+   "combo": "en-390",
+   "check": "placement material arrived and can start",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "placement: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "account: Your access shows full access",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "account: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "trial started",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "trial account visiting locked pages made ZERO /content/pack/ requests",
+   "pass": true,
+   "detail": "[]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "/plans (trial): both Buy buttons enabled",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "/plans: SIMULATED banner visible",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "/plans: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "simulated provider page (/__pay) reached, labelled SIMULATED",
+   "pass": true,
+   "detail": "http://127.0.0.1:8492/__pay/ba36fd74-9ed6-461c-ba73-1da80d5de457?return=http%3A%2F%2Flocalhost%3A4492%2Fielts-website%2Fplans%2Freturn%3Forder%3Dba36fd74-9ed6-461c-ba73-1da80d5de457"
+  },
+  {
+   "combo": "ru-390",
+   "check": "/plans/return: 'You're in' after the provider confirmed",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "server: order paid at 10,000 KZT with exactly one grant",
+   "pass": true,
+   "detail": "{\"id\": \"ba36fd74-9ed6-461c-ba73-1da80d5de457\", \"user_id\": \"6fe4ce94-e463-4ea1-877f-7caf553a1bad\", \"plan_id\": \"month-1\", \"amount\": 10000, \"currency\": \"KZT\", \"provider\": \"simulated\", \"provider_ref\": \"si"
+  },
+  {
+   "combo": "ru-390",
+   "check": "reloading the return page is safe (no second grant)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "Today is the full Today (not the trial home)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "previously locked lesson opens (reading/tfng)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "Writing checker offers the full question choice (Task 1 and Task 2)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "cue cards open (24 cards)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "model answer page shows a Band 8 answer",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "band guide shows real steps",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "focused exercise answered and checked start to finish",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "vocabulary review topics open",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nSS\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nПерейти к содержимому\n\nДашборд\n\nСловарь\n\nКаждая тема IELTS, её "
+  },
+  {
+   "combo": "ru-390",
+   "check": "placement material arrived and can start",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "placement test started",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "placement: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "paid browsing fetched packs through the door",
+   "pass": true,
+   "detail": "34"
+  },
+  {
+   "combo": "ru-390",
+   "check": "account: Your access with end date and a purchase history row",
+   "pass": true,
+   "detail": "Ваш доступ\n\nЧто открыто в вашем аккаунте, и все ваши покупки.\n\nПолный доступ до 30 октября 2026 г.\nНовая покупка добавит время после этой даты. Ничего не продлевается само.\nДобавить время\n\nПолный дост"
+  },
+  {
+   "combo": "ru-390",
+   "check": "account: receipt link present",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "receipt: number, amount and status shown, marked SIMULATED",
+   "pass": true,
+   "detail": "СИМУЛЯЦИЯ оплаты\nДеньги не списывались. Этот чек из локальной проверки, он не настоящий.\n\nIELTS IS EZ\nЧек\nНомер чека\n2026-000015\nДата\n30 сентября 2026 г.\nТариф\nОдин месяц\nСрок доступа\nс 30 сентября 20"
+  },
+  {
+   "combo": "ru-390",
+   "check": "three months extends: new grant starts when the first ends (+90 days)",
+   "pass": true,
+   "detail": "[{\"id\": \"cf2b1041-12f7-45f8-acff-26074983f160\", \"user_id\": \"6fe4ce94-e463-4ea1-877f-7caf553a1bad\", \"order_id\": \"53298db5-ec78-4018-a335-18c7a61dab39\", \"plan_id\": \"month-3\", \"starts_at\": \"2026-10-29T19"
+  },
+  {
+   "combo": "ru-390",
+   "check": "second fresh browser: signed in and /plans shows paid access",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "second browser: previously locked lesson open",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "second browser: full Today",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "Fail: 'Payment was not completed', access unchanged",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "Cancel: order cancelled on the server and the page says so",
+   "pass": true,
+   "detail": "cancelled"
+  },
+  {
+   "combo": "ru-390",
+   "check": "interrupted: back on /plans the pending order is shown with Check again",
+   "pass": true,
+   "detail": "/plans"
+  },
+  {
+   "combo": "ru-390",
+   "check": "interrupted order is 'pending' on the server, grants unchanged",
+   "pass": true,
+   "detail": "pending"
+  },
+  {
+   "combo": "ru-390",
+   "check": "student B paid: door open for the paid lesson",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "refund: the lesson is locked again on screen",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "refund: the door refuses the paid lesson (403)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "refund: account shows the order refunded and no paid access",
+   "pass": true,
+   "detail": "Ваш доступ\n\nЧто открыто в вашем аккаунте, и все ваши покупки.\n\nБесплатный пробный период действует до 3 октября, 00:22\nПолный доступ откроется, как только оплата будет подтверждена.\nПосмотреть тарифы\n"
+  },
+  {
+   "combo": "ru-390",
+   "check": "paid student submitted a paid-only paper (result to keep)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "expire: account no longer says full access until",
+   "pass": true,
+   "detail": "Ваш доступ\n\nЧто открыто в вашем аккаунте, и все ваши покупки.\n\nВаш полный доступ закончился 30 сентября 2026 г.\nВаши результаты сохранены. Выберите тариф, чтобы продолжить.\nКупить доступ снова\n\nПолный"
+  },
+  {
+   "combo": "ru-390",
+   "check": "expire: previously paid lesson locked again",
+   "pass": false,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "expire: saved results still on the report",
+   "pass": false,
+   "detail": "IELTS is EZ\nEN\nRU\nSS\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nПерейти к содержимому\n\nОТЧЁТ О ПРОГРЕССЕ\n\nВаш прогресс на одной странице.\n\nВсё с вашей страницы аккаунт"
+  }
+ ]
+}

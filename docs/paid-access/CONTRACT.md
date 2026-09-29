@@ -60,10 +60,11 @@ Functions (security definer, `set search_path = public, pg_temp`):
   amount, currency and the sentences the pricing surfaces use. The sales page,
   `/plans` and the migration all read these numbers from here or are tested
   against it.
-- Paid Mr EZ and grading allowance: **not decided by Alex**. Until he decides,
-  a paid account is treated exactly like a student on the open site today: the
-  Workers' existing per-student daily limits apply, and the trial allowance does
-  not. This is labelled as pending in the plans copy, never presented as final.
+- Paid Mr EZ and grading allowance: **decided by Alex on 29 September 2026**:
+  unlimited normal study with fair daily limits, i.e. a paid account is treated
+  like a student on the open site today: the Workers' existing per-student
+  daily limits apply (Mr EZ, live examiner; essay and speaking grading have
+  none), and the trial allowance does not.
 
 ## Payments Worker (`workers/payments`, new, Builder A1)
 

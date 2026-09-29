@@ -1,0 +1,888 @@
+{
+ "suite": "journey-a-visitor",
+ "base": "http://localhost:4441/ielts-website",
+ "standin": "http://127.0.0.1:8841",
+ "passed": 137,
+ "total": 139,
+ "failed": [
+  {
+   "combo": "en-1440",
+   "check": "questionnaire: plan generated in the chosen language",
+   "pass": false,
+   "detail": "YOUR SUGGESTED STARTING PLAN\n\nYour Band 7.0 goal. Your first 3 days.\n\nStart with reading, the section you want most help with. Set aside 15 minutes each day. Le"
+  },
+  {
+   "combo": "en-390",
+   "check": "questionnaire: plan generated in the chosen language",
+   "pass": false,
+   "detail": "YOUR SUGGESTED STARTING PLAN\n\nYour Band 7.0 goal. Your first 3 days.\n\nStart with reading, the section you want most help with. Set aside 15 minutes each day. Le"
+  }
+ ],
+ "page_errors": [],
+ "pack_requests": {
+  "visitor-en-1440": [],
+  "visitor-ru-1440": [],
+  "visitor-en-390": [],
+  "visitor-ru-390": []
+ },
+ "results": [
+  {
+   "combo": "en-1440",
+   "check": "sales page opens in English for an English device with nothing stored",
+   "pass": true,
+   "detail": "en"
+  },
+  {
+   "combo": "en-1440",
+   "check": "RU switch: page Russian and choice stored",
+   "pass": true,
+   "detail": "ru ru"
+  },
+  {
+   "combo": "en-1440",
+   "check": "EN switch back: page English and choice stored",
+   "pass": true,
+   "detail": "en en"
+  },
+  {
+   "combo": "en-1440",
+   "check": "sales page: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "questionnaire: plan generated in the chosen language",
+   "pass": false,
+   "detail": "YOUR SUGGESTED STARTING PLAN\n\nYour Band 7.0 goal. Your first 3 days.\n\nStart with reading, the section you want most help with. Set aside 15 minutes each day. Le"
+  },
+  {
+   "combo": "en-1440",
+   "check": "questionnaire: plan has three days",
+   "pass": true,
+   "detail": "YOUR SUGGESTED STARTING PLAN\n\nYour Band 7.0 goal. Your first 3 days.\n\nStart with reading, the section you want most help with. Set aside 15 minutes each day. Learn one method, practise it, then try a "
+  },
+  {
+   "combo": "en-1440",
+   "check": "questionnaire: trial link carries the answers",
+   "pass": true,
+   "detail": "/ielts-website/trial?journey=1&band=7&skill=reading&focus=method&time=15"
+  },
+  {
+   "combo": "en-1440",
+   "check": "pricing: 10,000 and 25,000 KZT shown in local format",
+   "pass": true,
+   "detail": "Your first 3 days.\nOn us.\n\nGet to know your study space before you pay.\nSign up to start. No payment card required.\n\nOne place to prepare.\n\nThree days to try your study space: one lesson and one test "
+  },
+  {
+   "combo": "en-1440",
+   "check": "NOTE pricing button 'Choose one month' as a visitor -> url ; status line: 'Paid access lasts one or three months and then simply ends: it never renews automatically. There are no refunds after purchase, so the free three-day trial is y'",
+   "pass": null,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "pricing button leads somewhere sensible (sign-up/trial/plans or an explained status)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "language still the chosen one after pricing",
+   "pass": true,
+   "detail": "en"
+  },
+  {
+   "combo": "en-1440",
+   "check": "FAQ: trial wording says Speaking Part 1 (not 'full test in each section')",
+   "pass": true,
+   "detail": "BEFORE YOUR FIRST STEP\n\nA few things\nyou might wonder.\nHow does the 3-day free trial work?\n+\n\nSign up to try Academic IELTS preparation for three days. No payment card is required. Your trial includes"
+  },
+  {
+   "combo": "en-1440",
+   "check": "footer: Privacy, Terms and Ask a person links present",
+   "pass": true,
+   "detail": "{'privacy': '/ielts-website/privacy', 'terms': '/ielts-website/terms', 'support': '/ielts-website/support?reason=footer'}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "footer privacy: opens (HTTP 200), heading 'How your information is used', language kept",
+   "pass": true,
+   "detail": "en"
+  },
+  {
+   "combo": "en-1440",
+   "check": "footer privacy: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "footer terms: opens (HTTP 200), heading 'The terms, in plain words', language kept",
+   "pass": true,
+   "detail": "en"
+  },
+  {
+   "combo": "en-1440",
+   "check": "footer terms: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "footer support: opens (HTTP 200), heading 'Ask a person', language kept",
+   "pass": true,
+   "detail": "en"
+  },
+  {
+   "combo": "en-1440",
+   "check": "footer support: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Ask a person: a form a signed-out visitor can use (message box and email)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "start trial: /trial opens in the chosen language",
+   "pass": true,
+   "detail": "/trial en"
+  },
+  {
+   "combo": "en-1440",
+   "check": "trial offer states Academic IELTS and Speaking Part 1 before sign-up",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "sign-up: opened from the trial, language kept",
+   "pass": true,
+   "detail": "/sign-up en"
+  },
+  {
+   "combo": "en-1440",
+   "check": "sign-up: explains what is asked next and links to privacy",
+   "pass": true,
+   "detail": "Next, we ask for a few details about you, such as your name, date of birth and phone number. Only you and the person who"
+  },
+  {
+   "combo": "en-1440",
+   "check": "sign-up: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "profile: required profile follows sign-up, language kept",
+   "pass": true,
+   "detail": "/profile en"
+  },
+  {
+   "combo": "en-1440",
+   "check": "profile: explanation visible (why, who sees it, link to privacy)",
+   "pass": true,
+   "detail": "Only you and the person who runs the site can see these details. Why we ask for each one"
+  },
+  {
+   "combo": "en-1440",
+   "check": "profile: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "profile: saved",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "Before you begin: back on /trial with the Start button, language kept",
+   "pass": true,
+   "detail": "/trial en Start my 3-day trial"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Before you begin: the clock starts only on Start (said on the page)",
+   "pass": true,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSS\nSkip to content\nBefore you begin\n\nYour three days start when"
+  },
+  {
+   "combo": "en-1440",
+   "check": "no trial yet before pressing Start",
+   "pass": true,
+   "detail": "None"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Start: trial begins on the server and Today opens in the chosen language",
+   "pass": true,
+   "detail": "/dashboard en {'user_id': '88746643-93cd-48db-87ab-094c0774c7fa', 'started_at': '2026-09-29T19:12:43.445Z', 'ends_at': '2026-10-02T19:12:43.445Z', 'questionnaire': {'band': '"
+  },
+  {
+   "combo": "en-1440",
+   "check": "questionnaire answers kept with the trial",
+   "pass": true,
+   "detail": "{'band': '7', 'time': '15', 'focus': 'method', 'skill': 'reading'}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "language stored throughout",
+   "pass": true,
+   "detail": "en"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Today: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "sales page opens in English for an English device with nothing stored",
+   "pass": true,
+   "detail": "en"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "RU switch: page Russian and choice stored",
+   "pass": true,
+   "detail": "ru ru"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "sales page: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "questionnaire: plan generated in the chosen language",
+   "pass": true,
+   "detail": "ПРЕДЛОЖЕННЫЙ ПЛАН НА СТАРТ\n\nВаша цель: балл 7.0. Ваши первые 3 дня.\n\nНачните с Reading: здесь вам больше всего нужна помощь. Уделяйте занятиям 15 минут в день. "
+  },
+  {
+   "combo": "ru-1440",
+   "check": "questionnaire: plan has three days",
+   "pass": true,
+   "detail": "ПРЕДЛОЖЕННЫЙ ПЛАН НА СТАРТ\n\nВаша цель: балл 7.0. Ваши первые 3 дня.\n\nНачните с Reading: здесь вам больше всего нужна помощь. Уделяйте занятиям 15 минут в день. Изучите один метод, отработайте его, зат"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "questionnaire: trial link carries the answers",
+   "pass": true,
+   "detail": "/ielts-website/trial?journey=1&band=7&skill=reading&focus=method&time=15"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "pricing: 10,000 and 25,000 KZT shown in local format",
+   "pass": true,
+   "detail": "Первые 3 дня\nза наш счёт.\n\nПознакомьтесь с учебным пространством до оплаты.\nЧтобы начать, зарегистрируйтесь. Банковская карта не нужна.\n\nВсё для подготовки в одном месте.\n\nТри дня, чтобы попробовать у"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "NOTE pricing button 'Выбрать один месяц' as a visitor -> url ; status line: 'Платный доступ действует один или три месяца и просто заканчивается: автоматического продления нет. После покупки деньги не возвращаются, поэтому бесплатные три'",
+   "pass": null,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "pricing button leads somewhere sensible (sign-up/trial/plans or an explained status)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "language still the chosen one after pricing",
+   "pass": true,
+   "detail": "ru"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "FAQ: trial wording says Speaking Part 1 (not 'full test in each section')",
+   "pass": true,
+   "detail": "ПЕРЕД ПЕРВЫМ ШАГОМ\n\nНесколько вопросов,\nкоторые могут возникнуть.\nКак работает бесплатный пробный период на 3 дня?\n+\n\nЗарегистрируйтесь и готовьтесь к Academic IELTS три дня бесплатно. Банковская карт"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "footer: Privacy, Terms and Ask a person links present",
+   "pass": true,
+   "detail": "{'privacy': '/ielts-website/privacy', 'terms': '/ielts-website/terms', 'support': '/ielts-website/support?reason=footer'}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "footer privacy: opens (HTTP 200), heading 'Как используются ваши данные', language kept",
+   "pass": true,
+   "detail": "ru"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "footer privacy: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "footer terms: opens (HTTP 200), heading 'Условия простыми словами', language kept",
+   "pass": true,
+   "detail": "ru"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "footer terms: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "footer support: opens (HTTP 200), heading 'Спросить человека', language kept",
+   "pass": true,
+   "detail": "ru"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "footer support: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Ask a person: a form a signed-out visitor can use (message box and email)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "start trial: /trial opens in the chosen language",
+   "pass": true,
+   "detail": "/trial ru"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "trial offer states Academic IELTS and Speaking Part 1 before sign-up",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "sign-up: opened from the trial, language kept",
+   "pass": true,
+   "detail": "/sign-up ru"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "sign-up: explains what is asked next and links to privacy",
+   "pass": true,
+   "detail": "Дальше мы попросим несколько данных о вас: имя, дату рождения и номер телефона. Их видите только вы и тот, кто ведёт сай"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "sign-up: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "profile: required profile follows sign-up, language kept",
+   "pass": true,
+   "detail": "/profile ru"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "profile: explanation visible (why, who sees it, link to privacy)",
+   "pass": true,
+   "detail": "Эти данные видите только вы и тот, кто ведёт сайт. Зачем нужен каждый пункт"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "profile: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "profile: saved",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Before you begin: back on /trial with the Start button, language kept",
+   "pass": true,
+   "detail": "/trial ru Начать 3 дня бесплатно"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Before you begin: the clock starts only on Start (said on the page)",
+   "pass": true,
+   "detail": "IELTS is EZ\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nEN\nRU\nSS\nПерейти к содержимому\nПеред началом\n\nТри дня начнутся, когда вы"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "no trial yet before pressing Start",
+   "pass": true,
+   "detail": "None"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Start: trial begins on the server and Today opens in the chosen language",
+   "pass": true,
+   "detail": "/dashboard ru {'user_id': '4c422614-d863-4b24-ac65-95bf524228e0', 'started_at': '2026-09-29T19:13:47.226Z', 'ends_at': '2026-10-02T19:13:47.226Z', 'questionnaire': {'band': '"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "questionnaire answers kept with the trial",
+   "pass": true,
+   "detail": "{'band': '7', 'time': '15', 'focus': 'method', 'skill': 'reading'}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "language stored throughout",
+   "pass": true,
+   "detail": "ru"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Today: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "sales page opens in English for an English device with nothing stored",
+   "pass": true,
+   "detail": "en"
+  },
+  {
+   "combo": "en-390",
+   "check": "RU switch: page Russian and choice stored",
+   "pass": true,
+   "detail": "ru ru"
+  },
+  {
+   "combo": "en-390",
+   "check": "EN switch back: page English and choice stored",
+   "pass": true,
+   "detail": "en en"
+  },
+  {
+   "combo": "en-390",
+   "check": "sales page: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "questionnaire: plan generated in the chosen language",
+   "pass": false,
+   "detail": "YOUR SUGGESTED STARTING PLAN\n\nYour Band 7.0 goal. Your first 3 days.\n\nStart with reading, the section you want most help with. Set aside 15 minutes each day. Le"
+  },
+  {
+   "combo": "en-390",
+   "check": "questionnaire: plan has three days",
+   "pass": true,
+   "detail": "YOUR SUGGESTED STARTING PLAN\n\nYour Band 7.0 goal. Your first 3 days.\n\nStart with reading, the section you want most help with. Set aside 15 minutes each day. Learn one method, practise it, then try a "
+  },
+  {
+   "combo": "en-390",
+   "check": "questionnaire: trial link carries the answers",
+   "pass": true,
+   "detail": "/ielts-website/trial?journey=1&band=7&skill=reading&focus=method&time=15"
+  },
+  {
+   "combo": "en-390",
+   "check": "pricing: 10,000 and 25,000 KZT shown in local format",
+   "pass": true,
+   "detail": "Your first 3 days.\nOn us.\n\nGet to know your study space before you pay.\nSign up to start. No payment card required.\n\nOne place to prepare.\n\nThree days to try your study space: one lesson and one test "
+  },
+  {
+   "combo": "en-390",
+   "check": "NOTE pricing button 'Choose one month' as a visitor -> url ; status line: 'Paid access lasts one or three months and then simply ends: it never renews automatically. There are no refunds after purchase, so the free three-day trial is y'",
+   "pass": null,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "pricing button leads somewhere sensible (sign-up/trial/plans or an explained status)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "language still the chosen one after pricing",
+   "pass": true,
+   "detail": "en"
+  },
+  {
+   "combo": "en-390",
+   "check": "FAQ: trial wording says Speaking Part 1 (not 'full test in each section')",
+   "pass": true,
+   "detail": "BEFORE YOUR FIRST STEP\n\nA few things\nyou might wonder.\nHow does the 3-day free trial work?\n+\n\nSign up to try Academic IELTS preparation for three days. No payment card is required. Your trial includes"
+  },
+  {
+   "combo": "en-390",
+   "check": "footer: Privacy, Terms and Ask a person links present",
+   "pass": true,
+   "detail": "{'privacy': '/ielts-website/privacy', 'terms': '/ielts-website/terms', 'support': '/ielts-website/support?reason=footer'}"
+  },
+  {
+   "combo": "en-390",
+   "check": "footer privacy: opens (HTTP 200), heading 'How your information is used', language kept",
+   "pass": true,
+   "detail": "en"
+  },
+  {
+   "combo": "en-390",
+   "check": "footer privacy: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "footer terms: opens (HTTP 200), heading 'The terms, in plain words', language kept",
+   "pass": true,
+   "detail": "en"
+  },
+  {
+   "combo": "en-390",
+   "check": "footer terms: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "footer support: opens (HTTP 200), heading 'Ask a person', language kept",
+   "pass": true,
+   "detail": "en"
+  },
+  {
+   "combo": "en-390",
+   "check": "footer support: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "Ask a person: a form a signed-out visitor can use (message box and email)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "start trial: /trial opens in the chosen language",
+   "pass": true,
+   "detail": "/trial en"
+  },
+  {
+   "combo": "en-390",
+   "check": "trial offer states Academic IELTS and Speaking Part 1 before sign-up",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "sign-up: opened from the trial, language kept",
+   "pass": true,
+   "detail": "/sign-up en"
+  },
+  {
+   "combo": "en-390",
+   "check": "sign-up: explains what is asked next and links to privacy",
+   "pass": true,
+   "detail": "Next, we ask for a few details about you, such as your name, date of birth and phone number. Only you and the person who"
+  },
+  {
+   "combo": "en-390",
+   "check": "sign-up: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "profile: required profile follows sign-up, language kept",
+   "pass": true,
+   "detail": "/profile en"
+  },
+  {
+   "combo": "en-390",
+   "check": "profile: explanation visible (why, who sees it, link to privacy)",
+   "pass": true,
+   "detail": "Only you and the person who runs the site can see these details. Why we ask for each one"
+  },
+  {
+   "combo": "en-390",
+   "check": "profile: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "profile: saved",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "Before you begin: back on /trial with the Start button, language kept",
+   "pass": true,
+   "detail": "/trial en Start my 3-day trial"
+  },
+  {
+   "combo": "en-390",
+   "check": "Before you begin: the clock starts only on Start (said on the page)",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nSS\nToday\nCourse\nPractice\nTests\nVocabulary\nSkip to content\nBefore you begin\n\nYour three days start when"
+  },
+  {
+   "combo": "en-390",
+   "check": "no trial yet before pressing Start",
+   "pass": true,
+   "detail": "None"
+  },
+  {
+   "combo": "en-390",
+   "check": "Start: trial begins on the server and Today opens in the chosen language",
+   "pass": true,
+   "detail": "/dashboard en {'user_id': '792341dc-436f-47ca-8072-68e9b005def1', 'started_at': '2026-09-29T19:14:46.039Z', 'ends_at': '2026-10-02T19:14:46.039Z', 'questionnaire': {'band': '"
+  },
+  {
+   "combo": "en-390",
+   "check": "questionnaire answers kept with the trial",
+   "pass": true,
+   "detail": "{'band': '7', 'time': '15', 'focus': 'method', 'skill': 'reading'}"
+  },
+  {
+   "combo": "en-390",
+   "check": "language stored throughout",
+   "pass": true,
+   "detail": "en"
+  },
+  {
+   "combo": "en-390",
+   "check": "Today: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "sales page opens in English for an English device with nothing stored",
+   "pass": true,
+   "detail": "en"
+  },
+  {
+   "combo": "ru-390",
+   "check": "RU switch: page Russian and choice stored",
+   "pass": true,
+   "detail": "ru ru"
+  },
+  {
+   "combo": "ru-390",
+   "check": "sales page: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "questionnaire: plan generated in the chosen language",
+   "pass": true,
+   "detail": "ПРЕДЛОЖЕННЫЙ ПЛАН НА СТАРТ\n\nВаша цель: балл 7.0. Ваши первые 3 дня.\n\nНачните с Reading: здесь вам больше всего нужна помощь. Уделяйте занятиям 15 минут в день. "
+  },
+  {
+   "combo": "ru-390",
+   "check": "questionnaire: plan has three days",
+   "pass": true,
+   "detail": "ПРЕДЛОЖЕННЫЙ ПЛАН НА СТАРТ\n\nВаша цель: балл 7.0. Ваши первые 3 дня.\n\nНачните с Reading: здесь вам больше всего нужна помощь. Уделяйте занятиям 15 минут в день. Изучите один метод, отработайте его, зат"
+  },
+  {
+   "combo": "ru-390",
+   "check": "questionnaire: trial link carries the answers",
+   "pass": true,
+   "detail": "/ielts-website/trial?journey=1&band=7&skill=reading&focus=method&time=15"
+  },
+  {
+   "combo": "ru-390",
+   "check": "pricing: 10,000 and 25,000 KZT shown in local format",
+   "pass": true,
+   "detail": "Первые 3 дня\nза наш счёт.\n\nПознакомьтесь с учебным пространством до оплаты.\nЧтобы начать, зарегистрируйтесь. Банковская карта не нужна.\n\nВсё для подготовки в одном месте.\n\nТри дня, чтобы попробовать у"
+  },
+  {
+   "combo": "ru-390",
+   "check": "NOTE pricing button 'Выбрать один месяц' as a visitor -> url ; status line: 'Платный доступ действует один или три месяца и просто заканчивается: автоматического продления нет. После покупки деньги не возвращаются, поэтому бесплатные три'",
+   "pass": null,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "pricing button leads somewhere sensible (sign-up/trial/plans or an explained status)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "language still the chosen one after pricing",
+   "pass": true,
+   "detail": "ru"
+  },
+  {
+   "combo": "ru-390",
+   "check": "FAQ: trial wording says Speaking Part 1 (not 'full test in each section')",
+   "pass": true,
+   "detail": "ПЕРЕД ПЕРВЫМ ШАГОМ\n\nНесколько вопросов,\nкоторые могут возникнуть.\nКак работает бесплатный пробный период на 3 дня?\n+\n\nЗарегистрируйтесь и готовьтесь к Academic IELTS три дня бесплатно. Банковская карт"
+  },
+  {
+   "combo": "ru-390",
+   "check": "footer: Privacy, Terms and Ask a person links present",
+   "pass": true,
+   "detail": "{'privacy': '/ielts-website/privacy', 'terms': '/ielts-website/terms', 'support': '/ielts-website/support?reason=footer'}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "footer privacy: opens (HTTP 200), heading 'Как используются ваши данные', language kept",
+   "pass": true,
+   "detail": "ru"
+  },
+  {
+   "combo": "ru-390",
+   "check": "footer privacy: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "footer terms: opens (HTTP 200), heading 'Условия простыми словами', language kept",
+   "pass": true,
+   "detail": "ru"
+  },
+  {
+   "combo": "ru-390",
+   "check": "footer terms: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "footer support: opens (HTTP 200), heading 'Спросить человека', language kept",
+   "pass": true,
+   "detail": "ru"
+  },
+  {
+   "combo": "ru-390",
+   "check": "footer support: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Ask a person: a form a signed-out visitor can use (message box and email)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "start trial: /trial opens in the chosen language",
+   "pass": true,
+   "detail": "/trial ru"
+  },
+  {
+   "combo": "ru-390",
+   "check": "trial offer states Academic IELTS and Speaking Part 1 before sign-up",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "sign-up: opened from the trial, language kept",
+   "pass": true,
+   "detail": "/sign-up ru"
+  },
+  {
+   "combo": "ru-390",
+   "check": "sign-up: explains what is asked next and links to privacy",
+   "pass": true,
+   "detail": "Дальше мы попросим несколько данных о вас: имя, дату рождения и номер телефона. Их видите только вы и тот, кто ведёт сай"
+  },
+  {
+   "combo": "ru-390",
+   "check": "sign-up: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "profile: required profile follows sign-up, language kept",
+   "pass": true,
+   "detail": "/profile ru"
+  },
+  {
+   "combo": "ru-390",
+   "check": "profile: explanation visible (why, who sees it, link to privacy)",
+   "pass": true,
+   "detail": "Эти данные видите только вы и тот, кто ведёт сайт. Зачем нужен каждый пункт"
+  },
+  {
+   "combo": "ru-390",
+   "check": "profile: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "profile: saved",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "Before you begin: back on /trial with the Start button, language kept",
+   "pass": true,
+   "detail": "/trial ru Начать 3 дня бесплатно"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Before you begin: the clock starts only on Start (said on the page)",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nSS\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nПерейти к содержимому\nПеред началом\n\nТри дня начнутся, когда вы"
+  },
+  {
+   "combo": "ru-390",
+   "check": "no trial yet before pressing Start",
+   "pass": true,
+   "detail": "None"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Start: trial begins on the server and Today opens in the chosen language",
+   "pass": true,
+   "detail": "/dashboard ru {'user_id': '16317d72-0681-4cdd-86cd-8554d515a97f', 'started_at': '2026-09-29T19:15:44.420Z', 'ends_at': '2026-10-02T19:15:44.420Z', 'questionnaire': {'band': '"
+  },
+  {
+   "combo": "ru-390",
+   "check": "questionnaire answers kept with the trial",
+   "pass": true,
+   "detail": "{'band': '7', 'time': '15', 'focus': 'method', 'skill': 'reading'}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "language stored throughout",
+   "pass": true,
+   "detail": "ru"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Today: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "all",
+   "check": "a signed-out visitor / new trial account made ZERO /content/pack/ requests",
+   "pass": true,
+   "detail": "{'visitor-en-1440': 0, 'visitor-ru-1440': 0, 'visitor-en-390': 0, 'visitor-ru-390': 0}"
+  }
+ ]
+}

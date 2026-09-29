@@ -1,0 +1,891 @@
+{
+ "suite": "journey-b-trial",
+ "base": "http://localhost:4441/ielts-website",
+ "standin": "http://127.0.0.1:8841",
+ "passed": 141,
+ "total": 141,
+ "failed": [],
+ "page_errors": [
+  "http://localhost:4441/ielts-website/tests: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:\n\n- A server/clien",
+  "http://localhost:4441/ielts-website/tests: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:\n\n- A server/clien",
+  "http://localhost:4441/ielts-website/tests: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:\n\n- A server/clien"
+ ],
+ "pack_requests": {
+  "trial-en-1440": [],
+  "trial-ru-1440": [],
+  "trial-en-390": [],
+  "trial-ru-390": []
+ },
+ "results": [
+  {
+   "combo": "en-1440",
+   "check": "trial started, Today open",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "Today: three suggested days, linking only to included Reading material",
+   "pass": true,
+   "detail": "['/ielts-website/lessons/reading/paraphrase', '/ielts-website/lessons/reading/paraphrase', '/ielts-website/tests/reading-full-001']"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Today: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Today: day 1 link opens an included page, not a lock",
+   "pass": true,
+   "detail": "/lessons/reading/paraphrase"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Today: day 2 link opens an included page, not a lock",
+   "pass": true,
+   "detail": "/lessons/reading/paraphrase"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Today: day 3 link opens an included page, not a lock",
+   "pass": true,
+   "detail": "/tests/reading-full-001"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Tests fresh: Reading main button = start the included test",
+   "pass": true,
+   "detail": "['start', 'Start your Reading test', None]"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Tests: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Tests fresh: reading main button opens /tests/reading-full-001",
+   "pass": true,
+   "detail": "/tests/reading-full-001"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Tests fresh: the Reading paper it opened is not locked",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "Tests fresh: listening main button opens /tests/listening-full-001",
+   "pass": true,
+   "detail": "/tests/listening-full-001"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Tests fresh: writing main button opens /writing/checker",
+   "pass": true,
+   "detail": "/writing/checker"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Tests fresh: speaking main button opens /speaking/examiner",
+   "pass": true,
+   "detail": "/speaking/examiner"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Practice: every trainer labelled full access before the click",
+   "pass": true,
+   "detail": "4"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Practice: no trainer start link visible to a trial account",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "Practice: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "locked lesson: calm lock with the reason and View plans",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "Mr EZ: panel opens and shows the trial allowance (5 in this section)",
+   "pass": true,
+   "detail": "Reading: 5 of 5 messages left. Only answered messages count."
+  },
+  {
+   "combo": "en-1440",
+   "check": "Mr EZ: after one message the allowance counts down (SIMULATED reply)",
+   "pass": true,
+   "detail": "Reading: 4 of 5 messages left. Only answered messages count."
+  },
+  {
+   "combo": "en-1440",
+   "check": "Reading test begun on the server",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "Tests after refresh: Reading main button resumes the sitting",
+   "pass": true,
+   "detail": "['resume', 'Resume your test: 60 min left', None]"
+  },
+  {
+   "combo": "en-1440",
+   "check": "resume goes to the same paper, one reservation",
+   "pass": true,
+   "detail": "/tests/reading-full-001"
+  },
+  {
+   "combo": "en-1440",
+   "check": "submitted: settled on the server",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "Tests after submit: Reading main button = see results",
+   "pass": true,
+   "detail": "['used', 'See my results', None]"
+  },
+  {
+   "combo": "en-1440",
+   "check": "used: goes to results (/report)",
+   "pass": true,
+   "detail": "/report"
+  },
+  {
+   "combo": "en-1440",
+   "check": "ended: Listening (never begun) offers the plans",
+   "pass": true,
+   "detail": "['ended', 'View plans', None]"
+  },
+  {
+   "combo": "en-1440",
+   "check": "ended: used Reading still leads to results",
+   "pass": true,
+   "detail": "['used', 'See my results', None]"
+  },
+  {
+   "combo": "en-1440",
+   "check": "ended: Listening main button goes to /plans",
+   "pass": true,
+   "detail": "/plans"
+  },
+  {
+   "combo": "en-1440",
+   "check": "ended Today: says the trial has ended",
+   "pass": true,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSS\nSkip to content\nYour trial has ended\nNew lessons, tests and Mr EZ replies are locked. Your results stay saved.\nSee full access\n\nNeed a hand?"
+  },
+  {
+   "combo": "en-1440",
+   "check": "ended Today: Ask a person / Report a problem is reachable",
+   "pass": true,
+   "detail": "['Ask a person', 'Report a problem']"
+  },
+  {
+   "combo": "en-1440",
+   "check": "ended: the support form opens for the signed-in student",
+   "pass": true,
+   "detail": "/support"
+  },
+  {
+   "combo": "en-1440",
+   "check": "ended: the included lesson is now locked calmly",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "/plans: approved prices",
+   "pass": true,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSS\nSkip to content\n\nSIMULATED payments\nThis is a local test. No money is taken and nothing here is a re"
+  },
+  {
+   "combo": "en-1440",
+   "check": "NOTE /plans after the trial ended: buy button present, enabled; 'not connected' text absent",
+   "pass": null,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "/plans: the ended student can buy (simulated payments on this server) or is told plainly why not",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "/plans: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "trial started, Today open",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Today: three suggested days, linking only to included Reading material",
+   "pass": true,
+   "detail": "['/ielts-website/lessons/reading/paraphrase', '/ielts-website/lessons/reading/paraphrase', '/ielts-website/tests/reading-full-001']"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Today: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Today: day 1 link opens an included page, not a lock",
+   "pass": true,
+   "detail": "/lessons/reading/paraphrase"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Today: day 2 link opens an included page, not a lock",
+   "pass": true,
+   "detail": "/lessons/reading/paraphrase"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Today: day 3 link opens an included page, not a lock",
+   "pass": true,
+   "detail": "/tests/reading-full-001"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Tests fresh: Reading main button = start the included test",
+   "pass": true,
+   "detail": "['start', 'Начать тест Reading', None]"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Tests: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Tests fresh: reading main button opens /tests/reading-full-001",
+   "pass": true,
+   "detail": "/tests/reading-full-001"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Tests fresh: the Reading paper it opened is not locked",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Tests fresh: listening main button opens /tests/listening-full-001",
+   "pass": true,
+   "detail": "/tests/listening-full-001"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Tests fresh: writing main button opens /writing/checker",
+   "pass": true,
+   "detail": "/writing/checker"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Tests fresh: speaking main button opens /speaking/examiner",
+   "pass": true,
+   "detail": "/speaking/examiner"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Practice: every trainer labelled full access before the click",
+   "pass": true,
+   "detail": "4"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Practice: no trainer start link visible to a trial account",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Practice: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "locked lesson: calm lock with the reason and View plans",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Mr EZ: panel opens and shows the trial allowance (5 in this section)",
+   "pass": true,
+   "detail": "Reading: осталось 5 из 5 сообщений. Считаются только сообщения с ответом."
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Mr EZ: after one message the allowance counts down (SIMULATED reply)",
+   "pass": true,
+   "detail": "Reading: осталось 4 из 5 сообщений. Считаются только сообщения с ответом."
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Reading test begun on the server",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Tests after refresh: Reading main button resumes the sitting",
+   "pass": true,
+   "detail": "['resume', 'Продолжить тест: осталось 60 мин', None]"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "resume goes to the same paper, one reservation",
+   "pass": true,
+   "detail": "/tests/reading-full-001"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "submitted: settled on the server",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Tests after submit: Reading main button = see results",
+   "pass": true,
+   "detail": "['used', 'Посмотреть результат', None]"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "used: goes to results (/report)",
+   "pass": true,
+   "detail": "/report"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "ended: Listening (never begun) offers the plans",
+   "pass": true,
+   "detail": "['ended', 'Посмотреть тарифы', None]"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "ended: used Reading still leads to results",
+   "pass": true,
+   "detail": "['used', 'Посмотреть результат', None]"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "ended: Listening main button goes to /plans",
+   "pass": true,
+   "detail": "/plans"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "ended Today: says the trial has ended",
+   "pass": true,
+   "detail": "IELTS is EZ\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nEN\nRU\nSS\nПерейти к содержимому\nПробный период закончился\nНовые уроки, тесты и ответы Mr EZ закрыты. Ваши результаты сохранены.\nПолный доступ\n\nНужна помо"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "ended Today: Ask a person / Report a problem is reachable",
+   "pass": true,
+   "detail": "['Спросить человека', 'Сообщить о проблеме']"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "ended: the support form opens for the signed-in student",
+   "pass": true,
+   "detail": "/support"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "ended: the included lesson is now locked calmly",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "/plans: approved prices",
+   "pass": true,
+   "detail": "IELTS is EZ\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nEN\nRU\nSS\nПерейти к содержимому\n\nСИМУЛЯЦИЯ оплаты\nЭто локальная проверка. Деньги не списываются, и ничего здесь н"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "NOTE /plans after the trial ended: buy button present, enabled; 'not connected' text absent",
+   "pass": null,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "/plans: the ended student can buy (simulated payments on this server) or is told plainly why not",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "/plans: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "trial started, Today open",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "Today: three suggested days, linking only to included Reading material",
+   "pass": true,
+   "detail": "['/ielts-website/lessons/reading/paraphrase', '/ielts-website/lessons/reading/paraphrase', '/ielts-website/tests/reading-full-001']"
+  },
+  {
+   "combo": "en-390",
+   "check": "Today: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "Today: day 1 link opens an included page, not a lock",
+   "pass": true,
+   "detail": "/lessons/reading/paraphrase"
+  },
+  {
+   "combo": "en-390",
+   "check": "Today: day 2 link opens an included page, not a lock",
+   "pass": true,
+   "detail": "/lessons/reading/paraphrase"
+  },
+  {
+   "combo": "en-390",
+   "check": "Today: day 3 link opens an included page, not a lock",
+   "pass": true,
+   "detail": "/tests/reading-full-001"
+  },
+  {
+   "combo": "en-390",
+   "check": "Tests fresh: Reading main button = start the included test",
+   "pass": true,
+   "detail": "['start', 'Start your Reading test', None]"
+  },
+  {
+   "combo": "en-390",
+   "check": "Tests: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "Tests fresh: reading main button opens /tests/reading-full-001",
+   "pass": true,
+   "detail": "/tests/reading-full-001"
+  },
+  {
+   "combo": "en-390",
+   "check": "Tests fresh: the Reading paper it opened is not locked",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "Tests fresh: listening main button opens /tests/listening-full-001",
+   "pass": true,
+   "detail": "/tests/listening-full-001"
+  },
+  {
+   "combo": "en-390",
+   "check": "Tests fresh: writing main button opens /writing/checker",
+   "pass": true,
+   "detail": "/writing/checker"
+  },
+  {
+   "combo": "en-390",
+   "check": "Tests fresh: speaking main button opens /speaking/examiner",
+   "pass": true,
+   "detail": "/speaking/examiner"
+  },
+  {
+   "combo": "en-390",
+   "check": "Practice: every trainer labelled full access before the click",
+   "pass": true,
+   "detail": "4"
+  },
+  {
+   "combo": "en-390",
+   "check": "Practice: no trainer start link visible to a trial account",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "Practice: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "locked lesson: calm lock with the reason and View plans",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "Mr EZ: panel opens and shows the trial allowance (5 in this section)",
+   "pass": true,
+   "detail": "Reading: 5 of 5 messages left. Only answered messages count."
+  },
+  {
+   "combo": "en-390",
+   "check": "Mr EZ: after one message the allowance counts down (SIMULATED reply)",
+   "pass": true,
+   "detail": "Reading: 4 of 5 messages left. Only answered messages count."
+  },
+  {
+   "combo": "en-390",
+   "check": "Reading test begun on the server",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "Tests after refresh: Reading main button resumes the sitting",
+   "pass": true,
+   "detail": "['resume', 'Resume your test: 60 min left', None]"
+  },
+  {
+   "combo": "en-390",
+   "check": "resume goes to the same paper, one reservation",
+   "pass": true,
+   "detail": "/tests/reading-full-001"
+  },
+  {
+   "combo": "en-390",
+   "check": "submitted: settled on the server",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "Tests after submit: Reading main button = see results",
+   "pass": true,
+   "detail": "['used', 'See my results', None]"
+  },
+  {
+   "combo": "en-390",
+   "check": "used: goes to results (/report)",
+   "pass": true,
+   "detail": "/report"
+  },
+  {
+   "combo": "en-390",
+   "check": "ended: Listening (never begun) offers the plans",
+   "pass": true,
+   "detail": "['ended', 'View plans', None]"
+  },
+  {
+   "combo": "en-390",
+   "check": "ended: used Reading still leads to results",
+   "pass": true,
+   "detail": "['used', 'See my results', None]"
+  },
+  {
+   "combo": "en-390",
+   "check": "ended: Listening main button goes to /plans",
+   "pass": true,
+   "detail": "/plans"
+  },
+  {
+   "combo": "en-390",
+   "check": "ended Today: says the trial has ended",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nSS\nToday\nCourse\nPractice\nTests\nVocabulary\nSkip to content\nYour trial has ended\nNew lessons, tests and Mr EZ replies are locked. Your results stay saved.\nSee full access\n\nNeed a hand?"
+  },
+  {
+   "combo": "en-390",
+   "check": "ended Today: Ask a person / Report a problem is reachable",
+   "pass": true,
+   "detail": "['Ask a person', 'Report a problem']"
+  },
+  {
+   "combo": "en-390",
+   "check": "ended: the support form opens for the signed-in student",
+   "pass": true,
+   "detail": "/support"
+  },
+  {
+   "combo": "en-390",
+   "check": "ended: the included lesson is now locked calmly",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "/plans: approved prices",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nSS\nToday\nCourse\nPractice\nTests\nVocabulary\nSkip to content\n\nSIMULATED payments\nThis is a local test. No money is taken and nothing here is a re"
+  },
+  {
+   "combo": "en-390",
+   "check": "NOTE /plans after the trial ended: buy button present, enabled; 'not connected' text absent",
+   "pass": null,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "/plans: the ended student can buy (simulated payments on this server) or is told plainly why not",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "/plans: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "trial started, Today open",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "Today: three suggested days, linking only to included Reading material",
+   "pass": true,
+   "detail": "['/ielts-website/lessons/reading/paraphrase', '/ielts-website/lessons/reading/paraphrase', '/ielts-website/tests/reading-full-001']"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Today: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Today: day 1 link opens an included page, not a lock",
+   "pass": true,
+   "detail": "/lessons/reading/paraphrase"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Today: day 2 link opens an included page, not a lock",
+   "pass": true,
+   "detail": "/lessons/reading/paraphrase"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Today: day 3 link opens an included page, not a lock",
+   "pass": true,
+   "detail": "/tests/reading-full-001"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Tests fresh: Reading main button = start the included test",
+   "pass": true,
+   "detail": "['start', 'Начать тест Reading', None]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Tests: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Tests fresh: reading main button opens /tests/reading-full-001",
+   "pass": true,
+   "detail": "/tests/reading-full-001"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Tests fresh: the Reading paper it opened is not locked",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "Tests fresh: listening main button opens /tests/listening-full-001",
+   "pass": true,
+   "detail": "/tests/listening-full-001"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Tests fresh: writing main button opens /writing/checker",
+   "pass": true,
+   "detail": "/writing/checker"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Tests fresh: speaking main button opens /speaking/examiner",
+   "pass": true,
+   "detail": "/speaking/examiner"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Practice: every trainer labelled full access before the click",
+   "pass": true,
+   "detail": "4"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Practice: no trainer start link visible to a trial account",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "Practice: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "locked lesson: calm lock with the reason and View plans",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "Mr EZ: panel opens and shows the trial allowance (5 in this section)",
+   "pass": true,
+   "detail": "Reading: осталось 5 из 5 сообщений. Считаются только сообщения с ответом."
+  },
+  {
+   "combo": "ru-390",
+   "check": "Mr EZ: after one message the allowance counts down (SIMULATED reply)",
+   "pass": true,
+   "detail": "Reading: осталось 4 из 5 сообщений. Считаются только сообщения с ответом."
+  },
+  {
+   "combo": "ru-390",
+   "check": "Reading test begun on the server",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "Tests after refresh: Reading main button resumes the sitting",
+   "pass": true,
+   "detail": "['resume', 'Продолжить тест: осталось 60 мин', None]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "resume goes to the same paper, one reservation",
+   "pass": true,
+   "detail": "/tests/reading-full-001"
+  },
+  {
+   "combo": "ru-390",
+   "check": "submitted: settled on the server",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "Tests after submit: Reading main button = see results",
+   "pass": true,
+   "detail": "['used', 'Посмотреть результат', None]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "used: goes to results (/report)",
+   "pass": true,
+   "detail": "/report"
+  },
+  {
+   "combo": "ru-390",
+   "check": "ended: Listening (never begun) offers the plans",
+   "pass": true,
+   "detail": "['ended', 'Посмотреть тарифы', None]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "ended: used Reading still leads to results",
+   "pass": true,
+   "detail": "['used', 'Посмотреть результат', None]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "ended: Listening main button goes to /plans",
+   "pass": true,
+   "detail": "/plans"
+  },
+  {
+   "combo": "ru-390",
+   "check": "ended Today: says the trial has ended",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nSS\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nПерейти к содержимому\nПробный период закончился\nНовые уроки, тесты и ответы Mr EZ закрыты. Ваши результаты сохранены.\nПолный доступ\n\nНужна помо"
+  },
+  {
+   "combo": "ru-390",
+   "check": "ended Today: Ask a person / Report a problem is reachable",
+   "pass": true,
+   "detail": "['Спросить человека', 'Сообщить о проблеме']"
+  },
+  {
+   "combo": "ru-390",
+   "check": "ended: the support form opens for the signed-in student",
+   "pass": true,
+   "detail": "/support"
+  },
+  {
+   "combo": "ru-390",
+   "check": "ended: the included lesson is now locked calmly",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "/plans: approved prices",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nSS\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nПерейти к содержимому\n\nСИМУЛЯЦИЯ оплаты\nЭто локальная проверка. Деньги не списываются, и ничего здесь н"
+  },
+  {
+   "combo": "ru-390",
+   "check": "NOTE /plans after the trial ended: buy button present, enabled; 'not connected' text absent",
+   "pass": null,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "/plans: the ended student can buy (simulated payments on this server) or is told plainly why not",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "/plans: no sideways scroll",
+   "pass": true,
+   "detail": "{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}"
+  },
+  {
+   "combo": "all",
+   "check": "trial accounts made ZERO /content/pack/ requests",
+   "pass": true,
+   "detail": "{'trial-en-1440': 0, 'trial-ru-1440': 0, 'trial-en-390': 0, 'trial-ru-390': 0}"
+  }
+ ]
+}
