@@ -5,12 +5,21 @@ import LiveExaminer from '../../components/LiveExaminer';
 import SpeakingTester from '../../components/SpeakingTester';
 import SpeakingHistory from '../../components/SpeakingHistory';
 import { withBase } from '../../lib/url';
+import { nt } from '../../lib/i18n/translate';
+import { ACCESS_MODE } from '../../lib/trial/mode';
 
 /* The trainer is the live examiner scoped to one part (same tech as
    /speaking/examiner). When the live token service isn't configured at
    build time, fall back to the older record-then-grade checker so the
    trainer never disappears. */
 const liveConfigured = !!import.meta.env.PUBLIC_LIVE_EXAMINER_URL;
+
+/* The gated build needs an account for everything, so attempts are kept
+   with it; only the open build works without one (audit F03). */
+const historySubtitle =
+  ACCESS_MODE === 'trial'
+    ? nt('Your attempts are saved with your account, so you see them on any device you sign in on.')
+    : nt('Attempts are stored in your browser, no account needed.');
 ---
 
 <BaseLayout
@@ -32,7 +41,7 @@ const liveConfigured = !!import.meta.env.PUBLIC_LIVE_EXAMINER_URL;
     </a>
 
     <section id="history" class="mt-16 scroll-mt-20">
-      <SectionHeading title="Your score history" subtitle="Attempts are stored in your browser, no account needed." />
+      <SectionHeading title="Your score history" subtitle={historySubtitle} />
       <SpeakingHistory client:load />
     </section>
   </div>

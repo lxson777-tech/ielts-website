@@ -54,6 +54,7 @@ import {
 } from './writing-editor-owner';
 import { nt } from '../lib/i18n/translate';
 import { writingActivityId } from '../lib/learning/catalog';
+import { isTrialBuild } from '../lib/trial/mode';
 
 const TASK1_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task1');
 const TASK2_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task2');
@@ -629,7 +630,9 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         {!trialTest.active && (
           <p className="mt-5 text-xs text-ink-muted">
             {tn(t1Pool.length, { one: '{n} Task 1 prompt', other: '{n} Task 1 prompts' })} ·{' '}
-            {tn(TASK2_PROMPTS.length, { one: '{n} Task 2 prompt', other: '{n} Task 2 prompts' })} · {t('free')}
+            {tn(TASK2_PROMPTS.length, { one: '{n} Task 2 prompt', other: '{n} Task 2 prompts' })}
+            {/* "free" is true only on the open build (audit F03). */}
+            {!isTrialBuild() && ` · ${t('free')}`}
           </p>
         )}
       </div>

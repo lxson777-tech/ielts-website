@@ -337,7 +337,8 @@ def run():
         # ── 1. The public offer, signed out, arriving from the questionnaire ──
         goto(page, "/trial?journey=1&band=7&skill=writing&focus=method&time=30")
         check("offer: signed-out visitor sees the offer before any account",
-              wait_text(page, "Create a free account") and wait_text(page, "One test each for Reading, Listening, Writing and Speaking"))
+              wait_text(page, "Create a free account") and wait_text(page, "One test in each section")
+              and wait_text(page, "Academic IELTS"))
         check("offer: questionnaire answers shown as a suggestion, not a level",
               wait_text(page, "not a level test"))
         shot(page, "t01-offer-signed-out")
