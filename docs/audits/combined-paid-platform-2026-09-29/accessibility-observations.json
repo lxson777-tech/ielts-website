@@ -1,0 +1,111 @@
+{
+  "coach": [
+    {
+      "tag": "DIV",
+      "cls": "mt-4 space-y-3",
+      "opacity": "1",
+      "color": "rgb(38, 60, 53)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "filter": "none",
+      "animation": "platform-panel-enter"
+    },
+    {
+      "tag": "DIV",
+      "cls": "rounded-card border border-border bg-surface p-4 shadow-card",
+      "opacity": "1",
+      "color": "rgb(38, 60, 53)",
+      "bg": "rgb(255, 254, 250)",
+      "filter": "none",
+      "animation": "none"
+    },
+    {
+      "tag": "DIV",
+      "cls": "writing-guidance mt-4 lg:sticky lg:top-24 lg:mt-0",
+      "opacity": "1",
+      "color": "rgb(38, 60, 53)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "filter": "none",
+      "animation": "none"
+    },
+    {
+      "tag": "DIV",
+      "cls": "writing-workspace screen-in lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start lg:gap-8",
+      "opacity": "1",
+      "color": "rgb(38, 60, 53)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "filter": "none",
+      "animation": "screen-in"
+    },
+    {
+      "tag": "ASTRO-ISLAND",
+      "cls": "",
+      "opacity": "1",
+      "color": "rgb(38, 60, 53)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "filter": "none",
+      "animation": "none"
+    },
+    {
+      "tag": "DIV",
+      "cls": "skill-writing writing-trainer-page mx-auto max-w-5xl px-4 py-12 sm:px-6",
+      "opacity": "1",
+      "color": "rgb(38, 60, 53)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "filter": "none",
+      "animation": "none"
+    },
+    {
+      "tag": "DIV",
+      "cls": "ws-page",
+      "opacity": "1",
+      "color": "rgb(38, 60, 53)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "filter": "none",
+      "animation": "none"
+    },
+    {
+      "tag": "MAIN",
+      "cls": "ws-main",
+      "opacity": "1",
+      "color": "rgb(38, 60, 53)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "filter": "none",
+      "animation": "none"
+    },
+    {
+      "tag": "BODY",
+      "cls": "flex min-h-screen flex-col bg-surface text-ink workspace-v2",
+      "opacity": "1",
+      "color": "rgb(38, 60, 53)",
+      "bg": "rgb(245, 245, 240)",
+      "filter": "none",
+      "animation": "none"
+    },
+    {
+      "tag": "HTML",
+      "cls": "",
+      "opacity": "1",
+      "color": "rgb(0, 0, 0)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "filter": "none",
+      "animation": "none"
+    }
+  ],
+  "textarea": [
+    {
+      "placeholder": "Write your answer here…",
+      "id": "",
+      "label": 0,
+      "aria": null,
+      "value": ""
+    },
+    {
+      "placeholder": "Ask Mr EZ…",
+      "id": "mrez-input",
+      "label": 1,
+      "aria": null,
+      "value": ""
+    }
+  ],
+  "focus": "<body class=\"flex min-h-screen flex-col bg-surface text-ink workspace-v2\" data-platform-motion=\"true\" data-route=\"/trainers/writing\">  <script type=\"module\" src=\"/@fs/C:/Users/Alex/Desktop/Projects/IE"
+}

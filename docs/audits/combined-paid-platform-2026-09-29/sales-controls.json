@@ -1,0 +1,244 @@
+[
+  {
+    "check": "demo",
+    "width": 1440,
+    "id": "speaking",
+    "visible": true,
+    "selected": "true"
+  },
+  {
+    "check": "demo",
+    "width": 1440,
+    "id": "coach",
+    "visible": true,
+    "selected": "true"
+  },
+  {
+    "check": "demo",
+    "width": 1440,
+    "id": "lessons",
+    "visible": true,
+    "selected": "true"
+  },
+  {
+    "check": "skill",
+    "width": 1440,
+    "label": "01\nReading\nHOW WE TEACH IT\n01\nRecognise paraphrases and question types.\n02\nFind the evidence in the passage.\n03\nApply the method in focused exercises and timed tests.",
+    "selected": "true"
+  },
+  {
+    "check": "skill",
+    "width": 1440,
+    "label": "02\nListening\nHOW WE TEACH IT\n01\nPredict the detail you need before listening.\n02\nFollow signposts and notice distractors.\n03\nPractise with recordings, then review the answers.",
+    "selected": "true"
+  },
+  {
+    "check": "skill",
+    "width": 1440,
+    "label": "03\nWriting\nHOW WE TEACH IT\n01\nPlan a clear answer with guided structures.\n02\nDevelop your ideas using examples and useful phrases.\n03\nUse AI feedback to choose what to revise next.",
+    "selected": "true"
+  },
+  {
+    "check": "skill",
+    "width": 1440,
+    "label": "04\nSpeaking\nHOW WE TEACH IT\n01\nBuild an answer with a reason and an example.\n02\nPractise out loud with structures and vocabulary nearby.\n03\nReview AI feedback and focus your next attempt.",
+    "selected": "true"
+  },
+  {
+    "check": "demo-keyboard",
+    "width": 1440,
+    "focused": "Get a little guidance",
+    "selected": "Get a little guidance"
+  },
+  {
+    "check": "anchor",
+    "href": "#feedback",
+    "exists": true
+  },
+  {
+    "check": "anchor",
+    "href": "#journey-band",
+    "exists": true
+  },
+  {
+    "check": "anchor",
+    "href": "#main",
+    "exists": true
+  },
+  {
+    "check": "anchor",
+    "href": "#meet-mr-ez",
+    "exists": true
+  },
+  {
+    "check": "anchor",
+    "href": "#pricing",
+    "exists": true
+  },
+  {
+    "check": "anchor",
+    "href": "#questions",
+    "exists": true
+  },
+  {
+    "check": "anchor",
+    "href": "#your-classroom",
+    "exists": true
+  },
+  {
+    "check": "anchor",
+    "href": "#your-plan",
+    "exists": true
+  },
+  {
+    "check": "local-link",
+    "url": "http://localhost:4481/ielts-website/pics/next-chapter/platform-learn.jpg",
+    "status": 200
+  },
+  {
+    "check": "local-link",
+    "url": "http://localhost:4481/ielts-website/pics/next-chapter/platform-speaking-coach.png",
+    "status": 200
+  },
+  {
+    "check": "local-link",
+    "url": "http://localhost:4481/ielts-website/pics/next-chapter/platform-speaking-inside.png",
+    "status": 200
+  },
+  {
+    "check": "local-link",
+    "url": "http://localhost:4481/ielts-website/plans",
+    "status": 200
+  },
+  {
+    "check": "local-link",
+    "url": "http://localhost:4481/ielts-website/sign-in",
+    "status": 200
+  },
+  {
+    "check": "local-link",
+    "url": "http://localhost:4481/ielts-website/trial",
+    "status": 200
+  },
+  {
+    "check": "demo",
+    "width": 390,
+    "id": "speaking",
+    "visible": true,
+    "selected": "true"
+  },
+  {
+    "check": "demo",
+    "width": 390,
+    "id": "coach",
+    "visible": true,
+    "selected": "true"
+  },
+  {
+    "check": "demo",
+    "width": 390,
+    "id": "lessons",
+    "visible": true,
+    "selected": "true"
+  },
+  {
+    "check": "skill",
+    "width": 390,
+    "label": "Reading",
+    "selected": "true"
+  },
+  {
+    "check": "skill",
+    "width": 390,
+    "label": "Listening",
+    "selected": "true"
+  },
+  {
+    "check": "skill",
+    "width": 390,
+    "label": "Writing",
+    "selected": "true"
+  },
+  {
+    "check": "skill",
+    "width": 390,
+    "label": "Speaking",
+    "selected": "true"
+  },
+  {
+    "check": "demo-keyboard",
+    "width": 390,
+    "focused": "Get a little guidance",
+    "selected": "Get a little guidance"
+  },
+  {
+    "check": "anchor",
+    "href": "#feedback",
+    "exists": true
+  },
+  {
+    "check": "anchor",
+    "href": "#journey-band",
+    "exists": true
+  },
+  {
+    "check": "anchor",
+    "href": "#main",
+    "exists": true
+  },
+  {
+    "check": "anchor",
+    "href": "#meet-mr-ez",
+    "exists": true
+  },
+  {
+    "check": "anchor",
+    "href": "#pricing",
+    "exists": true
+  },
+  {
+    "check": "anchor",
+    "href": "#questions",
+    "exists": true
+  },
+  {
+    "check": "anchor",
+    "href": "#your-classroom",
+    "exists": true
+  },
+  {
+    "check": "anchor",
+    "href": "#your-plan",
+    "exists": true
+  },
+  {
+    "check": "local-link",
+    "url": "http://localhost:4481/ielts-website/pics/next-chapter/platform-learn.jpg",
+    "status": 200
+  },
+  {
+    "check": "local-link",
+    "url": "http://localhost:4481/ielts-website/pics/next-chapter/platform-speaking-coach.png",
+    "status": 200
+  },
+  {
+    "check": "local-link",
+    "url": "http://localhost:4481/ielts-website/pics/next-chapter/platform-speaking-inside.png",
+    "status": 200
+  },
+  {
+    "check": "local-link",
+    "url": "http://localhost:4481/ielts-website/plans",
+    "status": 200
+  },
+  {
+    "check": "local-link",
+    "url": "http://localhost:4481/ielts-website/sign-in",
+    "status": 200
+  },
+  {
+    "check": "local-link",
+    "url": "http://localhost:4481/ielts-website/trial",
+    "status": 200
+  }
+]

@@ -40,7 +40,22 @@ export interface TrialSectionStatus {
   tutorPending: number;
 }
 
+/** Paid access the account holds, as the server reported it (contract:
+    docs/paid-access/CONTRACT.md). Server-owned: it comes from a confirmed
+    payment recorded by the payments Worker, never from the browser or the
+    build's access mode. Null when the account has never paid. */
+export interface PaidAccess {
+  /** The plan of the grant that ends last. */
+  planId: string;
+  /** When the current paid access began (the earliest grant still counting). */
+  startsAt: string;
+  /** When paid access ends, by the server's clock. */
+  endsAt: string;
+}
+
 export interface TrialStatus {
+  /** Paid access, if any grant has ever been recorded; see hasPaidAccess. */
+  paid: PaidAccess | null;
   state: TrialState;
   startedAt: string | null;
   endsAt: string | null;
@@ -74,6 +89,13 @@ function parseClaim(raw: unknown): TrialTestClaim | null {
   };
 }
 
+function parsePaid(raw: unknown): PaidAccess | null {
+  if (typeof raw !== 'object' || raw === null) return null;
+  const value = raw as Record<string, unknown>;
+  if (typeof value.planId !== 'string' || !isIso(value.startsAt) || !isIso(value.endsAt)) return null;
+  return { planId: value.planId, startsAt: value.startsAt, endsAt: value.endsAt };
+}
+
 /** Reads the server's reply. Anything malformed is null, and a caller treats
     null as "we could not check", never as "no trial" or "all allowed". */
 export function parseTrialStatus(raw: unknown): TrialStatus | null {
@@ -95,6 +117,7 @@ export function parseTrialStatus(raw: unknown): TrialStatus | null {
     };
   }
   return {
+    paid: parsePaid(value.paid),
     state,
     startedAt: state === 'none' ? null : (value.startedAt as string),
     endsAt: state === 'none' ? null : (value.endsAt as string),
@@ -135,6 +158,20 @@ export function stateAt(status: TrialStatus, serverNowMs: number): TrialState {
 export function remainingParts(ms: number): { days: number; hours: number; minutes: number } {
   const minutes = Math.floor(ms / 60000);
   return { days: Math.floor(minutes / 1440), hours: Math.floor((minutes % 1440) / 60), minutes: minutes % 60 };
+}
+
+/* ── Paid access ─────────────────────────────────────────────────────── */
+
+/** Whether the account's paid access is running right now, by the server's
+    clock. Paid access opens everything the trial locks; the trial's own
+    state is then irrelevant to what the student may open. */
+export function hasPaidAccess(status: TrialStatus, serverNowMs: number): boolean {
+  return status.paid !== null && Date.parse(status.paid.endsAt) > serverNowMs;
+}
+
+/** Paid access that has run out (the student paid before, and it ended). */
+export function paidAccessEnded(status: TrialStatus, serverNowMs: number): boolean {
+  return status.paid !== null && Date.parse(status.paid.endsAt) <= serverNowMs;
 }
 
 /* ── One lesson ──────────────────────────────────────────────────────── */
