@@ -18,7 +18,7 @@ import { beginTrialTest, finishTrialTest } from '../../lib/trial/client';
 import { ACCESS_MODE } from '../../lib/trial/mode';
 import { testSection, type TrialSection } from '../../lib/trial/offer';
 import { useTrial } from '../../lib/trial/react';
-import { testAccess } from '../../lib/trial/status';
+import { hasPaidAccess, testAccess } from '../../lib/trial/status';
 import { accountBlock, type TrialBlockReason } from './TrialBlock';
 
 export interface TrialTestHook {
@@ -62,7 +62,12 @@ export function useTrialTest(testId: string, skip = false): TrialTestHook {
   const sittingRef = useRef<string | null>(null);
 
   const section = testSection(testId);
-  const active = ACCESS_MODE === 'trial' && !skip && section !== null;
+  /* Paid access (docs/paid-access/CONTRACT.md): every paper opens, and none
+     of them is the trial's one test, so the trial takes no part here: the
+     player behaves as it does on the open site. The Workers check the
+     account's paid access for themselves before grading. */
+  const paid = trial.phase === 'ready' && trial.status !== null && hasPaidAccess(trial.status, trial.now);
+  const active = ACCESS_MODE === 'trial' && !skip && section !== null && !paid;
 
   let block: TrialBlockReason | null = null;
   let startUsesTest = false;

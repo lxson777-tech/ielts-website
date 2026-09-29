@@ -260,6 +260,19 @@ export const CARD_SET: VocabCard[] = buildCardSet();
 
 const CARD_BY_WORD = new Map<string, VocabCard>(CARD_SET.map((c) => [c.word, c]));
 
+/** The gated build only, for a PAID account (src/lib/trial/packs.ts): that
+    build's browser copy of this module has no vocabulary lessons (see the
+    trial plugin in astro.config.mjs), so the deck is the small words.ts one
+    until the paid pack `vocabulary` brings the lesson deck, built by
+    buildCardSetFromFragments above from the same lessons. Replaced where it
+    stands, so every caller holding CARD_SET sees it. Never called on the
+    open site. */
+export function replaceCardSet(cards: readonly VocabCard[]): void {
+  CARD_SET.splice(0, CARD_SET.length, ...cards);
+  CARD_BY_WORD.clear();
+  for (const card of CARD_SET) CARD_BY_WORD.set(card.word, card);
+}
+
 export function topics(): string[] {
   return Array.from(new Set(CARD_SET.map((c) => c.topic))).sort((a, b) => a.localeCompare(b));
 }

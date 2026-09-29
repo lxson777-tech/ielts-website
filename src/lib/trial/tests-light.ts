@@ -11,7 +11,7 @@
    paper's id, paper, title and length. Every paper's content comes from the
    content gate (workers/content-gate) when a student may open it. */
 
-import index from '../../data/generated/learning-index.json';
+import index from '../../data/generated/learning-index.json' with { type: 'json' };
 import type { PracticeTest } from '../tests/schema';
 
 export const ALL_TESTS: PracticeTest[] = (index.tests as { id: string; skill: 'reading' | 'listening'; title: string; durationMinutes: number }[]).map(

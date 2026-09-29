@@ -16,6 +16,7 @@ import { withBase } from '../../lib/url';
 import { nt } from '../../lib/i18n/translate';
 import { ACCESS_MODE } from '../../lib/trial/mode';
 import { TRIAL_OFFER } from '../../lib/trial/offer';
+import PaidContent from '../../components/trial/PaidContent';
 
 /* The gated build: an account holds every essay, and the Writing Trainer
    is not part of the trial, so neither is offered in words (audit F03). */
@@ -38,7 +39,10 @@ const historySubtitle = trialBuild
       title="Writing Checker"
       subtitle={introSubtitle}
     />
-    <WritingTester client:load variant="checker" />
+    {/* The gated build: the trial's one essay for a trial account, every
+        question for a paid one (its questions arrive through the content
+        gate, PaidContent). */}
+    {trialBuild ? <PaidContent client:load shared view={{ name: 'writing-checker' }} /> : <WritingTester client:load variant="checker" />}
 
     <p class="mt-6 text-center text-sm">
       {trialBuild ? (

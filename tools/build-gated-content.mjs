@@ -21,6 +21,9 @@
  *   models/<prompt id>.json       a Band 8 model with its question
  *   data/tests/<id>.json          the compact paper Mr EZ reads (toSiteTest)
  *   data/lesson-blocks/<slug>.json  the lesson blocks Mr EZ reads
+ *   packs/<name>.json             paid material the gated build's browser
+ *                                 does not carry (paidPacks below), for a
+ *                                 running paid grant only
  *   manifest.json                 every key, for checking an upload, plus the
  *                                 listening recordings to upload from public/
  *
@@ -117,6 +120,11 @@ export async function buildGatedContent(out = DEFAULT_OUT) {
     }
   }
 
+  // Paid material (docs/paid-access/CONTRACT.md, "Paid content in the gated
+  // build"): everything a gated build's browser does not carry, as packs the
+  // gate hands to a running paid grant only (GET /pack/<name>).
+  for (const [name, content] of await paidPacks()) put(`packs/${name}.json`, JSON.stringify(content));
+
   // Listening recordings: the bucket holds them under audio/listening/<file>
   // (the gate's signed /audio/<file> links read them). They are uploaded
   // straight from public/audio/listening, not copied here (530 MB), so the
@@ -131,6 +139,149 @@ export async function buildGatedContent(out = DEFAULT_OUT) {
 
   put('manifest.json', JSON.stringify({ keys: [...keys].sort(), audio }, null, 1));
   return { out: OUT, keys: keys.length };
+}
+
+/* ── Paid packs ────────────────────────────────────────────────────────────
+ * One pack per module a gated build swaps for an empty stand-in
+ * (TRIAL_SWAPS in astro.config.mjs, src/lib/trial/light/), holding that
+ * module's exported data exactly as the real module exports it, plus:
+ *   learning-index         the untrimmed learning index
+ *   ru-dictionary          the Russian entries a gated build's dictionaries
+ *                          leave out (src/lib/trial/trim-dictionary.ts): the
+ *                          main dictionary's, the band-guide and coach parts,
+ *                          and the study plan's own (src/lib/learning/ru.ts)
+ *   vocabulary             the vocabulary review deck and topic pages, built
+ *                          from the vocabulary lessons
+ *   placement              the placement test's material (src/pages/placement.astro)
+ *   focused-<id>           one focused exercise's page view
+ *   speaking-focus-<id>    one spoken focused task's page view
+ * Each fill function in src/lib/trial/light/ (and src/lib/trial/packs.ts)
+ * reads exactly these keys; tests/paid-packs.test.ts holds them together.
+ *
+ * The Task 1 charts are not published by a gated build (astro.config.mjs,
+ * TRIAL_UNPUBLISHED), so a pack carries each chart it names inline, as a
+ * data address, and the page needs nothing from public/pics/writing/imported. */
+
+/** The pack names, for the gate's `pack:<name>` items and the tests. */
+export const MODULE_PACKS = [
+  'model-answers',
+  'writing-prompts-imported',
+  'writing-structures',
+  'writing-plans',
+  'band-guides',
+  'speaking-prompts',
+  'cue-cards',
+  'speaking-structure-guides',
+  'focused-exercises',
+];
+export const EXTRA_PACKS = ['learning-index', 'ru-dictionary', 'vocabulary', 'placement'];
+const SAFE_PACK = /^[a-z0-9][a-z0-9-]{0,99}$/;
+
+const IMAGE_TYPES = { '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.svg': 'image/svg+xml' };
+
+/** Every Task 1 chart a piece of JSON names, replaced by the chart itself. */
+function inlineTask1Charts(json) {
+  return json.replace(/(?:\/ielts-website)?\/pics\/writing\/imported\/([A-Za-z0-9._-]+)/g, (whole, file) => {
+    const path = resolve(REPO, 'public/pics/writing/imported', file);
+    const type = IMAGE_TYPES[file.slice(file.lastIndexOf('.')).toLowerCase()];
+    if (!type || !existsSync(path)) throw new Error(`build-gated-content: ${whole} is named by a pack but is not in public/pics/writing/imported`);
+    return `data:${type};base64,${readFileSync(path).toString('base64')}`;
+  });
+}
+
+/** Plain Node has no BASE_URL, so withBase() there leaves the site's base
+    off; the pages add it at build time. The one place a view carries a
+    based address is a focused exercise's legend images. */
+function withSiteBase(html) {
+  return typeof html === 'string' ? html.replace(/src="\/(?!ielts-website\/)/g, `src="${BASE}/`) : html;
+}
+
+async function paidPacks() {
+  const packs = new Map();
+  const add = (name, content) => {
+    if (!SAFE_PACK.test(name)) throw new Error(`build-gated-content: pack name ${name} is not one the gate accepts`);
+    packs.set(name, JSON.parse(inlineTask1Charts(JSON.stringify(content))));
+  };
+
+  const modelAnswers = await import('../src/data/model-answers.ts');
+  add('model-answers', { MODEL_ANSWERS: modelAnswers.MODEL_ANSWERS });
+  const imported = await import('../src/data/writing-prompts-imported.ts');
+  add('writing-prompts-imported', { IMPORTED_WRITING_PROMPTS: imported.IMPORTED_WRITING_PROMPTS });
+  const structures = await import('../src/data/writing-structures.ts');
+  add('writing-structures', {
+    WRITING_STRUCTURES: structures.WRITING_STRUCTURES,
+    PROMPT_VARIANT_STRUCTURE: structures.PROMPT_VARIANT_STRUCTURE,
+  });
+  const plans = await import('../src/data/writing-plans.ts');
+  add('writing-plans', { WRITING_PLANS: plans.WRITING_PLANS });
+  const guides = await import('../src/data/band-guides.ts');
+  add('band-guides', { WRITING_BAND_GUIDES: guides.WRITING_BAND_GUIDES, SPEAKING_BAND_GUIDES: guides.SPEAKING_BAND_GUIDES });
+  const speaking = await import('../src/data/speaking-prompts.ts');
+  add('speaking-prompts', { SPEAKING_PART1_TOPICS: speaking.SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS: speaking.SPEAKING_CUE_CARDS });
+  const cueCards = await import('../src/data/cue-cards.ts');
+  add('cue-cards', { CUE_CARD_FAMILIES: cueCards.CUE_CARD_FAMILIES, CUE_CARDS: cueCards.CUE_CARDS });
+  const speakingGuides = await import('../src/data/speaking-structure-guides.ts');
+  add('speaking-structure-guides', { SPEAKING_STRUCTURE_GUIDES: speakingGuides.SPEAKING_STRUCTURE_GUIDES });
+  const focused = await import('../src/data/focused-exercises.ts');
+  add('focused-exercises', {
+    FOCUSED_EXERCISES: focused.FOCUSED_EXERCISES,
+    WRITTEN_FOCUSED_TASKS: focused.WRITTEN_FOCUSED_TASKS,
+    AUTHORED_FOCUSED_EXERCISES: focused.AUTHORED_FOCUSED_EXERCISES,
+    SPOKEN_FOCUSED_TASKS: focused.SPOKEN_FOCUSED_TASKS,
+  });
+
+  // The untrimmed learning index (src/lib/trial/trim-index.ts trims it).
+  add('learning-index', JSON.parse(readFileSync(resolve(REPO, 'src/data/generated/learning-index.json'), 'utf8')));
+
+  // The Russian a gated build's browser does not carry.
+  const { lockedSentences } = await import('../src/lib/trial/trim-dictionary.ts');
+  const locked = lockedSentences();
+  const { strings: mainRu } = await import('../src/lib/i18n/dict/ru/index.ts');
+  const { RU_STRINGS: learningRu } = await import('../src/lib/learning/ru.ts');
+  const pick = (source) => Object.fromEntries(Object.entries(source).filter(([english]) => locked.has(english)));
+  const parts = {};
+  for (const part of ['band-guides', 'structures']) Object.assign(parts, (await import(`../src/lib/i18n/dict/ru/parts/${part}.ts`)).strings);
+  add('ru-dictionary', { strings: pick(mainRu), parts, learning: pick(learningRu) });
+
+  // The vocabulary review deck and topic pages, from the vocabulary lessons
+  // (the gated build's browser copy of src/lib/vocab-review.ts has none).
+  const vocab = await import('../src/lib/vocab-review.ts');
+  const { VOCABULARY_PARTS } = await import('../src/data/vocabulary.ts');
+  const bodies = resolve(REPO, 'src/content/lesson-bodies');
+  const fragments = {};
+  for (const file of readdirSync(bodies)) {
+    if (/^vocabulary-[a-z-]+\.html$/.test(file)) fragments[`../content/lesson-bodies/${file}`] = readFileSync(join(bodies, file), 'utf8');
+  }
+  add('vocabulary', {
+    cards: vocab.buildCardSetFromFragments(fragments),
+    topics: VOCABULARY_PARTS.map((part) => {
+      const raw = fragments[`../content/lesson-bodies/vocabulary-${part.slug}.html`];
+      if (!raw) throw new Error(`build-gated-content: missing vocabulary lesson ${part.slug}`);
+      return vocab.buildVocabTopicData(raw, part.slug, part.title);
+    }),
+  });
+
+  // The placement test's material, exactly as src/pages/placement.astro resolves it.
+  const { placementMaterial } = await import('../src/lib/placement/material.ts');
+  add('placement', placementMaterial());
+
+  // One focused exercise's view per pack, as its page builds it.
+  const { focusedPageView, spokenTaskView } = await import('../src/lib/tests/focused-views.ts');
+  const lessonBody = (key) => {
+    const path = join(bodies, `${key}.html`);
+    return existsSync(path) ? readFileSync(path, 'utf8') : undefined;
+  };
+  for (const exercise of focused.ALL_FOCUSED_EXERCISES) {
+    const view = focusedPageView(exercise, lessonBody);
+    if (view.item?.legendHtml) view.item.legendHtml = withSiteBase(view.item.legendHtml);
+    add(`focused-${exercise.id}`, view);
+  }
+  for (const task of focused.SPOKEN_FOCUSED_TASKS) add(`speaking-focus-${task.id}`, spokenTaskView(task, lessonBody));
+
+  for (const name of [...MODULE_PACKS, ...EXTRA_PACKS]) {
+    if (!packs.has(name)) throw new Error(`build-gated-content: pack ${name} was not written`);
+  }
+  return packs;
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

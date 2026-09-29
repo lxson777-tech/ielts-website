@@ -59,6 +59,7 @@ import { onAuthChange } from '../lib/auth/session';
 import { fetchLiveConfig, type LiveConfig } from '../lib/speaking/live/link';
 import Html from './Html';
 import TestPlayer from './TestPlayer';
+import GatedPaper from './trial/GatedPaper';
 import LiveExaminer from './LiveExaminer';
 import { signInHref } from '../lib/auth/profile';
 import { currentRoute } from '../lib/auth/next';
@@ -929,17 +930,24 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
      the whole sitting (R2D-03). */
   const legOf = { owner: mockOwnerRef.current, sittingId };
 
+  /* GatedPaper: the gated build's list holds titles only, so each paper is
+     completed through the content gate before its leg starts (paid access;
+     on the open site it renders the player straight away). */
   if (stage === 'listening') {
     return (
-      <TestPlayer
-        key={`${sittingId}:${listeningTest.id}`}
-        test={listeningTest}
-        hubUrl={hubUrl}
-        attemptKind="full"
-        onFinish={handleListeningFinish}
-        mockSitting={legOf}
-        onSittingLost={stopAs}
-      />
+      <GatedPaper key={`${sittingId}:${listeningTest.id}`} test={listeningTest}>
+        {(paper) => (
+          <TestPlayer
+            key={`${sittingId}:${paper.id}`}
+            test={paper}
+            hubUrl={hubUrl}
+            attemptKind="full"
+            onFinish={handleListeningFinish}
+            mockSitting={legOf}
+            onSittingLost={stopAs}
+          />
+        )}
+      </GatedPaper>
     );
   }
 
@@ -958,15 +966,19 @@ export default function MockExam({ hubUrl }: { hubUrl: string }) {
 
   if (stage === 'reading') {
     return (
-      <TestPlayer
-        key={`${sittingId}:${readingTest.id}`}
-        test={readingTest}
-        hubUrl={hubUrl}
-        attemptKind="full"
-        onFinish={handleReadingFinish}
-        mockSitting={legOf}
-        onSittingLost={stopAs}
-      />
+      <GatedPaper key={`${sittingId}:${readingTest.id}`} test={readingTest}>
+        {(paper) => (
+          <TestPlayer
+            key={`${sittingId}:${paper.id}`}
+            test={paper}
+            hubUrl={hubUrl}
+            attemptKind="full"
+            onFinish={handleReadingFinish}
+            mockSitting={legOf}
+            onSittingLost={stopAs}
+          />
+        )}
+      </GatedPaper>
     );
   }
 

@@ -19,6 +19,8 @@ import { analyzeAudio } from '../mechanics';
 import { blobToMp3Base64 } from '../encode';
 import type { TranscriptTurn } from './session';
 import { GraderRefusal, type TrialGrading } from '../../writing/grader';
+import { gatedSignIn } from '../../trial/content';
+import { getLocale } from '../../i18n/locale';
 
 const GRADER_URL: string | undefined = import.meta.env?.PUBLIC_SPEAKING_GRADER_URL;
 
@@ -54,13 +56,20 @@ export async function gradeInterview(
   const mp3 = await blobToMp3Base64(recording.blob);
 
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (opts.trial) headers.Authorization = `Bearer ${opts.trial.token}`;
+  /* A gated build's grader needs the sign-in for every interview: the
+     trial's test sends it with its sitting, any other (paid access) alone. */
+  const signIn = opts.trial ? opts.trial.token : await gatedSignIn();
+  if (signIn) headers.Authorization = `Bearer ${signIn}`;
   const resp = await fetch(GRADER_URL, {
     method: 'POST',
     headers,
     body: JSON.stringify({
       kind: 'interview',
-      ...(opts.trial ? { trialSitting: opts.trial.sitting, locale: opts.trial.locale ?? 'en' } : {}),
+      ...(opts.trial
+        ? { trialSitting: opts.trial.sitting, locale: opts.trial.locale ?? 'en' }
+        : signIn
+          ? { locale: getLocale() === 'ru' ? 'ru' : 'en' }
+          : {}),
       interview: {
         transcript: transcript.map((t) => ({ role: t.role, text: t.text.trim() })).filter((t) => t.text),
         scope: opts.scope,

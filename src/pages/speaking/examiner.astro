@@ -2,12 +2,20 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import LiveExaminer from '../../components/LiveExaminer';
+import PaidContent from '../../components/trial/PaidContent';
 import { withBase } from '../../lib/url';
 import { isTrialBuild } from '../../lib/trial/mode';
 
-/* A trial build: this page is the trial's Speaking test, Part 1 only, and
-   the cue-card bank is not part of the trial. */
+/* A gated build: this page is the trial's Speaking test, Part 1 only, and
+   the cue-card bank is not part of the trial. A paid account gets the full
+   three-part test and the bank: its speaking material arrives through the
+   content gate (PaidContent), and the page's words follow the account
+   (data-access-copy, drawn by src/lib/trial/hub.ts). */
 const trial = isTrialBuild();
+const fullSubtitle =
+  'A full three-part mock speaking test as a real conversation: the examiner speaks, listens, and asks follow-up questions based on what you actually say.';
+const trialSubtitle =
+  'Part 1 of the Speaking test as a real conversation: the examiner speaks, listens, and asks follow-up questions based on what you actually say.';
 ---
 
 <BaseLayout
@@ -16,14 +24,17 @@ const trial = isTrialBuild();
   description="Take a full mock IELTS Speaking test as a real-time voice conversation: an AI examiner asks questions out loud, listens, follows up on your answers, and grades you on the four official criteria."
 >
   <div class="skill-speaking mx-auto max-w-4xl px-4 py-12 sm:px-6">
-    <SectionHeading
-      eyebrow="Speaking"
-      title="Live AI Examiner"
-      subtitle={trial
-        ? 'Part 1 of the Speaking test as a real conversation: the examiner speaks, listens, and asks follow-up questions based on what you actually say.'
-        : 'A full three-part mock speaking test as a real conversation: the examiner speaks, listens, and asks follow-up questions based on what you actually say.'}
-    />
-    <LiveExaminer client:load />
+    {trial ? (
+      <div class="section-heading mb-8">
+        <h1 class="text-3xl font-extrabold tracking-tight" data-i18n>Live AI Examiner</h1>
+        <p class="heading-context" data-i18n>Speaking</p>
+        <p class="mt-2 max-w-xl text-ink-muted" data-access-copy="trial" data-i18n>{trialSubtitle}</p>
+        <p class="mt-2 max-w-xl text-ink-muted" data-access-copy="full" data-i18n hidden>{fullSubtitle}</p>
+      </div>
+    ) : (
+      <SectionHeading eyebrow="Speaking" title="Live AI Examiner" subtitle={fullSubtitle} />
+    )}
+    {trial ? <PaidContent client:load shared view={{ name: 'examiner' }} /> : <LiveExaminer client:load />}
 
     {!trial && (
       <a href={withBase('/speaking/cue-cards')} class="skill-resource-card">
@@ -31,8 +42,21 @@ const trial = isTrialBuild();
         <span class="skill-resource-card-desc" data-i18n>Read 24 Part 2 cue cards with model answers, to prepare before you speak</span>
       </a>
     )}
+    {trial && (
+      <a href={withBase('/speaking/cue-cards')} class="skill-resource-card" data-access-copy="full" hidden>
+        <span class="skill-resource-card-title" data-i18n>Cue-card bank (for study, not a test)</span>
+        <span class="skill-resource-card-desc" data-i18n>Read 24 Part 2 cue cards with model answers, to prepare before you speak</span>
+      </a>
+    )}
   </div>
 </BaseLayout>
+
+<script>
+  /* The words above follow the account: the trial's Part 1 test, or the
+     full test for paid access. Only a gated build loads this. */
+  import { isTrialBuild } from '../../lib/trial/mode';
+  if (isTrialBuild()) void import('../../lib/trial/hub').then((m) => m.initTrialHub());
+</script>
 
 <style is:global>
   @import '../../styles/platform-pages.css';

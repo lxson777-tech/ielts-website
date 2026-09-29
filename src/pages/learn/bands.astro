@@ -6,11 +6,18 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import BandLadder from '../../components/BandLadder';
+import PaidContent from '../../components/trial/PaidContent';
+import { ACCESS_MODE } from '../../lib/trial/mode';
+
+/* The gated build (PUBLIC_ACCESS_MODE=trial) writes none of this page's
+   material into it: a paid account's browser receives it through the content
+   gate, and PaidContent mounts the tool once it is in. */
+const gated = ACCESS_MODE === 'trial';
 ---
 
 <BaseLayout
   title="What each band needs · IELTS is EZ"
-  trialGate={{ kind: 'locked', title: 'What each band needs' }}
+  trialGate={{ kind: 'locked', title: 'What each band needs', paidContent: true }}
   description="The official IELTS band descriptors for Writing and Speaking in plain words: what changes at each band, what to do, what to stop doing, and one practice routine per step."
 >
   <div class="mx-auto max-w-3xl px-4 py-10 sm:px-6">
@@ -20,7 +27,7 @@ import BandLadder from '../../components/BandLadder';
       subtitle="Pick a paper, a criterion, and the band you are at now. Each step is the official band descriptor put into plain words, with what to do, what to stop doing, and one thing to practise today."
     />
     <div class="mt-8">
-      <BandLadder client:load />
+      {gated ? <PaidContent client:load view={{ name: 'band-ladder' }} /> : <BandLadder client:load />}
     </div>
   </div>
 </BaseLayout>

@@ -9,6 +9,7 @@ import type { ReactNode } from 'react';
 import { useT } from '../../lib/i18n/react';
 import { withBase } from '../../lib/url';
 import { refreshTrial, type TrialView } from '../../lib/trial/client';
+import { hasPaidAccess } from '../../lib/trial/status';
 import { signInHref } from '../../lib/auth/profile';
 import { currentRoute } from '../../lib/auth/next';
 
@@ -28,13 +29,16 @@ export type TrialBlockReason =
   | 'test-ended';
 
 /** The reason that comes from the account and the connection, before the
-    page itself is considered. Null when the server has answered. */
+    page itself is considered. Null when the server has answered. An account
+    with running paid access and no trial is not "no trial": it holds more
+    than a trial would open (docs/paid-access/CONTRACT.md). */
 export function accountBlock(trial: TrialView): TrialBlockReason | null {
   if (trial.phase === 'checking') return 'checking';
   if (trial.phase === 'signed-out') return 'signed-out';
   if (trial.phase === 'no-accounts') return 'no-accounts';
   if (trial.phase === 'error') return trial.failure === 'offline' ? 'error-offline' : 'error-server';
-  if (!trial.status || trial.status.state === 'none') return 'no-trial';
+  if (!trial.status) return 'no-trial';
+  if (trial.status.state === 'none' && !hasPaidAccess(trial.status, Date.now() + trial.offsetMs)) return 'no-trial';
   return null;
 }
 

@@ -21,6 +21,7 @@ import { placementTaken } from '../../lib/placement/results';
 import { signInHref } from '../../lib/auth/profile';
 import { currentRoute } from '../../lib/auth/next';
 import { isTrialBuild } from '../../lib/trial/mode';
+import { paidAccessNow } from '../../lib/trial/paid';
 import { placementOfferView, readOfferDismissal, writeOfferDismissal, type PlacementOfferView } from './placement-offer';
 import { PART_NAME } from './PlacementFrame';
 import '../../styles/placement.css';
@@ -76,7 +77,7 @@ export default function PlacementOffer({
   }, []);
 
   // The placement test comes with a subscription, not the trial.
-  if (!snap || isTrialBuild()) return null;
+  if (!snap || (isTrialBuild() && !paidAccessNow())) return null;
 
   if (variant === 'link') {
     if (!snap.signedIn) return null;

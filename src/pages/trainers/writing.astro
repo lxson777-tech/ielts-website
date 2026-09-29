@@ -6,6 +6,12 @@ import WritingHistory from '../../components/WritingHistory';
 import { withBase } from '../../lib/url';
 import { nt } from '../../lib/i18n/translate';
 import { ACCESS_MODE } from '../../lib/trial/mode';
+import PaidContent from '../../components/trial/PaidContent';
+
+/* The gated build (PUBLIC_ACCESS_MODE=trial) writes none of this page's
+   material into it: a paid account's browser receives it through the content
+   gate, and PaidContent mounts the tool once it is in. */
+const gated = ACCESS_MODE === 'trial';
 
 /* The gated build needs an account for everything, so attempts are kept
    with it; only the open build works without one (audit F03). */
@@ -17,7 +23,7 @@ const historySubtitle =
 
 <BaseLayout
   title="Writing Trainer · IELTS Portal"
-  trialGate={{ kind: 'locked', title: 'Writing Trainer' }}
+  trialGate={{ kind: 'locked', title: 'Writing Trainer', paidContent: true }}
   description="Write an IELTS essay with a live coach panel of structures, phrases and topic vocabulary, and get instant feedback: word count, vocabulary range, cohesion, spelling, and band-by-band comments."
 >
   <div class="skill-writing writing-trainer-page mx-auto max-w-5xl px-4 py-12 sm:px-6">
@@ -26,7 +32,7 @@ const historySubtitle =
       title="Writing Trainer"
       subtitle="Write an exam-style answer with a coach beside you. Then review feedback on the four IELTS criteria."
     />
-    <WritingTester client:load />
+    {gated ? <PaidContent client:load view={{ name: 'writing-trainer' }} /> : <WritingTester client:load />}
 
     <p class="mt-6 text-center text-sm">
       <a href={withBase('/writing/checker')} class="font-semibold text-brand hover:underline" data-i18n>

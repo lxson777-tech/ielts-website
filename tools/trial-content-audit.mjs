@@ -26,6 +26,9 @@
  *           notes), or two or more phrases of the same lesson or the same
  *           piece of material in one file: real content in a public file.
  *           Exits 1.
+ *           Also a leak, whatever it holds: a copy of the private store or
+ *           of a paid pack (gated-content/, packs/) anywhere in the build,
+ *           and any Task 1 chart carried inline the way a pack carries it.
  *   SHARED  a single phrase of a lesson, found once: a line the lesson
  *           shares with something public by design (a cue-card question in
  *           the public question list, a one-line strategy tip). Reported,
@@ -151,6 +154,26 @@ async function materialSentinels(list) {
   }
 }
 
+/** Every file and folder under a build. */
+function* allPaths(dir) {
+  for (const name of readdirSync(dir)) {
+    const path = join(dir, name);
+    yield path;
+    if (statSync(path).isDirectory()) yield* allPaths(path);
+  }
+}
+
+/** The first 96 characters of each Task 1 chart's base64 encoding, as a
+    pack carries it inline. */
+function chartSentinels() {
+  const dir = resolve(REPO, 'public/pics/writing/imported');
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((file) => /\.(png|webp|jpe?g)$/i.test(file))
+    .map((file) => ({ file, head: readFileSync(join(dir, file)).toString('base64').slice(0, 96) }))
+    .filter((c) => c.head.length === 96);
+}
+
 function* files(dir) {
   for (const name of readdirSync(dir)) {
     const path = join(dir, name);
@@ -185,8 +208,25 @@ async function main() {
       found.push({ file: `${locked}/`, verdict: 'LEAK', items: [`${published.length} file(s)`], phrases: published.slice(0, 5) });
     }
   }
+  /* The paid packs (tools/build-gated-content.mjs, gated-content/packs/)
+     are handed out by the content gate to a paid account only. A copy of
+     that private folder, or of any pack in it, inside a build is a leak
+     whatever it holds. */
+  for (const path of allPaths(DIST)) {
+    const rel = relative(DIST, path).replace(/\\/g, '/');
+    if (/(^|\/)(gated-content|packs)(\/|$)/.test(rel)) {
+      found.push({ file: rel, verdict: 'LEAK', items: ['paid pack or private store'], phrases: [rel] });
+    }
+  }
+  /* A pack carries each Task 1 chart inline (a data address), because a
+     gated build does not publish the chart files. The start of every
+     chart's encoding, found in a public file, is a leak. */
+  const charts = chartSentinels();
   for (const path of files(DIST)) {
-    const text = decodeFile(readFileSync(path, 'utf8'));
+    const raw = readFileSync(path, 'utf8');
+    const chart = charts.find((c) => raw.includes(c.head));
+    if (chart) found.push({ file: relative(DIST, path).replace(/\\/g, '/'), verdict: 'LEAK', items: [`chart:${chart.file}`], phrases: [chart.file] });
+    const text = decodeFile(raw);
     const hits = marks.filter((m) => text.includes(m.phrase));
     if (hits.length) {
       const perItem = new Map();
