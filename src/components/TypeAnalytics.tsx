@@ -33,6 +33,8 @@ export function practiseHref(skill: 'reading' | 'listening', type: QuestionType)
 }
 
 export default function TypeAnalytics({ skill = 'reading' }: { skill?: 'reading' | 'listening' }) {
+  // The paper's own name, which stays English and capitalised inside a Russian sentence too.
+  const paper = skill === 'reading' ? 'Reading' : 'Listening';
   const { t } = useT();
   const [stats, setStats] = useState<TypeStat[] | null>(null);
 
@@ -45,7 +47,7 @@ export default function TypeAnalytics({ skill = 'reading' }: { skill?: 'reading'
   if (stats.length === 0) {
     return (
       <div className="rounded-card border border-dashed border-border bg-surface-alt p-6 text-center text-sm text-ink-muted">
-        {t("Finish a {skill} test and you'll see your accuracy broken down by question type here, so you know exactly what to practise next.", { skill })}
+        {t("Finish a {skill} test and you'll see your accuracy broken down by question type here, so you know exactly what to practise next.", { skill: paper })}
       </div>
     );
   }
@@ -65,7 +67,7 @@ export default function TypeAnalytics({ skill = 'reading' }: { skill?: 'reading'
   // by hand and the label re-inserted with its <strong>, the same technique
   // as CurrentLevel.tsx's band-range sentence.
   const introParts = t("Across every {skill} test you've taken. Your weakest type so far is {label}.", {
-    skill,
+    skill: paper,
   }).split(/(\{label\})/);
 
   return (
