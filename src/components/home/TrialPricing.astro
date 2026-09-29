@@ -1,0 +1,22 @@
+---
+import { withBase } from '../../lib/url';
+import { FULL_ACCESS_PRICES_KZT, TRIAL_TUTOR_PER_SECTION } from '../../lib/trial/offer';
+/* Prices come from the one approved source (also used by /plans). Payment
+   is not connected anywhere, so the purchase buttons stay unavailable and
+   the page says so; the trial button opens the real trial page. */
+const tenge = (amount: number) => `₸${amount.toLocaleString('en-US')}`;
+const { oneMonth, threeMonths } = FULL_ACCESS_PRICES_KZT;
+---
+<section class="trial-pricing section-pad" id="pricing" aria-labelledby="pricing-title">
+ <div class="content-wrap">
+  <div class="pricing-heading"><h2 id="pricing-title">Your first 3 days.<br /><span>On us.</span></h2><p>Get to know your study space before you pay.<br />Sign up to start. No payment card required.</p></div>
+  <div class="pricing-layout">
+   <div class="trial-includes"><h3>One place to prepare.</h3><p>Three days to try your study space. One test in each IELTS section.</p><ul><li>Reading, Listening, Writing and Speaking lessons</li><li>Guided exercises and timed practice tests</li><li>AI writing and speaking feedback</li><li>AI speaking practice with an examiner</li><li>Mr EZ, your personal AI study companion</li></ul><small>Trial: 1 Reading + 1 Listening + 1 Writing + 1 Speaking test, and {TRIAL_TUTOR_PER_SECTION} Mr EZ messages per section. Paid-plan allowances are still being finalised.</small><a class="button" href={withBase('/trial')} data-trial-link>Start your free trial</a></div>
+   <div class="price-options" aria-label="Access after your trial">
+    <article class="price-option"><div><h3>One month</h3><p>Room to build your routine.</p></div><p class="price-amount">{tenge(oneMonth)} <small>for 1 month</small></p><button type="button" disabled aria-describedby="checkout-status">Choose one month</button></article>
+    <article class="price-option price-option-long"><div><h3>Three months</h3><p>More time to put it into practice.</p></div><p class="price-amount">{tenge(threeMonths)} <small>for 3 months, total</small></p><p class="price-saving">Save {tenge(oneMonth * 3 - threeMonths)} compared with three monthly purchases.</p><button type="button" disabled aria-describedby="checkout-status">Choose three months</button></article>
+   </div>
+  </div>
+  <p class="checkout-status" id="checkout-status">Checkout is not connected and no payment can be taken. Renewal, refund and access-expiry terms must be confirmed before launch. <a href={withBase('/plans')}>See the plans</a></p>
+ </div>
+</section>

@@ -1,0 +1,11 @@
+---
+/* The public sales page: the site's front page `/` in a TRIAL build only
+   (injected by trialSalesHome() in astro.config.mjs). The open build has no
+   page here; its `/` redirects to the dashboard as before.
+
+   It keeps its own approved look (gates, campus, green and orange, Manrope
+   headings) through StoryLayout, separate from the workspace design. */
+import StoryLayout from '../layouts/StoryLayout.astro';
+import NextChapter from '../components/home/NextChapter.astro';
+---
+<StoryLayout><NextChapter /></StoryLayout>

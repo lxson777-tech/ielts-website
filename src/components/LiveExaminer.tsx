@@ -1744,7 +1744,11 @@ export default function LiveExaminer({
 
   return (
     <MotionConfig reducedMotion="user">
-      <AnimatePresence mode="wait">
+      {/* initial={false}: the first screen renders visible. Without it the
+          server-built HTML carried opacity:0, so the examiner stayed blank
+          until the script loaded (and for good if it failed). Later phase
+          changes still fade in. */}
+      <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={phase}
           initial={{ opacity: 0 }}

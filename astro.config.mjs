@@ -153,6 +153,23 @@ function trialPublicDir() {
   return out;
 }
 
+/* The public sales page (the gates, the campus, the questionnaire, the
+   prices) is the front page of a trial build only. It lives outside
+   src/pages so the open build, which is today's live site, never gets a
+   page at `/`: there `/` stays the plain redirect to the dashboard. Every
+   call to action on it leads into the trial (/trial), sign-in or /plans,
+   which only mean something in a trial build. */
+function trialSalesHome() {
+  return {
+    name: 'trial-sales-home',
+    hooks: {
+      'astro:config:setup': ({ injectRoute }) => {
+        if (TRIAL_BUILD) injectRoute({ pattern: '/', entrypoint: light('./src/marketing/sales-home.astro'), prerender: true });
+      },
+    },
+  };
+}
+
 export default defineConfig({
   publicDir: TRIAL_BUILD ? trialPublicDir() : undefined,
   devToolbar: { enabled: false },
@@ -181,14 +198,15 @@ export default defineConfig({
   // /speaking/checker keeps redirecting, but to the bare mock interview
   // rather than the coached Speaking Trainer, for the same reason.
   redirects: {
-    // The public homepage is not published yet: the site opens straight into
-    // the student workspace (the AI Tutor screen).
-    '/': '/ielts-website/dashboard',
+    // The open site has no public homepage: it opens straight into the
+    // student workspace. A trial build publishes the sales page at `/`
+    // instead (trialSalesHome below), so the redirect is left out there.
+    ...(TRIAL_BUILD ? {} : { '/': '/ielts-website/dashboard' }),
     '/tests/drills': '/ielts-website/trainers/reading',
     '/speaking/checker': '/ielts-website/speaking/examiner',
   },
   // The owner-only admin page is never advertised to search engines.
-  integrations: [react(), sitemap({ filter: (page) => !/\/admin\/?$/.test(page) })],
+  integrations: [react(), sitemap({ filter: (page) => !/\/admin\/?$/.test(page) }), trialSalesHome()],
   vite: {
     plugins: [tailwindcss(), trialBrowserContent()],
   },
