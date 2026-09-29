@@ -143,22 +143,71 @@ def standin_events() -> list[dict]:
         return []
 
 
+# Sign-up since the login rework (24 September): the sign-in popup is gone.
+# A new account signs up on /sign-up, fills in the required /profile ("About
+# you") and is taken back to `next`. The same SYNTHETIC adult profile as
+# tests/browser/t01_trial_journey.py.
+PROFILE = {
+    "first_name": "Synthetic",
+    "last_name": "Student",
+    "dob": ("4", "3", "2000"),
+    "phone": "+7 701 234 56 78",
+    "city": "Almaty",
+    "occupation": "Synthetic University",
+    "source": "friend",
+}
+
+
+def route_of(page) -> str:
+    from urllib.parse import urlparse
+    path = urlparse(page.url).path
+    base = urlparse(BASE).path.rstrip("/")
+    return path[len(base):] if base and path.startswith(base) else path
+
+
+def wait_route(page, predicate, timeout_ms=20000) -> bool:
+    deadline = time.time() + timeout_ms / 1000
+    while time.time() < deadline:
+        try:
+            if predicate(route_of(page)):
+                return True
+        except Exception:
+            pass
+        page.wait_for_timeout(200)
+    return False
+
+
+def fill_profile(page) -> bool:
+    try:
+        page.wait_for_selector("#profile-firstName", timeout=20000)
+    except Exception:
+        return False
+    page.locator("#profile-firstName").fill(PROFILE["first_name"])
+    page.locator("#profile-lastName").fill(PROFILE["last_name"])
+    day, month, year = PROFILE["dob"]
+    page.locator("#profile-dob-day").select_option(day)
+    page.locator("#profile-dob-month").select_option(month)
+    page.locator("#profile-dob-year").select_option(year)
+    page.locator("#profile-phone").fill(PROFILE["phone"])
+    page.locator("#profile-city").fill(PROFILE["city"])
+    page.locator("#profile-occupation").fill(PROFILE["occupation"])
+    page.locator(f"#profile-source-{PROFILE['source']}").check(force=True)
+    click(page.locator("form button[type=submit]"))
+    return wait_route(page, lambda r: r != "/profile", timeout_ms=20000)
+
+
 def sign_up(page) -> None:
-    goto(page, "/dashboard")
-    for _ in range(8):
-        if click(page.locator(".ws-account .ws-avatar"), 4000) and page.locator(".ws-menu[role='menu']").count():
-            break
-        page.wait_for_timeout(800)
-    click(page.get_by_role("menuitem", name="Sign in"))
-    page.wait_for_selector("#account-email", state="attached", timeout=10000)
-    dialog = page.locator("[role='dialog']:has(#account-email)")
-    click(dialog.get_by_role("button", name="Sign up", exact=True))
-    page.wait_for_timeout(400)
-    dialog.locator("#account-email").fill(EMAIL)
-    dialog.locator("#account-password").fill(PASSWORD)
-    dialog.locator("#account-confirm").fill(PASSWORD)
-    click(dialog.get_by_role("button", name="Create account"))
-    page.wait_for_timeout(3000)
+    goto(page, "/sign-up?next=%2Fdashboard")
+    page.wait_for_selector("#signup-email", timeout=20000)
+    page.locator("#signup-email").fill(EMAIL)
+    page.locator("#signup-password").fill(PASSWORD)
+    if page.locator("#signup-confirm").count():
+        page.locator("#signup-confirm").fill(PASSWORD)
+    click(page.locator("form button[type=submit]"))
+    wait_route(page, lambda r: r != "/sign-up", timeout_ms=20000)
+    if route_of(page) == "/profile":
+        fill_profile(page)
+    page.wait_for_timeout(2000)
 
 
 def walk_intake(page) -> bool:
@@ -222,7 +271,7 @@ def run() -> None:
         # ── sign up and set a goal ─────────────────────────────────────────
         sign_up(page)
         row("the goal questions were answered", walk_intake(page))
-        row("a synthetic student signed up through the workspace menu", owner_ns(page).startswith("u:"), owner_ns(page))
+        row("a synthetic student signed up on the sign-up page and filled in the profile", owner_ns(page).startswith("u:"), owner_ns(page))
 
         # ── 01 the offer card ──────────────────────────────────────────────
         goto(page, "/dashboard")

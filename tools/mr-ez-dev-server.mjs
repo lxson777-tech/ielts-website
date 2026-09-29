@@ -1389,6 +1389,11 @@ const STUB_SUPABASE = 'https://stub.invalid';
 /* MR_EZ_SITE_ORIGIN moves both of these when the site runs on another port
    (a second checkout's dev server, for instance). */
 const SITE_ORIGIN = process.env.MR_EZ_SITE_ORIGIN || 'http://localhost:4321';
+/* Every stand-in Worker also accepts the site at MR_EZ_SITE_ORIGIN, so the
+   site can run on any port without its requests being refused (the fixed
+   lists below are the ports the earlier journeys were written for). */
+const withSiteOrigin = (list) =>
+  [...new Set([...list.split(','), SITE_ORIGIN, SITE_ORIGIN.replace('//localhost', '//127.0.0.1')])].join(',');
 const LIVE_SITE_DATA_URL = `${SITE_ORIGIN}/ielts-website/data/tests`;
 /* And the published lesson blocks, which contextual help is grounded in.
    Same Astro dev server, same reasoning. */
@@ -1445,7 +1450,7 @@ async function initLive() {
   };
 
   const env = {
-    ALLOWED_ORIGINS: 'http://localhost:4321,http://127.0.0.1:4321,http://localhost:4322,http://127.0.0.1:4322',
+    ALLOWED_ORIGINS: withSiteOrigin('http://localhost:4321,http://127.0.0.1:4321,http://localhost:4322,http://127.0.0.1:4322'),
     SUPABASE_URL: STUB_SUPABASE,
     SUPABASE_SERVICE_ROLE_KEY: 'local-service-role-key',
     SITE_DATA_URL: LIVE_SITE_DATA_URL,
@@ -1647,7 +1652,7 @@ async function initTrial() {
   };
   const gate = createGate({ fetch: bridgeFetch({ onModel: async () => { throw new Error('the gate never calls a model'); } }), store });
   const gateEnv = {
-    ALLOWED_ORIGINS: 'http://localhost:4331,http://127.0.0.1:4331,http://localhost:4321,http://127.0.0.1:4321',
+    ALLOWED_ORIGINS: withSiteOrigin('http://localhost:4331,http://127.0.0.1:4331,http://localhost:4321,http://127.0.0.1:4321'),
     SUPABASE_URL: STUB_SUPABASE,
     SUPABASE_SERVICE_ROLE_KEY: 'local-service-role-key',
     CONTENT_SERVICE_KEY,
@@ -1664,7 +1669,7 @@ async function initTrial() {
   };
   const tutor = createHandler({ now: () => new Date(), uuid: () => randomUUID(), fetch: bridgeFetch({ onModel: noModel }) });
   const tutorEnv = {
-    ALLOWED_ORIGINS: 'http://localhost:4321,http://127.0.0.1:4321,http://localhost:4322,http://127.0.0.1:4322',
+    ALLOWED_ORIGINS: withSiteOrigin('http://localhost:4321,http://127.0.0.1:4321,http://localhost:4322,http://127.0.0.1:4322'),
     SUPABASE_URL: STUB_SUPABASE,
     SUPABASE_SERVICE_ROLE_KEY: 'local-service-role-key',
     // A trial build publishes no paper or lesson data: the tutor reads them
@@ -1699,7 +1704,7 @@ async function initTrial() {
     }),
   });
   const essayEnv = {
-    ALLOWED_ORIGINS: 'http://localhost:4321',
+    ALLOWED_ORIGINS: withSiteOrigin('http://localhost:4321'),
     OPENAI_API_KEY: 'sk-trial-stand-in-never-used',
     GRADING_SAMPLES: '1',
     ACCESS_MODE: 'trial',
@@ -1742,7 +1747,7 @@ async function initTrial() {
   });
   const localOrigins = 'http://localhost:4331,http://127.0.0.1:4331,http://localhost:4321,http://127.0.0.1:4321';
   const liveEnv = {
-    ALLOWED_ORIGINS: localOrigins,
+    ALLOWED_ORIGINS: withSiteOrigin(localOrigins),
     OPENAI_API_KEY: 'sk-trial-stand-in-never-used',
     SUPABASE_URL: STUB_SUPABASE,
     SUPABASE_SERVICE_ROLE_KEY: 'local-service-role-key',
@@ -1763,7 +1768,7 @@ async function initTrial() {
     }),
   });
   const speakingEnv = {
-    ALLOWED_ORIGINS: localOrigins,
+    ALLOWED_ORIGINS: withSiteOrigin(localOrigins),
     OPENAI_API_KEY: 'sk-trial-stand-in-never-used',
     GRADING_SAMPLES: '1',
     ACCESS_MODE: 'trial',
