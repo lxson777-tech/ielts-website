@@ -1821,14 +1821,21 @@ export default function TestPlayer({
                 {/* A placement part is one short sample: it never shows a band
                     (docs/personal-learning/BUILDER-RULES.md, honest wording),
                     and its results screen reads the whole sitting at the end. */}
-                {!inPlacement && (
+                {!inPlacement && (attemptKind === 'drill' ? (
+                  /* A drill is one passage or one part: too few questions for
+                     the band table to mean anything, so no band is shown for
+                     it (platform audit 2026-09-23, "do not present a short
+                     drill as an official IELTS score"). Its stored band is
+                     already left out of Report, best bands and Mr EZ. */
+                  <p className="mt-3 text-sm text-ink-muted">{t('A single drill is too short to estimate a band.')}</p>
+                ) : (
                 <p className="mt-3 inline-block rounded-full bg-brand-tint px-4 py-1.5 font-display font-bold text-brand">
                   {/* bandEstimate returns a number like "7.0", or the one
                       phrase "below 2.5" (marked with nt() in tests/schema.ts),
                       so it goes through t() rather than being printed raw. */}
                   {t('Estimated Band: {band}', { band: t(bandEstimate(correctCount, SCORED_TOTAL, test.skill)) })}
                 </p>
-                )}
+                ))}
                 {inPlacement && (
                   <p className="mt-3 text-sm text-ink-muted">
                     {t('One part of your placement test. The next part is ready when you are.')}
@@ -3248,7 +3255,7 @@ function InstructionsScreen({
           </div>
         </div>
 
-        <p className="preflight-essential">{t('The timer starts as soon as you begin and runs continuously.')} <strong>{t('You cannot pause.')}</strong></p>
+        <p className="preflight-essential">{t('The timer starts as soon as you begin and runs continuously.')} <strong>{t('The clock cannot be paused.')}</strong></p>
         {listening && <p className="text-sm text-ink-muted">{attemptKind === 'drill' ? t('Practice mode: pause and replay are available.') : t('Exam mode: the recording plays once.')}</p>}
         <details className="support-disclosure"><summary>{t('Instructions and scoring')}</summary>
         <ul className="mt-6 space-y-2.5 text-sm text-ink">
@@ -3258,7 +3265,7 @@ function InstructionsScreen({
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">🚫</span>
-            <span><strong>{t('You cannot pause.')}</strong> {t('Refreshing or closing the tab will not stop the clock. You will resume with time already elapsed.')}</span>
+            <span><strong>{t('The clock cannot be paused.')}</strong> {t('Refreshing or closing the tab will not stop the clock. You will resume with time already elapsed.')}</span>
           </li>
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">✍️</span>
@@ -3305,7 +3312,7 @@ function InstructionsScreen({
                   inline emphasis goes. */}
               <span>
                 {attemptKind === 'drill'
-                  ? t('This is a single-part drill. You can play, pause, seek and replay the recording as many times as you like while you practise.')
+                  ? t('This is a single-part drill. You can play, pause, seek and replay the recording as often as you like; pausing the recording does not pause the clock.')
                   : t('This is exam conditions: press Start recording when ready and it plays once, from the beginning, with no pausing, seeking or replaying. Refreshing keeps your answers and running timer, but restarts the recording from the beginning.')}
               </span>
             </li>
@@ -3322,9 +3329,15 @@ function InstructionsScreen({
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">📊</span>
             <span>
-              {listening
-                ? t('At the end you get a score, an estimated band, and a full answer review, including the transcript.')
-                : t('At the end you get a score, an estimated band, and a full answer review, with every question explained with the exact line from the passage.')}
+              {/* A drill shows no band (it is too short for the band table), so
+                  its promise leaves the band out. */}
+              {attemptKind === 'drill'
+                ? listening
+                  ? t('At the end you get a score and a full answer review, including the transcript. One part is too short for a band.')
+                  : t('At the end you get a score and a full answer review, with every question explained with the exact line from the passage. One passage is too short for a band.')
+                : listening
+                  ? t('At the end you get a score, an estimated band, and a full answer review, including the transcript.')
+                  : t('At the end you get a score, an estimated band, and a full answer review, with every question explained with the exact line from the passage.')}
             </span>
           </li>
         </ul>

@@ -96,9 +96,11 @@ export const strings: Record<string, string> = {
   'Your starting point': 'Ваша отправная точка',
   'An estimate from one sitting of about 40 minutes, not a band score. It tells your plan where to start, and your everyday work will sharpen it.':
     'Это примерная оценка по одному заходу около 40 минут, а не балл. Она подсказывает плану, с чего начать, а ежедневная работа сделает её точнее.',
-  Weak: 'Слабо',
-  Developing: 'В процессе',
-  Strong: 'Сильно',
+  /* PlacementResults.tsx, ctx "placement-level" (the password hint's own
+     "Weak"/"Strong" are different words in Russian). */
+  'placement-levelWeak': 'Слабо',
+  'placement-levelDeveloping': 'В процессе',
+  'placement-levelStrong': 'Сильно',
   Assessed: 'Оценено',
   '{raw} of {total} right in this sitting.': 'В этом заходе верно {raw} из {total}.',
   'Below the pass line: {types}.': 'Ниже проходной границы: {types}.',

@@ -33,6 +33,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { withBase } from '../../lib/url';
+import { signInHref } from '../../lib/auth/profile';
+import { currentRoute } from '../../lib/auth/next';
 import { useT, type Translator } from '../../lib/i18n/react';
 import MrEzAvatar from './MrEzAvatar';
 import {
@@ -507,7 +509,7 @@ export default function MrEzPanel() {
           {configured && signedIn === false && !blocked && (
             <p className="mrez-note">
               {t("Sign in and Mr EZ can see your own results. He never reads anyone else's, which is exactly why he needs to know who you are.")}{' '}
-              <a href={withBase('/account')}>{t('Sign in')}</a>
+              <a href={withBase('/sign-in')} onClick={(e) => { e.currentTarget.href = signInHref(currentRoute()); }}>{t('Sign in')}</a>
             </p>
           )}
 
@@ -561,7 +563,7 @@ export default function MrEzPanel() {
               {(error.code === 'unavailable' || error.code === 'busy') && pendingRef.current && (
                 <button type="button" onClick={retry} disabled={busy}>{t('Try again')}</button>
               )}
-              {error.code === 'sign-in-required' && <a href={withBase('/account')}>{t('Sign in')}</a>}
+              {error.code === 'sign-in-required' && <a href={withBase('/sign-in')} onClick={(e) => { e.currentTarget.href = signInHref(currentRoute()); }}>{t('Sign in')}</a>}
             </div>
           )}
         </div>

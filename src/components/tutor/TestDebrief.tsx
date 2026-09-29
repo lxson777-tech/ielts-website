@@ -32,6 +32,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { PracticeTest } from '../../lib/tests/schema';
 import { withBase } from '../../lib/url';
+import { signInHref } from '../../lib/auth/profile';
+import { currentRoute } from '../../lib/auth/next';
 import { useT } from '../../lib/i18n/react';
 import { onAuthChange } from '../../lib/auth/session';
 import MrEzAvatar from './MrEzAvatar';
@@ -146,7 +148,7 @@ export default function TestDebrief({ test, answers, correctIds, scoredTotal, ow
     return (
       <p className="mrez-debrief-signin">
         {t('Sign in and Mr EZ can go through your mistakes with you.')}{' '}
-        <a href={withBase('/account')}>{t('Sign in')}</a>
+        <a href={withBase('/sign-in')} onClick={(e) => { e.currentTarget.href = signInHref(currentRoute()); }}>{t('Sign in')}</a>
       </p>
     );
   }

@@ -66,6 +66,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useT } from '../../lib/i18n/react';
+import { planHistoryText } from '../../lib/learning/plan-history';
 import { getLocale } from '../../lib/i18n/locale';
 import { nt } from '../../lib/i18n/translate';
 import { withBase } from '../../lib/url';
@@ -953,7 +954,7 @@ export default function WritingFocusedTask({ view }: Props) {
 
           {planChange && (
             <p className="focused-plan-change">
-              <span className="focused-plan-change-label">{t('What changed:')}</span> {planChange}
+              <span className="focused-plan-change-label">{t('What changed:')}</span> {planHistoryText(locale, planChange)}
             </p>
           )}
 

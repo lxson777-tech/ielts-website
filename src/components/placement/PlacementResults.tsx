@@ -31,11 +31,13 @@ import type { NotAssessedReason, PartOutcome, PlacementPart } from '../../lib/pl
 import { STEP_ROLE_LABEL } from '../learning/today/todayViewModel';
 import { PART_NAME } from './PlacementFrame';
 
-const LEVEL_LABEL: Record<PlacementLevel, string> = {
-  weak: nt('Weak'),
-  developing: nt('Developing'),
-  strong: nt('Strong'),
-};
+/* ctx "placement-level": the password strength hint also says "Weak" and
+   "Strong", and Russian needs a different word for each. */
+function levelLabel(t: ReturnType<typeof useT>['t'], level: PlacementLevel): string {
+  if (level === 'weak') return t('Weak', undefined, 'placement-level');
+  if (level === 'strong') return t('Strong', undefined, 'placement-level');
+  return t('Developing', undefined, 'placement-level');
+}
 
 const NOT_ASSESSED_SENTENCE: Record<NotAssessedReason | 'unknown', string> = {
   unavailable: nt('This could not be marked on this site at the time. Your plan will ask for a short sample of it later.'),
@@ -134,7 +136,7 @@ export default function PlacementResults({
               {result.status === 'not-assessed'
                 ? t('Not yet assessed')
                 : result.level
-                  ? t(LEVEL_LABEL[result.level])
+                  ? levelLabel(t, result.level)
                   : t('Assessed')}
             </span>
             <p className="pl-result-detail">{detail(result)}</p>

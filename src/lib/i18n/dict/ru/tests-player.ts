@@ -325,6 +325,16 @@ export const strings: Record<string, string> = {
     'Вы пропустили Speaking, поэтому его нет в общем балле выше. Пройти полный тест Speaking можно в любой момент здесь:',
   'the live AI examiner': 'живой AI экзаменатор',
   'Back to Tests': 'Назад к тестам',
+  /* TestPlayer score modal, drills only (platform audit 2026-09-23). */
+  'A single drill is too short to estimate a band.': 'Одного упражнения слишком мало, чтобы оценить балл.',
+  /* Instructions screen: the clock versus the recording, and what a drill ends with (platform audit 2026-09-23). */
+  'The clock cannot be paused.': 'Таймер нельзя поставить на паузу.',
+  'This is a single-part drill. You can play, pause, seek and replay the recording as often as you like; pausing the recording does not pause the clock.':
+    'Это тренировка по одной части. Запись можно включать, ставить на паузу, перематывать и переслушивать сколько угодно, но пауза записи не останавливает таймер.',
+  'At the end you get a score and a full answer review, including the transcript. One part is too short for a band.':
+    'В конце вы получите результат и полный разбор ответов вместе с расшифровкой записи. Одной части слишком мало для оценки балла.',
+  'At the end you get a score and a full answer review, with every question explained with the exact line from the passage. One passage is too short for a band.':
+    'В конце вы получите результат и полный разбор ответов, где каждый вопрос объяснён точной строкой из текста. Одного текста слишком мало для оценки балла.',
 };
 
 export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {
