@@ -64,7 +64,8 @@ export const SALES_COPY = {
   'nav.plan': { en: 'Your plan', ru: 'Ваш план' },
   'nav.pricing': { en: 'Pricing', ru: 'Цены' },
   'nav.signIn': { en: 'Sign in', ru: 'Войти' },
-  'nav.trial': { en: 'Start your free trial', ru: 'Попробовать бесплатно' },
+  // Short on purpose: it shares a phone's header with the logo and the menu.
+  'nav.trial': { en: 'Start your free trial', ru: 'Начать бесплатно' },
   'nav.menuOpen': { en: 'Open menu', ru: 'Открыть меню' },
   'nav.menuClose': { en: 'Close menu', ru: 'Закрыть меню' },
   'lang.group': { en: 'Language', ru: 'Язык' },
@@ -251,8 +252,8 @@ export const SALES_COPY = {
   'ez.name': { en: 'Mr EZ <small>Your AI study companion</small>', ru: 'Mr EZ <small>Ваш ИИ-помощник в учёбе</small>' },
   'ez.note': { en: 'A little guidance. A lot more clarity.', ru: 'Немного подсказки. Гораздо больше ясности.' },
   'ez.title': {
-    en: 'Meet Mr EZ.<br /><span>Your next step,<br />made clearer.</span>',
-    ru: 'Знакомьтесь: Mr EZ.<br /><span>Ваш следующий шаг<br />станет понятнее.</span>',
+    en: 'Meet Mr EZ.<br /><span>Your next step, <br />made clearer.</span>',
+    ru: 'Знакомьтесь: Mr EZ.<br /><span>Ваш следующий шаг <br />станет понятнее.</span>',
   },
   'ez.lead': {
     en: 'Getting a score is one thing. Knowing what to do next is another. Mr EZ is your AI tutor, here to help you understand your practice and keep moving towards your goal.',
@@ -265,8 +266,8 @@ export const SALES_COPY = {
     ru: '<b>Вы</b>Мои ответы слишком короткие. Что добавить?',
   },
   'ez.reply': {
-    en: 'Start with your answer, add a reason, then give one specific example. Try it with “Do you enjoy studying with other people?”',
-    ru: 'Начните с ответа, добавьте причину, затем приведите один конкретный пример. Попробуйте на вопросе “Do you enjoy studying with other people?”',
+    en: 'Start with your answer, add a reason, then give one specific example. Try it with <span lang="en">“Do you enjoy studying with other people?”</span>',
+    ru: 'Начните с ответа, добавьте причину, затем приведите один конкретный пример. Попробуйте на вопросе <span lang="en">“Do you enjoy studying with other people?”</span>',
   },
   'ez.next': { en: 'Your next practice: developing a Part 1 answer.', ru: 'Следующая практика: развёрнутый ответ в Part 1.' },
   'ez.disclaimer': {

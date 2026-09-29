@@ -124,3 +124,12 @@
 .lang-switch button:focus-visible{outline:2px solid #b95735;outline-offset:2px}
 @media(max-width:760px){.lang-switch{padding:0;border:0}.lang-switch button[aria-pressed=true]{display:none}.lang-switch button{min-width:38px;min-height:38px;padding:0 6px;border:1px solid color-mix(in srgb,currentColor 22%,transparent)}}
 @media(prefers-reduced-motion:reduce){.lang-switch button{transition:none}}
+
+/* A FAQ question sits in its own span (so its language can be swapped
+   without touching the "+" beside it); only the "+" turns and is large. */
+.faq-list summary>.faq-q{font-size:inherit;font-weight:inherit;transition:none}
+.faq-list details[open] summary>.faq-q{transform:none}
+
+/* The footer links (now with Privacy and Terms, and longer in Russian) wrap
+   onto a second row on a phone instead of running off the edge. */
+@media(max-width:760px){.footer-top nav{flex-wrap:wrap;justify-content:flex-start;column-gap:22px;row-gap:14px}}

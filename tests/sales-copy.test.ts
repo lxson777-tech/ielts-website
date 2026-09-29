@@ -79,6 +79,18 @@ test('every data-sales key in the sales page markup and scripts exists', () => {
   assert.deepEqual(missing, [], 'These keys are not in src/marketing/sales-copy.ts');
 });
 
+test('an entry that carries markup is rendered as markup, not as escaped text', () => {
+  const problems: string[] = [];
+  for (const rel of SALES_FILES) {
+    const source = read(rel);
+    for (const m of source.matchAll(/data-sales="([^"]+)">\{sales\('([^']+)'\)\}/g)) {
+      const key = m[2]!;
+      if (isSalesKey(key) && /<[a-z]/.test(SALES_COPY[key].en)) problems.push(`${rel}: ${key} holds markup, render it with set:html`);
+    }
+  }
+  assert.deepEqual(problems, []);
+});
+
 test('keys built from a template in the markup all exist', () => {
   const ids = {
     demo: ['speaking', 'coach', 'lessons'].flatMap((id) => ['label', 'title', 'text', 'alt', 'zoom'].map((p) => `demo.${id}.${p}`)),

@@ -84,7 +84,7 @@ const k = (key: string) => key as SalesKey;
         <div class="tutor-example" aria-label={sales('ez.example')} data-sales-attr="aria-label:ez.example">
           <p class="tutor-example-label" data-sales="ez.example.label">{sales('ez.example.label')}</p>
           <p class="tutor-student" data-sales="ez.student" set:html={sales('ez.student')} />
-          <div class="tutor-reply"><b>Mr EZ</b><p data-sales="ez.reply">{sales('ez.reply')}</p><p class="tutor-next" data-sales="ez.next">{sales('ez.next')}</p></div>
+          <div class="tutor-reply"><b>Mr EZ</b><p data-sales="ez.reply" set:html={sales('ez.reply')} /><p class="tutor-next" data-sales="ez.next">{sales('ez.next')}</p></div>
           <small data-sales="ez.disclaimer">{sales('ez.disclaimer')}</small>
         </div>
         <small class="mr-ez-access" data-sales="ez.access">{sales('ez.access')}</small>
@@ -142,7 +142,7 @@ const k = (key: string) => key as SalesKey;
 
   <TrialPricing />
 
-  <section class="questions section-pad" id="questions" data-sc-act="flow"><div class="content-wrap questions-grid"><div><p class="section-note" data-sales="faq.note">{sales('faq.note')}</p><h2 data-sc-copy data-sales="faq.title" set:html={sales('faq.title')} /></div><div class="faq-list">{faqs.map((id) => <details><summary><span data-sales={k(`faq.${id}.q`)}>{sales(k(`faq.${id}.q`))}</span><span aria-hidden="true">+</span></summary><p data-sales={k(`faq.${id}.a`)}>{sales(k(`faq.${id}.a`))}</p></details>)}</div></div></section>
+  <section class="questions section-pad" id="questions" data-sc-act="flow"><div class="content-wrap questions-grid"><div><p class="section-note" data-sales="faq.note">{sales('faq.note')}</p><h2 data-sc-copy data-sales="faq.title" set:html={sales('faq.title')} /></div><div class="faq-list">{faqs.map((id) => <details><summary><span class="faq-q" data-sales={k(`faq.${id}.q`)}>{sales(k(`faq.${id}.q`))}</span><span aria-hidden="true">+</span></summary><p data-sales={k(`faq.${id}.a`)}>{sales(k(`faq.${id}.a`))}</p></details>)}</div></div></section>
 
   <section class="next-chapter-close" aria-labelledby="close-title" data-sc-act="flow">
     <img src={asset('university-campus.jpg')} width="1536" height="1024" loading="lazy" alt="" />
