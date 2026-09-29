@@ -1,17 +1,1 @@
-http://localhost:4514/ielts-website/plan-settings: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
-
-- A server/client branch `if (typeof window !== 'undefined')`.
-- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
-- Date formatting in a user's locale which doesn't match the server.
-- External changing data without sending a snapshot of it along with the HTML.
-- Invalid HTML tag nesting.
-
-It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
-
-https://react.dev/link/hydration-mismatch
-
-  <MrEzPanel data-astro-transition-persist="mr-ez">
-    <button>
-    <div id="mrez-panel" className="mrez-panel" role="dialog" aria-label="Mr EZ, you..." aria-modal="false" hidden={true}>
-      <header>
-      <div className
+none
