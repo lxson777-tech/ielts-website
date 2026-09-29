@@ -22,7 +22,14 @@
      difference from this device is kept and applied when showing time left.
 
    Nothing here is an access control. The database and the Workers refuse
-   for themselves; this decides what the screen says. */
+   for themselves; this decides what the screen says.
+
+   The same answer carries the account's PAID access (`status.paid`, written
+   by the server only when the payments Worker confirms a payment). A
+   purchase therefore shows up on every device the moment that device asks
+   again: at sign-in, on every full page load, when a tab comes back into
+   view with an answer over a minute old, and when another tab of the same
+   student confirms a purchase (refreshAfterAccessChange). */
 
 import type { User } from '@supabase/supabase-js';
 import { onAccountChange } from '../auth/lifecycle';
@@ -134,12 +141,18 @@ function accept(userId: string, gen: number, raw: unknown, sentAt: number, ask: 
   return status;
 }
 
+/** When this page last asked, so returning to a tab re-asks only when the
+    answer on screen is getting old. */
+let lastAskedAt = 0;
+const RECHECK_AFTER_MS = 60_000;
+
 /** Asks the server for the signed-in student's trial again. */
 export async function refreshTrial(): Promise<TrialStatus | null> {
   if (ACCESS_MODE !== 'trial' || !view.userId) return null;
   const userId = view.userId;
   const gen = generation;
   if (view.phase !== 'ready') publish({ ...view, phase: 'checking', failure: null });
+  lastAskedAt = Date.now();
   const sentAt = Date.now();
   const ask = ++asked;
   const { data, error } = await callRpc('trial_status');
@@ -186,6 +199,58 @@ export function startTrialClient(): void {
   window.addEventListener('online', () => {
     if (view.phase === 'error') void refreshTrial();
   });
+  /* Access can change somewhere else: a purchase confirmed on the student's
+     phone, or paid access running out while this tab sat in the
+     background. Coming back to the tab re-asks once the answer is a minute
+     old, and a page restored from the back/forward cache always re-asks.
+     Nothing is stored: the server is simply asked again. */
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && view.phase === 'ready' && Date.now() - lastAskedAt > RECHECK_AFTER_MS) {
+      void refreshTrial();
+    }
+  });
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted && view.userId) void refreshTrial();
+  });
+  listenForAccessChanges();
+}
+
+/* ── Other tabs ──────────────────────────────────────────────────────────
+   When one tab sees a purchase confirmed (the return page, "Check again"),
+   it nudges this student's other open tabs to ask the server again. The
+   message carries no fact, only "ask again", and a tab signed in as someone
+   else ignores it. */
+const ACCESS_CHANNEL = 'ielts.access.v1';
+let accessChannel: BroadcastChannel | null = null;
+
+function listenForAccessChanges(): void {
+  if (accessChannel || typeof BroadcastChannel === 'undefined') return;
+  try {
+    accessChannel = new BroadcastChannel(ACCESS_CHANNEL);
+    accessChannel.onmessage = (event: MessageEvent) => {
+      const data = event.data as { type?: unknown; userId?: unknown } | null;
+      if (data?.type === 'access-changed' && typeof data.userId === 'string' && data.userId === view.userId) {
+        void refreshTrial();
+      }
+    };
+  } catch {
+    accessChannel = null;
+  }
+}
+
+/** After the server confirms a purchase (or any change to paid access):
+    ask it again here, and tell this student's other tabs to do the same.
+    Grants nothing: the answer is whatever trial_status now says. */
+export async function refreshAfterAccessChange(): Promise<TrialStatus | null> {
+  const status = await refreshTrial();
+  if (view.userId && accessChannel) {
+    try {
+      accessChannel.postMessage({ type: 'access-changed', userId: view.userId });
+    } catch {
+      /* another tab simply finds out on its next visit */
+    }
+  }
+  return status;
 }
 
 /** Subscribe to the trial view; called at once with what is known now. */

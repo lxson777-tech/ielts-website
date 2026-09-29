@@ -1,0 +1,12 @@
+---
+/* A printable receipt for one of the signed-in student's paid orders:
+   /account/receipt?order=<id>. Builder A2, audit remediation F01. Read from
+   the database as the student (access_order), so nobody else's receipt can
+   be opened. Rendered in the browser only. Kept out of search. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Receipt from '../../components/access/Receipt';
+---
+
+<BaseLayout noindex title="Receipt · IELTS is EZ" description="A receipt for your IELTS is EZ purchase.">
+  <Receipt client:only="react" />
+</BaseLayout>

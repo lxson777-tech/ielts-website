@@ -21,6 +21,7 @@ import { withBase } from '../lib/url';
 import { useT } from '../lib/i18n/react';
 import { Field, PasswordInput, PasswordStrength, SOURCE_LABELS, describedBy, passwordProblemSentence } from './auth/fields';
 import { friendlyAuthError } from './auth/shell';
+import AccountAccess from './access/AccountAccess';
 
 type Open = null | 'email' | 'password' | 'devices';
 
@@ -57,6 +58,11 @@ export default function AccountSettings() {
   const usesGoogleOnly = (user.app_metadata?.providers as string[] | undefined)?.every((p) => p !== 'email') ?? false;
 
   return (
+    <>
+    {/* "Your access" (Builder A2, audit F01): paid access, its end date,
+        purchase history and receipts. Gated build only; renders nothing on
+        the open site. */}
+    <AccountAccess />
     <section className="acct-settings" aria-labelledby="acct-settings-title">
       <div className="acct-settings-head">
         <div>
@@ -160,6 +166,7 @@ export default function AccountSettings() {
         </div>
       </div>
     </section>
+    </>
   );
 }
 
