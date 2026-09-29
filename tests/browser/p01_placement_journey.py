@@ -210,29 +210,54 @@ def sign_up(page) -> None:
     page.wait_for_timeout(2000)
 
 
-def walk_intake(page) -> bool:
-    goto(page, "/dashboard")
-    if not wait_text(page, "What overall band", 15000):
-        return False
-    click(page.get_by_text("Band 7.0", exact=True))
-    click(page.get_by_role("button", name="Next"))
-    wait_text(page, "When is your exam?")
+def intake_heading(page) -> str:
     try:
-        page.locator("#intake-exam-date").first.fill((date.today() + timedelta(days=70)).isoformat(), timeout=8000)
+        return page.locator("#intake-step-heading").inner_text(timeout=4000).strip()
     except Exception:
-        pass
-    click(page.get_by_role("button", name="Next"))
-    wait_text(page, "Which days can you study?")
-    click(page.get_by_text("Every day", exact=True))
-    click(page.get_by_role("button", name="Next"))
-    wait_text(page, "How long can you study each day?")
-    click(page.get_by_role("button", name="Yes, I can commit to this"))
-    page.wait_for_timeout(400)
-    click(page.get_by_role("button", name="Next"))
-    wait_text(page, "Which language should explanations be in?")
-    click(page.get_by_text("English", exact=True))
-    click(page.get_by_role("button", name="Next"))
-    wait_text(page, "Save my plan")
+        return ""
+
+
+def walk_intake(page) -> bool:
+    """The goal questions as redone on 24 September (one per screen, see
+    tests/browser/i01_intake_redo.py for the detailed proof). Answers each
+    screen by its heading until the summary, then saves."""
+    goto(page, "/dashboard")
+    try:
+        page.wait_for_selector(".intake-stage", timeout=20000)
+    except Exception:
+        return False
+    capsule = lambda text: page.locator(".intake-capsule", has_text=text).first
+    for _ in range(12):
+        if page.get_by_role("button", name="Save my plan").count():
+            break
+        h = intake_heading(page)
+        if h.startswith("What overall band"):
+            click(capsule("Band 7.0"))
+        elif h.startswith("When is your exam"):
+            # The calendar: page forward to a date ten weeks out and pick it.
+            iso = (date.today() + timedelta(days=70)).isoformat()
+            click(page.locator("#intake-exam-date"))
+            try:
+                page.wait_for_selector(".dp-popover", timeout=5000)
+                for _ in range(6):
+                    if page.locator(f".dp-day[data-iso='{iso}']").count():
+                        break
+                    click(page.get_by_role("button", name="Next month"))
+                    page.wait_for_timeout(250)
+                click(page.locator(f".dp-day[data-iso='{iso}']"))
+            except Exception:
+                click(page.get_by_text("I do not have a date yet"), 4000)
+        elif h.startswith("Which days"):
+            click(capsule("Every day"))
+        elif h.startswith("How long"):
+            click(page.get_by_role("button", name="Yes, I can commit to this"), 4000)
+        elif h.startswith("Which language"):
+            click(capsule("English"))
+        page.wait_for_timeout(500)
+        nxt = page.get_by_role("button", name="Next")
+        if nxt.count() and nxt.is_enabled() and intake_heading(page) == h:
+            click(nxt)
+        page.wait_for_timeout(700)
     ok = click(page.get_by_role("button", name="Save my plan"))
     page.wait_for_timeout(1500)
     click(page.get_by_role("button", name="Continue"), 6000)
