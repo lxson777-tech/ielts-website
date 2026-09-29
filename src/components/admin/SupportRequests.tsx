@@ -18,6 +18,8 @@ import {
 } from '../../lib/support';
 import './support-requests.css';
 
+const FIRST = 5;
+
 const TOPIC: Record<string, string> = {
   problem: 'Something is not working',
   question: 'A question about studying',
@@ -49,6 +51,8 @@ export default function SupportRequests() {
   const [loading, setLoading] = useState(false);
   const [openOnly, setOpenOnly] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
+  /* The five newest first, so the Students list below stays within reach. */
+  const [showAll, setShowAll] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -65,6 +69,7 @@ export default function SupportRequests() {
 
   const open = useMemo(() => (rows ?? []).filter((r) => !r.answered_at).length, [rows]);
   const shown = useMemo(() => (rows ?? []).filter((r) => !openOnly || !r.answered_at), [rows, openOnly]);
+  const visible = showAll ? shown : shown.slice(0, FIRST);
 
   async function mark(row: SupportRequestRow, answered: boolean) {
     setBusyId(row.id);
@@ -116,7 +121,7 @@ export default function SupportRequests() {
 
       {shown.length > 0 && (
         <ol className="admin-support-list">
-          {shown.map((r) => {
+          {visible.map((r) => {
             const reply = replyAddress(r);
             const subject = encodeURIComponent('Re: your message to IELTS is EZ');
             return (
@@ -153,6 +158,11 @@ export default function SupportRequests() {
             );
           })}
         </ol>
+      )}
+      {shown.length > FIRST && (
+        <button type="button" className="admin-toggle admin-support-more" aria-expanded={showAll} onClick={() => setShowAll((v) => !v)}>
+          {showAll ? 'Show only the newest five' : `Show all ${shown.length}`}
+        </button>
       )}
     </section>
   );

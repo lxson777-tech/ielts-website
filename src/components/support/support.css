@@ -11,7 +11,15 @@
   line-height: 1.5;
   opacity: 0.92;
 }
-.support-link a {
+/* p.support-link beats the host surface's own link-as-button rules (Mr EZ's
+   error box, a trial card), so the line stays a quiet text link everywhere. */
+p.support-link a {
+  display: inline;
+  min-height: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
   color: inherit;
   font-weight: 650;
   text-decoration: underline;
@@ -20,10 +28,10 @@
   border-radius: 4px;
   transition: opacity 180ms ease;
 }
-.support-link a:hover {
+p.support-link a:hover {
   opacity: 0.75;
 }
-.support-link a:focus-visible {
+p.support-link a:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
 }
