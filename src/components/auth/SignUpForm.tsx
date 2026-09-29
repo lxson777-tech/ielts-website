@@ -6,7 +6,10 @@
    After creating the account the student goes to /profile to give their
    details, then on to `next`. When the project asks for email confirmation,
    a "Check your email" screen explains it, and the confirmation link lands
-   on that same /profile?next=... address. */
+   on that same /profile?next=... address.
+
+   A line under the button says what the next step asks for and links to
+   /privacy (audit F04, 29 September 2026). */
 
 import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
@@ -17,6 +20,7 @@ import { checkPassword } from '../../lib/auth/password';
 import { profileHref, signInHref } from '../../lib/auth/profile';
 import { absoluteHref, hrefFor, readNext } from '../../lib/auth/next';
 import { useT } from '../../lib/i18n/react';
+import { withBase } from '../../lib/url';
 import Turnstile, { captchaEnabled } from './Turnstile';
 import { Field, PasswordInput, PasswordStrength, describedBy, passwordProblemSentence } from './fields';
 import { leaveFor, whenSignedInSettled } from './after-auth';
@@ -174,6 +178,14 @@ export default function SignUpForm() {
         <button type="submit" className="auth-button" disabled={busy || needsCaptcha}>
           {busy ? t('Creating your account…') : t('Create account')}
         </button>
+        {/* What comes next and why (audit F04): the profile step asks for
+            personal details, so say so before the account exists. */}
+        <p className="auth-hint" id="signup-why">
+          {t('Next, we ask for a few details about you, such as your name, date of birth and phone number. Only you and the person who runs the site can see them.')}{' '}
+          <a className="auth-link is-small" href={withBase('/privacy')}>
+            {t('How we handle your information')}
+          </a>
+        </p>
       </form>
 
       {google && (

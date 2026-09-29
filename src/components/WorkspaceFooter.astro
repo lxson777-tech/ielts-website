@@ -1,11 +1,37 @@
 ---
-/* One quiet line at the foot of an app route. The full marketing footer
-   stays on the public pages only. Help points back at the public site,
-   which is where the centre explains the course and how to reach it. */
+/* One quiet line at the foot of every app route: Help, a way to reach a
+   person, and the two policy pages (audit F04, Builder E, 29 September
+   2026). The full marketing footer stays on the public pages only. The
+   operator's name joins the wordmark only once Alex publishes it in
+   src/lib/operator.ts; until then the line names nobody. */
 import { withBase } from '../lib/url';
+import { publishedOperator } from '../lib/operator';
+
+const operator = publishedOperator();
 ---
 
-<footer class="ws-footer">
-  <span>IELTS is EZ</span>
-  <a href={withBase('/help')} data-i18n>Help</a>
+<footer class="ws-footer ws-footer-trust">
+  <span>IELTS is EZ{operator ? ` · ${operator.name}` : ''}</span>
+  <nav aria-label="Site information" data-i18n-attr="aria-label">
+    <a href={withBase('/help')} data-i18n>Help</a>
+    <a href={withBase('/support?reason=footer')} data-i18n>Report a problem</a>
+    <a href={withBase('/privacy')} data-i18n>Privacy</a>
+    <a href={withBase('/terms')} data-i18n>Terms</a>
+  </nav>
 </footer>
+
+<style>
+  /* Five short items: they wrap onto a second line on a phone rather than
+     running off the edge. */
+  .ws-footer-trust {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    text-align: center;
+  }
+  .ws-footer-trust nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 18px;
+  }
+</style>

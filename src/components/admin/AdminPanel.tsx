@@ -1,4 +1,5 @@
 import SmoothReveal from '../SmoothReveal';
+import SupportRequests from './SupportRequests'; // [E trust] support requests section
 /* The owner's admin panel: every account on the platform and what each
    student has done. The first (and for now only) section is Students; later
    admin tools are meant to sit beside it on the same page.
@@ -274,6 +275,9 @@ export default function AdminPanel() {
           </div>
         </dl>
       )}
+
+      {/* [E trust] "Ask a person" messages, newest first (audit F04). */}
+      <SupportRequests />
 
       {users && (
         <section className="admin-section" aria-labelledby="admin-students-title">

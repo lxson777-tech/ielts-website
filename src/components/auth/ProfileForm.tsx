@@ -12,6 +12,10 @@
    - Edit, with no `next`: "My details" in the menu, "Edit details" on
      /account. Saving says "Saved" and stays.
 
+   Why each detail is asked for, and who sees it, is explained in one line
+   above the form with a link to /privacy (audit F04, 29 September 2026).
+   Every field stays exactly as required as before.
+
    The parent block appears only while the typed date of birth makes the
    student under 18 (isMinor). The database applies every rule again
    (supabase/migrations/2026-09-24-profiles.sql), so a bypassed form still
@@ -334,12 +338,20 @@ export default function ProfileForm() {
 
   const title = firstTime ? t('Tell us about yourself') : t('Your details');
   const lede = firstTime
-    ? t('So the course can call you by name and your teachers know who you are. It takes a minute, and you only do it once.')
-    : t('Keep these up to date. Only you and the teaching centre can see them.');
+    ? t('We ask once, so the course can call you by name and we can reach you about your studies or your account. It takes a minute.')
+    : t('Keep these up to date.');
 
   return (
     <AuthShell eyebrow={setup && firstTime ? t('One last step') : undefined} title={title} lede={lede} wide>
-      <form className="auth-form" onSubmit={onSubmit} noValidate>
+      {/* Why these details, and who sees them (audit F04). Worded without
+          the operator's name, which Alex has not published yet. */}
+      <p className="auth-hint profile-why" id="profile-why">
+        {t('Only you and the person who runs the site can see these details.')}{' '}
+        <a className="auth-link is-small" href={withBase('/privacy#privacy-asked')}>
+          {t('Why we ask for each one')}
+        </a>
+      </p>
+      <form className="auth-form" onSubmit={onSubmit} noValidate aria-describedby="profile-why">
         <div className="auth-row">
           {textInput('firstName', 'given-name', t('First name'))}
           {textInput('lastName', 'family-name', t('Last name'))}
@@ -362,7 +374,7 @@ export default function ProfileForm() {
           )}
         </div>
 
-        {phoneInput('phone', t('Phone'), t('With the country code, so the centre can reach you.'))}
+        {phoneInput('phone', t('Phone'), t('With the country code, so we can reach you about your studies or your account.'))}
 
         <div className="auth-row">
           {textInput('city', 'address-level2', t('City'))}

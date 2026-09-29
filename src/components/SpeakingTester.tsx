@@ -39,6 +39,7 @@ import SpeakingObjectiveHandoff from './learning/SpeakingObjectiveHandoff';
 import { readPersonalPlan } from '../lib/learning';
 import { withBase } from '../lib/url';
 import { isTrialBuild } from '../lib/trial/mode';
+import SupportLink from './support/SupportLink'; // [E trust]
 import {
   CUE_CARD_FAMILY_EXAMPLE,
   bandLadderHref,
@@ -577,6 +578,7 @@ export default function SpeakingTester() {
     return (
       <div className="screen-in mx-auto max-w-md space-y-4 rounded-card border border-border bg-surface p-6 text-center shadow-card">
         <p className="rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{micError}</p>
+        <SupportLink reason="grader" />{/* [E trust] */}
         <div className="flex flex-wrap justify-center gap-3">
           <button
             type="button"

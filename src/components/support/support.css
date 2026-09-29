@@ -1,0 +1,165 @@
+/* Trust and support surfaces (Builder E, 29 September 2026): the quiet
+   "Ask a person" line, the purchase terms beside the plans, and the support
+   form's few extras on top of src/styles/auth.css. Colours come from the
+   surrounding surface wherever possible, so the line sits naturally inside
+   Mr EZ's panel, a trial card or a grader's error box alike. */
+
+.support-link {
+  margin: 12px 0 0;
+  color: inherit;
+  font-size: 0.86em;
+  line-height: 1.5;
+  opacity: 0.92;
+}
+/* p.support-link beats the host surface's own link-as-button rules (Mr EZ's
+   error box, a trial card), so the line stays a quiet text link everywhere. */
+p.support-link a {
+  display: inline;
+  min-height: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  color: inherit;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  border-radius: 4px;
+  transition: opacity 180ms ease;
+}
+p.support-link a:hover {
+  opacity: 0.75;
+}
+p.support-link a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* ── Purchase terms, beside the plans ───────────────────────────────── */
+.purchase-terms {
+  margin: 20px 0 0;
+  border-top: 1px solid var(--color-border, #dddfd6);
+  padding-top: 16px;
+  color: var(--color-ink-muted, #616c64);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+.purchase-terms ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.purchase-terms li {
+  position: relative;
+  padding-left: 16px;
+}
+.purchase-terms li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.55;
+}
+.purchase-terms-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 10px 0 0;
+}
+.purchase-terms-links a {
+  color: var(--color-ink, #263c35);
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── The support form, on top of auth.css ───────────────────────────── */
+.support-textarea {
+  min-height: 150px;
+  resize: vertical;
+  line-height: 1.55;
+}
+.support-count {
+  margin: 6px 0 0;
+  color: var(--color-ink-muted, #616c64);
+  font-size: 0.76rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.support-count.is-over {
+  color: var(--color-error, #b3261e);
+  font-weight: 650;
+}
+.support-context {
+  margin: 22px 0 0;
+  border-radius: 14px;
+  background: var(--color-surface-alt, #f5f5f0);
+  padding: 12px 16px;
+  color: var(--color-ink-muted, #616c64);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+.support-reply-to {
+  margin: 0;
+  color: var(--color-ink-muted, #616c64);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+.support-reply-to strong {
+  color: var(--color-ink, #263c35);
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.support-trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.support-sent {
+  display: grid;
+  gap: 14px;
+  margin-top: 26px;
+}
+.support-sent-mark {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--color-next-action, #e0ebbc);
+  color: var(--color-ink, #263c35);
+  animation: support-pop 360ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes support-pop {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .support-sent-mark {
+    animation: none;
+  }
+}
+.support-direct {
+  margin: 22px 0 0;
+  color: var(--color-ink-muted, #616c64);
+  font-size: 0.86rem;
+}
+.support-direct a {
+  color: var(--color-ink, #263c35);
+  font-weight: 650;
+}

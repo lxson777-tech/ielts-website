@@ -12,6 +12,7 @@
 
 import { useEffect, useMemo, useState, type KeyboardEvent } from 'react';
 import { useT } from '../../lib/i18n/react';
+import SupportLink from '../support/SupportLink'; // [E trust]
 import { withBase } from '../../lib/url';
 import { refreshTrial } from '../../lib/trial/client';
 import type { TrialLibrarySection } from '../../lib/trial/library';
@@ -384,6 +385,7 @@ export default function TrialHome({ sections }: { sections: TrialLibrarySection[
           {t('See full access')}
         </a>
       </div>
+      {ended && <SupportLink reason="trial-ended" lead="hand" />}{/* [E trust] */}
 
       <h1>{t('A little practice. A clearer next step.')}</h1>
       <p className="trial-lead">{t('Your trial gives you a focused introduction to each part of IELTS.')}</p>

@@ -1,0 +1,20 @@
+/* The Support requests section of /admin (Builder E). Sits on admin.css. */
+.admin-support { margin-top: 36px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border); }
+.admin-support-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 24px; }
+.admin-support-head h2 { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0; font-family: var(--font-display-ui); font-size: 1.4rem; font-weight: 600; letter-spacing: -.02em; color: var(--color-ink); }
+.admin-support-count { border-radius: 999px; background: var(--color-surface-alt); padding: 3px 10px; color: var(--color-ink-muted); font-family: var(--font-body, inherit); font-size: .74rem; font-weight: 650; letter-spacing: 0; }
+.admin-support-count.is-open { background: var(--color-brand-tint); color: var(--color-brand-hover, var(--color-brand)); }
+.admin-support-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.admin-support-list { display: grid; gap: 12px; margin: 22px 0 0; padding: 0; list-style: none; }
+.admin-support-item { border: 1px solid var(--color-border); border-radius: 18px; background: var(--color-surface); padding: 16px 18px; transition: opacity 200ms ease, border-color 200ms ease; }
+.admin-support-item:hover { border-color: color-mix(in srgb, var(--color-ink) 30%, var(--color-border)); }
+.admin-support-item.is-answered { opacity: .72; }
+.admin-support-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; color: var(--color-ink-muted); font-size: .8rem; }
+.admin-support-meta code { border-radius: 6px; background: var(--color-surface-alt); padding: 1px 6px; font-size: .74rem; overflow-wrap: anywhere; }
+.admin-support-message { margin: 12px 0 0; max-width: 75ch; color: var(--color-ink); line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.admin-support-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 14px; }
+.admin-support-done { color: var(--color-ink-muted); font-size: .82rem; font-weight: 600; }
+.admin-support-undo { border: 0; background: none; padding: 4px; color: var(--color-ink-muted); font-size: .82rem; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.admin-support-undo:hover { color: var(--color-ink); }
+.admin-support-undo:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; border-radius: 4px; }
+.admin-support-more { margin-top: 14px; }
