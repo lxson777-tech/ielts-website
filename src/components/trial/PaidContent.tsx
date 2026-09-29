@@ -17,6 +17,8 @@
 
 import { useEffect, useState, type ComponentType, type ReactElement } from 'react';
 import { useTrial } from '../../lib/trial/react';
+import { useT } from '../../lib/i18n/react';
+import { withBase } from '../../lib/url';
 import { commonPacks, fetchPack, loadPacks, paidNow, type ModulePack, type PackFailure } from '../../lib/trial/packs';
 import { refreshTrial } from '../../lib/trial/client';
 import { PaidFailed, PaidLoading } from './PaidStates';
@@ -41,6 +43,20 @@ interface Plan {
   /** A pack whose data is handed to the tool as its props. */
   viewPack?: string;
   mount: (data: unknown) => Promise<ReactElement>;
+  /** What a paid account gets, when it differs from `mount` (shared pages). */
+  paidMount?: (data: unknown) => Promise<ReactElement>;
+}
+
+/** The cue-card bank's card under the examiner, as the open site's page
+    has it. */
+function CueCardBankLink() {
+  const { t } = useT();
+  return (
+    <a href={withBase('/speaking/cue-cards')} className="skill-resource-card">
+      <span className="skill-resource-card-title">{t('Cue-card bank (for study, not a test)')}</span>
+      <span className="skill-resource-card-desc">{t('Read 24 Part 2 cue cards with model answers, to prepare before you speak')}</span>
+    </a>
+  );
 }
 
 /* Each tool is imported only here, and only after its material is in, so a
@@ -78,7 +94,21 @@ function planFor(view: PaidView): Plan {
     case 'examiner':
       return {
         packs: ['speaking-prompts', 'speaking-structure-guides', 'band-guides'],
-        mount: () => el(() => import('../LiveExaminer'), {}),
+        mount: async () => {
+          const { default: LiveExaminer } = await import('../LiveExaminer');
+          return <LiveExaminer />;
+        },
+        /* Paid access only: the full test, and the cue-card bank under it,
+           as the open site shows them. */
+        paidMount: async () => {
+          const { default: LiveExaminer } = await import('../LiveExaminer');
+          return (
+            <>
+              <LiveExaminer />
+              <CueCardBankLink />
+            </>
+          );
+        },
       };
     case 'mock-exam':
       return {
@@ -164,7 +194,7 @@ function usePaidView(view: PaidView, active: boolean, attempt: number): Stage {
         data = own.value;
       }
       try {
-        const element = await plan.mount(data);
+        const element = await (plan.paidMount ?? plan.mount)(data);
         if (live) setStage({ kind: 'ready', element });
       } catch {
         if (live) setStage({ kind: 'failed', reason: 'error' });

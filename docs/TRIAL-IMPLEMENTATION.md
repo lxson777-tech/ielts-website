@@ -223,6 +223,21 @@ the audit and never a failure, and the one named exception
 a free taster (Alex's decision, 24 September). The regular site's build is unchanged (its
 index file byte for byte).
 
+**Paid accounts through the same door (29 September, builder A3,
+`docs/paid-access/CONTRACT.md`).** A paying student gets everything the trial locks,
+still without any of it in the public site. `tools/build-gated-content.mjs` also writes
+`packs/`: one pack per swapped module (its real data, Task 1 charts carried inline), the
+untrimmed learning index, the Russian the trim removes, the vocabulary deck, the
+placement material, and one view per focused exercise. The door hands a pack to a
+running paid grant only. In the browser, `src/lib/trial/packs.ts` asks for packs only
+when the server says paid access is running, fills the stand-ins in place, and reloads
+the tab if the account changes or paid access ends, so nothing paid outlives the account
+in memory. A locked page declares `trialGate={{ kind: 'locked', paidContent: true }}`:
+its markup (headings only, no material) stays, hidden until TrialGate opens it, and
+`PaidContent` mounts the page's tool once its packs are in. Today, the library and the
+course switch to the full product at page level (`AccessHome`). The audit also fails a
+build that carries a pack, the private store or an inline chart.
+
 ## Proof
 
 | What | Result |

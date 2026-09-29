@@ -224,6 +224,7 @@ export async function loadPacks(names: readonly ModulePack[]): Promise<PackOutco
   const view = deps.view();
   if (!paidNow(view)) return { ok: false, reason: 'not-paid' };
   watchAccount();
+  const before = applied.size;
   const outcomes = await Promise.all(
     names.map((name) => {
       if (applied.has(name)) return Promise.resolve<PackOutcome>({ ok: true, value: undefined });
@@ -248,6 +249,10 @@ export async function loadPacks(names: readonly ModulePack[]): Promise<PackOutco
       return run;
     }),
   );
+  /* Other islands on the page (a score history, Mr EZ) rendered before the
+     material arrived. Every island that shows text re-renders on this signal
+     (src/lib/i18n/react.ts), so they now read the real titles and guides. */
+  if (applied.size > before) notifyLocaleListeners();
   return outcomes.find((outcome) => !outcome.ok) ?? { ok: true, value: undefined };
 }
 
