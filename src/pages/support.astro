@@ -1,0 +1,16 @@
+---
+/* /support: "Report a problem / ask a person" (Builder E, 29 September
+   2026). Works signed in and signed out; see
+   src/components/support/SupportForm.tsx and
+   supabase/migrations/2026-09-30-support.sql. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SupportForm from '../components/support/SupportForm';
+---
+
+<BaseLayout title="Ask a person · IELTS is EZ" description="Report a problem or ask a question. A person reads every message and replies by email.">
+  <SupportForm client:load />
+</BaseLayout>
+
+<style is:global>
+  @import '../styles/auth.css';
+</style>

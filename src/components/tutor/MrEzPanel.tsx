@@ -35,6 +35,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { withBase } from '../../lib/url';
 import { signInHref } from '../../lib/auth/profile';
 import { currentRoute } from '../../lib/auth/next';
+import SupportLink from '../support/SupportLink'; // [E trust]
 import { useT, type Translator } from '../../lib/i18n/react';
 import MrEzAvatar from './MrEzAvatar';
 import {
@@ -474,7 +475,10 @@ export default function MrEzPanel() {
             </div>
           )}
           {!configured && (
-            <p className="mrez-note">{unavailableReason} {t('Your next step on the dashboard still works, it just comes with a plain explanation instead of his.')}</p>
+            <div className="mrez-note">
+              <p>{unavailableReason} {t('Your next step on the dashboard still works, it just comes with a plain explanation instead of his.')}</p>
+              <SupportLink reason="mr-ez" />{/* [E trust] */}
+            </div>
           )}
 
           {/* The trial's allowance, above the conversation, so the student
@@ -564,6 +568,7 @@ export default function MrEzPanel() {
                 <button type="button" onClick={retry} disabled={busy}>{t('Try again')}</button>
               )}
               {error.code === 'sign-in-required' && <a href={withBase('/sign-in')} onClick={(e) => { e.currentTarget.href = signInHref(currentRoute()); }}>{t('Sign in')}</a>}
+              {error.code !== 'sign-in-required' && <SupportLink reason="mr-ez" />}{/* [E trust] */}
             </div>
           )}
         </div>

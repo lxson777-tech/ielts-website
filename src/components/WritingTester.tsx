@@ -53,6 +53,7 @@ import {
   type OpenedEssay,
 } from './writing-editor-owner';
 import { nt } from '../lib/i18n/translate';
+import SupportLink from './support/SupportLink'; // [E trust]
 import { writingActivityId } from '../lib/learning/catalog';
 
 const TASK1_PROMPTS = WRITING_PROMPTS.filter((p) => p.task === 'task1');
@@ -910,6 +911,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           {gradingError && (
             <div className="rounded-card border border-error/30 bg-error-tint px-4 py-3 text-sm text-error">
               ⚠ {gradingError}
+              <SupportLink reason="grader" />{/* [E trust] */}
             </div>
           )}
 

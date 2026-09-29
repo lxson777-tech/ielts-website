@@ -76,6 +76,11 @@ export const APP_ROUTE_PREFIXES = [
   '/plans',
   '/reset-password',
   '/help',
+  // Trust and support (Builder E, audit F04): the support form and the two
+  // policy pages sit in the workspace, so the footer links reach them there.
+  '/support',
+  '/privacy',
+  '/terms',
 ];
 
 /** Routes whose content genuinely needs the wider 1100px column: a two-pane

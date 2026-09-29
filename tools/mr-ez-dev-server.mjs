@@ -89,6 +89,7 @@ import { randomUUID } from 'node:crypto';
 import { readFileSync, existsSync, statSync, openSync, readSync, closeSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createSupportStandIn } from './stand-in/support.mjs'; // [E trust] support requests, see that file
 
 const PORT = Number(process.env.MR_EZ_DEV_PORT ?? 8787);
 const LIVE = process.argv.includes('--live');
@@ -1788,12 +1789,15 @@ async function initTrial() {
     );
 }
 
+const support = createSupportStandIn({ db, userByToken, send, readBody }); // [E trust]
+
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
 
   if (req.method === 'OPTIONS') return send(res, 204, null);
 
   try {
+    if (await support.handle(req, res, url)) return; // [E trust] before /rest/v1, which would refuse these rpc names
     if (url.pathname.startsWith('/auth/v1')) return await handleAuth(req, res, url);
     if (url.pathname.startsWith('/rest/v1/')) return await handleRest(req, res, url);
     if (url.pathname.startsWith('/tutor')) return await handleTutor(req, res, url);

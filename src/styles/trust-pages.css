@@ -1,0 +1,232 @@
+/* /privacy, /terms and Help's "Talk to a person" (Builder E, 29 September
+   2026). A calm reading document in the approved workspace direction: warm
+   surface, forest ink, Bricolage headings, separators rather than boxes,
+   one filled forest capsule for the one action. */
+
+.policy {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 56px 24px 72px;
+  color: var(--color-ink);
+}
+.policy-head {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 30px;
+}
+.policy-eyebrow {
+  margin: 0;
+  color: var(--color-brand);
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.policy-head h1 {
+  margin: 0.6rem 0 0;
+  font-family: var(--font-display-ui);
+  font-size: clamp(2rem, 4.2vw, 2.65rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+.policy-lede {
+  max-width: 60ch;
+  margin: 0.9rem 0 0;
+  color: var(--color-ink-muted);
+  font-size: 1.02rem;
+  line-height: 1.65;
+}
+.policy-updated {
+  margin: 1rem 0 0;
+  color: var(--color-ink-muted);
+  font-size: 0.8rem;
+}
+.policy-note {
+  margin: 28px 0 0;
+  border-radius: 16px;
+  background: var(--color-surface-alt);
+  padding: 14px 18px;
+  color: var(--color-ink);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+.policy-section {
+  border-bottom: 1px solid var(--color-border);
+  padding: 30px 0;
+}
+.policy-section:last-child {
+  border-bottom: 0;
+}
+.policy-section h2 {
+  margin: 0 0 14px;
+  font-family: var(--font-display-ui);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.policy-section h3 {
+  margin: 22px 0 10px;
+  font-size: 0.98rem;
+  font-weight: 650;
+}
+.policy-section p {
+  max-width: 68ch;
+  margin: 0 0 12px;
+  line-height: 1.75;
+}
+.policy-list {
+  display: grid;
+  gap: 10px;
+  max-width: 68ch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.policy-list li {
+  position: relative;
+  padding-left: 20px;
+  line-height: 1.7;
+}
+.policy-list li::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 0.72em;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-ink);
+  opacity: 0.35;
+}
+.policy-list li strong {
+  font-weight: 650;
+}
+.policy-services {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--color-border);
+}
+.policy-services > div {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 18px;
+  border-bottom: 1px solid var(--color-border);
+  padding: 14px 0;
+}
+.policy-services dt {
+  font-weight: 650;
+}
+.policy-services dd {
+  margin: 0;
+  color: var(--color-ink);
+  line-height: 1.65;
+}
+.policy-support {
+  margin-top: 6px;
+  font-size: 1rem;
+}
+.policy-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin-top: 22px !important;
+  font-size: 0.9rem;
+}
+.policy-foot a {
+  color: var(--color-ink-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 180ms ease;
+}
+.policy-foot a:hover {
+  color: var(--color-ink);
+}
+.policy-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  border-radius: 999px;
+  background: var(--color-ink);
+  padding: 0 24px;
+  color: var(--color-surface);
+  font-weight: 650;
+  text-decoration: none;
+  transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
+}
+.policy-action:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgb(38 60 53 / 18%);
+}
+.policy-action:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
+}
+
+/* Help: the "Talk to a person" band. */
+.help-person {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px 28px;
+  margin: 0 0 36px;
+  border-radius: 22px;
+  background: var(--color-surface-alt);
+  padding: 22px 26px;
+}
+.help-person h2 {
+  margin: 0;
+  font-family: var(--font-display-ui);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.help-person p {
+  max-width: 48ch;
+  margin: 6px 0 0;
+  color: var(--color-ink-muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+.help-policies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin-top: 14px;
+  font-size: 0.9rem;
+}
+.help-policies a {
+  color: var(--color-ink-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.help-policies a:hover {
+  color: var(--color-ink);
+}
+
+@media (max-width: 719px) {
+  .policy {
+    padding: 34px 16px 48px;
+  }
+  .policy-services > div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .help-person {
+    padding: 20px;
+  }
+  .help-person .policy-action {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .policy-action {
+    transition-duration: 1ms;
+  }
+  .policy-action:hover {
+    transform: none;
+  }
+}

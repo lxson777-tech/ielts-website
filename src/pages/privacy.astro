@@ -1,0 +1,161 @@
+---
+/* /privacy: what the site collects, why, what it keeps and which services
+   handle it (Builder E, 29 September 2026).
+
+   Every statement was checked against the code on that date, not written
+   from general expectations:
+   - profile fields and their rules: src/lib/auth/profile.ts,
+     supabase/migrations/2026-09-24-profiles.sql; seen by the owner in
+     /admin (2026-09-24-admin.sql);
+   - saved study: src/lib/progress.ts (essays kept with their report;
+     Speaking keeps bands only, no recording is stored anywhere by our code);
+   - Mr EZ: conversations in Supabase, cleared by the student in
+     MrEzMemory on /plan-settings; the Worker sends the model the student's
+     message and facts counted from their own record (workers/mr-ez);
+   - grading: essay text and Speaking audio go to OpenAI through the
+     grade-essay and grade-speaking Workers on Cloudflare (their READMEs);
+   - live examiner: audio goes browser to OpenAI directly; the Worker only
+     brokers the session and keeps a timing row (live_examiner_sessions);
+   - trial: trial_accounts (start, end, the goal questions) and trial_usage.
+   If a Worker is ever switched to its Gemini rollback, the "OpenAI" lines
+   below must change first.
+
+   Deliberately NOT stated, because Alex has not decided them: who runs the
+   site (shown on its own once src/lib/operator.ts is published), how long
+   each kind of information is kept, and how to have it removed. One short
+   note says these are being finalised, because silence would read as
+   "kept forever, never removable". */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/url';
+import { nt } from '../lib/i18n/translate';
+import { publishedOperator } from '../lib/operator';
+
+const operator = publishedOperator();
+
+const asked: { what: string; why: string }[] = [
+  {
+    what: nt('Email and password'),
+    why: nt('To create your account, so your work stays yours and follows you to other devices. If you sign in with Google, Google shares your email address and name instead.'),
+  },
+  { what: nt('First and last name'), why: nt('So the course and Mr EZ can call you by name.') },
+  {
+    what: nt('Date of birth'),
+    why: nt('Students under 18 also give a parent or guardian’s details, and your date of birth tells the form when that is needed.'),
+  },
+  { what: nt('Phone number'), why: nt('So we can contact you about your studies or your account if we need to.') },
+  {
+    what: nt('City, school or job, and how you found us'),
+    why: nt('To understand who studies here and how people find the course.'),
+  },
+  {
+    what: nt('A parent or guardian, under 18 only'),
+    why: nt('Their name, their phone number and their agreement to you using the site. The time of that agreement is recorded.'),
+  },
+];
+
+const kept: string[] = [
+  nt('Lessons you finish, your test answers and results, your study plan and how much you study each day.'),
+  nt('Essays you have had graded, with their feedback, so you can reread them later.'),
+  nt('For Speaking, your scores. The recording itself is not saved by this site.'),
+  nt('Your conversations with Mr EZ, so he can carry on where you left off. You can clear them at any time in Study plan settings.'),
+  nt('If you take the free trial: when it started, which trial tests and Mr EZ messages you used, and your answers to the short questions about your goals.'),
+  nt('Messages you send through the support form, with the page you sent them from.'),
+];
+
+const services: { name: string; role: string }[] = [
+  { name: 'Supabase', role: nt('Stores accounts, profiles, saved work, Mr EZ conversations and support messages.') },
+  {
+    name: 'OpenAI',
+    role: nt('Writes the AI feedback and Mr EZ’s replies. Your essay text, your Speaking recording, and your questions to Mr EZ with a summary of your own results are sent to OpenAI for this, under OpenAI’s own terms for its API.'),
+  },
+  {
+    name: 'Cloudflare',
+    role: nt('Runs the small services that check your account and pass your work to OpenAI, so the AI keys never reach your browser.'),
+  },
+];
+---
+
+<BaseLayout title="Privacy · IELTS is EZ" description="How IELTS is EZ uses your information: what it asks for and why, what it keeps, and which services handle it.">
+  <article class="policy">
+    <header class="policy-head">
+      <p class="policy-eyebrow" data-i18n>Privacy</p>
+      <h1 data-i18n>How your information is used</h1>
+      <p class="policy-lede" data-i18n>What the site asks for and why, what it keeps, and which services handle it. Only what the site actually does, in plain words.</p>
+      <p class="policy-updated" data-i18n>Updated 29 September 2026</p>
+    </header>
+
+    {operator && (
+      <section class="policy-section" aria-labelledby="privacy-who">
+        <h2 id="privacy-who" data-i18n>Who is responsible</h2>
+        <dl class="policy-services">
+          <div>
+            <dt data-i18n>Run by</dt>
+            <dd>{operator.name}</dd>
+          </div>
+          {operator.contact && (
+            <div>
+              <dt data-i18n>Contact</dt>
+              <dd>{operator.contactHref ? <a href={operator.contactHref}>{operator.contact}</a> : operator.contact}</dd>
+            </div>
+          )}
+        </dl>
+      </section>
+    )}
+
+    <section class="policy-section" aria-labelledby="privacy-asked">
+      <h2 id="privacy-asked" data-i18n>What we ask for, and why</h2>
+      <ul class="policy-list">
+        {asked.map((item) => (
+          <li>
+            <strong data-i18n>{item.what}</strong>
+            <br />
+            <span data-i18n>{item.why}</span>
+          </li>
+        ))}
+      </ul>
+      <p style="margin-top: 16px" data-i18n>Your details are seen only by you and by the person who runs the site, on a private admin page. Other students never see them.</p>
+    </section>
+
+    <section class="policy-section" aria-labelledby="privacy-kept">
+      <h2 id="privacy-kept" data-i18n>What the site keeps from your studies</h2>
+      <ul class="policy-list">
+        {kept.map((line) => <li data-i18n>{line}</li>)}
+      </ul>
+      <p style="margin-top: 16px" data-i18n>Your progress is also kept in this browser, on this device. Signing in keeps it on your account too.</p>
+    </section>
+
+    <section class="policy-section" aria-labelledby="privacy-services">
+      <h2 id="privacy-services" data-i18n>Which services handle it</h2>
+      <dl class="policy-services">
+        {services.map((s) => (
+          <div>
+            <dt>{s.name}</dt>
+            <dd data-i18n>{s.role}</dd>
+          </div>
+        ))}
+      </dl>
+      <p style="margin-top: 16px" data-i18n>In a live Speaking interview, your voice goes straight from your browser to OpenAI. It does not pass through this site, which keeps only a short record of when the interview started and ended, to apply the daily limits.</p>
+    </section>
+
+    <section class="policy-section" aria-labelledby="privacy-young">
+      <h2 id="privacy-young" data-i18n>Younger students</h2>
+      <p data-i18n>If you are under 18, the profile asks for a parent or guardian’s name and phone number, and for their agreement, before you can continue.</p>
+      <p data-i18n>Please read this page together with them.</p>
+    </section>
+
+    <section class="policy-section" aria-labelledby="privacy-questions">
+      <h2 id="privacy-questions" data-i18n>Questions about your information</h2>
+      <p data-i18n>Ask through the support form. A person reads every message and replies by email.</p>
+      <p><a class="policy-action" href={withBase('/support?reason=privacy')} data-i18n>Ask a person</a></p>
+      <p class="policy-note" role="note" data-i18n>How long each kind of information is kept, and how to have it removed, is still being decided. This page will say so once it is.</p>
+      <p class="policy-foot">
+        <a href={withBase('/terms')} data-i18n>Terms of use</a>
+        <a href={withBase('/help')} data-i18n>How the platform works</a>
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style is:global>
+  @import '../styles/trust-pages.css';
+</style>

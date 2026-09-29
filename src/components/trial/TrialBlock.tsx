@@ -11,6 +11,7 @@ import { withBase } from '../../lib/url';
 import { refreshTrial, type TrialView } from '../../lib/trial/client';
 import { signInHref } from '../../lib/auth/profile';
 import { currentRoute } from '../../lib/auth/next';
+import SupportLink from '../support/SupportLink'; // [E trust]
 
 export type TrialBlockReason =
   | 'checking'
@@ -177,6 +178,8 @@ export default function TrialBlock({
         <h2 id="trial-block-title">{heading}</h2>
         <p>{body}</p>
         {actions && <div className="trial-actions">{actions}</div>}
+        {/* [E trust] a person is reachable from every locked or ended screen. */}
+        <SupportLink reason={reason === 'ended' || reason === 'test-ended' ? 'trial-ended' : 'locked'} lead="hand" />
       </div>
     </section>
   );
