@@ -1,0 +1,27 @@
+// Cloudflare Worker config for payments: the only thing that turns money
+// into access. Read workers/payments/README.md first. NOT deployed.
+//
+// No real payment provider exists yet (Alex has not chosen one, 29 September
+// 2026). With the settings below the Worker answers "Payment is not
+// connected yet" to every purchase, which is today's honest behaviour. The
+// simulated provider is for the local stand-in only and is refused unless
+// PAYMENTS_PROVIDER=simulated AND PAYMENTS_ALLOW_SIMULATED=local; never set
+// those here.
+//
+// Secrets, once a real provider is chosen (not before):
+//   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+//   npx wrangler secret put PAYMENTS_WEBHOOK_SECRET
+{
+  "name": "ielts-payments",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-01",
+  "vars": {
+    "ALLOWED_ORIGINS": "https://lxson777-tech.github.io",
+    "SUPABASE_URL": "https://nbeyxwjvytrqtzzeilev.supabase.co",
+    // The project's public anon key (the same value the site ships as
+    // PUBLIC_SUPABASE_ANON_KEY). Filled in when this Worker is deployed.
+    "SUPABASE_ANON_KEY": "",
+    "PAYMENTS_RETURN_URL": "https://lxson777-tech.github.io/ielts-website/plans/return"
+    // "PAYMENTS_PROVIDER": set only when a real provider's adapter exists.
+  }
+}

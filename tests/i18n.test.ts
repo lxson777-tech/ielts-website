@@ -64,6 +64,7 @@ import * as learningObjectives from '../src/lib/i18n/dict/ru/learning-objectives
 import * as trialBatch from '../src/lib/i18n/dict/ru/trial.ts';
 import * as profile from '../src/lib/i18n/dict/ru/profile.ts';
 import * as placementBatch from '../src/lib/i18n/dict/ru/placement.ts';
+import * as a1RemediationBatch from '../src/lib/i18n/dict/ru/a1-remediation.ts';
 
 import * as partStrategies from '../src/lib/i18n/dict/ru/parts/strategies.ts';
 import * as partStructures from '../src/lib/i18n/dict/ru/parts/structures.ts';
@@ -95,6 +96,7 @@ const BATCH_FILES: { file: string; mod: { strings: Record<string, string>; plura
   { file: 'dict/ru/trial.ts', mod: trialBatch },
   { file: 'dict/ru/profile.ts', mod: profile },
   { file: 'dict/ru/placement.ts', mod: placementBatch },
+  { file: 'dict/ru/a1-remediation.ts', mod: a1RemediationBatch },
 ];
 
 /* The extra dictionary parts (src/lib/i18n/dict/parts.ts): the big coaching

@@ -39,10 +39,10 @@ import { SPEAKING_ANCHORS } from './anchors';
 import { TRIAL_OFFER, parseAccessMode } from '../../../src/lib/trial/offer';
 import { bandStepsFor, readBandStepLocale } from '../../../src/lib/trial/band-steps';
 import {
-  TRIAL_REFUSAL_TEXT,
   TrialRefusal,
   bearer,
   leaseTrialTest,
+  paidAccessRunning,
   readSittingId,
   refusal,
   releaseUse,
@@ -1819,9 +1819,6 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
     if (request.method !== 'POST') return json({ error: 'POST only' }, 405, cors);
 
     const trialMode = parseAccessMode(env.ACCESS_MODE) === 'trial';
-    if (trialMode && !TRIAL_OFFER.speaking.testEnabled) {
-      return json({ error: TRIAL_REFUSAL_TEXT['trial-not-included'], code: 'trial-not-included' }, 403, cors);
-    }
 
     const provider = resolveProvider(env);
     if (!provider) return json({ error: 'GRADER_PROVIDER must be openai or gemini' }, 500, cors);
@@ -1887,6 +1884,10 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
        nobody else grading it right now. The recorded Part 1 / Part 2-3
        practice is not the trial's test. */
     let trial: { rpc: TrialRpc; userId: string; sitting: string } | null = null;
+    /* A paid account in a trial build: graded exactly as the open grader
+       grades (any of the three kinds, no trial test used), plus the band
+       guide steps a trial build's browser does not carry. */
+    let paid = false;
     if (trialMode) {
       if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
         return json({ error: 'The speaking grader is not configured' }, 503, cors);
@@ -1895,12 +1896,20 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
         const token = bearer(request);
         const userId = token ? await verifyAccessToken(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, token) : null;
         if (!userId) return json({ error: 'Sign in to have your speaking graded.', code: 'sign-in-required' }, 401, cors);
-        if (body.kind !== 'interview') throw refusal('trial-not-included');
-        const sitting = readSittingId(body.trialSitting);
-        if (!sitting) throw refusal('trial-no-test');
         const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
-        await leaseTrialTest(rpc, userId, 'speaking', sitting);
-        trial = { rpc, userId, sitting };
+        /* Paid access first (docs/paid-access/CONTRACT.md). Alex, 29
+           September 2026: paid use is "unlimited, fair daily caps" with the
+           Workers' EXISTING per-student limits. This grader has none today,
+           so a paid recording is graded as the open grader grades it. */
+        paid = await paidAccessRunning(rpc, userId);
+        if (!paid) {
+          if (!TRIAL_OFFER.speaking.testEnabled) throw refusal('trial-not-included');
+          if (body.kind !== 'interview') throw refusal('trial-not-included');
+          const sitting = readSittingId(body.trialSitting);
+          if (!sitting) throw refusal('trial-no-test');
+          await leaseTrialTest(rpc, userId, 'speaking', sitting);
+          trial = { rpc, userId, sitting };
+        }
       } catch (err) {
         if (err instanceof TrialRefusal) {
           return json({ error: err.message, code: err.code }, err.code === 'trial-in-flight' ? 409 : 403, cors);
@@ -1962,6 +1971,12 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
       const bands = Object.fromEntries(Object.entries(criteria).map(([key, value]) => [key, value?.band]));
       const guides = bandStepsFor('speaking', bands, readBandStepLocale(body.locale));
       return json({ ...graded, guides, trial: { section: 'speaking', test: 'used' } }, 200, cors);
+    }
+    if (paid) {
+      const graded = medianRun(good) as Record<string, unknown>;
+      const criteria = (graded.criteria ?? {}) as Record<string, { band?: unknown }>;
+      const bands = Object.fromEntries(Object.entries(criteria).map(([key, value]) => [key, value?.band]));
+      return json({ ...graded, guides: bandStepsFor('speaking', bands, readBandStepLocale(body.locale)) }, 200, cors);
     }
     return json(medianRun(good), 200, cors);
   }

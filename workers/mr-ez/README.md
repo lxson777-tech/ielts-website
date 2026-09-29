@@ -499,6 +499,17 @@ The **auth check is the one deliberate asymmetry**: every failure in
 `verifyUser` is treated as "not signed in" (401) rather than 503, because an
 auth check that failed open would be far worse than a false "please sign in".
 
+**Trial builds and paid access** (`ACCESS_MODE=trial`). Before any trial
+allowance is looked at, the Worker asks the database whether the student's paid
+access is running (`access_paid_now` in
+`supabase/migrations/2026-09-30-paid-access.sql`). If it is, the request is
+answered exactly as on the open site: every task, no trial scope, no trial
+reservation, and the daily per-student caps in the table above still apply.
+Alex decided this on 29 September 2026: paid use is "unlimited, fair daily
+caps", and these existing caps are the fair caps. When paid access ends (or is
+refunded), the trial's own rules apply again. A database that cannot answer
+the question is `503 unavailable`, never a free answer.
+
 ---
 
 ## Not paying twice
