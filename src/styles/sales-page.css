@@ -110,3 +110,17 @@
 .chapter-nav .menu-sign-in{display:none}
 @media(max-width:1050px){.chapter-nav .menu-sign-in{display:block}}
 @media(max-width:760px){.chapter-nav .menu-sign-in{border-top:1px solid #dde4d8;margin-top:6px}}
+
+/* The EN / RU switch (src/components/home/NextChapter.astro). A quiet pill in
+   the header's own ink, the chosen language filled. It shares the stored
+   choice with the workspace's switch. On a phone the header has room for one
+   short word only, so just the other language is shown and it works as a
+   toggle. */
+.lang-switch{display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid color-mix(in srgb,currentColor 22%,transparent);border-radius:50px}
+.lang-switch button{min-width:34px;min-height:30px;padding:0 9px;border-radius:50px;background:transparent;font-size:11px;font-weight:600;letter-spacing:.06em;line-height:1;transition:background .25s var(--motion),color .25s var(--motion),opacity .2s}
+.lang-switch button:hover{opacity:.7}
+.lang-switch button[aria-pressed=true]{background:var(--forest);color:#fffefa;cursor:default}
+.lang-switch button[aria-pressed=true]:hover{opacity:1}
+.lang-switch button:focus-visible{outline:2px solid #b95735;outline-offset:2px}
+@media(max-width:760px){.lang-switch{padding:0;border:0}.lang-switch button[aria-pressed=true]{display:none}.lang-switch button{min-width:38px;min-height:38px;padding:0 6px;border:1px solid color-mix(in srgb,currentColor 22%,transparent)}}
+@media(prefers-reduced-motion:reduce){.lang-switch button{transition:none}}

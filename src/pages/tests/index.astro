@@ -4,6 +4,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import Badge from '../../components/Badge.astro';
 import PracticeOrTest from '../../components/PracticeOrTest.astro';
+import Count from '../../components/Count.astro';
+import { ntn } from '../../lib/i18n/translate';
 import ScoreHistory from '../../components/ScoreHistory';
 import TypeAnalytics from '../../components/TypeAnalytics';
 import TestsHubCheckpoints from '../../components/learning/TestsHubCheckpoints';
@@ -56,18 +58,11 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
         <div class="relative flex flex-1 flex-col p-6">
           <Badge tone="skill">Reading</Badge>
           <h2 class="mt-3 font-display text-xl font-extrabold" data-i18n>Full Reading Test</h2>
-          {/* Opens with a build-time count baked into the sentence: no clean
-              way to mark this for translation without a counted-phrase
-              mechanism reaching static Astro pages, so it stays English
-              (see batch report). */}
-          <p class="mt-1.5 text-sm text-ink-muted">
-            {readingTests.length} complete exams in rotation, a different one every attempt until you've
-            taken them all.
-          </p>
+          <Count as="p" class="mt-1.5 text-sm text-ink-muted" phrase={ntn(readingTests.length, { one: "{n} complete exam in rotation, a different one every attempt until you've taken them all.", other: "{n} complete exams in rotation, a different one every attempt until you've taken them all." })} />
           <div class="mt-4 flex flex-wrap gap-2">
-            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{readingSample.parts.length} passages</span>
-            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{questionCount(readingSample)} questions</span>
-            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{readingSample.durationMinutes} min</span>
+            <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(readingSample.parts.length, { one: '{n} passage', other: '{n} passages' })} />
+            <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(questionCount(readingSample), { one: '{n} question', other: '{n} questions' })} />
+            <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(readingSample.durationMinutes, { one: '{n} min', other: '{n} min' })} />
           </div>
           <div class="mt-auto flex flex-col gap-2 pt-6">
             <button
@@ -106,9 +101,9 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
               Hear the complete recording once, answer all four parts, then get your score and estimated band instantly.
             </p>
             <div class="mt-4 flex flex-wrap gap-2">
-              <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{listeningSample.parts.length} parts</span>
-              <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{questionCount(listeningSample)} questions</span>
-              <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{listeningTests.length} tests</span>
+              <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(listeningSample.parts.length, { one: '{n} part', other: '{n} parts' })} />
+              <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(questionCount(listeningSample), { one: '{n} question', other: '{n} questions' })} />
+              <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(listeningTests.length, { one: '{n} test', other: '{n} tests' })} />
             </div>
             <div class="mt-auto flex flex-col gap-2 pt-6">
               <button
@@ -148,8 +143,8 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
           <h2 class="mt-3 font-display text-xl font-extrabold" data-i18n>Writing Checker</h2>
           <p class="mt-1.5 text-sm text-ink-muted" data-i18n>Write a Task 1 or Task 2 answer under exam conditions, then get AI-graded feedback plus a mechanics check on length, vocabulary, cohesion and spelling.</p>
           <div class="mt-4 flex flex-wrap gap-2">
-            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{task1Count} Task 1 prompts</span>
-            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{task2Count} Task 2 prompts</span>
+            <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(task1Count, { one: '{n} Task 1 prompt', other: '{n} Task 1 prompts' })} />
+            <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(task2Count, { one: '{n} Task 2 prompt', other: '{n} Task 2 prompts' })} />
             <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-i18n>AI feedback</span>
           </div>
           <div class="mt-auto flex flex-col gap-2 pt-6">
@@ -187,7 +182,7 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
           <p class="mt-1.5 text-sm text-ink-muted" data-i18n>A full three-part mock speaking test as a real voice conversation: the examiner speaks, listens, and asks follow-ups based on what you actually say.</p>
           <div class="mt-4 flex flex-wrap gap-2">
             <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-i18n>3 parts</span>
-            <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">{SPEAKING_CUE_CARDS.length} cue cards</span>
+            <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(SPEAKING_CUE_CARDS.length, { one: '{n} cue card', other: '{n} cue cards' })} />
             <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-i18n>Real-time voice</span>
           </div>
           <div class="mt-auto flex flex-col gap-2 pt-6">
@@ -228,14 +223,11 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
 
     <PracticeOrTest current="tests" />
 
-    {/* Two inline links inside one running sentence, plus an external
-        attribution: restructuring it would change the rendered English
-        word order (must stay byte-identical for English users), so it is
-        left in English and reported in the batch summary rather than
-        translated in fragments. */}
+    {/* Two sentences, each translated whole. The source's name is a proper
+        noun at the end of the first, so no sentence is split around a link. */}
     {listeningTests.length > 0 && (
       <p class="mt-5 text-center text-xs leading-relaxed text-ink-muted">
-        Listening questions and recordings adapted from{' '}
+        <span data-i18n>Listening questions and recordings are adapted with permission from</span>{' '}
         <a
           href="https://practicepteonline.com/listening-ielts-tests/"
           target="_blank"
@@ -243,11 +235,11 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
           class="font-semibold text-ink underline underline-offset-2 hover:text-brand"
         >
           PracticePTEOnline
-        </a>{' '}
-        with permission. Ready for the complete exam routine?{' '}
-        <a href={withBase('/start#exam-readiness')} class="font-semibold text-ink underline underline-offset-2 hover:text-brand">
+        </a>.{' '}
+        <span data-i18n>Ready for the complete exam routine?</span>{' '}
+        <a href={withBase('/start#exam-readiness')} class="font-semibold text-ink underline underline-offset-2 hover:text-brand" data-i18n>
           Open Exam readiness
-        </a>.
+        </a>
       </p>
     )}
 
@@ -263,10 +255,10 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
       <div class="test-catalog-columns">
         {[{ label: 'Reading', tests: readingTests, tone: 'reading' }, { label: 'Listening', tests: listeningTests, tone: 'listening' }].map((group) => (
           <div data-discovery-group class={`test-catalog-group skill-${group.tone}`}>
-            <h3>{group.label}<span>{group.tests.length} exams</span></h3>
+            <h3>{group.label}<Count phrase={ntn(group.tests.length, { one: '{n} exam', other: '{n} exams' })} /></h3>
             <ul>
               {group.tests.map((test, index) => (
-                <li data-discovery-item data-search={group.label}><a href={withBase(`/tests/${test.id}`)} data-checkpoint-target={test.id}><span class="test-index">{String(index + 1).padStart(2, '0')}</span><span class="test-name">{test.title}</span><span class="test-meta">{test.id === 'listening-full-011' ? '39 scored questions' : `${questionCount(test)} questions`}</span></a></li>
+                <li data-discovery-item data-search={group.label}><a href={withBase(`/tests/${test.id}`)} data-checkpoint-target={test.id}><span class="test-index">{String(index + 1).padStart(2, '0')}</span><span class="test-name">{test.title}</span><Count class="test-meta" phrase={test.id === 'listening-full-011' ? ntn(39, { one: '{n} scored question', other: '{n} scored questions' }) : ntn(questionCount(test), { one: '{n} question', other: '{n} questions' })} /></a></li>
               ))}
             </ul>
           </div>

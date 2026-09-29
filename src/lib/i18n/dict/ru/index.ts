@@ -31,6 +31,7 @@ import * as learningObjectives from './learning-objectives';
 import * as trial from './trial';
 import * as profile from './profile';
 import * as placement from './placement';
+import * as cRemediation from './c-remediation';
 
 /** Every batch module, in merge order. The test imports this same list. */
 export const BATCHES = [
@@ -57,6 +58,7 @@ export const BATCHES = [
   trial,
   profile,
   placement,
+  cRemediation,
 ];
 
 export const strings: Record<string, string> = Object.assign({}, ...BATCHES.map((b) => b.strings));

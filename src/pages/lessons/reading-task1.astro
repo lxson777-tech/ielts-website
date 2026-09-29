@@ -5,6 +5,8 @@ import { withBase } from '../../lib/url';
 import { ACCESS_MODE } from '../../lib/trial/mode';
 import { ALL_TESTS } from '../../data/tests';
 import { questionCount } from '../../lib/tests/schema';
+import Count from '../../components/Count.astro';
+import { ntn } from '../../lib/i18n/translate';
 import { READING_GROUPS, READING_PARTS } from '../../data/reading';
 import raw from '../../content/lesson-bodies/reading-task1.html?raw';
 
@@ -52,12 +54,9 @@ const gated = ACCESS_MODE === 'trial';
     <p style="font-size:0.95rem; color:var(--color-ink-muted); margin-bottom:0.75rem;" data-i18n>Ready to put it together? Every attempt is a real exam: 3 passages, 40 questions, 60 minutes, with instant scoring and an estimated band, and you get a different test each time. Once you start, the clock can’t be paused.</p>
     <a class="cta-card" href={withBase('/tests')}>
       <span class="cta-card-body">
-        {/* Four numbers pulled from live test data interpolated into one run
-            of text: no clean way to mark this for translation without a
-            counted-phrase mechanism per number, so it stays English (see
-            batch report). */}
+        {/* Four counted phrases from live test data, each translated whole. */}
         <span class="sample-topic">
-          {sample.parts.length} passages · {questionCount(sample)} questions · {sample.durationMinutes} min · {readingTests.length} tests in rotation
+          <Count phrase={ntn(sample.parts.length, { one: '{n} passage', other: '{n} passages' })} /> · <Count phrase={ntn(questionCount(sample), { one: '{n} question', other: '{n} questions' })} /> · <Count phrase={ntn(sample.durationMinutes, { one: '{n} min', other: '{n} min' })} /> · <Count phrase={ntn(readingTests.length, { one: '{n} test in rotation', other: '{n} tests in rotation' })} />
         </span>
         <strong class="sample-title" data-i18n>Take a Reading Test</strong>
         <span class="sample-go" data-i18n>Start a test</span>

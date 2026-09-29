@@ -2,7 +2,8 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PracticeOrTest from '../../components/PracticeOrTest.astro';
 import { withBase } from '../../lib/url';
-import { nt } from '../../lib/i18n/translate';
+import Count from '../../components/Count.astro';
+import { nt, ntn } from '../../lib/i18n/translate';
 import { ALL_DRILLS, ALL_LISTENING_DRILLS } from '../../lib/tests/drills';
 import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../../data/speaking-prompts';
 import { WRITING_PROMPTS } from '../../data/writing-prompts';
@@ -16,10 +17,8 @@ const trainers = [
     title: 'Reading Trainer',
     description: nt("Read one passage with strategy tips, then review your answers."),
     perk: 'Strategy panel and trap warnings while you read',
-    // A build-time count baked into plain text: no counted-phrase mechanism
-    // reaches text this dynamic without touching src/lib/i18n, so it is left
-    // English (see batch report).
-    stats: `${ALL_DRILLS.length} drills`,
+    // Counted phrases, rendered with <Count> so Russian gets the right form.
+    stats: [ntn(ALL_DRILLS.length, { one: '{n} drill', other: '{n} drills' })],
     href: '/trainers/reading',
     cta: nt('Start a drill'),
     image: '/pics/trainers/reading-drill.png',
@@ -29,7 +28,7 @@ const trainers = [
     title: 'Listening Trainer',
     description: nt("Listen to one recording. Pause and replay while you practise."),
     perk: 'Pause, seek and replay while you practise',
-    stats: `${ALL_LISTENING_DRILLS.length} drills`,
+    stats: [ntn(ALL_LISTENING_DRILLS.length, { one: '{n} drill', other: '{n} drills' })],
     href: '/trainers/listening',
     cta: nt('Start a drill'),
     image: '/pics/tests/listening-exam.svg',
@@ -39,7 +38,10 @@ const trainers = [
     title: 'Speaking Trainer',
     description: nt("Speak through one part of the exam, with guidance when you need it."),
     perk: 'Coach panel with structure, phrases and idea hints',
-    stats: `${SPEAKING_PART1_TOPICS.length} Part 1 topics · ${SPEAKING_CUE_CARDS.length} cue cards`,
+    stats: [
+      ntn(SPEAKING_PART1_TOPICS.length, { one: '{n} Part 1 topic', other: '{n} Part 1 topics' }),
+      ntn(SPEAKING_CUE_CARDS.length, { one: '{n} cue card', other: '{n} cue cards' }),
+    ],
     href: '/trainers/speaking',
     cta: nt('Start a part'),
     image: '/pics/trainers/speaking-drill.png',
@@ -49,7 +51,10 @@ const trainers = [
     title: 'Writing Trainer',
     description: nt("Write an answer with a paragraph plan, then review your feedback."),
     perk: 'Coach panel with a paragraph plan and instant feedback',
-    stats: `${task1Count} Task 1 prompts · ${task2Count} Task 2 prompts`,
+    stats: [
+      ntn(task1Count, { one: '{n} Task 1 prompt', other: '{n} Task 1 prompts' }),
+      ntn(task2Count, { one: '{n} Task 2 prompt', other: '{n} Task 2 prompts' }),
+    ],
     href: '/trainers/writing',
     cta: nt('Start writing'),
     image: '/pics/trainers/writing-drill.png',
@@ -66,7 +71,7 @@ const trainers = [
     <div class="practice-grid">
       {trainers.map((t) => (
         <article class={`practice-tile skill-${t.skill}`}>
-          <div class="practice-tile-top"><img src={withBase(t.image)} alt="" width="56" height="56" /><span>{t.stats}</span></div>
+          <div class="practice-tile-top"><img src={withBase(t.image)} alt="" width="56" height="56" /><span>{t.stats.map((phrase, i) => <>{i > 0 && ' · '}<Count phrase={phrase} /></>)}</span></div>
           <h2>{t.title.replace(' Trainer', '')}</h2>
           <p data-i18n>{t.description.replace('instant AI feedback', 'AI feedback')}</p>
           <a href={withBase(t.href)} class="activity-start"><span data-i18n>{t.cta}</span><span aria-hidden="true">↗</span></a>

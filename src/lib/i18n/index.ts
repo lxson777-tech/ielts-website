@@ -19,7 +19,7 @@ export {
   type Locale,
 } from './locale';
 
-export { t, tn, nt, messageKey, interpolate, translateWith, pluralWith, type CountForms, type Vars } from './translate';
+export { t, tn, nt, ntn, messageKey, interpolate, translateWith, pluralWith, type CountForms, type CountedPhrase, type Vars } from './translate';
 export {
   loadDictionary,
   getLoadedDictionary,

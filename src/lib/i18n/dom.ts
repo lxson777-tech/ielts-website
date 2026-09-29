@@ -15,6 +15,11 @@
      <button data-i18n data-i18n-ctx="button">Open</button>
         use "button" as the disambiguating context for the lookup.
 
+     <span data-i18n-n="40" data-i18n-one="{n} question" data-i18n-other="{n} questions">40 questions</span>
+        a counted phrase: translate it with tn(), so Russian gets the right
+        one of its four forms. Written by src/components/Count.astro from an
+        ntn() phrase; never by hand-concatenating a number and a word.
+
    Rules
    -----
    - Only elements whose content is plain text are supported. An element
@@ -28,7 +33,7 @@
      t(). There are no separate ids to keep in step. */
 
 import { getLocale } from './locale';
-import { t } from './translate';
+import { t, tn } from './translate';
 
 /** dataset key used to remember the English text content. */
 const ORIGINAL_TEXT = 'i18nEn';
@@ -75,6 +80,25 @@ function translateText(el: HTMLElement, ctx: string | undefined, english: boolea
   el.textContent = t(source, undefined, ctx);
 }
 
+function translateCount(el: HTMLElement, english: boolean): void {
+  if (el.firstElementChild) {
+    warnOnce(el);
+    return;
+  }
+  const stored = el.dataset[ORIGINAL_TEXT];
+  const original = stored ?? el.textContent ?? '';
+  if (stored === undefined) el.dataset[ORIGINAL_TEXT] = original;
+  if (english) {
+    el.textContent = original;
+    return;
+  }
+  const n = Number(el.dataset.i18nN);
+  const one = el.dataset.i18nOne;
+  const other = el.dataset.i18nOther;
+  if (!Number.isFinite(n) || !one || !other) return;
+  el.textContent = tn(n, { one, other });
+}
+
 function translateAttrs(el: HTMLElement, list: string, ctx: string | undefined, english: boolean): void {
   for (const raw of list.split(',')) {
     const attr = raw.trim().toLowerCase();
@@ -107,10 +131,11 @@ function translateAttrs(el: HTMLElement, list: string, ctx: string | undefined, 
 export function applyTranslations(root: ParentNode = document): void {
   if (typeof document === 'undefined') return;
   const english = getLocale() === 'en';
-  const marked = root.querySelectorAll<HTMLElement>('[data-i18n], [data-i18n-attr]');
+  const marked = root.querySelectorAll<HTMLElement>('[data-i18n], [data-i18n-attr], [data-i18n-n]');
   for (const el of marked) {
     const ctx = el.dataset.i18nCtx || undefined;
     if (el.hasAttribute('data-i18n')) translateText(el, ctx, english);
+    else if (el.hasAttribute('data-i18n-n')) translateCount(el, english);
     const attrList = el.getAttribute('data-i18n-attr');
     if (attrList) translateAttrs(el, attrList, ctx, english);
   }
