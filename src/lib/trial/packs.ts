@@ -173,13 +173,18 @@ interface RussianPack {
   learning: Record<string, string>;
 }
 let russian: RussianPack | null = null;
+let russianWatched = false;
 
 /** Merges the paid Russian into the loaded Russian dictionary. Only when
     the student reads Russian: an English student downloads no Russian. */
+const mergedInto = new WeakSet<object>();
 async function mergeRussian(): Promise<void> {
   if (!russian || getLocale() !== 'ru') return;
   const dict = await loadDictionary('ru');
-  if (!dict || !russian) return;
+  /* Once per dictionary: the signal below reaches this function's own
+     listener too, so merging again would signal again, for ever. */
+  if (!dict || !russian || mergedInto.has(dict)) return;
+  mergedInto.add(dict);
   Object.assign(dict.strings, russian.strings, russian.parts);
   notifyLocaleListeners();
 }
@@ -190,7 +195,10 @@ async function applyRussian(data: unknown): Promise<void> {
   const { RU_STRINGS } = await import('../learning/ru');
   Object.assign(RU_STRINGS, russian.learning);
   fillDictionaryParts(russian.parts);
-  onLocaleChange(() => void mergeRussian());
+  if (!russianWatched) {
+    russianWatched = true;
+    onLocaleChange(() => void mergeRussian());
+  }
   await mergeRussian();
 }
 
