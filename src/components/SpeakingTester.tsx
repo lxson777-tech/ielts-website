@@ -38,6 +38,7 @@ import SessionContinueBar from './learning/SessionContinueBar';
 import SpeakingObjectiveHandoff from './learning/SpeakingObjectiveHandoff';
 import { readPersonalPlan } from '../lib/learning';
 import { withBase } from '../lib/url';
+import { isTrialBuild } from '../lib/trial/mode';
 import {
   CUE_CARD_FAMILY_EXAMPLE,
   bandLadderHref,
@@ -741,7 +742,9 @@ export default function SpeakingTester() {
           <SpeakingPartCards onStart={(m) => void startMode(m)} disabled={!isSpeakingGraderConfigured()} />
           <p className="mt-4 text-xs text-ink-muted">
             {tn(SPEAKING_PART1_TOPICS.length, { one: '{n} Part 1 topic', other: '{n} Part 1 topics' })} ·{' '}
-            {tn(SPEAKING_CUE_CARDS.length, { one: '{n} cue card', other: '{n} cue cards' })} · {t('free')}
+            {tn(SPEAKING_CUE_CARDS.length, { one: '{n} cue card', other: '{n} cue cards' })}
+            {/* "free" is true only on the open build (audit F03). */}
+            {!isTrialBuild() && ` · ${t('free')}`}
           </p>
         </div>
       </div>

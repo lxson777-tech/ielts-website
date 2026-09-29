@@ -22,7 +22,14 @@ import {
   rememberQuestionnaire,
   startTrial,
 } from '../../lib/trial/client';
-import { questionnaireFromSearch, TRIAL_OFFER, TRIAL_TUTOR_PER_SECTION, type TrialQuestionnaire } from '../../lib/trial/offer';
+import {
+  questionnaireFromSearch,
+  TRIAL_OFFER,
+  TRIAL_SUMMARY,
+  TRIAL_SUMMARY_ORDER,
+  TRIAL_TUTOR_PER_SECTION,
+  type TrialQuestionnaire,
+} from '../../lib/trial/offer';
 import { useTrial } from '../../lib/trial/react';
 import { msRemaining } from '../../lib/trial/status';
 import { signInHref, signUpHref } from '../../lib/auth/profile';
@@ -68,11 +75,15 @@ export default function TrialJoin() {
     );
   }
 
+  /* What the trial includes: the one shared description (TRIAL_SUMMARY in
+     src/lib/trial/offer.ts), so this page, Tests, Practice and Today can
+     never promise different things (audit F03). Academic IELTS comes first,
+     before any account is made. */
   const offer = (
     <ul className="trial-includes">
-      <li>{t('A selected introduction to each IELTS section')}</li>
-      <li>{t('One test each for Reading, Listening, Writing and Speaking')}</li>
-      <li>{t('{n} Mr EZ messages per section across your trial', { n: TRIAL_TUTOR_PER_SECTION })}</li>
+      {TRIAL_SUMMARY_ORDER.map((key) => (
+        <li key={key}>{t(TRIAL_SUMMARY[key])}</li>
+      ))}
     </ul>
   );
 
@@ -185,6 +196,7 @@ export default function TrialJoin() {
       <div>
         <h1 id="trial-start-title">{t('Before you begin')}</h1>
         <p>{t('Your three days start when you press the button below, by our clock, not your device’s.')}</p>
+        <p className="trial-fine">{t(TRIAL_SUMMARY.course)}</p>
         <ol className="trial-steps">
           <li>
             <span>1</span>
@@ -193,7 +205,8 @@ export default function TrialJoin() {
           <li>
             <span>2</span>
             <span>
-              {t('One test per section: Reading, Listening, Writing and Speaking. Once you start a section’s test, it is your test for that section. If something fails on our side, it is not used.')}
+              {t(TRIAL_SUMMARY.tests)}{' '}
+              {t('Once you start a section’s test, it is your test for that section. If something fails on our side, it is not used.')}
               {!TRIAL_OFFER.speaking.testEnabled && ` ${t('The Speaking test opens once its length is confirmed.')}`}
             </span>
           </li>

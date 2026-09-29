@@ -103,6 +103,63 @@ export const TRIAL_OFFER: Record<TrialSection, TrialSectionOffer> = {
   },
 };
 
+/** How long each section's trial test takes, in minutes: the timed Reading
+    and Listening papers (their own durations, checked against the learning
+    index by tests/trial-summary.test.ts), the Writing Task 2 essay's
+    suggested time, and the Speaking Part 1 interview. Used to say plainly
+    that a timed test is a separate sitting from short daily practice. */
+export const TRIAL_TEST_MINUTES: Record<TrialSection, number> = {
+  reading: 60,
+  listening: 40,
+  writing: 40,
+  speaking: 5,
+};
+
+/* ── What the trial includes, in words ────────────────────────────────────
+   The ONE place the trial is described to a student (audit F03, 29 September
+   2026). The trial page, Tests, Practice, Today and Help read these
+   sentences, so no surface can promise more than the gate above opens.
+
+   English source text, translated where it is shown (the Russian lives in
+   src/lib/i18n/dict/ru/b-remediation.ts). `nt` below is a plain identity so
+   this file stays free of the i18n runtime (the Workers import it too); the
+   translation coverage test reads each nt call below, so every sentence here
+   must have Russian. No placeholders: static pages swap these in whole.
+   tests/trial-summary.test.ts fails if a number written in words here
+   stops matching the constants above. */
+const nt = (text: string): string => text;
+
+export type TrialSummaryKey = 'course' | 'days' | 'lessons' | 'tests' | 'tutor';
+
+export const TRIAL_SUMMARY: Record<TrialSummaryKey, string> = {
+  course: nt('Academic IELTS: the lessons and tests follow the Academic papers.'),
+  days: nt('Three days, with no payment card and nothing to cancel.'),
+  lessons: nt('One selected lesson in each section: Reading, Listening, Writing and Speaking.'),
+  tests: nt(
+    'One test in each section: a full Reading test, a full Listening test, one Writing Task 2 essay, and a Speaking Part 1 interview of about five minutes.',
+  ),
+  tutor: nt('Five Mr EZ messages in each section, for the whole trial.'),
+};
+
+/** The order the summary is read in. */
+export const TRIAL_SUMMARY_ORDER: readonly TrialSummaryKey[] = ['course', 'days', 'lessons', 'tests', 'tutor'];
+
+/** One section's test as the trial includes it, for the Tests and Practice
+    pages, with the rest of that section named as full access. */
+export const TRIAL_SECTION_INCLUDES: Record<TrialSection, string> = {
+  reading: nt('Your trial includes one full Reading test. The other Reading papers come with full access.'),
+  listening: nt('Your trial includes one full Listening test. The other Listening papers come with full access.'),
+  writing: nt(
+    'Your trial includes one Writing Task 2 essay on a set question, with AI feedback. Task 1 and more questions come with full access.',
+  ),
+  speaking: nt(
+    'Your trial includes a Speaking Part 1 interview of about five minutes. The full three-part interview comes with full access.',
+  ),
+};
+
+/** What a locked page, button or row says before the click. */
+export const TRIAL_FULL_ACCESS_LABEL = nt('Available with full access');
+
 /** Every item the trial offers, in the `kind:id` form the database uses. */
 export function trialOfferItems(): { itemId: string; section: TrialSection; kind: 'lesson' | 'test'; enabled: boolean }[] {
   return TRIAL_SECTIONS.flatMap((section) => {
