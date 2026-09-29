@@ -1639,11 +1639,14 @@ async function initTrial() {
   trialDb = await createTrialDb();
 
   /* The locked door. Its private store is gated-content/, written by
-     tools/build-gated-content.mjs (built here on first run). The REAL gate
-     handler answers, asking the real migration whether each student may
-     open each item. */
+     tools/build-gated-content.mjs. The REAL gate handler answers, asking the
+     real migration whether each student may open each item.
+     Rebuilt on EVERY start (a few seconds): building it only when missing
+     left an old copy serving stale material, e.g. no paid packs at all
+     (verification, 30 September 2026). A custom MR_EZ_GATED_DIR is taken
+     as given and only built when missing. */
   const gatedDir = resolve(REPO, process.env.MR_EZ_GATED_DIR || 'gated-content');
-  if (!existsSync(resolve(gatedDir, 'manifest.json'))) {
+  if (!process.env.MR_EZ_GATED_DIR || !existsSync(resolve(gatedDir, 'manifest.json'))) {
     const { buildGatedContent } = await import('./build-gated-content.mjs');
     await buildGatedContent();
   }

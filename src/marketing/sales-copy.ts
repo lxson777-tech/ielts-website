@@ -427,6 +427,10 @@ export const SALES_COPY = {
     en: 'Paid access lasts one or three months and then simply ends: it never renews automatically. There are no refunds after purchase, so the free three-day trial is your chance to try first. Buying is not switched on yet, so no payment can be taken.',
     ru: 'Платный доступ действует один или три месяца и просто заканчивается: автоматического продления нет. После покупки деньги не возвращаются, поэтому бесплатные три дня и есть возможность сначала попробовать. Покупка пока не включена, оплату принять нельзя.',
   },
+  'price.status.open': {
+    en: 'Paid access lasts one or three months and then simply ends: it never renews automatically. There are no refunds after purchase, so the free three-day trial is your chance to try first.',
+    ru: 'Платный доступ действует один или три месяца и просто заканчивается: автоматического продления нет. После покупки деньги не возвращаются, поэтому бесплатные три дня и есть возможность сначала попробовать.',
+  },
   'price.plans': { en: 'See the plans', ru: 'Посмотреть тарифы' },
 
   /* Questions (FAQ). */

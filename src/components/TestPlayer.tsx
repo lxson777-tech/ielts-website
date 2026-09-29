@@ -1303,7 +1303,9 @@ export default function TestPlayer({
       }}
     >
       {/* ── Top bar ── */}
-      <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-surface px-2.5 sm:gap-3 sm:px-4">
+      {/* Below 360px (e.g. a 320px phone in Russian, where "Отправить" is long)
+          the bar tightens its spacing so Submit stays on screen. */}
+      <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-surface px-2.5 max-[359px]:gap-1 max-[359px]:px-1.5 sm:gap-3 sm:px-4">
         <a href={hubUrl} className="shrink-0 whitespace-nowrap py-2 text-sm font-semibold text-ink-muted hover:text-ink">
           {/* "Tests" is the workspace tab's own word, translated once in
               dict/ru/shell.ts — no second entry here. */}
@@ -1311,7 +1313,7 @@ export default function TestPlayer({
         </a>
         <span className="hidden truncate font-display text-sm font-bold md:block">{practiceTestTitle(test, t)}</span>
         <div
-          className={`tp-timer mx-auto flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-sm font-bold sm:gap-2 sm:px-4 ${
+          className={`tp-timer mx-auto flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-sm font-bold max-[359px]:gap-1 max-[359px]:px-2 sm:gap-2 sm:px-4 ${
             timerWarn ? 'animate-pulse bg-error-tint text-error' : 'bg-surface-alt text-ink'
           }`}
           role="timer"
@@ -1326,7 +1328,7 @@ export default function TestPlayer({
             setMobileView('questions');
             requestAnimationFrame(() => questionsRef.current?.scrollTo({ top: 0, behavior: 'smooth' }));
           }}
-          className="shrink-0 rounded-button border border-border px-2.5 py-1.5 text-sm font-semibold text-ink-muted hover:bg-surface-alt sm:px-3"
+          className="shrink-0 rounded-button border border-border px-2.5 py-1.5 text-sm font-semibold text-ink-muted hover:bg-surface-alt max-[359px]:px-2 sm:px-3"
         >
           {/* "Review" here means "take me to the question list to check my
               answers". The study plan uses the same English word for revising
@@ -1355,7 +1357,7 @@ export default function TestPlayer({
           type="button"
           onClick={requestSubmit}
           disabled={submitted}
-          className="shrink-0 rounded-button bg-brand px-3 py-1.5 font-display text-sm font-semibold text-white hover:bg-brand-hover disabled:opacity-50 sm:px-4"
+          className="shrink-0 rounded-button bg-brand px-3 py-1.5 font-display text-sm font-semibold text-white hover:bg-brand-hover disabled:opacity-50 max-[359px]:px-2 sm:px-4"
         >
           {t('Submit')}
         </button>
