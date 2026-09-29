@@ -453,7 +453,15 @@ async function handleRpc(req, res, fn) {
       ? { role: 'authenticated', userId: caller }
       : { role: 'anon' };
   try {
-    return send(res, 200, await trialDb.rpc(fn, args, opts));
+    const result = await trialDb.rpc(fn, args, opts);
+    /* PostgREST answers a function that returns SQL null with the JSON
+       literal `null`, not an empty body (send() writes '' for null, which
+       made the payments Worker read "someone else's order" as a failure). */
+    if (result === null || result === undefined) {
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*' });
+      return res.end('null');
+    }
+    return send(res, 200, result);
   } catch (err) {
     return send(res, err.status ?? 400, { message: err.message, code: err.code });
   }
