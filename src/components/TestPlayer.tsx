@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useModalDialog } from '../lib/a11y/modal-dialog';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import type { PracticeTest, Question, QuestionGroup, QuestionType, TestPart, TestSkill } from '../lib/tests/schema';
 import {
@@ -440,6 +441,27 @@ export default function TestPlayer({
   const [answers, setAnswers] = useState<Record<string, string>>(() => resumed?.answers ?? {});
   const [submitted, setSubmitted] = useState(false);
   const [showScore, setShowScore] = useState(false);
+  /* The score dialog's keyboard contract (audit 2026-09-29, F07): named by
+     its "Your Score" heading, focus moved into it, Tab kept inside, Escape
+     closes it into the review, and focus handed to the Score button that
+     reopens it. Only the dialog's presentation lives here; when it opens and
+     what the sitting records is unchanged. */
+  const scoreHeadingId = useId();
+  const scoreDialogRef = useRef<HTMLDivElement>(null);
+  const scorePanelRef = useRef<HTMLDivElement>(null);
+  const scoreButtonRef = useRef<HTMLButtonElement>(null);
+  const restoreScoreFocusRef = useRef(false);
+  const closeScoreToReview = useCallback(() => {
+    restoreScoreFocusRef.current = true;
+    setShowScore(false);
+  }, []);
+  useModalDialog(scoreDialogRef, { open: showScore, onEscape: closeScoreToReview, initialFocus: scorePanelRef });
+  useEffect(() => {
+    if (showScore || !restoreScoreFocusRef.current) return;
+    restoreScoreFocusRef.current = false;
+    const raf = requestAnimationFrame(() => scoreButtonRef.current?.focus());
+    return () => cancelAnimationFrame(raf);
+  }, [showScore]);
   const [timeLeft, setTimeLeft] = useState(() =>
     resumed ? secondsLeft(resumed) : test.durationMinutes * 60,
   );
@@ -1320,7 +1342,9 @@ export default function TestPlayer({
             harmless convenience either way. */}
         {submitted && !showScore && (
           <button
+            ref={scoreButtonRef}
             type="button"
+            aria-haspopup="dialog"
             onClick={() => setShowScore(true)}
             className="shrink-0 rounded-button border border-border px-2.5 py-1.5 text-sm font-semibold text-ink-muted hover:bg-surface-alt sm:px-3"
           >
@@ -1796,22 +1820,30 @@ export default function TestPlayer({
         <AnimatePresence>
           {showScore && (
             <motion.div
+              ref={scoreDialogRef}
               className="test-result-overlay fixed inset-0 z-50 grid place-items-center bg-ink/50 p-4"
               role="dialog"
               aria-modal="true"
+              aria-labelledby={scoreHeadingId}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
+              {/* tabIndex -1: focus lands on the panel when the dialog opens,
+                  so it is announced by its name ("Your Score") before its
+                  first control; Tab then moves to that control. The role
+                  stays on the overlay, where platform-motion.css expects it. */}
               <motion.div
-                className="test-result-panel w-full max-w-sm rounded-card bg-surface p-8 text-center shadow-card-hover"
+                ref={scorePanelRef}
+                tabIndex={-1}
+                className="test-result-panel w-full max-w-sm rounded-card bg-surface p-8 text-center shadow-card-hover focus:outline-none"
                 initial={{ opacity: 0, scale: 0.96, y: 8 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.96, y: 8 }}
                 transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               >
-                <h2 className="font-display text-xl font-extrabold">{t('Your Score')}</h2>
+                <h2 id={scoreHeadingId} className="font-display text-xl font-extrabold">{t('Your Score')}</h2>
                 <p className="band-score-pop mt-4 font-display text-5xl font-extrabold text-brand">
                   {correctCount} / {SCORED_TOTAL}
                 </p>
@@ -1886,7 +1918,7 @@ export default function TestPlayer({
                 <div className="mt-4 flex justify-center gap-3">
                   <button
                     type="button"
-                    onClick={() => setShowScore(false)}
+                    onClick={closeScoreToReview}
                     className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
                   >
                     {t('Review Answers')}

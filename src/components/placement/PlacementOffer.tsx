@@ -16,13 +16,12 @@ import { withBase } from '../../lib/url';
 import { deviceStorage, onOwnerChange, currentOwner, ownerNamespace } from '../../lib/store-owner';
 import { onLearnerRecordChange, readLearnerRecord } from '../../lib/learning/store.browser';
 import { PLACEMENT_TOTAL_MINUTES } from '../../data/placement';
-import { PLACEMENT_PARTS, PLACEMENT_PART_MINUTES, currentPlacementPart, readPlacementState } from '../../lib/placement/state';
+import { currentPlacementPart, readPlacementState } from '../../lib/placement/state';
 import { placementTaken } from '../../lib/placement/results';
 import { signInHref } from '../../lib/auth/profile';
 import { currentRoute } from '../../lib/auth/next';
 import { isTrialBuild } from '../../lib/trial/mode';
 import { placementOfferView, readOfferDismissal, writeOfferDismissal, type PlacementOfferView } from './placement-offer';
-import { PART_NAME } from './PlacementFrame';
 import '../../styles/placement.css';
 
 function localToday(): string {
@@ -55,9 +54,13 @@ function snapshot(): Snapshot {
 export default function PlacementOffer({
   variant = 'card',
   intakeShowing = false,
+  sessionReady = false,
 }: {
   variant?: 'card' | 'link';
   intakeShowing?: boolean;
+  /** Today has an active session under this card, so the invitation can
+      say that the session is ready whether or not the test is taken. */
+  sessionReady?: boolean;
 }) {
   const { t } = useT();
   const [snap, setSnap] = useState<Snapshot | null>(null);
@@ -119,9 +122,20 @@ export default function PlacementOffer({
     setSnap(snapshot());
   }
 
+  /* Compact on Today (audit 2026-09-29, F12). The placement offer used to be
+     a full card with its own filled button above the day's session, so a
+     phone showed two equally loud next steps and pushed the session's Start
+     below the first screen. Now it is an invitation: its title, one sentence
+     saying how it relates to today's work, a quiet outlined button and
+     "Not now". The session's Start stays the one filled button on the
+     screen, which in Russian at 390x844 now sits inside the first screen.
+     What the test covers (the four parts and their minutes, and that the
+     result is an estimate, not a band) is on the placement introduction,
+     the page this button opens, before anything starts. It is still
+     paid-only (hidden in the trial build, above) and still one sitting:
+     nothing about the test itself changed. */
   return (
-    <section className="pl-offer pl-enter" aria-labelledby="pl-offer-heading" data-placement-offer={view}>
-      <p className="pl-kicker">{t('Placement test')}</p>
+    <section className="pl-offer pl-offer-compact pl-enter" aria-labelledby="pl-offer-heading" data-placement-offer={view}>
       <h2 id="pl-offer-heading" className="pl-offer-title">
         {view === 'resume'
           ? t('Your placement test is waiting')
@@ -132,22 +146,17 @@ export default function PlacementOffer({
           ? t('Sign in first: the placement test saves its results to your account and uses the AI examiner.')
           : view === 'resume'
             ? t('Carry on where you stopped. Your plan uses the result to decide where to start.')
-            : t('One sitting, taken once, so your plan starts from real evidence about all four papers instead of guessing. The result is an estimate, not a band score.')}
+            : sessionReady
+              ? t("It tailors your plan to all four papers. Today's session below is ready either way.")
+              : t('It tailors your plan to all four papers, so your next sessions start from real evidence.')}
       </p>
-      <ul className="pl-offer-parts">
-        {PLACEMENT_PARTS.map((part) => (
-          <li key={part} className={`pl-skill-${part}`}>
-            {PART_NAME[part]} · {t('{n} min', { n: PLACEMENT_PART_MINUTES[part] })}
-          </li>
-        ))}
-      </ul>
       <div className="pl-offer-actions">
         {view === 'sign-in' ? (
-          <a className="pl-offer-primary" href={signInHref(currentRoute())}>
+          <a className="pl-offer-secondary" href={signInHref(currentRoute())}>
             {t('Sign in')}
           </a>
         ) : (
-          <a className="pl-offer-primary" href={withBase('/placement')}>
+          <a className="pl-offer-secondary" href={withBase('/placement')}>
             {view === 'resume' ? t('Carry on with the placement test') : t('Take the placement test')}
           </a>
         )}

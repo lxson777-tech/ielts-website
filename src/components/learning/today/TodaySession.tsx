@@ -246,8 +246,11 @@ export default function TodaySession() {
       {/* The placement test, offered once the intake is answered or put off
           and only while this account has not taken it (src/components/
           placement/placement-offer.ts). Signed out it is an invitation to
-          sign in. "Not now" changes nothing about the staged samples. */}
-      <PlacementOffer intakeShowing={screen === 'intake'} />
+          sign in. "Not now" changes nothing about the staged samples.
+          Compact since the 2026-09-29 audit (F12): the session card below
+          carries the one filled Start, and the offer says it is ready
+          either way. */}
+      <PlacementOffer intakeShowing={screen === 'intake'} sessionReady={screen === 'active'} />
 
       {screen === 'intake' && (
         <section className="today-card today-intake" aria-labelledby="today-heading">

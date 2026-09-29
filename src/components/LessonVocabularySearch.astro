@@ -1,20 +1,87 @@
-<label class="discovery-search" data-vocab-search-label><span data-i18n>Find a word in this lesson</span><input type="search" data-vocab-search /></label>
-<p class="discovery-empty" data-vocab-empty hidden data-i18n>No matches. Try another search.</p>
+---
+/* The search box at the top of a vocabulary lesson.
+
+   Two kinds of vocabulary page share this layout, and the box adapts to
+   whichever one it finds (audit 2026-09-29, F11):
+
+   - a word lesson has a word table (.vocab-table): the box finds words, and
+     hides the table rows that do not match;
+   - the vocabulary overview has topic cards (.sample-card) and no word
+     table: the box finds topics, matching what the card shows in the
+     student's language AND the English original (data-i18n-en), so both
+     "Ecology" and "экология" find the same card. The cards sit below the
+     introduction, so what it finds is also listed as links under the box;
+   A page with neither keeps the box hidden rather than offering a search
+   that cannot find anything.
+
+   "No matches" appears only after the student has typed something and it
+   found nothing, never on an empty box. The box starts hidden and is shown
+   by the script once it knows what it is searching, so it never flashes the
+   wrong label. */
+---
+<div class="vocab-search" data-vocab-search-root hidden>
+ <label class="discovery-search" data-vocab-search-label>
+  <span data-vocab-label="words" data-i18n>Find a word in this lesson</span>
+  <span data-vocab-label="topics" data-i18n hidden>Find a topic</span>
+  <input type="search" data-vocab-search autocomplete="off" />
+ </label>
+ <p class="discovery-empty" data-vocab-empty hidden role="status" data-i18n>No matches. Try another search.</p>
+ <ul class="vocab-topic-results" data-vocab-topic-results hidden aria-live="polite"></ul>
+</div>
 <script>
 import { onLessonBodySwap } from '../lib/i18n/lesson-body';
+import { vocabSearchMode, vocabSearchMatches, showNoMatches } from '../lib/vocab-search';
+
 function setupWords() {
+ const root = document.querySelector<HTMLElement>('[data-vocab-search-root]');
  const input = document.querySelector<HTMLInputElement>('[data-vocab-search]');
- if (!input) return;
- const rows = [...document.querySelectorAll<HTMLTableRowElement>('.lesson-body .vocab-table tbody tr')];
+ const empty = document.querySelector<HTMLElement>('[data-vocab-empty]');
+ if (!root || !input || !empty) return;
+ const rows = [...document.querySelectorAll<HTMLElement>('.lesson-body .vocab-table tbody tr')];
+ const cards = [...document.querySelectorAll<HTMLElement>('.lesson-body .sample-card')];
+ const mode = vocabSearchMode(rows.length, cards.length);
+ root.hidden = mode === 'none';
+ for (const label of root.querySelectorAll<HTMLElement>('[data-vocab-label]')) label.hidden = label.dataset.vocabLabel !== mode;
+ if (mode === 'none') return;
+ const items = mode === 'words' ? rows : cards;
+ // What each item can be found by: its visible text, plus (for a translated
+ // card) the English it was translated from. Read at search time, not here:
+ // the interface translator rewrites the cards' text after this runs, and a
+ // copy taken now would still be the English.
+ const haystack = (item: HTMLElement) =>
+  [item.textContent ?? '', ...[...item.querySelectorAll<HTMLElement>('[data-i18n-en]')].map((el) => el.dataset.i18nEn ?? '')].join(' ');
+ // On the overview the cards sit far below the box, under the introduction,
+ // so a topic search also lists what it found right under the box, as links
+ // to those lessons (at most six; the filtered grid below has every match).
+ const results = root.querySelector<HTMLUListElement>('[data-vocab-topic-results]');
  const update = () => {
   let count = 0;
-  for (const row of rows) {row.hidden = !row.textContent?.toLowerCase().includes(input.value.trim().toLowerCase());if (!row.hidden) count++;}
-  document.querySelector<HTMLElement>('[data-vocab-empty]')!.hidden = count > 0;
+  const found: HTMLElement[] = [];
+  items.forEach((item) => {
+   const match = vocabSearchMatches(haystack(item), input.value);
+   // lesson.css makes [hidden] win over a card's display:flex.
+   item.hidden = !match;
+   if (match) { count++; found.push(item); }
+  });
+  empty.hidden = !showNoMatches(input.value, count);
+  if (!results) return;
+  const listing = mode === 'topics' && input.value.trim().length > 0 && count > 0;
+  results.hidden = !listing;
+  results.replaceChildren(
+   ...(listing ? found.slice(0, 6) : []).map((card) => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = card.getAttribute('href') ?? '#';
+    a.textContent = (card.querySelector('.sample-title')?.textContent ?? card.textContent ?? '').trim();
+    li.append(a);
+    return li;
+   }),
+  );
  };
  input.oninput = update;
  update();
 }
 setupWords();
-document.addEventListener('astro:page-load',setupWords);
+document.addEventListener('astro:page-load', setupWords);
 onLessonBodySwap(setupWords);
 </script>

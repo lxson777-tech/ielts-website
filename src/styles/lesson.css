@@ -565,10 +565,22 @@
   gap: 0.85rem;
   margin-top: 1rem;
 }
+/* Phones: two shrinkable columns, and one below 360px. A plain `1fr` track
+   cannot shrink below its longest word, so the Russian vocabulary overview
+   ("20 СЛОВ · КОЛЛОКАЦИИ · УПРАЖНЕНИЕ") pushed its second column 14px past a
+   390px screen and the whole page scrolled sideways (audit 2026-09-29, F10).
+   minmax(0, 1fr) lets the track shrink; the card's words then wrap inside
+   it. At 320px a two-column card is too narrow for one uppercase Russian
+   word, so the cards stack instead of breaking words. */
 @media (max-width: 520px) {
-  .lesson-body .samples-grid { grid-template-columns: 1fr 1fr; }
+  .lesson-body .samples-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 359px) {
+  .lesson-body .samples-grid { grid-template-columns: minmax(0, 1fr); }
 }
 .lesson-body .sample-card {
+  min-width: 0;
+  overflow-wrap: break-word;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -661,6 +673,7 @@
 }
 /* The eyebrow proper, separated from the "3 of 8" by a hairline divider. */
 .lesson-body .part-eyebrow {
+  min-width: 0;
   padding-left: 0.35rem;
   border-left: 1px solid var(--color-border);
   color: var(--color-ink-muted);
@@ -839,6 +852,24 @@
 }
 
 .lesson-body [data-vocab-empty][hidden],.lesson-body .vocab-table tr[hidden] { display:none !important; }
+/* The search box itself, its unused label, and topic cards a topic search
+   has filtered out (a card is display:flex, which beats [hidden] alone). */
+.lesson-body [data-vocab-search-root][hidden],
+.lesson-body [data-vocab-label][hidden],
+.lesson-body .sample-card[hidden],
+.lesson-body [data-vocab-topic-results][hidden] { display:none !important; }
+.lesson-body .vocab-topic-results { display:flex; flex-wrap:wrap; gap:8px; margin:-8px 0 20px; padding:0; list-style:none; }
+.lesson-body .vocab-topic-results li { margin:0; padding:0; }
+.lesson-body .vocab-topic-results li::before { content:none; }
+.lesson-body .vocab-topic-results a {
+  display:inline-flex; align-items:center; min-height:40px; padding:0 16px; border:1px solid var(--color-border);
+  border-radius:999px; background:var(--color-surface); color:var(--color-ink); font-size:14px; font-weight:600;
+  text-decoration:none; transition:border-color 200ms ease, background 200ms ease;
+}
+.lesson-body .vocab-topic-results a::after { content:'\2192'; margin-left:10px; color:var(--color-ink-muted); transition:transform 200ms ease; }
+.lesson-body .vocab-topic-results a:hover { border-color:var(--color-ink); }
+.lesson-body .vocab-topic-results a:hover::after { transform:translateX(2px); }
+.lesson-body .vocab-topic-results a:focus-visible { outline:2px solid var(--color-ink); outline-offset:2px; }
 @media(max-width:600px) {
  .lesson-body[data-vocabulary-lesson] .vocab-table { display:table; width:100%; overflow:visible; }
  .lesson-body[data-vocabulary-lesson] .vocab-table thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
