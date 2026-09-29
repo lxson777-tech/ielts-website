@@ -338,6 +338,22 @@
 .pl-offer-quiet { border: 0; background: transparent; padding: 8px 2px; font: inherit; font-size: 14px; font-weight: 600; color: var(--color-ink-muted); cursor: pointer; }
 .pl-offer-quiet:hover { color: var(--color-ink); }
 
+/* Today's compact invitation (audit 2026-09-29, F12): a quiet card with an
+   outlined button, so the session's filled Start below stays the one
+   primary action on the screen. */
+.pl-offer-compact { padding: 20px 24px; }
+.pl-offer-compact .pl-offer-title { margin: 0; font-size: 18px; letter-spacing: -0.02em; }
+.pl-offer-compact > .pl-offer-lead { margin-top: 6px; font-size: 13.5px; line-height: 1.55; max-width: 70ch; text-wrap: pretty; }
+.pl-offer-compact .pl-offer-actions { margin-top: 14px; gap: 6px 14px; }
+.pl-offer-secondary {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px;
+  border: 1px solid var(--color-ink); border-radius: 999px; background: transparent; color: var(--color-ink);
+  font-family: var(--font-display-ui); font-size: 14px; font-weight: 600; text-decoration: none;
+  transition: background 200ms ease, color 200ms ease;
+}
+.pl-offer-secondary:hover { background: var(--color-surface-alt); }
+.pl-offer-secondary:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 3px; }
+
 @media (max-width: 719px) {
   .pl-top { padding: 16px 16px 4px; }
   .pl-main { padding: 8px 16px 56px; }
@@ -349,9 +365,9 @@
   .pl-actions .pl-primary { width: 100%; }
   .pl-next { padding: 22px 20px; }
   .pl-offer { padding: 22px 20px; border-radius: 19px; }
+  .pl-offer-compact { padding: 16px 18px; margin-bottom: 14px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .pl-enter { animation: none; }
-  .pl-step-bar::after, .pl-primary, .pl-offer-primary, .pl-leave { transition: none; }
-}
+  .pl-step-bar::after, .pl-primary, .pl-offer-primary, .pl-offer-secondary, .pl-leave { transition: none; }}

@@ -13,7 +13,7 @@
    count, nothing to lean on. Both end in the same band report; coaching is
    what separates practice from a test. */
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { EssayPrompt } from '../lib/writing/schema';
 import type { GradeResult } from '../lib/writing/schema';
 import { CRITERIA, criterionLabel } from '../lib/writing/schema';
@@ -103,6 +103,7 @@ const SUBMISSION_REFUSED_NOTE = nt(
 
 export default function WritingTester({ variant = 'trainer' }: { variant?: 'trainer' | 'checker' }) {
   const { t, tn } = useT();
+  const essayId = useId();
   const coached = variant === 'trainer';
   /* The trial's Writing test is the checker (a trial build only; inert on
      the open site). The practice trainer is not in the trial, and its page
@@ -890,13 +891,23 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             </p>
           )}
 
+          {/* A persistent visible label (audit 2026-09-29, F07): the
+              placeholder disappears as soon as the student types, and it
+              was the box's only name. One label serves the trainer, the
+              Checker and the trial's Writing test, which all render here. */}
+          <div className="writing-answer grid gap-2">
+          <label htmlFor={essayId} className="writing-answer-label block text-sm font-semibold text-ink">
+            {t('Your answer')}
+          </label>
           <textarea
+            id={essayId}
             value={essay}
             onChange={(e) => handleEssayChange(e.target.value)}
             rows={14}
             placeholder={t('Write your answer here…')}
             className="w-full rounded-card border border-border bg-surface p-4 text-[0.95rem] leading-relaxed shadow-card focus:border-brand focus:outline-none"
           />
+          </div>
 
           {!isGraderConfigured() && (
             <p className="rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
