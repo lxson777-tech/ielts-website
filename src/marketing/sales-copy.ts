@@ -501,6 +501,7 @@ export const SALES_COPY = {
   'foot.questions': { en: 'Questions', ru: 'Вопросы' },
   'foot.privacy': { en: 'Privacy', ru: 'Конфиденциальность' },
   'foot.terms': { en: 'Terms', ru: 'Условия' },
+  'foot.support': { en: 'Ask a person', ru: 'Спросить человека' },
   'foot.independent': {
     en: 'Independent preparation. Not affiliated with or endorsed by IELTS.',
     ru: 'Независимая подготовка. Мы не связаны с IELTS и не получали его одобрения.',

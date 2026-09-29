@@ -54,6 +54,7 @@ const SKIP_DIRS = ['lib/i18n', 'data/tests', 'content'];
    before the browser moves on, and they load no translation runtime. */
 const EXEMPT: Record<string, string> = {
   'components/admin/AdminPanel.tsx': 'staff-only page for Alex, deliberately English',
+  'components/admin/SupportRequests.tsx': 'part of the staff-only admin page, deliberately English like AdminPanel',
 };
 
 function isRedirectStub(rel: string): boolean {

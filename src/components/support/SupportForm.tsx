@@ -305,8 +305,7 @@ export default function SupportForm() {
 
         {/* Hidden from people; a form-filling script fills it in. */}
         <div className="support-trap" aria-hidden="true">
-          <label htmlFor="support-website">Website</label>
-          <input id="support-website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
+          <input id="support-website" name="website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
         </div>
 
         {failure && (

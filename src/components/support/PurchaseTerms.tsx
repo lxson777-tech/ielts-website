@@ -6,6 +6,7 @@
 
 import { useT } from '../../lib/i18n/react';
 import { withBase } from '../../lib/url';
+import { PAID_AI_ALLOWANCE } from '../../lib/access/plans';
 import SupportLink from './SupportLink';
 import './support.css';
 
@@ -16,7 +17,9 @@ export default function PurchaseTerms({ showSupport = true }: { showSupport?: bo
       <ul>
         <li>{t('One month or three months of full access. It ends on its own. Nothing renews, so you are never charged automatically.')}</li>
         <li>{t('No refunds after purchase. The free three-day trial is your chance to try the course first.')}</li>
-        <li>{t('Mr EZ and AI feedback have fair daily limits, so the service stays available for everyone.')}</li>
+        {/* Accurate as built: Mr EZ and the live examiner have daily limits; essay
+            and speaking grading do not (src/lib/access/plans.ts). */}
+        <li>{t(PAID_AI_ALLOWANCE)}</li>
       </ul>
       <p className="purchase-terms-links">
         <a href={withBase('/terms')}>{t('Terms of use')}</a>

@@ -18,18 +18,18 @@
      checkout; access is recorded by the server when the provider confirms
      the payment, and read back from it. */
 
+import PurchaseTerms from '../support/PurchaseTerms';
 import { useT } from '../../lib/i18n/react';
 import { withBase } from '../../lib/url';
 import { useTrial } from '../../lib/trial/react';
 import { signInHref } from '../../lib/auth/profile';
 import { hasPaidAccess } from '../../lib/trial/status';
-import { PAID_AI_ALLOWANCE, PAID_PLANS, THREE_MONTH_SAVING, type PaidPlan } from '../../lib/access/plans';
+import { PAID_PLANS, THREE_MONTH_SAVING, type PaidPlan } from '../../lib/access/plans';
 import { extendedUntil, formatDate, formatMoney } from '../access/access-state';
 import { PURCHASE_ENABLED } from '../access/payments';
 import {
   AccessStrip,
   InterruptedPurchase,
-  PurchaseLinks,
   SimulatedBanner,
   useCheckout,
   useOrders,
@@ -137,20 +137,10 @@ function PlansWithPurchase() {
         ))}
       </div>
 
-      <div className="access-facts">
-        <p>{t(PAID_AI_ALLOWANCE)}</p>
-        <p>
-          {t('One payment buys a fixed period that simply ends. Nothing renews and you are never charged again automatically. Purchases are not refunded, so the free trial is the time to try the course.')}
-        </p>
-      </div>
-
-      {/* PURCHASE TERMS SLOT (Builder E). The orchestrator places
-          <PurchaseTerms /> from Builder E here, directly under the plans and
-          above the links, so the terms sit next to the Buy buttons. Nothing
-          renders here until then. */}
-      <div className="access-terms-slot" data-purchase-terms-slot="" />
-
-      <PurchaseLinks />
+      {/* The purchase facts, the Terms and Privacy links and the way to ask a
+          person, in one block (Builder E's wording, Alex's 29 September
+          decisions). */}
+      <PurchaseTerms />
 
       <a className="trial-btn" href={withBase('/dashboard')}>
         {paid ? t('Back to Today') : t('Back to my trial')}

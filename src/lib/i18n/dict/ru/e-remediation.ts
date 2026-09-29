@@ -32,7 +32,7 @@ export const strings: Record<string, string> = {
   'A person will read it and reply by email to {email}.': 'Его прочитает человек и ответит на адрес {email}.',
   'A person will read it and reply by email.': 'Его прочитает человек и ответит по электронной почте.',
   'Back to where I was': 'Вернуться на прежнюю страницу',
-  'Go to Today': 'Перейти к разделу «Сегодня»',
+  'Go to Today': 'Перейти к «Сегодня»',
   'Please give an email address so we can answer you.': 'Укажите адрес электронной почты, чтобы мы могли ответить.',
   'Please write your message.': 'Напишите ваше сообщение.',
   'Please write a little more, at least {min} characters.': 'Напишите чуть подробнее, не меньше {min} символов.',
