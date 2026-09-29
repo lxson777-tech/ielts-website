@@ -1,0 +1,44 @@
+---
+/* /placement: the one-sitting placement test (src/components/placement/
+   Placement.tsx). The material is named in src/data/placement.ts and nowhere
+   else; it is resolved here against the real data and handed to the island.
+   Anything the data does not have arrives as null and the page says "not
+   available" calmly instead of failing, which is what keeps it safe in the
+   trial build, where the big data modules are swapped for empty stand-ins.
+
+   `bare`: a sitting has no workspace chrome and no tutor panel, the same
+   rule as the test player and Mock Exam Day. The placement test comes with a
+   subscription, not the trial, so a trial build declares it locked. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Placement from '../components/placement/Placement';
+import { getDrill } from '../lib/tests/drills';
+import { getWritingPrompt } from '../data/writing-prompts';
+import { SPEAKING_PART1_TOPICS } from '../data/speaking-prompts';
+import { PLACEMENT } from '../data/placement';
+import { isTrialBuild } from '../lib/trial/mode';
+
+/* A drill's own clock is replaced by the placement's for its part, so the
+   four parts fit the forty minutes (see src/data/placement.ts for why). */
+function paper(drillId: string, minutes: number) {
+  const drill = getDrill(drillId);
+  return drill ? { ...drill.test, durationMinutes: minutes } : null;
+}
+
+/* A trial build locks this page, and props are written into the page itself,
+   so it carries no placement material there (the leak audit checks this). */
+const material = isTrialBuild() ? { listening: null, reading: null, writing: null, speaking: null } : {
+  listening: paper(PLACEMENT.listening.drillId, PLACEMENT.listening.minutes),
+  reading: paper(PLACEMENT.reading.drillId, PLACEMENT.reading.minutes),
+  writing: getWritingPrompt(PLACEMENT.writing.promptId) ?? null,
+  speaking: SPEAKING_PART1_TOPICS.find((topic) => topic.id === PLACEMENT.speaking.topicId) ?? null,
+};
+---
+
+<BaseLayout
+  title="Placement test · IELTS Portal"
+  trialGate={{ kind: 'locked', title: 'Placement test' }}
+  description="A 40-minute placement test across Listening, Reading, Writing and Speaking, taken once, so your study plan starts from where you really are."
+  bare
+>
+  <Placement client:load material={material} />
+</BaseLayout>

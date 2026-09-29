@@ -514,6 +514,11 @@ export function constraintsFrom(
 /* ── The derived copy the old screens still read (lead decision D1) ──────── */
 
 function legacyStudyDays(constraints: PlanConstraints): SavedPlan['studyDays'] {
+  /* "Every other day" has no equivalent in the old store either. Recorded as
+     every day for the same reason as custom days below: the old screens
+     then over-count study days rather than hide one. The real rule lives in
+     PlanConstraints and isStudyDay (planner.ts). */
+  if (constraints.studyDays === 'alternate') return 'daily';
   if (constraints.studyDays !== 'custom') return constraints.studyDays;
   /* The old store has no way to say "Tuesdays and Thursdays". Monday to
      Friday is representable; anything else is recorded as every day, which

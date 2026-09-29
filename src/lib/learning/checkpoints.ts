@@ -88,13 +88,18 @@ export interface CheckpointCandidate {
 /** Every real full paper for one skill, i.e. the ones buildPaperActivities
     produced (they carry exactly one sourcePaperIds entry, the real test id).
     The fixed hub links ('test:reading', 'test:listening', 'test:mock') are
-    not real papers and are filtered out by the same check. */
+    not real papers and are filtered out by the same check. A paper the
+    placement test draws on is not a candidate at all, ever: every student
+    sits the placement on it, so it must stay unseen for every one of them
+    (PLACEMENT_ONLY_TAG in catalog.ts, read as the public tag for the same
+    reason reservedTestIds below reads 'check-only'). */
 function paperActivitiesFor(paper: Paper, catalogue: LearningCatalogueV1): CatalogueActivity[] {
   return catalogue.activities.filter(
     (activity) =>
       activity.kind === 'full-test' &&
       activity.paper === paper &&
-      (activity.sourcePaperIds ?? []).length === 1,
+      (activity.sourcePaperIds ?? []).length === 1 &&
+      !(activity.tags ?? []).includes('placement-only'),
   );
 }
 

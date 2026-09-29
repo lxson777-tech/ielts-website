@@ -76,6 +76,7 @@ import {
   parseLibraryReason,
 } from '../src/components/library-links.ts';
 import { CUE_CARDS } from '../src/data/cue-cards.ts';
+import { PLACEMENT_PAPER_IDS } from '../src/data/placement.ts';
 import { SPEAKING_CUE_CARDS } from '../src/data/speaking-prompts.ts';
 import {
   SKILLS,
@@ -97,7 +98,13 @@ const INDEX: GeneratedIndexV1 = LEARNING_INDEX;
 
 /** Every real reading test id the catalogue actually offers as a
     checkpoint, in the fixed order the index lists them. */
-const READING_TEST_IDS = INDEX.tests.filter((t) => t.skill === 'reading').map((t) => t.id);
+/* Every real Reading paper a checkpoint may use. The paper the placement test
+   draws on (src/data/placement.ts) is left out on purpose since the placement
+   test was added (24 September 2026): every student sits the placement on it,
+   so it is never offered as a checkpoint (PLACEMENT_ONLY_TAG in catalog.ts). */
+const READING_TEST_IDS = INDEX.tests
+  .filter((t) => t.skill === 'reading' && !PLACEMENT_PAPER_IDS.includes(t.id))
+  .map((t) => t.id);
 
 /** SYNTHETIC: an otherwise-empty learner record with exposure entries added
     directly, standing in for whatever mix of a drill, a lesson check or a

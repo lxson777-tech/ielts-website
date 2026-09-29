@@ -219,9 +219,20 @@ export default function LiveExaminer({
   onComplete,
   onAbort,
   onSuspend,
+  placement,
 }: {
   variant?: 'full' | 'drills';
   mock?: boolean;
+  /** The placement test's Speaking part (src/components/placement/
+      Placement.tsx, 24 September 2026). Always passed together with `mock`,
+      whose embedding it shares entirely (no menu, onComplete / onAbort /
+      onSuspend, the owner handling left to the page that mounts it). Only
+      two things differ: the interview started is the existing Part 1 drill
+      on this one topic rather than the full test, and the grade is written
+      as 'diagnostic' evidence of the placement sitting, with its shared
+      session id and the placement's source key. Additive: nothing changes
+      for any other caller. */
+  placement?: { topicId: string; sessionId: string; sourceMaterial: readonly string[] };
   onComplete?: (result: { overallBand: number; criteria: Record<string, number> }) => void;
   /** Mock embed: the interview ended without a band by the student's own
       choice, or because the speaking service cannot run it. */
@@ -388,6 +399,17 @@ export default function LiveExaminer({
       return;
     }
     mockAutoStartedRef.current = true;
+    if (placement) {
+      /* The placement's Part 1 interview, on the one topic it reserves. A
+         topic the data no longer has is a service that cannot run it. */
+      const topic = SPEAKING_PART1_TOPICS.find((entry) => entry.id === placement.topicId);
+      if (!topic) {
+        abortMock();
+        return;
+      }
+      void startTest('part1', { mode: 'part1', title: topic.topic, part1Topic: topic });
+      return;
+    }
     void startTest('full');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mock, liveConfig, configError, needsSignIn, authUnavailable]);
@@ -959,6 +981,12 @@ export default function LiveExaminer({
               overallBand: graded.overallBand,
               criteria,
               grader: graded.grader,
+              /* The placement's Speaking part: a short sample of the
+                 placement sitting, so diagnostic mode, the sitting's shared
+                 session id and the placement's source key. */
+              ...(placement
+                ? { mode: 'diagnostic' as const, sessionId: placement.sessionId, sourceMaterial: placement.sourceMaterial }
+                : {}),
             });
             // Drills feed the same band-over-time history as the recorded checker did.
             if (m !== 'full') {

@@ -46,6 +46,7 @@ import type { Locale } from '../i18n/locale';
 import committedIndex from '../../data/generated/learning-index.json' with { type: 'json' };
 import { decodeLearningIndex, type CompactLearningIndexV1 } from './index-format';
 import { SPOKEN_FOCUSED_TASKS, spokenFocusedTaskHref, type SpokenFocusedTask } from '../../data/focused-exercises';
+import { PLACEMENT_PAPER_IDS, PLACEMENT_PROMPT_IDS } from '../../data/placement';
 
 import type {
   ActivityTarget,
@@ -1187,6 +1188,54 @@ const GUIDED_ONLY_TAG = 'guided-only';
     objective judgement, never a mark. */
 export const WRITTEN_RESPONSE_TAG = 'written-response';
 
+/** Material held back for the one-sitting placement test (src/data/
+ *  placement.ts, the page at /placement).
+ *
+ *  The same idea as CHECK_ONLY_TAG, one step stricter. A check-reserved
+ *  paper can still be offered as a checkpoint once nothing else unseen is
+ *  left; a placement paper never is, because every student sits the
+ *  placement on exactly this material and it has to be unseen for every one
+ *  of them. So anything carrying this tag is left out of teaching,
+ *  practice, independent checks, the staged short samples and checkpoint
+ *  papers alike (activitiesThatTeach, practiceForSubskill,
+ *  checksForSubskill, and ineligibleReason in session.ts, which the
+ *  diagnostic candidates and checkpointPaper both ask; and rankCheckpoints
+ *  in checkpoints.ts). It stays in the library and stays linkable, exactly
+ *  like a check-reserved paper: the PLAN simply never spends it.
+ *
+ *  Applied to the whole paper a placement part comes from, not only to the
+ *  part: a drill of another passage of the same paper is harmless on its
+ *  own, but sitting the full paper, or a lesson check quoting it, would
+ *  spend the very questions the placement uses. */
+export const PLACEMENT_ONLY_TAG = 'placement-only';
+
+/** True when the activity is placement material (see PLACEMENT_ONLY_TAG). */
+export function isPlacementReserved(activity: CatalogueActivity): boolean {
+  return (activity.tags ?? []).includes(PLACEMENT_ONLY_TAG);
+}
+
+/** Tag every activity whose material is the placement's: anything built on
+    one of its papers, and the graded tasks and exercises built on its
+    Writing prompt or its Speaking topic. Read off the activities' own
+    sourcePaperIds and sourcePromptIds, so an exercise added later on the
+    same material is reserved with it and nothing is hand-listed twice. */
+function markPlacementReserved(activities: CatalogueActivity[]): CatalogueActivity[] {
+  const papers = new Set(PLACEMENT_PAPER_IDS);
+  const prompts = new Set(PLACEMENT_PROMPT_IDS);
+  const graded = new Set([
+    ...PLACEMENT_PROMPT_IDS.map(writingActivityId),
+    ...PLACEMENT_PROMPT_IDS.map(speakingActivityId),
+  ]);
+  return activities.map((activity) => {
+    const reserved =
+      graded.has(activity.id) ||
+      (activity.sourcePaperIds ?? []).some((id) => papers.has(id)) ||
+      (activity.sourcePromptIds ?? []).some((id) => prompts.has(id));
+    if (!reserved || isPlacementReserved(activity)) return activity;
+    return { ...activity, tags: [...(activity.tags ?? []), PLACEMENT_ONLY_TAG] };
+  });
+}
+
 function reservedCheckPapers(index: GeneratedIndexV1): ReadonlySet<string> {
   const out = new Set<string>();
   for (const exercise of index.focusedExercises) {
@@ -1615,7 +1664,7 @@ function buildFixedActivities(): CatalogueActivity[] {
  *  in. The default argument is the committed index, which is what the site
  *  and the Worker use. */
 export function buildLearningCatalogue(index: GeneratedIndexV1 = LEARNING_INDEX): LearningCatalogueV1 {
-  const activities: CatalogueActivity[] = [
+  const activities: CatalogueActivity[] = markPlacementReserved([
     ...buildLessonActivities(index),
     ...buildCheckActivities(index),
     ...buildFocusedActivities(index),
@@ -1627,7 +1676,7 @@ export function buildLearningCatalogue(index: GeneratedIndexV1 = LEARNING_INDEX)
     ...buildVocabularyActivities(index),
     ...buildPractiseActivities(index),
     ...buildFixedActivities(),
-  ];
+  ]);
 
   /* The version IS the contents. Everything that would change what the
      planner or the model may say about an activity goes into it: not the
@@ -1787,6 +1836,7 @@ export function activitiesThatTeach(
         TEACHING_KINDS.has(a.kind) &&
         !a.unavailable &&
         !(a.tags ?? []).includes(CHECK_ONLY_TAG) &&
+        !isPlacementReserved(a) &&
         coversSubskill(a, subskill),
     )
     .sort((a, b) => rankLesson(a, b) || rankFit(a, b, subskill) || a.expectedMinutes - b.expectedMinutes || compareIds(a, b));
@@ -1856,6 +1906,7 @@ export function practiceForSubskill(
         PRACTICE_KINDS.has(a.kind) &&
         !a.unavailable &&
         !(a.tags ?? []).includes(CHECK_ONLY_TAG) &&
+        !isPlacementReserved(a) &&
         a.expectedMinutes <= minutes &&
         coversSubskill(a, subskill),
     )
@@ -1907,6 +1958,7 @@ export function checksForSubskill(
         !a.unavailable &&
         !isHub(a) &&
         !(a.tags ?? []).includes(GUIDED_ONLY_TAG) &&
+        !isPlacementReserved(a) &&
         coversSubskill(a, subskill),
     )
     .sort((a, b) => a.expectedMinutes - b.expectedMinutes || compareIds(a, b))

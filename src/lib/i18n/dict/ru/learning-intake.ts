@@ -17,7 +17,7 @@
 export const strings: Record<string, string> = {
   'What overall band are you aiming for?': 'На какой общий балл вы нацелены?',
   'This course currently covers Academic IELTS.': 'Этот курс сейчас охватывает Academic IELTS.',
-  'Set a different minimum for each paper': 'Задать свой минимум для каждого раздела',
+  'Set a different minimum for each section': 'Задать свой минимум для каждого раздела',
   'Set these only if you need a minimum in every paper, for example 6.5 overall with nothing below 6.0. Leave one blank and it uses your overall target.':
     'Указывайте это, только если вам нужен минимум по каждому разделу, например 6.5 в среднем и не ниже 6.0 по каждому разделу. Если поле пустое, используется ваш общий целевой балл.',
   Reading: 'Чтение',
@@ -38,8 +38,8 @@ export const strings: Record<string, string> = {
   'Which language should explanations be in?': 'На каком языке объяснять материал?',
   'Lessons, questions, passages and model answers always stay in English. This only changes the language Mr EZ explains things in.':
     'Уроки, задания, тексты и образцы ответов всегда остаются на английском. Это меняет только язык объяснений Mr EZ.',
-  'Tell us which paper feels hardest': 'Скажите, какой раздел кажется самым сложным',
-  'Which paper feels hardest right now?': 'Какой раздел сейчас кажется самым сложным?',
+  'Tell us which section feels hardest': 'Скажите, какой раздел кажется самым сложным',
+  'Which section feels hardest right now?': 'Какой раздел сейчас кажется самым сложным?',
   'A guess is fine. This is just a starting hint, real results replace it fast.':
     'Можно ответить примерно. Это лишь первая подсказка, реальные результаты быстро её заменят.',
   'Add a recent score, if you have one': 'Добавить недавний результат, если он у вас есть',
@@ -47,7 +47,7 @@ export const strings: Record<string, string> = {
     'Это указано вами самостоятельно. Это помогает начать, но никогда не считается измеренным результатом.',
   'Band {band}, self-reported, {date}': 'Балл {band}, указан самостоятельно, {date}',
   Select: 'Выбрать',
-  'Paper (optional)': 'Раздел (необязательно)',
+  'Section (optional)': 'Раздел (необязательно)',
   Overall: 'Общий балл',
   'Date you took it': 'Дата сдачи',
   'Add this score': 'Добавить этот результат',
@@ -57,6 +57,50 @@ export const strings: Record<string, string> = {
   'Save my plan': 'Сохранить мой план',
   'Answer later': 'Ответить позже',
   'Your changes are saved.': 'Ваши изменения сохранены.',
+
+  /* The redo of 24 September 2026: one question per screen, study days with
+     "every other day", the site's own calendar, and the summary before
+     saving. 'Study days', 'Change', 'Today', 'Close' and 'Exam date' already
+     have a Russian entry elsewhere with this wording and are reused. */
+  'Question {n} of {total}': 'Вопрос {n} из {total}',
+  'Last step: check your answers': 'Последний шаг: проверьте ответы',
+  'Back to summary': 'К итогам',
+  Optional: 'Необязательно',
+  'Pick the day of your test. You can change it later in plan settings.':
+    'Выберите день экзамена. Его можно изменить позже в настройках плана.',
+  'Choose a date': 'Выберите дату',
+  'Every other day': 'Через день',
+  'Custom days': 'Свои дни',
+  Weekdays: 'По будням',
+  'Choose my days': 'Выбрать дни',
+  'Seven days a week': 'Семь дней в неделю',
+  'Study today, rest tomorrow, and so on': 'Сегодня занятие, завтра отдых, и так далее',
+  'Counting from {date}': 'Считая с {date}',
+  'Monday to Friday': 'С понедельника по пятницу',
+  'Pick the days that suit you': 'Отметьте удобные вам дни',
+  'Your study days': 'Ваши дни занятий',
+  'Choose at least one day.': 'Выберите хотя бы один день.',
+  'Here is your plan': 'Ваш план',
+  'Band {band} by {date}': 'Балл {band} к {date}',
+  'Band {band}, no exam date yet': 'Балл {band}, даты экзамена пока нет',
+  'Exam on {date}': 'Экзамен {date}',
+  'every day': 'каждый день',
+  'every other day': 'через день',
+  'on weekdays': 'по будням',
+  'on {days}': 'по дням: {days}',
+  '{minutes} minutes a day': '{minutes} минут в день',
+  Target: 'Цель',
+  'Not chosen yet': 'Пока не выбрано',
+  'No date yet': 'Даты пока нет',
+  'Every other day, starting {date}': 'Через день, начиная с {date}',
+  'Time each day': 'Время в день',
+  'Explanations in': 'Язык объяснений',
+  'Hardest section': 'Самый сложный раздел',
+
+  /* src/components/plan/DatePicker.tsx */
+  'Previous month': 'Предыдущий месяц',
+  'Next month': 'Следующий месяц',
+  'Go to today': 'К сегодняшнему дню',
 
   /* src/lib/plan/summary.ts, planOutcome() */
   'Your exam date has passed. Set a new date, or a new goal, to bring the plan back on track.':
@@ -81,6 +125,13 @@ export const strings: Record<string, string> = {
 };
 
 export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {
+  /* The date picker's field: how far away the chosen exam date is. */
+  'In {n} days': {
+    one: 'Через {n} день',
+    few: 'Через {n} дня',
+    many: 'Через {n} дней',
+    other: 'Через {n} дня',
+  },
   /* Keyed by the English "other" form exactly as written at the call site
      (docs/I18N-GUIDE.md), not the singular. The collapsed disclosure over
      the milestones the planner dropped, in src/components/learning/intake/ui.tsx. */

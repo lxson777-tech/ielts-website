@@ -31,6 +31,12 @@ import {
   type TestSession,
 } from '../lib/test-session';
 import { isActiveMockStorageKey, mockLegSitting, type MockSittingRef } from '../lib/tests/mock';
+import {
+  isPlacementStorageKey,
+  placementEvidence,
+  placementLegSitting,
+  type PlacementSittingRef,
+} from '../lib/placement/state';
 import { onOwnerChange } from '../lib/store-owner';
 import type { ReviewOwnerChange } from '../lib/tutor/review-owner';
 import { drillTypes } from '../lib/tests/drills';
@@ -86,6 +92,22 @@ interface Props {
       before anything was recorded), so the mock screen stops the whole
       sitting with its own sentence (R2D-03). */
   onSittingLost?: (loss: SittingLoss) => void;
+  /** Present only when this paper is a part of a PLACEMENT TEST sitting
+      (src/components/placement/Placement.tsx): the student who started the
+      placement and the sitting's own id. Added with the placement test (24
+      September 2026), and additive: nothing changes for any other caller.
+      The paper's answers and deadline are then kept inside that placement
+      sitting (src/lib/placement/state.ts, placementLegSitting), the third
+      kind of sitting store beside the standalone slot and a mock's, so the
+      deadline clock, the stale-tab refusal and finish-before-record apply
+      unchanged. Its attempt is written as 'diagnostic' evidence of that
+      sitting (placementEvidence): the mode, the shared session id and the
+      placement's source key are the only things that differ. The paper is
+      also sat under exam conditions the drill would otherwise relax: the
+      recording plays once, no strategy panel, and no band or links out of
+      the sitting on the score card. Always passed together with onFinish,
+      which is how the placement moves on to its next part. */
+  placementSitting?: PlacementSittingRef;
 }
 
 /** Base-prefixed URL for images stored under /public. */
@@ -277,7 +299,15 @@ function recordStaleSessionAbandonment(stale: TestSession): void {
   });
 }
 
-export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinish, mockSitting, onSittingLost }: Props) {
+export default function TestPlayer({
+  test,
+  hubUrl,
+  attemptKind = 'full',
+  onFinish,
+  mockSitting,
+  onSittingLost,
+  placementSitting,
+}: Props) {
   /* Interface language. Declared first so every hook below keeps a stable
      order, and read as `t`/`tn` only for text: nothing in the timer, the
      session or the scoring reads it. */
@@ -299,12 +329,22 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      paper opened on its own can no longer overwrite, or pick up, each other. */
   const mockOwner = mockSitting?.owner ?? '';
   const mockSittingId = mockSitting?.sittingId ?? '';
+  /* A placement part is kept inside its placement sitting, the same way a
+     mock leg is kept inside its mock sitting (src/lib/placement/state.ts). */
+  const placementOwner = placementSitting?.owner ?? '';
+  const placementSittingId = placementSitting?.sittingId ?? '';
+  const inPlacement = placementSittingId !== '';
+  /** The evidence a placement part is written with, or null for any other
+      paper. Only the mode, the shared session id and the source key. */
+  const placementRecording = inPlacement ? placementEvidence(placementSittingId) : null;
   const sittingStore = useMemo(
     () =>
       mockSittingId
         ? mockLegSitting({ owner: mockOwner, sittingId: mockSittingId }, test)
-        : standaloneSitting(test),
-    [test, mockOwner, mockSittingId],
+        : placementSittingId
+          ? placementLegSitting({ owner: placementOwner, sittingId: placementSittingId }, test)
+          : standaloneSitting(test),
+    [test, mockOwner, mockSittingId, placementOwner, placementSittingId],
   );
 
   // Resume an in-progress session if one exists (survives refresh / tab close).
@@ -322,7 +362,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      `resumed.owner` is preferred where a resumed sitting names one, so a
      refresh keeps the same binding rather than quietly re-deciding it. */
   const sittingOwnerRef = useRef<string>(
-    typeof window === 'undefined' ? '' : mockOwner || (resumed?.owner ?? currentSessionOwner()),
+    typeof window === 'undefined' ? '' : mockOwner || placementOwner || (resumed?.owner ?? currentSessionOwner()),
   );
   /* Set when the owner changes while this player is mounted. 'signed-out'
      when nobody is signed in now, 'other-student' when somebody else is.
@@ -500,8 +540,9 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   }
 
   function start() {
-    /* A mock leg always belongs to the student who started the mock. */
-    sittingOwnerRef.current = mockOwner || currentSessionOwner();
+    /* A mock leg always belongs to the student who started the mock, and a
+       placement part to the student who started the placement. */
+    sittingOwnerRef.current = mockOwner || placementOwner || currentSessionOwner();
     const s = sittingStore.start();
     sittingRef.current = sittingRefOf(s);
     deadlineRef.current = s.endsAt;
@@ -551,7 +592,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      both work normally within the retake. */
   useEffect(() => {
     if (isRetake && !resumed) {
-      sittingOwnerRef.current = mockOwner || currentSessionOwner();
+      sittingOwnerRef.current = mockOwner || placementOwner || currentSessionOwner();
       const s = sittingStore.start();
       sittingRef.current = sittingRefOf(s);
       deadlineRef.current = s.endsAt;
@@ -561,6 +602,8 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
          never started over), and is stopped at once rather than sat for
          nothing (R2E-03). A fresh start that landed reads as held. */
       if (mockSittingId) noticeLost();
+      /* The same for a placement part already handed in from another tab. */
+      if (placementSittingId) noticeLost();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -585,7 +628,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
      never replaces the standalone slot, so opening it abandons nothing that
      was sitting there. */
   useEffect(() => {
-    if (mockSittingId) return;
+    if (mockSittingId || placementSittingId) return;
     const stale = activeSession();
     if (stale && stale.testId !== test.id) recordStaleSessionAbandonment(stale);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -664,6 +707,11 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
   useEffect(() => {
     if (!started || submitted || lost) return;
     const onStorage = (event: StorageEvent) => {
+      /* A placement part listens on its placement sitting's own record. */
+      if (placementSittingId) {
+        if (isPlacementStorageKey(event.key)) noticeLost();
+        return;
+      }
       const ours = mockSittingId ? isActiveMockStorageKey(event.key) : isTestSessionStorageKey(event.key);
       if (!ours) return;
       noticeLost();
@@ -671,7 +719,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [started, submitted, lost, mockSittingId]);
+  }, [started, submitted, lost, mockSittingId, placementSittingId]);
 
   /* `started` as a ref, so the owner-change listener above (subscribed once,
      on mount) reads today's value rather than the one it closed over. */
@@ -858,7 +906,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       activityId: attemptActivityId(test.id),
       paper: test.skill,
       at,
-      mode: attemptEvidenceMode(attemptKind),
+      mode: attemptEvidenceMode(attemptKind, placementRecording?.mode),
       completion: blank ? 'blank' : 'completed',
       items,
       raw,
@@ -866,6 +914,13 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
       bandEstimate: attemptKind === 'full' ? bandMidpoint(raw, SCORED_TOTAL, test.skill) : undefined,
       secondsUsed: test.durationMinutes * 60 - left,
       sourceTestId: baseId,
+      /* A placement part: the sitting's shared session id, so the policy
+         reads its four parts as one occasion, and the placement's source
+         key, so "has this account sat the placement" is answered from the
+         record itself. */
+      ...(placementRecording
+        ? { sessionId: placementRecording.sessionId, sourceMaterial: placementRecording.sourceMaterial }
+        : {}),
     });
 
     // The trial's Reading or Listening test is used now (a no-op on the open
@@ -1344,6 +1399,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
           endSeconds={stimulus.kind === 'audio' ? stimulus.endSeconds : undefined}
           drillPartNumber={attemptKind === 'drill' ? drillPartNumber(test.id) : null}
           onAssistanceUsed={markAllAssisted}
+          playOnce={inPlacement}
         />
       )}
 
@@ -1589,7 +1645,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                       html={group.legendHtml}
                     />
                   )}
-                  {attemptKind === 'drill' && (
+                  {attemptKind === 'drill' && !inPlacement && (
                     <div onClickCapture={() => markGroupAssisted(group)}>
                       <StrategyPanel skill={test.skill} type={group.type} />
                     </div>
@@ -1762,13 +1818,23 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                 <p className="mt-2 text-ink-muted">
                   {t('{percent}% correct', { percent: Math.round((correctCount / SCORED_TOTAL) * 100) })}
                 </p>
+                {/* A placement part is one short sample: it never shows a band
+                    (docs/personal-learning/BUILDER-RULES.md, honest wording),
+                    and its results screen reads the whole sitting at the end. */}
+                {!inPlacement && (
                 <p className="mt-3 inline-block rounded-full bg-brand-tint px-4 py-1.5 font-display font-bold text-brand">
                   {/* bandEstimate returns a number like "7.0", or the one
                       phrase "below 2.5" (marked with nt() in tests/schema.ts),
                       so it goes through t() rather than being printed raw. */}
                   {t('Estimated Band: {band}', { band: t(bandEstimate(correctCount, SCORED_TOTAL, test.skill)) })}
                 </p>
-                {weakestType && (
+                )}
+                {inPlacement && (
+                  <p className="mt-3 text-sm text-ink-muted">
+                    {t('One part of your placement test. The next part is ready when you are.')}
+                  </p>
+                )}
+                {weakestType && !inPlacement && (
                   <p className="result-focus mt-4 text-left text-sm text-ink-muted">
                     {/* One sentence, one key. The question type name stays in
                         English on purpose (the student meets it in that form on
@@ -1824,7 +1890,7 @@ export default function TestPlayer({ test, hubUrl, attemptKind = 'full', onFinis
                       onClick={() => onFinish!(scoredIds)}
                       className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
                     >
-                      {t('Back to results')}
+                      {inPlacement ? t('Continue') : t('Back to results')}
                     </button>
                   ) : (
                     <a
@@ -2703,6 +2769,7 @@ function ListeningAudio({
   endSeconds,
   drillPartNumber: partNumber,
   onAssistanceUsed,
+  playOnce = false,
 }: {
   src?: string;
   attemptKind: 'full' | 'drill';
@@ -2715,8 +2782,16 @@ function ListeningAudio({
       also guarded here, so a full exam's bare single-play button (which
       has no seek bar to begin with) can never fire it. */
   onAssistanceUsed?: () => void;
+  /** A placement part (24 September 2026): the drill's own slice of the
+      recording, played ONCE under exam conditions, with the full exam's
+      single Start button and no seek bar, pause or replay. The slice still
+      starts at startSeconds and stops at endSeconds, exactly as a drill's
+      does; only the controls change. */
+  playOnce?: boolean;
 }) {
   const { t } = useT();
+  /* Bare exam controls: a full paper, or a placement part. */
+  const examControls = attemptKind === 'full' || playOnce;
   const audioRef = useRef<HTMLAudioElement>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(src ? 'loading' : 'error');
   const [retry, setRetry] = useState(0);
@@ -2756,6 +2831,7 @@ function ListeningAudio({
     setCurrentTime(el.currentTime);
     if (attemptKind === 'drill' && endSeconds != null && el.currentTime >= endSeconds) {
       el.pause();
+      if (playOnce) setEnded(true);
     }
   }
 
@@ -2778,7 +2854,7 @@ function ListeningAudio({
      fragment: Russian needs the phrase in its own place. "Part" itself stays
      English, like every other exam label. */
   const rangeNote =
-    attemptKind === 'drill' && startSeconds != null
+    attemptKind === 'drill' && !playOnce && startSeconds != null
       ? partNumber != null
         ? t('This drill covers Part {part} of the recording ({from} to {to}).', {
             part: partNumber,
@@ -2796,7 +2872,13 @@ function ListeningAudio({
   // gets a touch more room to read as a considered instruction rather than a
   // throwaway toolbar control. Once playing, it settles back to the same
   // compact bar the drill uses.
-  const examGate = attemptKind === 'full' && !started;
+  const examGate = examControls && !started;
+  /* A placement part plays a slice of a longer recording, so its readout
+     counts from the slice's own start rather than showing the position in
+     the whole file. */
+  const sliceStart = playOnce && startSeconds != null ? startSeconds : 0;
+  const shownTime = Math.max(0, currentTime - sliceStart);
+  const shownLength = playOnce && startSeconds != null ? (endSeconds ?? duration) - startSeconds : duration;
 
   return (
     <section
@@ -2807,14 +2889,14 @@ function ListeningAudio({
       <div className="mx-auto flex max-w-5xl flex-col gap-2 sm:flex-row sm:items-center">
         <div className="shrink-0 sm:w-44">
           <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,var(--color-brand))]">
-            {attemptKind === 'drill' ? t('Drill recording') : t('Full recording')}
+            {playOnce ? t('Listening recording') : attemptKind === 'drill' ? t('Drill recording') : t('Full recording')}
           </p>
           <p className="text-xs text-ink-muted">
-            {attemptKind === 'drill' ? t('Pause and replay freely') : t('Plays once, exam conditions')}
+            {examControls ? t('Plays once, exam conditions') : t('Pause and replay freely')}
           </p>
         </div>
 
-        {src && attemptKind === 'drill' && (
+        {src && attemptKind === 'drill' && !playOnce && (
           <audio
             key={retry}
             ref={audioRef}
@@ -2832,7 +2914,7 @@ function ListeningAudio({
           />
         )}
 
-        {src && attemptKind === 'full' && (
+        {src && examControls && (
           <div className="flex min-w-0 flex-1 items-center gap-3">
             {/* No `controls`: bare exam conditions render only the button and
                 readout below, never native seek/pause/replay affordances. */}
@@ -2859,7 +2941,7 @@ function ListeningAudio({
               </button>
             ) : (
               <span className="font-mono text-sm font-semibold text-ink" aria-live="polite">
-                {ended ? t('Recording finished') : t('Recording playing')} · {fmtClock(currentTime)} / {fmtClock(duration)}
+                {ended ? t('Recording finished') : t('Recording playing')} · {fmtClock(shownTime)} / {fmtClock(shownLength)}
               </span>
             )}
           </div>
@@ -2869,7 +2951,7 @@ function ListeningAudio({
 
         <div className="min-h-5 shrink-0 text-xs sm:w-36 sm:text-right" aria-live="polite">
           {status === 'loading' && <span className="text-ink-muted">{t('Loading recording...')}</span>}
-          {status === 'ready' && !started && attemptKind === 'drill' && <span className="text-success">{t('Recording ready')}</span>}
+          {status === 'ready' && !started && attemptKind === 'drill' && !playOnce && <span className="text-success">{t('Recording ready')}</span>}
           {status === 'error' && (
             <span className="text-error">
               {t('Recording unavailable.')}{' '}

@@ -67,8 +67,16 @@ export function attemptActivityId(testId: string): string {
 /** 'assessment' for a timed full paper or a mock leg, 'practice' for a
     drill or a coaching retake. TestPlayer always renders the "retry the
     ones you got wrong" retake with attemptKind="drill" regardless of what
-    is being retried, so this one flag already settles the live case. */
-export function attemptEvidenceMode(attemptKind: 'full' | 'drill'): EvidenceMode {
+    is being retried, so this one flag already settles the live case.
+ *
+ *  `override` is the one exception, added with the placement test (24
+ *  September 2026): a paper sat as part of the placement is a short sample
+ *  taken to find out where the student is, so it is written as
+ *  'diagnostic' (src/lib/placement/state.ts, placementEvidence). It changes
+ *  the mode written and nothing else: where, when and whether the attempt
+ *  is recorded stay exactly as they are. */
+export function attemptEvidenceMode(attemptKind: 'full' | 'drill', override?: EvidenceMode): EvidenceMode {
+  if (override) return override;
   return attemptKind === 'full' ? 'assessment' : 'practice';
 }
 

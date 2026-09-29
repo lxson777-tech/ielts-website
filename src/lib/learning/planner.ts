@@ -406,9 +406,33 @@ function weekdayOf(date: string): number {
   return Number.isNaN(parsed) ? 0 : new Date(parsed).getUTCDay();
 }
 
+/** Whole calendar days from `from` to `to`, negative when `to` is earlier.
+    Both are local yyyy-mm-dd keys read at UTC midnight, so a daylight-saving
+    change can never make a day 23 or 25 hours long here. NaN when either
+    key does not parse. */
+export function wholeDaysBetween(from: string, to: string): number {
+  const a = Date.parse(`${from}T00:00:00Z`);
+  const b = Date.parse(`${to}T00:00:00Z`);
+  if (Number.isNaN(a) || Number.isNaN(b)) return Number.NaN;
+  return Math.round((b - a) / 86_400_000);
+}
+
+/** "Every other day": the anchor day is a study day, the day after is not,
+    the day after that is, and so on in both directions. An even number of
+    whole days from the anchor is a study day. A missing or unreadable
+    anchor counts every day, which over-counts rather than silently
+    dropping the student's study days. */
+export function isAlternateStudyDay(date: string, anchor: string | undefined): boolean {
+  if (!anchor) return true;
+  const offset = wholeDaysBetween(anchor, date);
+  if (Number.isNaN(offset)) return true;
+  return offset % 2 === 0;
+}
+
 export function isStudyDay(date: string, constraints: PlanConstraints, overrides: readonly PlanOverride[]): boolean {
   if (overrides.some((override) => override.kind === 'rest-day' && override.date === date)) return false;
   if (constraints.studyDays === 'daily') return true;
+  if (constraints.studyDays === 'alternate') return isAlternateStudyDay(date, constraints.alternateAnchor);
   const day = weekdayOf(date);
   if (constraints.studyDays === 'weekdays') return day >= 1 && day <= 5;
   return (constraints.customStudyDays ?? []).includes(day as 0 | 1 | 2 | 3 | 4 | 5 | 6);
