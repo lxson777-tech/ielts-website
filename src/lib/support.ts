@@ -223,12 +223,7 @@ export async function sendVisitorSupportRequest(
   } catch {
     return { ok: false, reason: 'network' };
   }
-  let body: { ok?: unknown; id?: unknown; code?: unknown } | null = null;
-  try {
-    body = (await resp.json()) as typeof body;
-  } catch {
-    body = null;
-  }
+  const body = (await resp.json().catch(() => null)) as { ok?: unknown; id?: unknown; code?: unknown } | null;
   if (resp.ok && body?.ok === true && typeof body.id === 'string') return { ok: true, id: body.id };
   return { ok: false, reason: supportFailureFromCode(typeof body?.code === 'string' ? body.code : '') };
 }
