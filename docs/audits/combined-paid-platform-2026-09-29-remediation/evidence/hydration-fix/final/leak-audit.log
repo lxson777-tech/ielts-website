@@ -1,0 +1,20 @@
+Checked 1890 phrases from 70 papers, 139 lesson bodies and 479 pieces of supporting material against dist.
+0 file(s) leak locked content; 8 share a single line; 1 named exception(s).
+  SHARED  data/learning-index.json: prompt:pte-wt-122-task2
+          "The working week should be shorter and workers"
+  SHARED  _astro/catalog.Dh265Z3I.js: focused:listening-table-completion-guided, focused:listening-table-completion-guided-2
+          "the exact words you hear, inside the word"
+  SHARED  _astro/question-types.B7jp-30A.js: lesson:reading-headings, lesson:reading-matching-information
+          "headings that only match one sentence in the"
+  SHARED  _astro/ru.BIYfiYQA.js: focused:listening-table-completion-guided, focused:listening-table-completion-guided-2
+          "the exact words you hear, inside the word"
+  SHARED  _astro/strategies.ChYa-yeR.js: lesson:reading-headings, lesson:reading-matching-information
+          "headings that only match one sentence in the"
+  ALLOWED _astro/words.SpPnfvuR.js: lesson:vocabulary-crime, lesson:vocabulary-family, lesson:vocabulary-government, lesson:vocabulary-health, lesson:vocabulary-housing, lesson:vocabulary-technology (+5)
+          The 146-word word-of-the-day sampler (src/data/words.ts), shown site-wide in lesson headers and on the dashboard. Some of its example sentences also appear in vocabulary lessons. Kept public as a free taster: Alex decided on 24 September 2026. Remove this entry to treat it as locked.
+  SHARED  _astro/written-focused-task.BlLNIUqQ.js: focused:writing-task2-structure-range-guided
+          "a relative clause, a subordinate clause, a passive,"
+  SHARED  _astro/_trial-learning-index.CVmLMUoz.js: prompt:pte-wt-122-task2
+          "The working week should be shorter and workers"
+  SHARED  _astro/_trial-ru-dictionary.DBtIqjpr.js: focused:writing-task2-structure-range-guided
+          "a relative clause, a subordinate clause, a passive,"

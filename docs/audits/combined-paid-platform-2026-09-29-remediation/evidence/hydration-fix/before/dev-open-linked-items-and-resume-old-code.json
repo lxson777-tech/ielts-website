@@ -1,0 +1,86 @@
+[
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/writing/models?task=pte-wt-131-task2&reason=from-session",
+  "try": 0,
+  "errors": [
+   "pageerror: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:\n\n- A server/client branch `if (typeof window !== 'undefined')`.\n- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n- Date formatting in a user's locale which doesn't match the server.\n- External changing data without sending a snapshot of it along with the HTML.\n- Invalid HTML tag nesting.\n\nIt can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n\nhttps://react.dev/link/hydration-mismatch\n\n  <ModelAnswers>\n    <div className=\"ma-layout\">\n      <div className=\"ma-picker\">\n        <button type=\"button\" className=\"ma-picker-...\" aria-expanded={false} aria-controls=\"model-prom...\" ...>\n          <span>\n+           All university undergraduate courses should include a period\n-           Library users at a university (chart and table)\n        ...\n      ...\n"
+  ]
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/speaking/cue-cards?card=place-city-visit&reason=from-session",
+  "try": 0,
+  "errors": [
+   "pageerror: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:\n\n- A server/client branch `if (typeof window !== 'undefined')`.\n- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n- Date formatting in a user's locale which doesn't match the server.\n- External changing data without sending a snapshot of it along with the HTML.\n- Invalid HTML tag nesting.\n\nIt can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n\nhttps://react.dev/link/hydration-mismatch\n\n  <CueCardBank>\n    <div className=\"screen-in ...\">\n      <label>\n      <p>\n      <div className=\"flex flex-...\">\n+       <button\n+         type=\"button\"\n+         onClick={function backToGrid}\n+         className=\"text-sm font-semibold text-ink-muted hover:text-ink\"\n+       >\n-       <div className=\"cue-chip-row flex flex-wrap gap-2\">\n        ...\n      ...\n"
+  ]
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/learn/bands?paper=speaking&criterion=lexicalResource&from=7&reason=from-session",
+  "try": 0,
+  "errors": [
+   "pageerror: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:\n\n- A server/client branch `if (typeof window !== 'undefined')`.\n- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n- Date formatting in a user's locale which doesn't match the server.\n- External changing data without sending a snapshot of it along with the HTML.\n- Invalid HTML tag nesting.\n\nIt can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n\nhttps://react.dev/link/hydration-mismatch\n\n  <BandLadder>\n    <div className=\"space-y-5\">\n+     <p className=\"rounded-card border border-brand/25 bg-brand-tint/40 px-4 py-3 text-sm text-ink\">\n-     <div role=\"tablist\" className={\"flex flex-wrap gap-1 rounded-button border border-border bg-surface-alt/60 p-1 \"}>\n      ...\n"
+  ]
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/tests/reading-full-001 (reload mid-sitting)",
+  "try": 0,
+  "started": true,
+  "resumed_on_screen": true,
+  "errors": [
+   "pageerror: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:\n\n- A server/client branch `if (typeof window !== 'undefined')`.\n- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n- Date formatting in a user's locale which doesn't match the server.\n- External changing data without sending a snapshot of it along with the HTML.\n- Invalid HTML tag nesting.\n\nIt can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n\nhttps://react.dev/link/hydration-mismatch\n\n  <TestPlayer test={{id:\"readin...\", ...}} hubUrl=\"/ielts-web...\">\n    <div\n+     className=\"screen-in flex h-dvh flex-col bg-surface text-ink\"\n-     className=\"grid min-h-dvh place-items-center bg-surface-alt p-4\"\n      onFocusCapture={function onFocusCapture}\n    >\n+     <header\n+       className=\"flex h-14 shrink-0 items-center gap-2 border-b border-border bg-surface px-2.5 max-[359px]:gap-1 ma...\"\n+     >\n-     <div\n-       className=\"study-preflight w-full max-w-lg rounded-card border border-border bg-surface p-6 shadow-card sm:p-8\"\n-     >\n      ...\n"
+  ]
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/writing/models?task=pte-wt-131-task2&reason=from-session",
+  "try": 0,
+  "errors": [
+   "pageerror: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:\n\n- A server/client branch `if (typeof window !== 'undefined')`.\n- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n- Date formatting in a user's locale which doesn't match the server.\n- External changing data without sending a snapshot of it along with the HTML.\n- Invalid HTML tag nesting.\n\nIt can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n\nhttps://react.dev/link/hydration-mismatch\n\n  <ModelAnswers>\n    <div className=\"ma-layout\">\n      <div className=\"ma-picker\">\n        <button type=\"button\" className=\"ma-picker-...\" aria-expanded={false} aria-controls=\"model-prom...\" ...>\n          <span>\n+           All university undergraduate courses should include a period\n-           Library users at a university (chart and table)\n        ...\n      ...\n"
+  ]
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/speaking/cue-cards?card=place-city-visit&reason=from-session",
+  "try": 0,
+  "errors": [
+   "pageerror: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:\n\n- A server/client branch `if (typeof window !== 'undefined')`.\n- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n- Date formatting in a user's locale which doesn't match the server.\n- External changing data without sending a snapshot of it along with the HTML.\n- Invalid HTML tag nesting.\n\nIt can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n\nhttps://react.dev/link/hydration-mismatch\n\n  <CueCardBank>\n    <div className=\"screen-in ...\">\n      <label>\n      <p>\n      <div className=\"flex flex-...\">\n+       <button\n+         type=\"button\"\n+         onClick={function backToGrid}\n+         className=\"text-sm font-semibold text-ink-muted hover:text-ink\"\n+       >\n-       <div className=\"cue-chip-row flex flex-wrap gap-2\">\n        ...\n      ...\n"
+  ]
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/learn/bands?paper=speaking&criterion=lexicalResource&from=7&reason=from-session",
+  "try": 0,
+  "errors": [
+   "pageerror: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:\n\n- A server/client branch `if (typeof window !== 'undefined')`.\n- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n- Date formatting in a user's locale which doesn't match the server.\n- External changing data without sending a snapshot of it along with the HTML.\n- Invalid HTML tag nesting.\n\nIt can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n\nhttps://react.dev/link/hydration-mismatch\n\n  <BandLadder>\n    <div className=\"space-y-5\">\n+     <p className=\"rounded-card border border-brand/25 bg-brand-tint/40 px-4 py-3 text-sm text-ink\">\n-     <div role=\"tablist\" className={\"flex flex-wrap gap-1 rounded-button border border-border bg-surface-alt/60 p-1 \"}>\n      ...\n"
+  ]
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/tests/reading-full-001 (reload mid-sitting)",
+  "try": 0,
+  "started": true,
+  "resumed_on_screen": true,
+  "errors": [
+   "pageerror: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:\n\n- A server/client branch `if (typeof window !== 'undefined')`.\n- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n- Date formatting in a user's locale which doesn't match the server.\n- External changing data without sending a snapshot of it along with the HTML.\n- Invalid HTML tag nesting.\n\nIt can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n\nhttps://react.dev/link/hydration-mismatch\n\n  <TestPlayer test={{id:\"readin...\", ...}} hubUrl=\"/ielts-web...\">\n    <div\n+     className=\"screen-in flex h-dvh flex-col bg-surface text-ink\"\n-     className=\"grid min-h-dvh place-items-center bg-surface-alt p-4\"\n      onFocusCapture={function onFocusCapture}\n    >\n+     <header\n+       className=\"flex h-14 shrink-0 items-center gap-2 border-b border-border bg-surface px-2.5 max-[359px]:gap-1 ma...\"\n+     >\n-     <div\n-       className=\"study-preflight w-full max-w-lg rounded-card border border-border bg-surface p-6 shadow-card sm:p-8\"\n-     >\n      ...\n"
+  ]
+ }
+]

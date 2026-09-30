@@ -1,0 +1,25 @@
+13:10:17   ├─ /trainers/speaking-focus/speaking-part3-abstract-opinion-guided.html (+3ms) 
+13:10:17   ├─ /trainers/speaking-focus/speaking-part3-abstract-opinion-check.html (+3ms) 
+13:10:17   ├─ /trainers/speaking-focus/speaking-part3-speculate-and-compare-guided.html (+4ms) 
+13:10:17   └─ /trainers/speaking-focus/speaking-part3-speculate-and-compare-check.html (+4ms) 
+13:10:17 ▶ src/pages/trainers/speaking.astro
+13:10:17   └─ /trainers/speaking.html (+3ms) 
+13:10:17 ▶ src/pages/trainers/writing.astro
+13:10:17   └─ /trainers/writing.html (+4ms) 
+13:10:17 ▶ src/pages/trial.astro
+13:10:17   └─ /trial.html (+5ms) 
+13:10:17 ▶ src/pages/writing/checker.astro
+13:10:17   └─ /writing/checker.html (+4ms) 
+13:10:17 ▶ src/pages/writing/models.astro
+13:10:17   └─ /writing/models.html (+6ms) 
+13:10:17 ▶ /speaking/checker
+13:10:17   └─ /speaking/checker.html (+2ms) 
+13:10:17 ▶ /tests/drills
+13:10:17   └─ /tests/drills.html (+1ms) 
+13:10:17 ▶ /
+13:10:17   └─ /index.html (+2ms) 
+13:10:17 ✓ Completed in 4.09s.
+
+13:10:19 [@astrojs/sitemap] `sitemap-index.xml` created at `..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-Alex-Desktop-Projects-IELTS-website--claude-worktrees-xenodochial-germain-27e6da\8984a23b-5ee1-44e7-ac86-6bdd39ca7200\scratchpad\open-dist`
+13:10:19 [build] 675 page(s) built in 19.84s
+13:10:19 [build] Complete!

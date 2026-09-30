@@ -1,0 +1,277 @@
+PASS [en-390] signed-out visitor made ZERO /content/pack/ requests
+PASS [en-1440] trial started
+PASS [en-1440] trial account visiting locked pages made ZERO /content/pack/ requests
+PASS [en-1440] /plans (trial): both Buy buttons enabled
+PASS [en-1440] /plans: SIMULATED banner visible
+PASS [en-1440] /plans: no sideways scroll  [{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}]
+PASS [en-1440] simulated provider page (/__pay) reached, labelled SIMULATED  [http://127.0.0.1:8871/__pay/83e66cc4-3824-4864-ad78-1bd99ec4c3f2?return=http%3A%2F%2Flocalhost%3A4481%2Fielts-website%2Fplans%2Freturn%3Forder%3D83e66cc4-3824-4864-ad78-1bd99ec4c3f2]
+PASS [en-1440] /plans/return: 'You're in' after the provider confirmed
+PASS [en-1440] server: order paid at 10,000 KZT with exactly one grant  [{"id": "83e66cc4-3824-4864-ad78-1bd99ec4c3f2", "user_id": "0bd6c9b9-14c1-427d-9ed7-74a62ab59dec", "plan_id": "month-1", "amount": 10000, "currency": "KZT", "provider": "simulated", "provider_ref": "si]
+PASS [en-1440] return page states the access-until date from the server grant  [30 October 2026]
+PASS [en-1440] reloading the return page is safe (no second grant)
+PASS [en-1440] Today is the full Today (not the trial home)
+PASS [en-1440] previously locked lesson opens (reading/tfng)
+PASS [en-1440] Writing checker offers the full question choice (Task 1 and Task 2)
+PASS [en-1440] cue cards open (24 cards)
+PASS [en-1440] model answer page shows a Band 8 answer
+PASS [en-1440] band guide shows real steps
+PASS [en-1440] focused exercise answered and checked start to finish
+PASS [en-1440] vocabulary review topics open  [IELTS is EZ
+Today
+Course
+Practice
+Tests
+Vocabulary
+EN
+RU
+SS
+Skip to content
+
+Dashboard
+
+Vocabulary
+
+Every IELTS topic, i]
+PASS [en-1440] placement material arrived and can start
+PASS [en-1440] placement test started
+PASS [en-1440] placement: no sideways scroll  [{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}]
+PASS [en-1440] paid browsing fetched packs through the door  [25]
+PASS [en-1440] account: Your access with end date and a purchase history row  [Your access
+
+What your account can open, and every purchase you have made.
+
+Full access until 30 October 2026
+Buying again adds more time after this date. Nothing renews by itself.
+Add more time
+
+Full]
+PASS [en-1440] account: receipt link present
+PASS [en-1440] receipt: number, amount and status shown, marked SIMULATED  [SIMULATED payment
+No money was taken. This receipt is a local test, not a real one.
+
+IELTS IS EZ
+Receipt
+Receipt number
+2026-000017
+Date
+30 September 2026
+Plan
+One month
+Access period
+30 September 202]
+PASS [en-1440] three months extends: new grant starts when the first ends (+90 days)  [[{"id": "cdd90aff-86a2-49f9-9794-a990132d3bf4", "user_id": "0bd6c9b9-14c1-427d-9ed7-74a62ab59dec", "order_id": "b71533f9-b9de-422c-b37c-bd2ff25252ca", "plan_id": "month-3", "starts_at": "2026-10-30T08]
+PASS [en-1440] second fresh browser: signed in and /plans shows paid access
+PASS [en-1440] second browser: previously locked lesson open
+PASS [en-1440] second browser: full Today
+PASS [en-1440] Fail: 'Payment was not completed', access unchanged
+PASS [en-1440] Cancel: order cancelled on the server and the page says so  [cancelled]
+PASS [en-1440] interrupted: back on /plans the pending order is shown with Check again  [/plans]
+PASS [en-1440] interrupted order is 'pending' on the server, grants unchanged  [pending]
+PASS [en-1440] student B paid: door open for the paid lesson
+PASS [en-1440] refund: the lesson is locked again on screen
+PASS [en-1440] refund: the door refuses the paid lesson (403)
+PASS [en-1440] refund: account shows the order refunded and no paid access  [Your access
+
+What your account can open, and every purchase you have made.
+
+Your free trial runs until 3 October, 13:31
+Full access starts as soon as your payment is confirmed.
+View plans
+
+Full access]
+PASS [en-1440] paid student submitted a paid-only paper (result to keep)
+PASS [en-1440] expire: account says 'ended on' and results are kept  [Your access
+
+What your account can open, and every purchase you have made.
+
+Your full access ended on 30 September 2026
+Your results are kept. Choose a plan to continue.
+Buy access again
+
+Full access ]
+PASS [en-1440] expire: previously paid lesson locked again
+PASS [en-1440] expire: saved results still on the report  [IELTS is EZ
+Today
+Course
+Practice
+Tests
+Vocabulary
+EN
+RU
+SS
+Skip to content
+
+PROGRESS REPORT
+
+Your progress, one page.
+
+Everything from your account page laid o]
+PASS [ru-1440] trial started
+PASS [ru-1440] trial: zero pack requests before buying
+PASS [ru-1440] /plans: no sideways scroll  [{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}]
+PASS [ru-1440] bought one month: return page confirms
+PASS [ru-1440] Today is the full Today (not the trial home)
+PASS [ru-1440] previously locked lesson opens (reading/tfng)
+PASS [ru-1440] Writing checker offers the full question choice (Task 1 and Task 2)
+PASS [ru-1440] cue cards open (24 cards)
+PASS [ru-1440] model answer page shows a Band 8 answer
+PASS [ru-1440] band guide shows real steps
+PASS [ru-1440] focused exercise answered and checked start to finish
+PASS [ru-1440] vocabulary review topics open  [IELTS is EZ
+Сегодня
+Курс
+Практика
+Тесты
+Словарь
+EN
+RU
+SS
+Перейти к содержимому
+
+Дашборд
+
+Словарь
+
+Каждая тема IELTS, её ]
+PASS [ru-1440] placement material arrived and can start
+PASS [ru-1440] placement: no sideways scroll  [{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}]
+PASS [ru-1440] account: Your access shows full access
+PASS [ru-1440] account: no sideways scroll  [{'clientWidth': 1440, 'scrollWidth': 1440, 'innerWidth': 1440, 'wide': []}]
+PASS [en-390] trial started
+PASS [en-390] trial: zero pack requests before buying
+PASS [en-390] /plans: no sideways scroll  [{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}]
+PASS [en-390] bought one month: return page confirms
+PASS [en-390] Today is the full Today (not the trial home)
+PASS [en-390] previously locked lesson opens (reading/tfng)
+PASS [en-390] Writing checker offers the full question choice (Task 1 and Task 2)
+PASS [en-390] cue cards open (24 cards)
+PASS [en-390] model answer page shows a Band 8 answer
+PASS [en-390] band guide shows real steps
+PASS [en-390] focused exercise answered and checked start to finish
+PASS [en-390] vocabulary review topics open  [IELTS is EZ
+EN
+RU
+SS
+Today
+Course
+Practice
+Tests
+Vocabulary
+Skip to content
+
+Dashboard
+
+Vocabulary
+
+Every IELTS topic, i]
+PASS [en-390] placement material arrived and can start
+PASS [en-390] placement: no sideways scroll  [{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}]
+PASS [en-390] account: Your access shows full access
+PASS [en-390] account: no sideways scroll  [{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}]
+PASS [ru-390] trial started
+PASS [ru-390] trial account visiting locked pages made ZERO /content/pack/ requests
+PASS [ru-390] /plans (trial): both Buy buttons enabled
+PASS [ru-390] /plans: SIMULATED banner visible
+PASS [ru-390] /plans: no sideways scroll  [{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}]
+PASS [ru-390] simulated provider page (/__pay) reached, labelled SIMULATED  [http://127.0.0.1:8871/__pay/b6fad93a-14c5-4d0b-ad28-3dda4b5b57ce?return=http%3A%2F%2Flocalhost%3A4481%2Fielts-website%2Fplans%2Freturn%3Forder%3Db6fad93a-14c5-4d0b-ad28-3dda4b5b57ce]
+PASS [ru-390] /plans/return: 'You're in' after the provider confirmed
+PASS [ru-390] server: order paid at 10,000 KZT with exactly one grant  [{"id": "b6fad93a-14c5-4d0b-ad28-3dda4b5b57ce", "user_id": "ece92877-9caa-46f9-a4c5-85bae446e35b", "plan_id": "month-1", "amount": 10000, "currency": "KZT", "provider": "simulated", "provider_ref": "si]
+PASS [ru-390] reloading the return page is safe (no second grant)
+PASS [ru-390] Today is the full Today (not the trial home)
+PASS [ru-390] previously locked lesson opens (reading/tfng)
+PASS [ru-390] Writing checker offers the full question choice (Task 1 and Task 2)
+PASS [ru-390] cue cards open (24 cards)
+PASS [ru-390] model answer page shows a Band 8 answer
+PASS [ru-390] band guide shows real steps
+PASS [ru-390] focused exercise answered and checked start to finish
+PASS [ru-390] vocabulary review topics open  [IELTS is EZ
+EN
+RU
+SS
+Сегодня
+Курс
+Практика
+Тесты
+Словарь
+Перейти к содержимому
+
+Дашборд
+
+Словарь
+
+Каждая тема IELTS, её ]
+PASS [ru-390] placement material arrived and can start
+PASS [ru-390] placement test started
+PASS [ru-390] placement: no sideways scroll  [{'clientWidth': 390, 'scrollWidth': 390, 'innerWidth': 390, 'wide': []}]
+PASS [ru-390] paid browsing fetched packs through the door  [34]
+PASS [ru-390] account: Your access with end date and a purchase history row  [Ваш доступ
+
+Что открыто в вашем аккаунте, и все ваши покупки.
+
+Полный доступ до 30 октября 2026 г.
+Новая покупка добавит время после этой даты. Ничего не продлевается само.
+Добавить время
+
+Полный дост]
+PASS [ru-390] account: receipt link present
+PASS [ru-390] receipt: number, amount and status shown, marked SIMULATED  [СИМУЛЯЦИЯ оплаты
+Деньги не списывались. Этот чек из локальной проверки, он не настоящий.
+
+IELTS IS EZ
+Чек
+Номер чека
+2026-000022
+Дата
+30 сентября 2026 г.
+Тариф
+Один месяц
+Срок доступа
+с 30 сентября 20]
+PASS [ru-390] three months extends: new grant starts when the first ends (+90 days)  [[{"id": "9b778744-e48a-4abd-ba4e-8bd4b271c07d", "user_id": "ece92877-9caa-46f9-a4c5-85bae446e35b", "order_id": "c0b0829f-2cf1-4716-867d-14508614f261", "plan_id": "month-3", "starts_at": "2026-10-30T08]
+PASS [ru-390] second fresh browser: signed in and /plans shows paid access
+PASS [ru-390] second browser: previously locked lesson open
+PASS [ru-390] second browser: full Today
+PASS [ru-390] Fail: 'Payment was not completed', access unchanged
+PASS [ru-390] Cancel: order cancelled on the server and the page says so  [cancelled]
+PASS [ru-390] interrupted: back on /plans the pending order is shown with Check again  [/plans]
+PASS [ru-390] interrupted order is 'pending' on the server, grants unchanged  [pending]
+PASS [ru-390] student B paid: door open for the paid lesson
+PASS [ru-390] refund: the lesson is locked again on screen
+PASS [ru-390] refund: the door refuses the paid lesson (403)
+PASS [ru-390] refund: account shows the order refunded and no paid access  [Ваш доступ
+
+Что открыто в вашем аккаунте, и все ваши покупки.
+
+Бесплатный пробный период действует до 3 октября, 13:36
+Полный доступ откроется, как только оплата будет подтверждена.
+Посмотреть тарифы
+]
+PASS [ru-390] paid student submitted a paid-only paper (result to keep)
+PASS [ru-390] expire: account no longer says full access until  [Ваш доступ
+
+Что открыто в вашем аккаунте, и все ваши покупки.
+
+Ваш полный доступ закончился 30 сентября 2026 г.
+Ваши результаты сохранены. Выберите тариф, чтобы продолжить.
+Купить доступ снова
+
+Полный]
+PASS [ru-390] expire: previously paid lesson locked again
+FAIL [ru-390] expire: saved results still on the report  [IELTS is EZ
+EN
+RU
+SS
+Сегодня
+Курс
+Практика
+Тесты
+Словарь
+Перейти к содержимому
+
+ОТЧЁТ О ПРОГРЕССЕ
+
+Ваш прогресс на одной странице.
+
+Всё с вашей страницы аккаунт]
+
+journey-c-paying: 113/114 passed

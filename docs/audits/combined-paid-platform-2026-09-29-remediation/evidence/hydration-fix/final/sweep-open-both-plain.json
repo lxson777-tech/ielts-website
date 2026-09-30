@@ -1,0 +1,1762 @@
+[
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/dashboard",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/trial",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/plans",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/tests",
+  "try": 0,
+  "errors": [],
+  "islands": 7,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/account",
+  "try": 0,
+  "errors": [],
+  "islands": 11,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/writing/models",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/learn",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/learn/bands",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/reading/para",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/reading/cat",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/listening",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/speaking",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/writing",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/writing-task2",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/vocabulary",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/reading-test",
+  "try": 0,
+  "errors": [],
+  "islands": 7,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/speaking/cue-cards",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/speaking/examiner",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/report",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/review",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/placement",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/start",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/help",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/support",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/terms",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/privacy",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/trainers",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/trainers/writing",
+  "try": 0,
+  "errors": [],
+  "islands": 4,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/trainers/speaking",
+  "try": 0,
+  "errors": [],
+  "islands": 4,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/trainers/reading",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/trainers/listening",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/tests/mock",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/tests/reading-full-001",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/tests/listening-full-001",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/writing/checker",
+  "try": 0,
+  "errors": [],
+  "islands": 4,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/plan-settings",
+  "try": 0,
+  "errors": [],
+  "islands": 5,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/profile",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/sign-in",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/sign-up",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/forgot-password",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/writing/models?task=pte-wt-131-task2&reason=from-session",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/speaking/cue-cards?card=place-city-visit&reason=from-session",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/learn/bands?paper=speaking&criterion=lexicalResource&from=7&reason=from-session",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/tests/reading-full-001 (reload mid-sitting)",
+  "try": 0,
+  "started": true,
+  "resumed_on_screen": true,
+  "errors": []
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/dashboard",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/trial",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/plans",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/tests",
+  "try": 0,
+  "errors": [],
+  "islands": 7,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/account",
+  "try": 0,
+  "errors": [],
+  "islands": 11,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/writing/models",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/learn",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/learn/bands",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/reading/para",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/reading/cat",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/listening",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/speaking",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/writing",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/writing-task2",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/vocabulary",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/lessons/reading-test",
+  "try": 0,
+  "errors": [],
+  "islands": 7,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/speaking/cue-cards",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/speaking/examiner",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/report",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/review",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/placement",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/start",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/help",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/support",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/terms",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/privacy",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/trainers",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/trainers/writing",
+  "try": 0,
+  "errors": [],
+  "islands": 4,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/trainers/speaking",
+  "try": 0,
+  "errors": [],
+  "islands": 4,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/trainers/reading",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/trainers/listening",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/tests/mock",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/tests/reading-full-001",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/tests/listening-full-001",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/writing/checker",
+  "try": 0,
+  "errors": [],
+  "islands": 4,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/plan-settings",
+  "try": 0,
+  "errors": [],
+  "islands": 5,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/profile",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/sign-in",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/sign-up",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/forgot-password",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/writing/models?task=pte-wt-131-task2&reason=from-session",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/speaking/cue-cards?card=place-city-visit&reason=from-session",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/learn/bands?paper=speaking&criterion=lexicalResource&from=7&reason=from-session",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "1440x900",
+  "state": "signed-out",
+  "path": "/tests/reading-full-001 (reload mid-sitting)",
+  "try": 0,
+  "started": true,
+  "resumed_on_screen": true,
+  "errors": []
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/dashboard",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/trial",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/plans",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/tests",
+  "try": 0,
+  "errors": [],
+  "islands": 7,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/account",
+  "try": 0,
+  "errors": [],
+  "islands": 11,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/writing/models",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/learn",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/learn/bands",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/reading/para",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/reading/cat",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/listening",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/speaking",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/writing",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/writing-task2",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/vocabulary",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/reading-test",
+  "try": 0,
+  "errors": [],
+  "islands": 7,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/speaking/cue-cards",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/speaking/examiner",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/report",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/review",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/placement",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/start",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/help",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/support",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/terms",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/privacy",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/trainers",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/trainers/writing",
+  "try": 0,
+  "errors": [],
+  "islands": 4,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/trainers/speaking",
+  "try": 0,
+  "errors": [],
+  "islands": 4,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/trainers/reading",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/trainers/listening",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/tests/mock",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/tests/reading-full-001",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/tests/listening-full-001",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/writing/checker",
+  "try": 0,
+  "errors": [],
+  "islands": 4,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/plan-settings",
+  "try": 0,
+  "errors": [],
+  "islands": 5,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/profile",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/sign-in",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/sign-up",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/forgot-password",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/writing/models?task=pte-wt-131-task2&reason=from-session",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/speaking/cue-cards?card=place-city-visit&reason=from-session",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/learn/bands?paper=speaking&criterion=lexicalResource&from=7&reason=from-session",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "en",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/tests/reading-full-001 (reload mid-sitting)",
+  "try": 0,
+  "started": true,
+  "resumed_on_screen": true,
+  "errors": []
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/dashboard",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/trial",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/plans",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/tests",
+  "try": 0,
+  "errors": [],
+  "islands": 7,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/account",
+  "try": 0,
+  "errors": [],
+  "islands": 11,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/writing/models",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/learn",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/learn/bands",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/reading/para",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/reading/cat",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/listening",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/speaking",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/writing",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/writing-task2",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/vocabulary",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/lessons/reading-test",
+  "try": 0,
+  "errors": [],
+  "islands": 7,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/speaking/cue-cards",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/speaking/examiner",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/report",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/review",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/placement",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/start",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/help",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/support",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/terms",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/privacy",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/trainers",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/trainers/writing",
+  "try": 0,
+  "errors": [],
+  "islands": 4,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/trainers/speaking",
+  "try": 0,
+  "errors": [],
+  "islands": 4,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/trainers/reading",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/trainers/listening",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/tests/mock",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/tests/reading-full-001",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/tests/listening-full-001",
+  "try": 0,
+  "errors": [],
+  "islands": 1,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/writing/checker",
+  "try": 0,
+  "errors": [],
+  "islands": 4,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/plan-settings",
+  "try": 0,
+  "errors": [],
+  "islands": 5,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/profile",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/sign-in",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/sign-up",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/forgot-password",
+  "try": 0,
+  "errors": [],
+  "islands": 2,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/writing/models?task=pte-wt-131-task2&reason=from-session",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/speaking/cue-cards?card=place-city-visit&reason=from-session",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/learn/bands?paper=speaking&criterion=lexicalResource&from=7&reason=from-session",
+  "try": 0,
+  "errors": [],
+  "islands": 3,
+  "islands_waiting": 0
+ },
+ {
+  "lang": "ru",
+  "size": "390x844",
+  "state": "signed-out",
+  "path": "/tests/reading-full-001 (reload mid-sitting)",
+  "try": 0,
+  "started": true,
+  "resumed_on_screen": true,
+  "errors": []
+ }
+]

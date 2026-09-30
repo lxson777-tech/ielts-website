@@ -1,0 +1,25 @@
+13:10:51   ├─ /trainers/speaking-focus/speaking-part3-complex-sentences-guided.html (+4ms) 
+13:10:51   ├─ /trainers/speaking-focus/speaking-part3-complex-sentences-check.html (+5ms) 
+13:10:51   ├─ /trainers/speaking-focus/speaking-part3-abstract-opinion-guided.html (+4ms) 
+13:10:51   ├─ /trainers/speaking-focus/speaking-part3-abstract-opinion-check.html (+71ms) 
+13:10:51   ├─ /trainers/speaking-focus/speaking-part3-speculate-and-compare-guided.html (+5ms) 
+13:10:51   └─ /trainers/speaking-focus/speaking-part3-speculate-and-compare-check.html (+4ms) 
+13:10:51 ▶ src/pages/trainers/speaking.astro
+13:10:51   └─ /trainers/speaking.html (+4ms) 
+13:10:51 ▶ src/pages/trainers/writing.astro
+13:10:51   └─ /trainers/writing.html (+4ms) 
+13:10:51 ▶ src/pages/trial.astro
+13:10:51   └─ /trial.html (+4ms) 
+13:10:51 ▶ src/pages/writing/checker.astro
+13:10:51   └─ /writing/checker.html (+4ms) 
+13:10:51 ▶ src/pages/writing/models.astro
+13:10:51   └─ /writing/models.html (+3ms) 
+13:10:51 ▶ /speaking/checker
+13:10:51   └─ /speaking/checker.html (+2ms) 
+13:10:51 ▶ /tests/drills
+13:10:51   └─ /tests/drills.html (+1ms) 
+13:10:51 ✓ Completed in 4.55s.
+
+13:10:51 [@astrojs/sitemap] `sitemap-index.xml` created at `dist`
+13:10:51 [build] 676 page(s) built in 27.88s
+13:10:51 [build] Complete!
