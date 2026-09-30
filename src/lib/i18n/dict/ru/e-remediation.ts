@@ -97,6 +97,11 @@ export const strings: Record<string, string> = {
   'Updated 30 September 2026': 'Обновлено 30 сентября 2026 года',
   // Purchases and account removal (re-audit R02, 30 September 2026)
   'Purchases and payment records': 'Покупки и платёжные записи',
+  // Signed-out support (re-audit R01, 30 September 2026)
+  'If you write without signing in: the email address you give for the reply. To stop one sender from flooding the form, your internet connection’s address is also kept for 24 hours, only as a scrambled code that cannot be read back. The address itself is never stored.':
+    'Если вы пишете, не входя в аккаунт: адрес почты, который вы указали для ответа. Чтобы один отправитель не мог завалить форму сообщениями, адрес вашего интернет-подключения тоже хранится 24 часа, но только в виде зашифрованного кода, из которого его нельзя восстановить. Сам адрес не сохраняется.',
+  'When the form shows a security check, Cloudflare runs it and receives your connection’s address to do so. This site keeps nothing from the check.':
+    'Если форма показывает проверку безопасности, её проводит Cloudflare и для этого получает адрес вашего подключения. Сайт ничего из этой проверки не сохраняет.',
   'When you buy access, the site keeps a record of the purchase:': 'Когда вы покупаете доступ, сайт сохраняет запись о покупке:',
   'Which plan you chose, its price and currency, and when you started the purchase.':
     'Какой тариф вы выбрали, его цену и валюту, и когда вы начали покупку.',

@@ -28,7 +28,15 @@
      so an account with any order cannot be deleted today. Card details never
      reach our code: the Worker asks the provider for a checkout address and
      later receives a signed confirmation. No provider is chosen, so none is
-     named. The site has no delete-my-account control at all.
+     named. The site has no delete-my-account control at all;
+   - signed-out support (re-audit R01, workers/support and
+     2026-09-30-support.sql): the typed email, message, topic, language and
+     the page named in the link are kept; the sender's network address only
+     as a keyed hash (the /64 network for IPv6), used only for the per-sender
+     limits, never shown to the admin and erased after 24 hours (on every
+     signed-out message and hourly). The Turnstile check, only when its site
+     key is configured, sends Cloudflare the token and the address; the site
+     stores neither.
    If a Worker is ever switched to its Gemini rollback, the "OpenAI" lines
    below must change first.
 
@@ -74,6 +82,10 @@ const kept: string[] = [
   nt('Your conversations with Mr EZ, so he can carry on where you left off. You can clear them at any time in Study plan settings.'),
   nt('If you take the free trial: when it started, which trial tests and Mr EZ messages you used, and your answers to the short questions about your goals.'),
   nt('Messages you send through the support form, with the page you sent them from.'),
+  nt('If you write without signing in: the email address you give for the reply. To stop one sender from flooding the form, your internet connection’s address is also kept for 24 hours, only as a scrambled code that cannot be read back. The address itself is never stored.'),
+  ...(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
+    ? [nt('When the form shows a security check, Cloudflare runs it and receives your connection’s address to do so. This site keeps nothing from the check.')]
+    : []),
 ];
 
 /* Purchases exist only in the gated build: the open site sells nothing and
