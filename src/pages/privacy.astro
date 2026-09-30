@@ -16,19 +16,33 @@
      grade-essay and grade-speaking Workers on Cloudflare (their READMEs);
    - live examiner: audio goes browser to OpenAI directly; the Worker only
      brokers the session and keeps a timing row (live_examiner_sessions);
-   - trial: trial_accounts (start, end, the goal questions) and trial_usage.
+   - trial: trial_accounts (start, end, the goal questions) and trial_usage;
+   - purchases (re-audit R02, 30 September 2026), from
+     supabase/migrations/2026-09-30-paid-access.sql and workers/payments:
+     payment_orders keeps the plan, amount, currency, provider name and the
+     provider's reference, status (created, pending, paid, failed, cancelled,
+     refunded), a failure reason, the created/paid/refunded times and a
+     receipt number; access_grants keeps each paid period's start and end and
+     the time it was revoked. An order row exists from the moment a purchase
+     is STARTED. Both tables reference the sign-in with ON DELETE RESTRICT,
+     so an account with any order cannot be deleted today. Card details never
+     reach our code: the Worker asks the provider for a checkout address and
+     later receives a signed confirmation. No provider is chosen, so none is
+     named. The site has no delete-my-account control at all.
    If a Worker is ever switched to its Gemini rollback, the "OpenAI" lines
    below must change first.
 
    Deliberately NOT stated, because Alex has not decided them: who runs the
    site (shown on its own once src/lib/operator.ts is published), how long
-   each kind of information is kept, and how to have it removed. One short
-   note says these are being finalised, because silence would read as
-   "kept forever, never removable". */
+   each kind of information is kept, and the full process for removing an
+   account. The page says what happens TODAY (including the deletion limit
+   above) and lists separately what is still undecided, because silence
+   would read as "kept forever, never removable". */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { withBase } from '../lib/url';
 import { nt } from '../lib/i18n/translate';
 import { publishedOperator } from '../lib/operator';
+import { isTrialBuild } from '../lib/trial/mode';
 
 const operator = publishedOperator();
 
@@ -62,8 +76,29 @@ const kept: string[] = [
   nt('Messages you send through the support form, with the page you sent them from.'),
 ];
 
+/* Purchases exist only in the gated build: the open site sells nothing and
+   never creates a purchase record. */
+const sellsAccess = isTrialBuild();
+
+const purchaseRecord: string[] = [
+  nt('Which plan you chose, its price and currency, and when you started the purchase.'),
+  nt('What happened to it: waiting for payment, paid, not completed, cancelled or refunded, with the time, and a short reason if a payment did not go through.'),
+  nt('The name of the payment company and its reference number for the payment.'),
+  nt('A receipt number for each paid purchase.'),
+  nt('The dates your paid access starts and ends, and the date it was withdrawn if a payment was refunded.'),
+];
+
+const undecided = sellsAccess
+  ? nt('Still being decided: how long each kind of information is kept, including purchase records, and the full process for removing an account. This page will say so once it is.')
+  : nt('Still being decided: how long each kind of information is kept, and the full process for removing an account. This page will say so once it is.');
+
 const services: { name: string; role: string }[] = [
-  { name: 'Supabase', role: nt('Stores accounts, profiles, saved work, Mr EZ conversations and support messages.') },
+  {
+    name: 'Supabase',
+    role: sellsAccess
+      ? nt('Stores accounts, profiles, saved work, Mr EZ conversations, support messages and purchase records.')
+      : nt('Stores accounts, profiles, saved work, Mr EZ conversations and support messages.'),
+  },
   {
     name: 'OpenAI',
     role: nt('Writes the AI feedback and Mr EZ’s replies. Your essay text, your Speaking recording, and your questions to Mr EZ with a summary of your own results are sent to OpenAI for this, under OpenAI’s own terms for its API.'),
@@ -81,7 +116,7 @@ const services: { name: string; role: string }[] = [
       <p class="policy-eyebrow" data-i18n>Privacy</p>
       <h1 data-i18n>How your information is used</h1>
       <p class="policy-lede" data-i18n>What the site asks for and why, what it keeps, and which services handle it. Only what the site actually does, in plain words.</p>
-      <p class="policy-updated" data-i18n>Updated 29 September 2026</p>
+      <p class="policy-updated" data-i18n>Updated 30 September 2026</p>
     </header>
 
     {operator && (
@@ -124,6 +159,20 @@ const services: { name: string; role: string }[] = [
       <p style="margin-top: 16px" data-i18n>Your progress is also kept in this browser, on this device. Signing in keeps it on your account too.</p>
     </section>
 
+    {sellsAccess && (
+      <section class="policy-section" aria-labelledby="privacy-purchases">
+        <h2 id="privacy-purchases" data-i18n>Purchases and payment records</h2>
+        <p data-i18n>When you buy access, the site keeps a record of the purchase:</p>
+        <ul class="policy-list">
+          {purchaseRecord.map((line) => <li data-i18n>{line}</li>)}
+        </ul>
+        <p style="margin-top: 16px" data-i18n>A purchase that you start and do not finish is recorded too.</p>
+        <p data-i18n>Card details are entered on the payment company’s own page. This site does not receive or keep them.</p>
+        <p data-i18n>You can see your own purchases and receipts on your Account page. Other students cannot see them.</p>
+        <p data-i18n>No payment company is connected yet, so buying is not open. When one is chosen, this page will name it and say what it receives.</p>
+      </section>
+    )}
+
     <section class="policy-section" aria-labelledby="privacy-services">
       <h2 id="privacy-services" data-i18n>Which services handle it</h2>
       <dl class="policy-services">
@@ -147,7 +196,15 @@ const services: { name: string; role: string }[] = [
       <h2 id="privacy-questions" data-i18n>Questions about your information</h2>
       <p data-i18n>Ask through the support form. A person reads every message and replies by email.</p>
       <p><a class="policy-action" href={withBase('/support?reason=privacy')} data-i18n>Ask a person</a></p>
-      <p class="policy-note" role="note" data-i18n>How long each kind of information is kept, and how to have it removed, is still being decided. This page will say so once it is.</p>
+    </section>
+
+    <section class="policy-section" aria-labelledby="privacy-removal">
+      <h2 id="privacy-removal" data-i18n>Removing your account</h2>
+      <p data-i18n>The site has no button for deleting an account yet. To ask about removing your account or your information, use the support form.</p>
+      {sellsAccess && (
+        <p data-i18n>One limit applies today. An account that has any purchase record cannot be deleted, because purchase records are kept. This includes a purchase that was started and never paid.</p>
+      )}
+      <p class="policy-note" role="note" data-i18n>{undecided}</p>
       <p class="policy-foot">
         <a href={withBase('/terms')} data-i18n>Terms of use</a>
         <a href={withBase('/help')} data-i18n>How the platform works</a>

@@ -100,6 +100,7 @@
    are untouched: the sitting id rides alongside them. On the open site
    none of this runs. */
 
+import { isTrialBuild } from '../lib/trial/mode';
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import type { User } from '@supabase/supabase-js';
@@ -1506,7 +1507,10 @@ export default function LiveExaminer({
             <SpeakingPartCards onStart={(m) => void startTest(m)} disabled={!TOKEN_URL || needsSignIn || authUnavailable} />
             <p className="mt-4 text-xs text-ink-muted">
               {tn(SPEAKING_PART1_TOPICS.length, { one: '{n} Part 1 topic', other: '{n} Part 1 topics' })} ·{' '}
-              {tn(SPEAKING_CUE_CARDS.length, { one: '{n} cue card', other: '{n} cue cards' })} · {t('free')}
+              {tn(SPEAKING_CUE_CARDS.length, { one: '{n} cue card', other: '{n} cue cards' })}
+              {/* "free" describes the open site only. In the gated build this
+                  screen belongs to the trial or to paid access (re-audit R03). */}
+              {!isTrialBuild() && <> · {t('free')}</>}
             </p>
           </>
         ) : (

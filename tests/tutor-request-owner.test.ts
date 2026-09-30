@@ -603,7 +603,7 @@ async function sourceFiles(dir: URL, out: URL[] = []): Promise<URL[]> {
   return out;
 }
 
-test('source scan: every caller of the tutor client goes through the binding, and nothing reaches the tutor another way', { timeout: 10_000 }, async () => {
+test('source scan: every caller of the tutor client goes through the binding, and nothing reaches the tutor another way', { timeout: 60_000 }, async () => {
   const code = await source('lib/tutor/client.ts');
 
   /* send() binds first, before any token is read or anything is posted. */
@@ -645,8 +645,18 @@ test('source scan: every caller of the tutor client goes through the binding, an
   const files = await sourceFiles(SRC);
   const readers: string[] = [];
   const callers: string[] = [];
-  for (const file of files) {
-    const text = strip(await readFile(file, 'utf8'));
+  /* Read together, not one after another: the scan is a few hundred small
+     reads, and in the full suite (every test file running at once) reading
+     them in turn took longer than the old ten-second limit. */
+  const raws = await Promise.all(files.map((file) => readFile(file, 'utf8')));
+  for (const [n, file] of files.entries()) {
+    const raw = raws[n]!;
+    /* Both checks below need one of these two strings to survive comment
+       stripping, so a file without either in its raw text cannot match.
+       Skipping it here spares strip() the megabytes of test and lesson data,
+       which made this scan overrun its ten seconds on a busy machine. */
+    if (!/PUBLIC_MR_EZ_URL|tutor\/client/.test(raw)) continue;
+    const text = strip(raw);
     const short = file.href.slice(file.href.indexOf('/src/') + 1);
     if (/PUBLIC_MR_EZ_URL/.test(text) && !short.endsWith('lib/tutor/client.ts')) readers.push(short);
     if (/from ['"][./]+(lib\/)?tutor\/client['"]/.test(text)) {

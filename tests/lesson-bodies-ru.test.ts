@@ -25,9 +25,15 @@ import assert from 'node:assert/strict';
 
 import {
   checkSlug,
+  englishOnlyBlocks,
   englishSlugs,
   hashSource,
+  loadEnglishAllowed,
+  normaliseText,
+  readEnglish,
+  readRussian,
   russianSlugs,
+  tokenize,
   validateLessonBody,
 } from '../tools/lesson-ru-lib.mjs';
 
@@ -271,8 +277,158 @@ test('a title attribute may be translated, an href may not', () => {
 ${withLink
   .replace('title="About this task"', 'title="Об этом задании"')
   .replace('>What is it?</a>', '>Что это такое?</a>')
-  .replace('<p>You read a statement and decide whether the passage confirms it.</p>', '<p>Вы читаете утверждение.</p>')}`;
+  .replace('<p>You read a statement and decide whether the passage confirms it.</p>', '<p>Вы читаете утверждение.</p>')
+  .replace('<th>Word / Phrase</th><th>Meaning</th><th>Example in Context</th>', '<th>Слово или фраза</th><th>Значение</th><th>Пример в контексте</th>')}`;
   assert.ok(check(ru, withLink).ok, check(ru, withLink).problems.join('\n'));
 
   failsWith(check(ru.replace('href="../tests"', 'href="../testy"'), withLink), 'the "href" attribute must not change');
+});
+
+/* ------------------------------------------------------------------ */
+/* 3. Rule 8: interface text left in English                           */
+/* ------------------------------------------------------------------ */
+
+/* Codex's re-audit of 30 September 2026 (R05) put an English interface
+   paragraph into the Russian vocabulary lesson and every translation check
+   stayed green: tests/i18n-templates.test.ts skips src/content on purpose
+   (lesson bodies are teaching material, mostly English by design), and the
+   rules above only compared structure and frozen exam text. Rule 8 reads
+   the headings, paragraphs, labels and links of a Russian lesson body and
+   fails on one that holds no Russian at all, unless that exact text is
+   listed as intentional in tools/lesson-ru-english-allowed.json. */
+
+const NO_ALLOWANCE = { terms: [], lessons: {} };
+
+function checkStrict(russian: string, english: string = ENGLISH) {
+  return validateLessonBody({ slug: 'demo', english, russian, englishAllowed: NO_ALLOWANCE });
+}
+
+test('an English paragraph left in a Russian lesson is caught, with the line and the text', () => {
+  const ru = RUSSIAN.replace(
+    '<p>Вы читаете утверждение и решаете, подтверждает ли его текст.</p>',
+    '<p>You read a statement and decide whether the passage confirms it.</p>',
+  );
+  const result = checkStrict(ru);
+  failsWith(result, 'line 4: <p> is entirely in English');
+  failsWith(result, 'You read a statement and decide whether the passage confirms it.');
+  failsWith(result, 'tools/lesson-ru-english-allowed.json');
+});
+
+test('an English heading left in a Russian lesson is caught', () => {
+  failsWith(checkStrict(RUSSIAN.replace('<h2>Что это такое?</h2>', '<h2>What is it?</h2>')), '<h2> is entirely in English');
+});
+
+test('exam material in a frozen region is never reported as untranslated', () => {
+  // The passage box is wholly English in the correct translation.
+  const result = checkStrict(RUSSIAN);
+  assert.ok(result.ok, result.problems.join('\n'));
+});
+
+test('English examples in list items and table cells are left alone', () => {
+  const en = ENGLISH.replace('<!-- lesson-cards -->', '<ul><li>raise awareness of the issue</li></ul>\n  <!-- lesson-cards -->');
+  const ru = `<!-- i18n-source-sha256: ${hashSource(en)} -->\n${RUSSIAN.split('\n').slice(1).join('\n')}`.replace(
+    '<!-- lesson-cards -->',
+    '<ul><li>raise awareness of the issue</li></ul>\n  <!-- lesson-cards -->',
+  );
+  const result = checkStrict(ru, en);
+  assert.ok(result.ok, result.problems.join('\n'));
+});
+
+test('a Russian sentence that quotes English, or a single English term, is not reported', () => {
+  const ru = RUSSIAN
+    .replace('<h2>Что это такое?</h2>', '<h2>IELTS</h2>')
+    .replace(
+      '<p>Вы читаете утверждение и решаете, подтверждает ли его текст.</p>',
+      '<p>Фраза “raise awareness of the issue” встречается в каждом втором эссе.</p>',
+    );
+  const result = checkStrict(ru);
+  assert.ok(result.ok, result.problems.join('\n'));
+});
+
+test('text listed as intentional passes: a term anywhere, exam material in its own lesson only', () => {
+  const ru = RUSSIAN.replace('<h2>Что это такое?</h2>', '<h2>True, False, Not Given</h2>').replace(
+    '<p>Вы читаете утверждение и решаете, подтверждает ли его текст.</p>',
+    '<p>"Marta Lind paid for the construction of the Halden Bridge."</p>',
+  );
+  const allow = (englishAllowed: { terms: string[]; lessons: Record<string, string[]> }) =>
+    validateLessonBody({ slug: 'demo', english: ENGLISH, russian: ru, englishAllowed });
+
+  assert.equal(allow(NO_ALLOWANCE).ok, false);
+  const listed = allow({
+    terms: ['True, False, Not Given'],
+    lessons: { demo: ['"Marta Lind paid for the construction of the Halden Bridge."'] },
+  });
+  assert.ok(listed.ok, listed.problems.join('\n'));
+
+  // The same quotation listed for ANOTHER lesson does not excuse this one.
+  failsWith(
+    allow({ terms: ['True, False, Not Given'], lessons: { other: ['"Marta Lind paid for the construction of the Halden Bridge."'] } }),
+    'Marta Lind',
+  );
+});
+
+test('an English paragraph pasted in as an EXTRA block is still named, though the structure check fails too', () => {
+  // The re-audit's exact mutation: appended, so the tag sequences differ.
+  const ru = `${RUSSIAN}\n<p>Each topic teaches twenty words and a short exercise.</p>`;
+  const result = checkStrict(ru);
+  failsWith(result, 'is entirely in English');
+  failsWith(result, 'Each topic teaches twenty words');
+});
+
+/* The original leftovers (audit F05, re-audit R05), against the REAL
+   vocabulary lesson: its contents link "Topic Lists" and its explanatory
+   note. Each is put back in English in memory, never on disk. */
+test('the vocabulary lesson: the original English note and "Topic Lists" link are caught, the Russian passes', () => {
+  const english = readEnglish('vocabulary');
+  const russian = readRussian('vocabulary');
+
+  const clean = validateLessonBody({ slug: 'vocabulary', english, russian });
+  assert.ok(clean.ok, clean.problems.join('\n'));
+
+  const enNote = /<div class="note-box">[\s\S]*?<\/div>/.exec(english)?.[0] ?? '';
+  const ruNote = /<div class="note-box">[\s\S]*?<\/div>/.exec(russian)?.[0] ?? '';
+  assert.match(enNote, /The 36 topics below cover the vast majority of IELTS questions/);
+  assert.match(ruNote, /[Ѐ-ӿ]/, 'the Russian note is Russian today');
+
+  const withEnglishNote = validateLessonBody({ slug: 'vocabulary', english, russian: russian.replace(ruNote, enNote) });
+  assert.equal(withEnglishNote.ok, false, 'the English note must not pass');
+  assert.ok(
+    withEnglishNote.problems.some((p) => p.includes('is entirely in English') && p.includes('The 36 topics below cover')),
+    withEnglishNote.problems.join('\n'),
+  );
+
+  assert.ok(russian.includes('<a href="#topics">Списки тем</a>'), 'the contents link is "Списки тем" today');
+  const withEnglishLink = validateLessonBody({
+    slug: 'vocabulary',
+    english,
+    russian: russian.replace('<a href="#topics">Списки тем</a>', '<a href="#topics">Topic Lists</a>'),
+  });
+  assert.ok(
+    withEnglishLink.problems.some((p) => p.includes('<a> is entirely in English') && p.includes('Topic Lists')),
+    withEnglishLink.problems.join('\n'),
+  );
+});
+
+test('the list of intentional English is tidy: every entry is still in its lesson, and nothing is listed twice', () => {
+  const allowed = loadEnglishAllowed();
+  const slugs = new Set(russianSlugs());
+  const seenAnywhere = new Set<string>();
+  const stale: string[] = [];
+
+  for (const slug of slugs) {
+    const body = normaliseText(readRussian(slug)).split('\n').slice(1).join('\n');
+    const present = new Set(englishOnlyBlocks(tokenize(body)).map((block) => block.text));
+    for (const text of present) seenAnywhere.add(text);
+    for (const text of allowed.lessons[slug] ?? []) {
+      if (!present.has(text)) stale.push(`lessons > ${slug}: ${JSON.stringify(text.slice(0, 80))} is no longer in that lesson`);
+      if (allowed.terms.includes(text)) stale.push(`lessons > ${slug}: ${JSON.stringify(text.slice(0, 80))} is already a term`);
+    }
+  }
+  for (const slug of Object.keys(allowed.lessons)) {
+    if (!slugs.has(slug)) stale.push(`lessons > ${slug}: there is no Russian lesson of that name`);
+  }
+  for (const term of allowed.terms) {
+    if (!seenAnywhere.has(term)) stale.push(`terms: ${JSON.stringify(term.slice(0, 80))} is not used by any lesson`);
+  }
+  assert.deepEqual(stale, [], `tools/lesson-ru-english-allowed.json has entries to remove:\n  ${stale.join('\n  ')}`);
 });

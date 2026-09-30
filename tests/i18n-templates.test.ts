@@ -45,7 +45,12 @@ import * as ruMerged from '../src/lib/i18n/dict/ru/index.ts';
 const REPO_ROOT = fileURLToPath(new URL('..', import.meta.url));
 const SRC_DIR = path.join(REPO_ROOT, 'src');
 
-/* Directories whose text is not interface copy handled by the dictionary. */
+/* Directories whose text is not interface copy handled by the dictionary.
+   `content` holds the lesson bodies, which are teaching material and mostly
+   English by design. Their Russian twins have their own guard: rule 8 in
+   tools/lesson-ru-lib.mjs, tested in tests/lesson-bodies-ru.test.ts, fails
+   on a heading, paragraph, label or link left entirely in English (re-audit
+   2026-09-30, R05). */
 const SKIP_DIRS = ['lib/i18n', 'data/tests', 'content'];
 
 /* Files allowed to keep English template text, each with the reason. Old-URL

@@ -29,7 +29,11 @@
  *   7. the text inside the frozen regions listed in FROZEN_CLASSES, and
  *      the English columns of a vocabulary table, is unchanged. That is
  *      the exam material: passages, recordings, cue cards, model answers
- *      and the words being taught. Translating it destroys the exercise.
+ *      and the words being taught. Translating it destroys the exercise;
+ *   8. no heading, paragraph, label or link is left entirely in English,
+ *      unless that exact text is listed as intentional in
+ *      tools/lesson-ru-english-allowed.json (exam material quoted in the
+ *      lesson, or IELTS terminology such as a question type's name).
  *
  * What it deliberately does NOT check is whether the Russian is any good,
  * or whether a mixed English-and-explanation paragraph was split in the
@@ -544,6 +548,111 @@ function checkFrozenRegions(enTokens, ruTokens, problems, bodyStartLine) {
   }
 }
 
+/* ------------------------------------------------------------------ */
+/* Rule 8: interface text left in English                              */
+/* ------------------------------------------------------------------ */
+
+/* The elements that carry what the lesson SAYS to the student: headings,
+   paragraphs, labels, table headers, links. List items and table cells are
+   left out on purpose: in these lessons they are overwhelmingly English
+   examples (paraphrase pairs, collocations, sample sentences), which is the
+   material being taught. */
+export const INTERFACE_BLOCKS = new Set([
+  'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'a', 'summary', 'figcaption', 'th', 'caption', 'button', 'label',
+]);
+
+/* A block is only judged as a whole when nothing inside it is itself a
+   block: a <div> that wraps paragraphs is a container, not a sentence. */
+const CONTAINER_TAGS = new Set([
+  'div', 'p', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'table', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'th',
+  'section', 'article', 'nav', 'details', 'summary', 'blockquote', 'figure', 'figcaption',
+  'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+]);
+
+export const ENGLISH_ALLOWED_PATH = path.join(REPO_ROOT, 'tools', 'lesson-ru-english-allowed.json');
+
+let englishAllowedCache = null;
+
+/** The English text that is allowed to stay English in a Russian lesson:
+    `terms` anywhere, `lessons[slug]` in that lesson only. */
+export function loadEnglishAllowed() {
+  if (!englishAllowedCache) {
+    const raw = fs.existsSync(ENGLISH_ALLOWED_PATH) ? JSON.parse(fs.readFileSync(ENGLISH_ALLOWED_PATH, 'utf8')) : {};
+    englishAllowedCache = { terms: raw.terms ?? [], lessons: raw.lessons ?? {} };
+  }
+  return englishAllowedCache;
+}
+
+/** Entities a lesson body uses, read back so an allow-list entry can be
+    written the way a person reads it ("Table & Flow-chart"). */
+function readable(text) {
+  return collapse(
+    text
+      .replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/&quot;/g, '"')
+      .replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>'),
+  );
+}
+
+/**
+ * Every interface block of a Russian lesson body that holds no Cyrillic at
+ * all and at least two English words (of two letters or more): `[{ text, line, token }]`.
+ *
+ * It reads the Russian file alone, so it still works when the structure
+ * check has failed (an extra English paragraph pasted into the file is
+ * exactly such a case). Frozen exam regions are skipped: they MUST be
+ * English, and rule 7 holds them to the source word for word.
+ */
+export function englishOnlyBlocks(ruTokens) {
+  const ends = closeIndex(ruTokens);
+  const structural = structure(ruTokens);
+  const found = [];
+  let skipUntil = -1;
+
+  for (let n = 0; n < structural.length; n++) {
+    const tk = structural[n];
+    if (tk.kind !== 'open' || tk.si <= skipUntil) continue;
+    const end = ends.get(tk.si) ?? tk.si;
+
+    const frozen = FROZEN_CLASSES.some((c) => hasClass(tk, c)) || attrValue(tk, 'data-answer') !== null;
+    if (frozen) { skipUntil = end; continue; }
+    if (tk.void || !INTERFACE_BLOCKS.has(tk.name)) continue;
+
+    let container = false;
+    for (let k = n + 1; k < structural.length && structural[k].si < end; k++) {
+      if (structural[k].kind === 'open' && CONTAINER_TAGS.has(structural[k].name)) { container = true; break; }
+    }
+    if (container) continue;
+
+    // A leaf block: judged once, as a whole, with everything inside it.
+    skipUntil = end;
+    const text = readable(textNodesBetween(ruTokens, tk.si, end).join(' '));
+    if (!text || /[Ѐ-ӿ]/.test(text)) continue;
+    if ((text.match(/[A-Za-z]{2,}/g) ?? []).length < 2) continue;
+    found.push({ text, line: tk.line, token: tk });
+  }
+  return found;
+}
+
+function checkUntranslated(slug, ruTokens, problems, bodyStartLine, allowed) {
+  const terms = new Set(allowed.terms ?? []);
+  const own = new Set(allowed.lessons?.[slug] ?? []);
+  let reported = 0;
+  for (const block of englishOnlyBlocks(ruTokens)) {
+    if (terms.has(block.text) || own.has(block.text)) continue;
+    if (reported >= 8) {
+      problems.push('more blocks are entirely in English; only the first eight are listed.');
+      break;
+    }
+    problems.push(
+      `line ${block.line + bodyStartLine - 1}: <${block.token.name}> is entirely in English: ` +
+        `${JSON.stringify(block.text.slice(0, 140))}. Translate it. If it is exam material or an IELTS ` +
+        'term that must stay in English, add that exact text to tools/lesson-ru-english-allowed.json ' +
+        `(under "lessons" > "${slug}", or under "terms" if several lessons use it).`,
+    );
+    reported++;
+  }
+}
+
 /** Cells of one row, as {si, end} pairs, for `td` and `th` alike. */
 function rowCells(tokens, rowSi, rowEnd, ends) {
   const cells = [];
@@ -630,7 +739,7 @@ function checkVocabTables(enTokens, ruTokens, problems, bodyStartLine) {
  * naming where it is and what to do about it. No exceptions, no printing:
  * the CLI and the test format the same list their own way.
  */
-export function validateLessonBody({ slug, english, russian }) {
+export function validateLessonBody({ slug, english, russian, englishAllowed = loadEnglishAllowed() }) {
   const problems = [];
 
   if (russian.startsWith('\uFEFF')) {
@@ -667,6 +776,9 @@ export function validateLessonBody({ slug, english, russian }) {
         'Fix the structure above and run the check again.',
     );
   }
+
+  // Reads the Russian file alone, so it runs even when the structures differ.
+  checkUntranslated(slug, ruTokens, problems, bodyStartLine, englishAllowed);
 
   const stale = problems.some((p) => p.includes('stale translation'));
   return { slug, ok: problems.length === 0, stale, problems };

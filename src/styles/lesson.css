@@ -625,7 +625,7 @@
   border-color: var(--accent);
 }
 .lesson-body .sample-card.featured .sample-topic { color: var(--accent); }
-.lesson-body .sample-card.featured .sample-title { font-size: 1.15rem; }
+.lesson-body .sample-card.featured .sample-title { font-size: 1.15rem; flex: 1 1 10rem; min-width: 0; }
 .lesson-body .sample-card.featured .sample-go {
   margin-top: 0;
   margin-left: auto;
@@ -635,6 +635,25 @@
   color: #fff;
   font-weight: 700;
   white-space: nowrap;
+}
+/* The featured row holds a step label, a title and a pill button. Its three
+   children cannot shrink below their words, so on a 320px phone in Russian
+   ("Как отвечать на Task 1" + "Открыть урок") the row was 367px wide and the
+   button sat off screen (re-audit 2026-09-30, R04). The row may wrap at any
+   width, and on phones it stacks, with the button on its own line and free to
+   wrap its label. Nothing is clipped. */
+.lesson-body .sample-card.featured { flex-wrap: wrap; }
+@media (max-width: 479px) {
+  .lesson-body .sample-card.featured {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .lesson-body .sample-card.featured .sample-title { flex: 0 1 auto; }
+  .lesson-body .sample-card.featured .sample-go {
+    margin-left: 0;
+    white-space: normal;
+  }
 }
 .lesson-body .sample-topic {
   font-size: 0.62rem;

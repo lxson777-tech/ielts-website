@@ -5,12 +5,18 @@
    coached trainer. */
 import { withBase } from '../lib/url';
 import { nt } from '../lib/i18n/translate';
+import { isTrialBuild } from '../lib/trial/mode';
 
 interface Props {
   /** Which page the CTA sits on — tunes the copy. */
   task: 'task1' | 'task2' | 'overview';
 }
 const { task } = Astro.props;
+/* "free" describes the open site only; the gated build's checker belongs to
+   the trial or to paid access (re-audit R03). */
+const tagline = isTrialBuild()
+  ? nt('✨ AI examiner · official band descriptors')
+  : nt('✨ AI examiner · official band descriptors · free');
 const blurb =
   task === 'task2'
     ? nt(
@@ -37,7 +43,7 @@ const blurb =
   <p style="font-size:0.95rem; color:var(--color-ink-muted); margin-bottom:0.75rem;" data-i18n>{blurb}</p>
   <a class="cta-card" href={withBase('/writing/checker')}>
     <span class="cta-card-body">
-      <span class="sample-topic" data-i18n>✨ AI examiner · official band descriptors · free</span>
+      <span class="sample-topic" data-i18n>{tagline}</span>
       <strong class="sample-title" data-i18n>Open the Writing Checker</strong>
       <span class="sample-go" data-i18n>Check my writing</span>
     </span>

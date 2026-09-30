@@ -351,6 +351,7 @@ export const strings: Record<string, string> = {
   'Ready to write? Take a writing test and get your answer assessed like the real exam: a band for each of the four marking criteria, examiner-style comments, corrections, and one tip per criterion to reach the next band.':
     'Готовы писать? Пройдите тест по письму и получите оценку своего ответа как на настоящем экзамене: балл по каждому из четырёх критериев, комментарии в стиле экзаменатора, исправления и по одному совету на критерий, чтобы дойти до следующего балла.',
   '✨ AI examiner · official band descriptors · free': '✨ ИИ-экзаменатор · официальные дескрипторы баллов · бесплатно',
+  '✨ AI examiner · official band descriptors': '✨ ИИ-экзаменатор · официальные дескрипторы баллов',
   'Open the Writing Checker': 'Открыть проверку письма',
   'Check my writing': 'Проверить моё письмо',
   'Hand writing an essay beside a rotating stack of task cards and a 7.5 band badge':

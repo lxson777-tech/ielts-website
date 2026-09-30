@@ -1,0 +1,83 @@
+{
+  "_about": "English text that is ALLOWED to stay English in a Russian lesson body (rule 8 of tools/lesson-ru-lib.mjs). \"terms\": IELTS terminology and exam wording used across lessons. \"lessons\": exam material quoted inside one lesson (questions, recordings, passages, model answers, task prompts). Add an entry only for exam material or a term that must stay in English; anything the lesson SAYS to the student gets translated instead.",
+  "terms": [
+    "Diagram Label Completion",
+    "Form, Note, Table & Flow-chart Completion",
+    "Matching Features",
+    "Matching Headings",
+    "Matching Information",
+    "Matching Sentence Endings",
+    "Multiple Choice",
+    "Multiple Choice Questions",
+    "Plan, Map & Diagram Labelling",
+    "Sentence Completion",
+    "Short-answer Questions",
+    "Sorry, could you repeat that? Sorry, I didn't quite catch that. Could you say that again, please?",
+    "Summary, Note, Table & Flow-chart Completion",
+    "True, False, Not Given",
+    "Yes / No / Not Given"
+  ],
+  "lessons": {
+    "listening-part2": [
+      "opposite / across from next to / beside / adjacent to between X and Y at the end of on the corner of to the north/south/east/west of turn left/right at in the centre near / close to / not far from"
+    ],
+    "reading-tfng": [
+      "True / False / Not Given",
+      "\"Marta Lind paid for the construction of the Halden Bridge.\"",
+      "\"By 1933 no other crossing in the region carried more traffic than the Halden Bridge.\"",
+      "\"The second deck reduced the number of accidents on the bridge.\""
+    ],
+    "reading-ynng": [
+      "\"The writer expects ministers to raise the student fee again within five years.\"",
+      "\"The writer believes the student fee should be raised again.\"",
+      "\"The writer says most universities have started charging employers directly.\"",
+      "\"The writer thinks employers would accept the extra cost.\""
+    ],
+    "speaking-part1": [
+      "&#10003; Do you enjoy cooking? &#10003; What kind of music do you listen to? &#10003; How often do you use public transport? &#10003; Did you have a pet as a child?",
+      "Fluency & Coherence",
+      "Lexical Resource",
+      "Grammatical Range & Accuracy",
+      "Well, actually&hellip; To be honest&hellip; I'd say that&hellip; That's a good question&hellip; As far as I know&hellip; What I mean is&hellip; Having said that&hellip; I suppose&hellip; Funnily enough&hellip;",
+      "\"Yes, I actually really enjoy it, given that it lets me switch off completely after a long day at work. Even though I don't always have much free time, I've recently started experimenting with Korean recipes, which has been a fun challenge.\"",
+      "Question: Have you ever been to a music festival?",
+      "\"Music festivals are very popular in my country, especially in the summer. My friends go to one every year near the mountains and they always post photos afterwards. I think the tickets are quite expensive, though.\"",
+      "\"Well, to be honest, I wouldn't say I'm a passionate cook, but I do enjoy it when I have the time. I find there's something quite satisfying about preparing a meal from scratch. Especially when it turns out well! Lately I've been trying to learn a few traditional dishes from my country, which has been both challenging and fun.\"",
+      "\"I'm from Almaty, which is the largest city in Kazakhstan. It's a really vibrant and modern city, surrounded by the Tian Shan mountains, which gives it a spectacular backdrop. I'd say it has a nice mix of old Soviet architecture and very contemporary buildings. It's changed enormously in the last twenty years or so.\""
+    ],
+    "speaking-part2": [
+      "Topic: Interesting place → Chichen Itza, Mexico, 2022 Where: Yucatan peninsula, southern Mexico When: March 2022, family trip What: climbed pyramid, saw ball court, guided tour Why: ancient Mayan civilisation. Scale, mystery, unexpected Key words: awe-inspiring, crumbling, civilisation, remnants Conditional: if I went back, I'd hire a local guide Compare: bigger than anything I'd seen at home Backup: the heat + the market outside",
+      "\"I would like to describe a book I enjoyed reading. The book I enjoyed reading is a book that I read.\"",
+      "\"I'd like to tell you about a book that I really got a lot out of.\"",
+      "\"The book I want to talk about is a novel called 'The Kite Runner', which I read during my final year at school, about five years ago.\"",
+      "\"Yes, definitely. I'd like to go back in winter, when there aren't so many tourists around.\"",
+      "\"I'd like to talk about a trip I took to Istanbul a few years ago with two of my closest friends. It was actually a spontaneous decision (we booked the flights just two weeks before), which made the whole experience feel even more exciting.",
+      "In terms of what we did, we spent most of the time exploring the old city. Visiting the Hagia Sophia, wandering through the Grand Bazaar, and taking a boat trip along the Bosphorus. What really struck me was the sheer contrast between the modern city and its ancient history. In the morning we'd be walking through a 1,500-year-old cathedral, and by the afternoon we were sitting in a trendy rooftop cafe overlooking two continents.",
+      "Looking back, I think what made the trip so memorable was the spontaneity of it. We had no fixed plan, which meant we stumbled across things we'd never have found on a guided tour. Tiny spice markets, hidden courtyards, local restaurants with incredible food. I was completely taken aback by how welcoming the city was. It's definitely a place I'd return to.\"",
+      "\"The person I'd like to talk about is my secondary school English teacher, whose name was Ms. Kowalska. I first met her when I was around 14 years old, and she taught me for three years.",
+      "What set her apart from other teachers was her genuine passion for literature and language. She didn't just teach us grammar rules. She made us fall in love with reading by choosing books that were actually relevant to our lives. I remember she introduced us to George Orwell's '1984', which completely changed the way I thought about language and power.",
+      "In terms of her influence on me personally, I think she's the main reason I pursued languages seriously. She had this remarkable ability to make every student feel capable. When I was struggling with writing essays, she stayed after class on multiple occasions just to help me improve. She went completely out of her way for her students.",
+      "All in all, I think the greatest gift she gave me was confidence in my own voice. I wouldn't be where I am today without her encouragement.\"",
+      "\"The skill I'd like to describe is public speaking. Specifically, the ability to present ideas clearly and confidently in front of an audience. I started developing this skill in my first year at university, when I was required to give presentations as part of my coursework. To be honest, I was absolutely terrified at first.",
+      "I improved mainly by doing it repeatedly. Joining a debating club, volunteering to present at team meetings, watching videos of skilled speakers to understand how they structured their arguments and used pauses for effect. It was a slow process, but over time I noticed a real transformation.",
+      "These days I use this skill on a fairly regular basis. In work presentations, in negotiations, and even in social situations where I need to express an idea persuasively. What I find most valuable about it is that it's transferable to almost every area of life. In today's world, being able to communicate clearly and confidently is arguably as important as any technical qualification.\""
+    ],
+    "speaking-part3": [
+      "\"Do you think social media has a positive or negative effect on society?\"",
+      "\"How do attitudes towards the environment differ between older and younger generations?\"",
+      "\"What are the main reasons why so many people are moving to cities?\"",
+      "\"What could governments do to encourage people to use public transport?\"",
+      "\"How do you think technology will change the way we work in the future?\"",
+      "\"I think / I believe / In my opinion…\"",
+      "\"The main reason is… / This is because… / Mainly because…\"",
+      "\"For example… / For instance… / Take [country/person/situation] as an example…\"",
+      "\"So on balance… / That's why I feel… / Having said that, I recognise that…\"",
+      "\"I think there are several reasons for this. Firstly, there's often a novelty factor: people are drawn to the unfamiliar, whether that's a different language, cuisine, or landscape. For many, travelling abroad also carries a certain social status, since it's something to talk about, photograph, and share. Additionally, in an era of low-cost flights, international travel has become far more accessible than it used to be.",
+      "That said, I think there's also a tendency to undervalue what's nearby. I suspect many people would be surprised by how much their own country has to offer if they explored it with the same curiosity they bring to foreign destinations.\"",
+      "\"This is an area where I think the picture is genuinely mixed. On one hand, there's no doubt that AI will displace a significant number of jobs. Particularly in manufacturing, data processing, and routine administrative work. There's a strong possibility that entire categories of employment will simply disappear within a generation.",
+      "However, I wouldn't be surprised if new types of jobs emerge that we can't yet imagine. Just as the internet created industries that didn't exist in 1990. The more pressing concern, I think, is the transition period: making sure that workers whose jobs are automated have access to retraining, and that the benefits of AI productivity are distributed fairly rather than concentrating among a small technological elite.\"",
+      "\"I firmly believe that governments have a responsibility to support the arts, though I'd argue the extent of that support needs to be balanced carefully. The core argument for public funding is that the arts provide a cultural identity and social commentary that the market alone won't sustain. If left entirely to commercial forces, only profitable, mainstream art forms would survive.",
+      "Take theatre, for instance: without state funding, small companies producing experimental or classical work simply couldn't exist. Admittedly, some would argue that taxpayers' money is better spent on healthcare or education. While I accept that these must take priority, I'd still maintain that a small allocation for the arts is money well spent, both economically (through cultural tourism) and socially, in terms of community wellbeing and national identity.\""
+    ]
+  }
+}

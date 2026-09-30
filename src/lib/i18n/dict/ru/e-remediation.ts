@@ -94,6 +94,37 @@ export const strings: Record<string, string> = {
   'What the site asks for and why, what it keeps, and which services handle it. Only what the site actually does, in plain words.':
     'Что сайт спрашивает и зачем, что он хранит и какие сервисы с этим работают. Только то, что сайт действительно делает, простыми словами.',
   'Updated 29 September 2026': 'Обновлено 29 сентября 2026 года',
+  'Updated 30 September 2026': 'Обновлено 30 сентября 2026 года',
+  // Purchases and account removal (re-audit R02, 30 September 2026)
+  'Purchases and payment records': 'Покупки и платёжные записи',
+  'When you buy access, the site keeps a record of the purchase:': 'Когда вы покупаете доступ, сайт сохраняет запись о покупке:',
+  'Which plan you chose, its price and currency, and when you started the purchase.':
+    'Какой тариф вы выбрали, его цену и валюту, и когда вы начали покупку.',
+  'What happened to it: waiting for payment, paid, not completed, cancelled or refunded, with the time, and a short reason if a payment did not go through.':
+    'Что с ней произошло: ожидает оплаты, оплачена, не завершена, отменена или возвращена, со временем, а если платёж не прошёл, то и краткой причиной.',
+  'The name of the payment company and its reference number for the payment.':
+    'Название платёжной компании и её номер этого платежа.',
+  'A receipt number for each paid purchase.': 'Номер квитанции для каждой оплаченной покупки.',
+  'The dates your paid access starts and ends, and the date it was withdrawn if a payment was refunded.':
+    'Даты начала и окончания платного доступа, а если платёж был возвращён, то и дату, когда доступ был отозван.',
+  'A purchase that you start and do not finish is recorded too.': 'Покупка, которую вы начали, но не завершили, тоже записывается.',
+  'Card details are entered on the payment company’s own page. This site does not receive or keep them.':
+    'Данные карты вводятся на странице самой платёжной компании. Этот сайт их не получает и не хранит.',
+  'You can see your own purchases and receipts on your Account page. Other students cannot see them.':
+    'Свои покупки и квитанции вы видите на странице «Аккаунт». Другие студенты их не видят.',
+  'No payment company is connected yet, so buying is not open. When one is chosen, this page will name it and say what it receives.':
+    'Платёжная компания пока не подключена, поэтому покупка ещё не открыта. Когда она будет выбрана, на этой странице появится её название и то, какие данные она получает.',
+  'Stores accounts, profiles, saved work, Mr EZ conversations, support messages and purchase records.':
+    'Хранит аккаунты, профили, сохранённые работы, разговоры с Mr EZ, сообщения в поддержку и записи о покупках.',
+  'Removing your account': 'Удаление аккаунта',
+  'The site has no button for deleting an account yet. To ask about removing your account or your information, use the support form.':
+    'Кнопки для удаления аккаунта на сайте пока нет. Чтобы спросить об удалении аккаунта или ваших данных, напишите через форму поддержки.',
+  'One limit applies today. An account that has any purchase record cannot be deleted, because purchase records are kept. This includes a purchase that was started and never paid.':
+    'Сейчас действует одно ограничение. Аккаунт, у которого есть хотя бы одна запись о покупке, удалить нельзя, потому что записи о покупках сохраняются. Это относится и к покупке, которую начали, но так и не оплатили.',
+  'Still being decided: how long each kind of information is kept, including purchase records, and the full process for removing an account. This page will say so once it is.':
+    'Ещё решается: сколько хранится каждый вид информации, включая записи о покупках, и как полностью проходит удаление аккаунта. Когда это будет решено, здесь об этом будет написано.',
+  'Still being decided: how long each kind of information is kept, and the full process for removing an account. This page will say so once it is.':
+    'Ещё решается: сколько хранится каждый вид информации и как полностью проходит удаление аккаунта. Когда это будет решено, здесь об этом будет написано.',
   'Who is responsible': 'Кто отвечает за сайт',
   'Run by': 'Владелец',
   Contact: 'Контакт',
@@ -146,8 +177,6 @@ export const strings: Record<string, string> = {
   'Questions about your information': 'Вопросы о ваших данных',
   'Ask through the support form. A person reads every message and replies by email.':
     'Задайте вопрос через форму поддержки. Каждое сообщение читает человек и отвечает по электронной почте.',
-  'How long each kind of information is kept, and how to have it removed, is still being decided. This page will say so once it is.':
-    'Сколько хранится каждый вид данных и как их удалить, ещё решается. Когда решение будет принято, оно появится на этой странице.',
 
   // Terms
   '{amount} KZT': '{amount} тенге',
