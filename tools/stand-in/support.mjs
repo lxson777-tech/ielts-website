@@ -9,11 +9,38 @@
  * running in PGlite (supabase/migrations/2026-09-24-admin.sql for
  * is_admin, then 2026-09-30-support.sql), as the signed-in student, as the
  * service role or as anon:
- *   POST /rest/v1/rpc/support_request_create
+ *   POST /rest/v1/rpc/support_request_create    signed-in students only
+ *   POST /rest/v1/rpc/support_request_visitor   service role only; anon and
+ *   POST /rest/v1/rpc/support_source_cleanup    students are refused by the
+ *   POST /rest/v1/rpc/support_limits            database itself, as for real
  *   POST /rest/v1/rpc/support_admin_list
  *   POST /rest/v1/rpc/support_admin_mark
  *   POST /rest/v1/rpc/is_admin
  *   POST /rest/v1/rpc/admin_list_users   (a plain stand-in, see below)
+ *
+ * And the REAL support Worker (workers/support), for signed-out visitors
+ * (re-audit R01, 30 September 2026), in both modes:
+ *   GET  /support
+ *   POST /support/request
+ * Point the site at it with PUBLIC_SUPPORT_URL=http://127.0.0.1:<port>/support.
+ * Its database calls are answered in this process by the same PGlite
+ * database, as the service role. No bot-check secret is set, so it makes no
+ * outside call at all.
+ *
+ * THE SENDER'S ADDRESS. The Worker reads it from CF-Connecting-IP only,
+ * which Cloudflare sets for real. Cloudflare is not in front of a local
+ * server, so THIS BRIDGE plays that part: it sets the header from the
+ * connection's own address and drops any copy the client sent. FOR TESTS
+ * ONLY it also honours an `X-Standin-Source` request header, to play a
+ * visitor on a different address. That override exists only here, in the
+ * stand-in. The Worker has no such header and never will.
+ *
+ * THE BOT CHECK. Off by default, as on any local run. Start the stand-in
+ * with MR_EZ_SUPPORT_CHALLENGE=stub to switch the Worker's check ON with a
+ * pretend secret: Cloudflare's verification call is then answered here, in
+ * this process (a token beginning `stub-pass` passes, anything else fails),
+ * so the whole path can be clicked through with nothing leaving the
+ * machine. It proves the Worker and the form, never Cloudflare itself.
  *
  * Local helpers, never part of the site:
  *   POST /__support/admin  {email}   makes that local account an admin
@@ -38,7 +65,39 @@ const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 export const ADMIN_MIGRATION = resolve(REPO, 'supabase/migrations/2026-09-24-admin.sql');
 export const SUPPORT_MIGRATION = resolve(REPO, 'supabase/migrations/2026-09-30-support.sql');
 
-const HANDLED_RPC = new Set(['support_request_create', 'support_admin_list', 'support_admin_mark', 'is_admin', 'admin_list_users']);
+const HANDLED_RPC = new Set([
+  'support_request_create',
+  'support_request_visitor',
+  'support_source_cleanup',
+  'support_limits',
+  'support_admin_list',
+  'support_admin_mark',
+  'is_admin',
+  'admin_list_users',
+]);
+
+/* The support Worker's local settings. The "Supabase" address is never
+   dialled: the bridge below answers it in this process. */
+const STUB_SUPABASE = 'http://supabase.stand-in.local';
+const SERVICE_KEY = 'local-service-role-key';
+const LOCAL_SOURCE_SALT = 'local-stand-in-source-salt-not-a-secret';
+const STUB_TURNSTILE_SECRET = 'local-stub-turnstile-secret-not-a-secret';
+/** The test-only header that plays a visitor on another address. Read here
+    and nowhere else. */
+export const STANDIN_SOURCE_HEADER = 'x-standin-source';
+
+/** The origins the local Worker accepts: the usual dev ports, plus wherever
+    MR_EZ_SITE_ORIGIN says the site is running. */
+function localOrigins() {
+  const site = process.env.MR_EZ_SITE_ORIGIN || 'http://localhost:4321';
+  return [...new Set(['http://localhost:4321', 'http://127.0.0.1:4321', site, site.replace('//localhost', '//127.0.0.1')])].join(',');
+}
+
+async function readRaw(req) {
+  const chunks = [];
+  for await (const chunk of req) chunks.push(chunk);
+  return Buffer.concat(chunks).toString('utf8');
+}
 
 /** A fresh in-memory Postgres with Supabase's roles, the admin migration
     and the support migration applied. Used by the stand-in and by
@@ -74,6 +133,79 @@ export function createSupportStandIn({ db, userByToken, send, readBody }) {
     return ready;
   }
 
+  /** The REAL support Worker handler, loaded on the first request to it. */
+  let workerReady = null;
+  function worker() {
+    workerReady ??= (async () => {
+      // The Worker's imports are extensionless TypeScript, and this stand-in
+      // can be started with plain `node`. Registering the tests' resolver
+      // here makes both ways of starting it work (twice is harmless).
+      await import('../../tests/ts-extension-loader.mjs');
+      const mod = await import('../../workers/support/src/index.ts');
+      const sdb = await database();
+      /* The Worker's only outside calls. The database one is answered here,
+         by the role its key proves, exactly as PostgREST would. Anything
+         else (the bot check, which is not configured locally) is an error:
+         nothing leaves this machine. */
+      const stubChallenge = process.env.MR_EZ_SUPPORT_CHALLENGE === 'stub';
+      const bridge = async (input, init) => {
+        const target = String(input);
+        if (stubChallenge && target === mod.SITEVERIFY_URL) {
+          // Cloudflare's part, played here. See "THE BOT CHECK" above.
+          const form = new URLSearchParams(String(init?.body ?? ''));
+          const passed = form.get('secret') === STUB_TURNSTILE_SECRET && String(form.get('response') ?? '').startsWith('stub-pass');
+          return new Response(JSON.stringify(passed ? { success: true } : { success: false, 'error-codes': ['invalid-input-response'] }));
+        }
+        const prefix = `${STUB_SUPABASE}/rest/v1/rpc/`;
+        if (!target.startsWith(prefix)) throw new Error(`the support stand-in makes no outside call: ${target}`);
+        const role = (init?.headers ?? {}).apikey === SERVICE_KEY ? 'service_role' : 'anon';
+        try {
+          const result = await sdb.rpc(target.slice(prefix.length), JSON.parse(String(init?.body ?? '{}')), { role });
+          return new Response(JSON.stringify(result), { status: 200, headers: { 'Content-Type': 'application/json' } });
+        } catch (err) {
+          return new Response(JSON.stringify({ message: err.message, code: err.code }), { status: err.status ?? 400 });
+        }
+      };
+      return {
+        handler: mod.createHandler({ fetch: bridge }),
+        sourceHeader: mod.SOURCE_HEADER,
+        env: {
+          ALLOWED_ORIGINS: localOrigins(),
+          SUPABASE_URL: STUB_SUPABASE,
+          SUPABASE_SERVICE_ROLE_KEY: SERVICE_KEY,
+          SUPPORT_SOURCE_SALT: LOCAL_SOURCE_SALT,
+          // No real bot check locally, ever. Unset unless the stub is asked for.
+          ...(stubChallenge ? { TURNSTILE_SECRET_KEY: STUB_TURNSTILE_SECRET } : {}),
+        },
+      };
+    })();
+    return workerReady;
+  }
+
+  /** The address this request came from, as Cloudflare would report it. */
+  function sourceOf(req) {
+    const played = req.headers[STANDIN_SOURCE_HEADER];
+    if (typeof played === 'string' && played.trim()) return played.trim(); // tests only
+    return req.socket?.remoteAddress ?? '';
+  }
+
+  async function handleWorker(req, res, url) {
+    const { handler, sourceHeader, env } = await worker();
+    const headers = {};
+    // X-Forwarded-For is passed through so a run can show the Worker ignores it.
+    for (const name of ['origin', 'content-type', 'x-forwarded-for']) if (req.headers[name]) headers[name] = req.headers[name];
+    // Set here and only here; a client's own copy of the header is dropped.
+    headers[sourceHeader] = sourceOf(req);
+    const body = req.method === 'POST' ? await readRaw(req) : undefined;
+    const resp = await handler.fetch(
+      new Request(`http://support.stand-in.local${url.pathname.slice('/support'.length) || '/'}${url.search}`, { method: req.method, headers, body }),
+      env,
+    );
+    const text = await resp.text();
+    res.writeHead(resp.status, Object.fromEntries(resp.headers));
+    res.end(text);
+  }
+
   const userById = (id) => [...db.users.values()].find((u) => u.id === id) ?? null;
 
   /** Puts a local account into auth.users (and into admins when listed). */
@@ -84,7 +216,7 @@ export function createSupportStandIn({ db, userByToken, send, readBody }) {
   }
 
   function roleOf(req) {
-    if ((req.headers.apikey ?? '') === 'local-service-role-key') return { role: 'service_role' };
+    if ((req.headers.apikey ?? '') === SERVICE_KEY) return { role: 'service_role' };
     const caller = userByToken(req);
     return caller ? { role: 'authenticated', userId: caller } : { role: 'anon' };
   }
@@ -146,6 +278,7 @@ export function createSupportStandIn({ db, userByToken, send, readBody }) {
   /** True when this request was a support route and has been answered. */
   async function handle(req, res, url) {
     const path = url.pathname;
+    if (path === '/support' || path.startsWith('/support/')) return await handleWorker(req, res, url), true;
     const rpc = path.startsWith('/rest/v1/rpc/') ? path.slice('/rest/v1/rpc/'.length) : null;
     if (rpc && HANDLED_RPC.has(rpc) && req.method === 'POST') {
       const sdb = await database();

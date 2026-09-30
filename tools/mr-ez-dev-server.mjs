@@ -53,6 +53,8 @@
  *   PUBLIC_SUPABASE_URL=http://127.0.0.1:8787
  *   PUBLIC_SUPABASE_ANON_KEY=local-anon-key
  *   PUBLIC_MR_EZ_URL=http://127.0.0.1:8787/tutor
+ *   PUBLIC_SUPPORT_URL=http://127.0.0.1:8787/support   [R01 support] the real
+ *     support Worker for signed-out visitors, see tools/stand-in/support.mjs
  *
  * Failure states can be forced with query flags on the tutor URL, so the
  * loading, retry, unavailable and limit-reached screens can all be seen:
@@ -2128,6 +2130,7 @@ if (TRIAL) await initTrial();
 server.listen(PORT, '127.0.0.1', () => {
   console.log(`Mr EZ dev backend on http://127.0.0.1:${PORT}`);
   console.log('  Supabase stand-in : /auth/v1/*  /rest/v1/*');
+  console.log('  Support           : /support  (real Worker for signed-out visitors, real migration in PGlite)'); // [R01 support]
   if (TRIAL) {
     console.log('  Trial database    : /rest/v1/rpc/trial_*  (the real migration, in PGlite)');
     console.log('  Tutor             : /tutor  (real Worker, ACCESS_MODE=trial, simulated replies)');

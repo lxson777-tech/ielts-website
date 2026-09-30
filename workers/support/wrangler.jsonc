@@ -1,0 +1,25 @@
+// Cloudflare Worker config for support: the signed-out visitor's way to a
+// person. Read workers/support/README.md first. NOT deployed; deploying it is
+// a real, externally visible step that needs Alex's approval, together with
+// applying supabase/migrations/2026-09-30-support.sql and a site build that
+// sets PUBLIC_SUPPORT_URL to this Worker's address.
+//
+// Secrets:
+//   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+//   npx wrangler secret put SUPPORT_SOURCE_SALT     (any long random value, 16+ characters;
+//                                                    keys the hash of a sender's address)
+//   npx wrangler secret put TURNSTILE_SECRET_KEY    (optional but recommended: the secret
+//                                                    that pairs with the site's
+//                                                    PUBLIC_TURNSTILE_SITE_KEY)
+{
+  "name": "ielts-support",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-01",
+  // Once an hour: erase source hashes that are older than the daily limit
+  // needs (cleanup in src/index.ts, support_source_cleanup in the database).
+  "triggers": { "crons": ["17 * * * *"] },
+  "vars": {
+    "ALLOWED_ORIGINS": "https://lxson777-tech.github.io",
+    "SUPABASE_URL": "https://nbeyxwjvytrqtzzeilev.supabase.co"
+  }
+}
