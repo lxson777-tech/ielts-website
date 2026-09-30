@@ -1,0 +1,1883 @@
+{
+ "base": "http://localhost:4331/ielts-website",
+ "visits": 448,
+ "withErrors": 146,
+ "summary": [
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "visits": 37,
+   "withErrors": 8,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 0
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "visits": 38,
+   "withErrors": 6,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 0
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "visits": 37,
+   "withErrors": 5,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 0
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "visits": 37,
+   "withErrors": 6,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 0
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "visits": 38,
+   "withErrors": 10,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 0
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "visits": 37,
+   "withErrors": 9,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 0
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "visits": 37,
+   "withErrors": 17,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 3
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "visits": 38,
+   "withErrors": 22,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 9
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "visits": 37,
+   "withErrors": 13,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 3
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "visits": 37,
+   "withErrors": 16,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 3
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "visits": 38,
+   "withErrors": 26,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 9
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "visits": 37,
+   "withErrors": 8,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 3
+  }
+ ],
+ "errors": [
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "kind": "fresh",
+   "path": "/plans",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "kind": "fresh",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "kind": "fresh",
+   "path": "/lessons/reading/paraphrase",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "kind": "back",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "kind": "forward",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "fresh",
+   "path": "/plans",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "back",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "forward",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "back",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "forward",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "kind": "fresh",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "kind": "back",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "kind": "forward",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "fresh",
+   "path": "/plans",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "fresh",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "refresh",
+   "path": "/trainers/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "refresh",
+   "path": "/account",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "fresh",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "back",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "plain",
+   "kind": "forward",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "fresh",
+   "path": "/plans",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "fresh",
+   "path": "/trainers/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "fresh",
+   "path": "/trainers/speaking",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "fresh",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "nav-click",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "back",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "forward",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/trial",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/plans",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/plans",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/lessons/reading/paraphrase",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/lessons/reading/paraphrase",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/trainers/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trainers/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/trainers/speaking",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trainers/speaking",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/learn",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/lessons/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "forward",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/trial",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trial",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/plans",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/lessons/reading/paraphrase",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/trainers/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trainers/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/trainers/speaking",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.",
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/tests",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/tests",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trainers",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/learn",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/learn",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/lessons/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/lessons/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "forward",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trial",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/plans",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/plans",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/trainers/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trainers/speaking",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/learn",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/learn",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "forward",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/trial",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trial",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/plans",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/lessons/reading/paraphrase",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trainers/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/trainers/speaking",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trainers/speaking",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/learn",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/lessons/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "kind": "forward",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/trial",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trial",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/plans",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/plans",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/lessons/reading/paraphrase",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/lessons/reading/paraphrase",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/trainers/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trainers/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/trainers/speaking",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.",
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trainers/speaking",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/tests",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/tests",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/trainers",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trainers",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/learn",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/learn",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/lessons/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/lessons/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "trial",
+   "mode": "stress",
+   "kind": "forward",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/trainers/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trainers/writing",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "fresh",
+   "path": "/trainers/speaking",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "refresh",
+   "path": "/trainers/speaking",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/start",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "nav-click",
+   "path": "/dashboard",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "back",
+   "path": "/review",
+   "pageErrors": [
+    "Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+   ],
+   "hydrationConsole": []
+  }
+ ]
+}

@@ -1,0 +1,1228 @@
+{
+ "leftovers": {
+  "submit-open-ru-390": {
+   "found": true,
+   "vw": 390,
+   "left": 286,
+   "right": 380,
+   "width": 94,
+   "top": 12,
+   "textOverflow": false,
+   "scrollW": 94,
+   "clientW": 94,
+   "headerRight": 390,
+   "clipper": null,
+   "fullyInView": true,
+   "centerHitsButton": true,
+   "docW": 390
+  },
+  "submit-open-ru-375": {
+   "found": true,
+   "vw": 375,
+   "left": 271,
+   "right": 365,
+   "width": 94,
+   "top": 12,
+   "textOverflow": false,
+   "scrollW": 94,
+   "clientW": 94,
+   "headerRight": 375,
+   "clipper": null,
+   "fullyInView": true,
+   "centerHitsButton": true,
+   "docW": 375
+  },
+  "submit-open-ru-360": {
+   "found": true,
+   "vw": 360,
+   "left": 256,
+   "right": 350,
+   "width": 94,
+   "top": 12,
+   "textOverflow": false,
+   "scrollW": 94,
+   "clientW": 94,
+   "headerRight": 360,
+   "clipper": null,
+   "fullyInView": true,
+   "centerHitsButton": true,
+   "docW": 360
+  },
+  "submit-open-ru-320": {
+   "found": true,
+   "vw": 320,
+   "left": 228,
+   "right": 314,
+   "width": 86,
+   "top": 12,
+   "textOverflow": false,
+   "scrollW": 86,
+   "clientW": 86,
+   "headerRight": 320,
+   "clipper": null,
+   "fullyInView": true,
+   "centerHitsButton": true,
+   "docW": 320
+  },
+  "submit-open-en-390": {
+   "found": true,
+   "vw": 390,
+   "left": 307,
+   "right": 380,
+   "width": 73,
+   "top": 12,
+   "textOverflow": false,
+   "scrollW": 73,
+   "clientW": 73,
+   "headerRight": 390,
+   "clipper": null,
+   "fullyInView": true,
+   "centerHitsButton": true,
+   "docW": 390
+  },
+  "submit-open-en-375": {
+   "found": true,
+   "vw": 375,
+   "left": 292,
+   "right": 365,
+   "width": 73,
+   "top": 12,
+   "textOverflow": false,
+   "scrollW": 73,
+   "clientW": 73,
+   "headerRight": 375,
+   "clipper": null,
+   "fullyInView": true,
+   "centerHitsButton": true,
+   "docW": 375
+  },
+  "submit-open-en-360": {
+   "found": true,
+   "vw": 360,
+   "left": 277,
+   "right": 350,
+   "width": 73,
+   "top": 12,
+   "textOverflow": false,
+   "scrollW": 73,
+   "clientW": 73,
+   "headerRight": 360,
+   "clipper": null,
+   "fullyInView": true,
+   "centerHitsButton": true,
+   "docW": 360
+  },
+  "submit-open-en-320": {
+   "found": true,
+   "vw": 320,
+   "left": 249,
+   "right": 314,
+   "width": 65,
+   "top": 12,
+   "textOverflow": false,
+   "scrollW": 65,
+   "clientW": 65,
+   "headerRight": 320,
+   "clipper": null,
+   "fullyInView": true,
+   "centerHitsButton": true,
+   "docW": 320
+  },
+  "writing-overview-ru-390/lessons/writing": {
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  "writing-overview-ru-390/lessons/writing-task1": {
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  "writing-overview-ru-390/lessons/writing-task2": {
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  "writing-overview-en-390/lessons/writing": {
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  "writing-overview-en-390/lessons/writing-task1": {
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  "writing-overview-en-390/lessons/writing-task2": {
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  }
+ },
+ "today": [
+  {
+   "combo": "en-390",
+   "stage": "before goal questions",
+   "dockTop": 767,
+   "filled": [
+    {
+     "text": "Next",
+     "bg": "rgb(38, 60, 53)",
+     "lum": 0.21
+    }
+   ],
+   "start": null,
+   "offer": false
+  },
+  {
+   "combo": "en-390",
+   "stage": "after goal questions",
+   "dockTop": 767,
+   "filled": [
+    {
+     "text": "Start",
+     "bg": "rgb(224, 235, 188)",
+     "lum": 0.9
+    }
+   ],
+   "start": {
+    "top": 591,
+    "bottom": 639
+   },
+   "offer": true
+  },
+  {
+   "combo": "ru-390",
+   "stage": "before goal questions",
+   "dockTop": 767,
+   "filled": [
+    {
+     "text": "Next",
+     "bg": "rgb(38, 60, 53)",
+     "lum": 0.21
+    }
+   ],
+   "start": null,
+   "offer": false
+  },
+  {
+   "combo": "ru-390",
+   "stage": "after goal questions",
+   "dockTop": 767,
+   "filled": [
+    {
+     "text": "Начать",
+     "bg": "rgb(224, 235, 188)",
+     "lum": 0.9
+    }
+   ],
+   "start": {
+    "top": 692,
+    "bottom": 740
+   },
+   "offer": true
+  }
+ ],
+ "ru390": [
+  {
+   "site": "open",
+   "path": "/",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/dashboard",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/start",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/learn",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/tests",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/trainers",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/lessons/vocabulary",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/lessons/writing",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/lessons/writing-task1",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/lessons/writing-task2",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/lessons/reading",
+   "clientWidth": 980,
+   "scrollWidth": 980,
+   "innerWidth": 980,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/lessons/listening",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/lessons/speaking",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/lessons/reading/paraphrase",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/review",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/report",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/account",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/help",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/privacy",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/terms",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/support",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/plans",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/writing/checker",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/speaking/examiner",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/tests/reading-full-001",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/trainers/writing",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/placement",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/plan-settings",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/trial",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/sign-in",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/sign-up",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/forgot-password",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/learn/bands",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/writing/models",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/speaking/cue-cards",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/tests/listening-full-001",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "open",
+   "path": "/trainers/reading",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/dashboard",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/start",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/learn",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/tests",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/trainers",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/lessons/vocabulary",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/lessons/writing",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/lessons/writing-task1",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/lessons/writing-task2",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/lessons/reading",
+   "clientWidth": 980,
+   "scrollWidth": 980,
+   "innerWidth": 980,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/lessons/listening",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/lessons/speaking",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/lessons/reading/paraphrase",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/review",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/report",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/account",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/help",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/privacy",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/terms",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/support",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/plans",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/writing/checker",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/speaking/examiner",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/tests/reading-full-001",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/trainers/writing",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/placement",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/plan-settings",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/trial",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/sign-in",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/sign-up",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/forgot-password",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/learn/bands",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/writing/models",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/speaking/cue-cards",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/tests/listening-full-001",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  },
+  {
+   "site": "trial",
+   "path": "/trainers/reading",
+   "clientWidth": 390,
+   "scrollWidth": 390,
+   "innerWidth": 390,
+   "wide": []
+  }
+ ],
+ "vocab320": [
+  {
+   "lang": "ru",
+   "clientWidth": 320,
+   "scrollWidth": 320,
+   "innerWidth": 320,
+   "wide": []
+  },
+  {
+   "lang": "en",
+   "clientWidth": 320,
+   "scrollWidth": 320,
+   "innerWidth": 320,
+   "wide": []
+  }
+ ],
+ "launcher": [
+  {
+   "site": "open",
+   "path": "/dashboard",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 3,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/dashboard",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 3,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/dashboard",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 3,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/lessons/reading/paraphrase",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 30,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/lessons/reading/paraphrase",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 30,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/lessons/reading/paraphrase",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 30,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/tests",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 10,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/tests",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 10,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/tests",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 11,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/trainers",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 2,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/trainers",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 2,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/trainers",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 2,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/learn",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 6,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/learn",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 6,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/learn",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 6,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/writing/checker",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 2,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/writing/checker",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 2,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/writing/checker",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 2,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/report",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 2,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/report",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 2,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/report",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 2,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/account",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 5,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/account",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 5,
+   "hits": []
+  },
+  {
+   "site": "open",
+   "path": "/account",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 5,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/dashboard",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 3,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/dashboard",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 3,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/dashboard",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 3,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/lessons/reading/paraphrase",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 30,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/lessons/reading/paraphrase",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 30,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/lessons/reading/paraphrase",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 30,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/tests",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 10,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/tests",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 10,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/tests",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 10,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/trainers",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 3,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/trainers",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 3,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/trainers",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 3,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/learn",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 3,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/learn",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 3,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/learn",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 3,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/writing/checker",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 2,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/writing/checker",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 2,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/writing/checker",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 2,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/report",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 2,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/report",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 2,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/report",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 2,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/account",
+   "width": 1440,
+   "launcher": "present",
+   "positions": 6,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/account",
+   "width": 1280,
+   "launcher": "present",
+   "positions": 6,
+   "hits": []
+  },
+  {
+   "site": "trial",
+   "path": "/account",
+   "width": 1024,
+   "launcher": "present",
+   "positions": 6,
+   "hits": []
+  }
+ ]
+}

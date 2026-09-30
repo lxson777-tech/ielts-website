@@ -1,0 +1,420 @@
+{
+ "suite": "supplement",
+ "base": "http://localhost:4491/ielts-website",
+ "standin": "http://127.0.0.1:8492",
+ "passed": 61,
+ "total": 64,
+ "failed": [
+  {
+   "combo": "open-ru-1440",
+   "check": "open site shows no trial/payment prompt on /trainers",
+   "pass": false,
+   "detail": ""
+  },
+  {
+   "combo": "open-ru-1440",
+   "check": "open site shows no trial/payment prompt on /lessons/reading/tfng",
+   "pass": false,
+   "detail": ""
+  },
+  {
+   "combo": "open-ru-390",
+   "check": "open site shows no trial/payment prompt on /trainers",
+   "pass": false,
+   "detail": ""
+  }
+ ],
+ "page_errors": [],
+ "pack_requests": {
+  "nopay-en-1440": [],
+  "nopay-ru-1440": [],
+  "nopay-en-390": [],
+  "nopay-ru-390": []
+ },
+ "results": [
+  {
+   "combo": "en-1440",
+   "check": "signed out: no-pay build says payment is not connected",
+   "pass": true,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSkip to content\nKeep your momentum.\n\nChoose more time for your IELTS preparation.\n\nOne month\n\n₸10,000 t"
+  },
+  {
+   "combo": "en-1440",
+   "check": "signed out: no enabled Buy/Pay action",
+   "pass": true,
+   "detail": "[{'text': 'Payment not connected yet', 'disabled': True}, {'text': 'Payment not connected yet', 'disabled': True}]"
+  },
+  {
+   "combo": "en-1440",
+   "check": "signed out: both plan buttons are disabled",
+   "pass": true,
+   "detail": "[{'text': 'Payment not connected yet', 'disabled': True}, {'text': 'Payment not connected yet', 'disabled': True}]"
+  },
+  {
+   "combo": "en-1440",
+   "check": "signed out: no SIMULATED checkout banner",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "signed in: arrived on /plans",
+   "pass": true,
+   "detail": "http://localhost:4492/ielts-website/plans"
+  },
+  {
+   "combo": "en-1440",
+   "check": "signed in: no-pay build says payment is not connected",
+   "pass": true,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSS\nSkip to content\nKeep your momentum.\n\nChoose more time for your IELTS preparation.\n\nOne month\n\n₸10,00"
+  },
+  {
+   "combo": "en-1440",
+   "check": "signed in: no enabled Buy/Pay action",
+   "pass": true,
+   "detail": "[{'text': 'Payment not connected yet', 'disabled': True}, {'text': 'Payment not connected yet', 'disabled': True}]"
+  },
+  {
+   "combo": "en-1440",
+   "check": "signed in: both plan buttons are disabled",
+   "pass": true,
+   "detail": "[{'text': 'Payment not connected yet', 'disabled': True}, {'text': 'Payment not connected yet', 'disabled': True}]"
+  },
+  {
+   "combo": "en-1440",
+   "check": "signed in: no SIMULATED checkout banner",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "signed in: no order was created on the server",
+   "pass": true,
+   "detail": "[]"
+  },
+  {
+   "combo": "en-1440",
+   "check": "no /content/pack/ request on the no-pay build",
+   "pass": true,
+   "detail": "[]"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "signed out: no-pay build says payment is not connected",
+   "pass": true,
+   "detail": "IELTS is EZ\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nEN\nRU\nПерейти к содержимому\nСохраните темп.\n\nВыберите, сколько времени добавить к подготовке к IELTS.\n\nОдин меся"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "signed out: no enabled Buy/Pay action",
+   "pass": true,
+   "detail": "[{'text': 'Оплата пока не подключена', 'disabled': True}, {'text': 'Оплата пока не подключена', 'disabled': True}]"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "signed out: both plan buttons are disabled",
+   "pass": true,
+   "detail": "[{'text': 'Оплата пока не подключена', 'disabled': True}, {'text': 'Оплата пока не подключена', 'disabled': True}]"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "signed out: no SIMULATED checkout banner",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "signed in: arrived on /plans",
+   "pass": true,
+   "detail": "http://localhost:4492/ielts-website/plans"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "signed in: no-pay build says payment is not connected",
+   "pass": true,
+   "detail": "IELTS is EZ\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nEN\nRU\nSS\nПерейти к содержимому\nСохраните темп.\n\nВыберите, сколько времени добавить к подготовке к IELTS.\n\nОдин м"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "signed in: no enabled Buy/Pay action",
+   "pass": true,
+   "detail": "[{'text': 'Оплата пока не подключена', 'disabled': True}, {'text': 'Оплата пока не подключена', 'disabled': True}]"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "signed in: both plan buttons are disabled",
+   "pass": true,
+   "detail": "[{'text': 'Оплата пока не подключена', 'disabled': True}, {'text': 'Оплата пока не подключена', 'disabled': True}]"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "signed in: no SIMULATED checkout banner",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "signed in: no order was created on the server",
+   "pass": true,
+   "detail": "[]"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "no /content/pack/ request on the no-pay build",
+   "pass": true,
+   "detail": "[]"
+  },
+  {
+   "combo": "en-390",
+   "check": "signed out: no-pay build says payment is not connected",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nToday\nCourse\nPractice\nTests\nVocabulary\nSkip to content\nKeep your momentum.\n\nChoose more time for your IELTS preparation.\n\nOne month\n\n₸10,000 t"
+  },
+  {
+   "combo": "en-390",
+   "check": "signed out: no enabled Buy/Pay action",
+   "pass": true,
+   "detail": "[{'text': 'Payment not connected yet', 'disabled': True}, {'text': 'Payment not connected yet', 'disabled': True}]"
+  },
+  {
+   "combo": "en-390",
+   "check": "signed out: both plan buttons are disabled",
+   "pass": true,
+   "detail": "[{'text': 'Payment not connected yet', 'disabled': True}, {'text': 'Payment not connected yet', 'disabled': True}]"
+  },
+  {
+   "combo": "en-390",
+   "check": "signed out: no SIMULATED checkout banner",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "signed in: arrived on /plans",
+   "pass": true,
+   "detail": "http://localhost:4492/ielts-website/plans"
+  },
+  {
+   "combo": "en-390",
+   "check": "signed in: no-pay build says payment is not connected",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nSS\nToday\nCourse\nPractice\nTests\nVocabulary\nSkip to content\nKeep your momentum.\n\nChoose more time for your IELTS preparation.\n\nOne month\n\n₸10,00"
+  },
+  {
+   "combo": "en-390",
+   "check": "signed in: no enabled Buy/Pay action",
+   "pass": true,
+   "detail": "[{'text': 'Payment not connected yet', 'disabled': True}, {'text': 'Payment not connected yet', 'disabled': True}]"
+  },
+  {
+   "combo": "en-390",
+   "check": "signed in: both plan buttons are disabled",
+   "pass": true,
+   "detail": "[{'text': 'Payment not connected yet', 'disabled': True}, {'text': 'Payment not connected yet', 'disabled': True}]"
+  },
+  {
+   "combo": "en-390",
+   "check": "signed in: no SIMULATED checkout banner",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "signed in: no order was created on the server",
+   "pass": true,
+   "detail": "[]"
+  },
+  {
+   "combo": "en-390",
+   "check": "no /content/pack/ request on the no-pay build",
+   "pass": true,
+   "detail": "[]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "signed out: no-pay build says payment is not connected",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nПерейти к содержимому\nСохраните темп.\n\nВыберите, сколько времени добавить к подготовке к IELTS.\n\nОдин меся"
+  },
+  {
+   "combo": "ru-390",
+   "check": "signed out: no enabled Buy/Pay action",
+   "pass": true,
+   "detail": "[{'text': 'Оплата пока не подключена', 'disabled': True}, {'text': 'Оплата пока не подключена', 'disabled': True}]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "signed out: both plan buttons are disabled",
+   "pass": true,
+   "detail": "[{'text': 'Оплата пока не подключена', 'disabled': True}, {'text': 'Оплата пока не подключена', 'disabled': True}]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "signed out: no SIMULATED checkout banner",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "signed in: arrived on /plans",
+   "pass": true,
+   "detail": "http://localhost:4492/ielts-website/plans"
+  },
+  {
+   "combo": "ru-390",
+   "check": "signed in: no-pay build says payment is not connected",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nSS\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nПерейти к содержимому\nСохраните темп.\n\nВыберите, сколько времени добавить к подготовке к IELTS.\n\nОдин м"
+  },
+  {
+   "combo": "ru-390",
+   "check": "signed in: no enabled Buy/Pay action",
+   "pass": true,
+   "detail": "[{'text': 'Оплата пока не подключена', 'disabled': True}, {'text': 'Оплата пока не подключена', 'disabled': True}]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "signed in: both plan buttons are disabled",
+   "pass": true,
+   "detail": "[{'text': 'Оплата пока не подключена', 'disabled': True}, {'text': 'Оплата пока не подключена', 'disabled': True}]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "signed in: no SIMULATED checkout banner",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "signed in: no order was created on the server",
+   "pass": true,
+   "detail": "[]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "no /content/pack/ request on the no-pay build",
+   "pass": true,
+   "detail": "[]"
+  },
+  {
+   "combo": "open-en-1440",
+   "check": "open homepage redirects to /dashboard",
+   "pass": true,
+   "detail": "http://localhost:4491/ielts-website/dashboard"
+  },
+  {
+   "combo": "open-en-1440",
+   "check": "open site shows no trial/payment prompt on /dashboard",
+   "pass": true,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSkip to content\nGood evening.\nA little practice. A step closer.\nLet's set your goal\n\nA few choices to m"
+  },
+  {
+   "combo": "open-en-1440",
+   "check": "open site shows no trial/payment prompt on /tests",
+   "pass": true,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSkip to content\nPut your skills to the test.\n\nFull timed tests, exactly like the real exam: no hints, n"
+  },
+  {
+   "combo": "open-en-1440",
+   "check": "open site shows no trial/payment prompt on /trainers",
+   "pass": true,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSkip to content\nPractice, at your pace.\n\nBuild one skill at a time, with a coach beside you.\n\nGuided pr"
+  },
+  {
+   "combo": "open-en-1440",
+   "check": "open site shows no trial/payment prompt on /lessons/reading/tfng",
+   "pass": true,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nSkip to content\nHome\n/\nReading\n/\nTrue / False / Not Given\nReading\n12 min\nTrue / False / Not Given\n\nDeci"
+  },
+  {
+   "combo": "open-ru-1440",
+   "check": "open homepage redirects to /dashboard",
+   "pass": true,
+   "detail": "http://localhost:4491/ielts-website/dashboard"
+  },
+  {
+   "combo": "open-ru-1440",
+   "check": "open site shows no trial/payment prompt on /dashboard",
+   "pass": true,
+   "detail": "IELTS is EZ\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nEN\nRU\nПерейти к содержимому\nДобрый вечер.\nНемного практики. Ещё один шаг вперёд.\nОпределим вашу цель\n\nНесколько "
+  },
+  {
+   "combo": "open-ru-1440",
+   "check": "open site shows no trial/payment prompt on /tests",
+   "pass": true,
+   "detail": "IELTS is EZ\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nEN\nRU\nПерейти к содержимому\nПроверьте свои навыки.\n\nПолные тесты с таймером, точно как настоящий экзамен: без по"
+  },
+  {
+   "combo": "open-ru-1440",
+   "check": "open site shows no trial/payment prompt on /trainers",
+   "pass": false,
+   "detail": ""
+  },
+  {
+   "combo": "open-ru-1440",
+   "check": "open site shows no trial/payment prompt on /lessons/reading/tfng",
+   "pass": false,
+   "detail": ""
+  },
+  {
+   "combo": "open-en-390",
+   "check": "open homepage redirects to /dashboard",
+   "pass": true,
+   "detail": "http://localhost:4491/ielts-website/dashboard"
+  },
+  {
+   "combo": "open-en-390",
+   "check": "open site shows no trial/payment prompt on /dashboard",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nToday\nCourse\nPractice\nTests\nVocabulary\nSkip to content\nGood evening.\nA little practice. A step closer.\nLet's set your goal\n\nA few choices to m"
+  },
+  {
+   "combo": "open-en-390",
+   "check": "open site shows no trial/payment prompt on /tests",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nToday\nCourse\nPractice\nTests\nVocabulary\nSkip to content\nPut your skills to the test.\n\nFull timed tests, exactly like the real exam: no hints, n"
+  },
+  {
+   "combo": "open-en-390",
+   "check": "open site shows no trial/payment prompt on /trainers",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nToday\nCourse\nPractice\nTests\nVocabulary\nSkip to content\nPractice, at your pace.\n\nBuild one skill at a time, with a coach beside you.\n\n120 drill"
+  },
+  {
+   "combo": "open-en-390",
+   "check": "open site shows no trial/payment prompt on /lessons/reading/tfng",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nToday\nCourse\nPractice\nTests\nVocabulary\nSkip to content\nHome\n/\nReading\n/\nTrue / False / Not Given\nReading\n12 min\nTrue / False / Not Given\n\nDeci"
+  },
+  {
+   "combo": "open-ru-390",
+   "check": "open homepage redirects to /dashboard",
+   "pass": true,
+   "detail": "http://localhost:4491/ielts-website/dashboard"
+  },
+  {
+   "combo": "open-ru-390",
+   "check": "open site shows no trial/payment prompt on /dashboard",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nПерейти к содержимому\nДобрый вечер.\nНемного практики. Ещё один шаг вперёд.\nОпределим вашу цель\n\nНесколько "
+  },
+  {
+   "combo": "open-ru-390",
+   "check": "open site shows no trial/payment prompt on /tests",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nПерейти к содержимому\nПроверьте свои навыки.\n\nПолные тесты с таймером, точно как настоящий экзамен: без по"
+  },
+  {
+   "combo": "open-ru-390",
+   "check": "open site shows no trial/payment prompt on /trainers",
+   "pass": false,
+   "detail": ""
+  },
+  {
+   "combo": "open-ru-390",
+   "check": "open site shows no trial/payment prompt on /lessons/reading/tfng",
+   "pass": true,
+   "detail": "IELTS is EZ\nEN\nRU\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nПерейти к содержимому\nГлавная\n/\nЧтение\n/\nTrue / False / Not Given\nЧтение\n12 мин\nTrue / False / Not Given\n\n"
+  }
+ ]
+}

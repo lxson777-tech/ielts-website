@@ -1,0 +1,19 @@
+R05 mutation probe, run in memory (no lesson file written).
+
+NEW checker (HEAD, rule 8):
+PASS  1. the Russian lesson as it is today: checker passed it (expected pass)
+PASS  2. an English interface paragraph appended (the re-audit's mutation): checker failed it (expected fail)
+        the files have different numbers of tags: English 73, Russian 75. The first tag with no counterpart is in the Russian: <p> (Russian line 45)
+        the checks on exam material (passages, cue cards, vocabulary columns) were skipped, because they line the two files up tag by tag and the tags do not match yet. Fix the structure above and run the check again.
+PASS  3. the explanatory note put back in English: checker failed it (expected fail)
+        line 36: <div> is entirely in English: "The 36 topics below cover the vast majority of IELTS questions Essay prompts, cue cards and Part 3 discussions circle the same themes year a". Translate it. If it is exam material or an IELTS term that must stay in Engli
+PASS  4. the Russian note restored: checker passed it (expected pass)
+file on disk unchanged: true
+
+OLD checker (commit f3a8122, before rule 8), English note in place of the Russian one:
+checker passed it: ok = true , problems reported: 0 (the gap the re-audit found)
+
+tests/lesson-bodies-ru.test.ts:
+ℹ tests 111
+ℹ pass 111
+ℹ fail 0

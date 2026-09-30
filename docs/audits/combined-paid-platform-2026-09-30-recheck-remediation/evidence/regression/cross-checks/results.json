@@ -1,0 +1,1326 @@
+{
+ "suite": "cross-checks",
+ "base": "http://localhost:4491/ielts-website",
+ "standin": "http://127.0.0.1:8491",
+ "passed": 219,
+ "total": 219,
+ "failed": [],
+ "page_errors": [],
+ "pack_requests": {},
+ "results": [
+  {
+   "combo": "en-1440",
+   "check": "drill: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "drill: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "drill: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Your Score\\n\\n0 / 13\\n\\n0% correct\\n\\nA single drill is ', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "drill: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Practise this type > Retry the 13 you got wrong > Back to today's session\n→ > Review Answers > More Tests > Review the lesson"
+  },
+  {
+   "combo": "en-1440",
+   "check": "drill: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Score"
+  },
+  {
+   "combo": "en-1440",
+   "check": "drill: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Your Score\n\n0 / 13\n\n0% correct\n\nA single drill is "
+  },
+  {
+   "combo": "en-1440",
+   "check": "drill: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Score"
+  },
+  {
+   "combo": "en-1440",
+   "check": "full test: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "full test: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "full test: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Your Score\\n\\n0 / 40\\n\\n0% correct\\n\\nEstimated Band: be', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "full test: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Practise this type > Retry the 40 you got wrong > Back to today's session\n→ > Review Answers > More Tests > Review the lesson"
+  },
+  {
+   "combo": "en-1440",
+   "check": "full test: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Score"
+  },
+  {
+   "combo": "en-1440",
+   "check": "full test: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Your Score\n\n0 / 40\n\n0% correct\n\nEstimated Band: be"
+  },
+  {
+   "combo": "en-1440",
+   "check": "full test: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Score"
+  },
+  {
+   "combo": "ru-390",
+   "check": "drill: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "drill: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "drill: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Ваш результат\\n\\n0 / 13\\n\\n0% верно\\n\\nОдного упражнения', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "drill: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Потренировать этот тип > Повторить 13 ошибок > Вернуться к сегодняшнему занятию\n→ > Разобрать ответы > Другие тесты > Повторить урок"
+  },
+  {
+   "combo": "ru-390",
+   "check": "drill: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "ru-390",
+   "check": "drill: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Ваш результат\n\n0 / 13\n\n0% верно\n\nОдного упражнения"
+  },
+  {
+   "combo": "ru-390",
+   "check": "drill: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "ru-390",
+   "check": "full test: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "full test: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "full test: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Ваш результат\\n\\n0 / 40\\n\\n0% верно\\n\\nПримерный балл: н', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "full test: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Потренировать этот тип > Повторить 40 ошибок > Вернуться к сегодняшнему занятию\n→ > Разобрать ответы > Другие тесты > Повторить урок"
+  },
+  {
+   "combo": "ru-390",
+   "check": "full test: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "ru-390",
+   "check": "full test: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Ваш результат\n\n0 / 40\n\n0% верно\n\nПримерный балл: н"
+  },
+  {
+   "combo": "ru-390",
+   "check": "full test: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "drill: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "drill: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "drill: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Ваш результат\\n\\n0 / 13\\n\\n0% верно\\n\\nОдного упражнения', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "drill: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Потренировать этот тип > Повторить 13 ошибок > Вернуться к сегодняшнему занятию\n→ > Разобрать ответы > Другие тесты > Повторить урок"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "drill: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "drill: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Ваш результат\n\n0 / 13\n\n0% верно\n\nОдного упражнения"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "drill: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "full test: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "full test: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "full test: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Ваш результат\\n\\n0 / 40\\n\\n0% верно\\n\\nПримерный балл: н', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "full test: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Потренировать этот тип > Повторить 40 ошибок > Вернуться к сегодняшнему занятию\n→ > Разобрать ответы > Другие тесты > Повторить урок"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "full test: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "full test: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Ваш результат\n\n0 / 40\n\n0% верно\n\nПримерный балл: н"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "full test: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "en-390",
+   "check": "drill: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "drill: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "drill: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Your Score\\n\\n0 / 13\\n\\n0% correct\\n\\nA single drill is ', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "en-390",
+   "check": "drill: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Practise this type > Retry the 13 you got wrong > Back to today's session\n→ > Review Answers > More Tests > Review the lesson"
+  },
+  {
+   "combo": "en-390",
+   "check": "drill: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Score"
+  },
+  {
+   "combo": "en-390",
+   "check": "drill: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Your Score\n\n0 / 13\n\n0% correct\n\nA single drill is "
+  },
+  {
+   "combo": "en-390",
+   "check": "drill: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Score"
+  },
+  {
+   "combo": "en-390",
+   "check": "full test: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "full test: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "full test: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Your Score\\n\\n0 / 40\\n\\n0% correct\\n\\nEstimated Band: be', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "en-390",
+   "check": "full test: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Practise this type > Retry the 40 you got wrong > Back to today's session\n→ > Review Answers > More Tests > Review the lesson"
+  },
+  {
+   "combo": "en-390",
+   "check": "full test: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Score"
+  },
+  {
+   "combo": "en-390",
+   "check": "full test: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Your Score\n\n0 / 40\n\n0% correct\n\nEstimated Band: be"
+  },
+  {
+   "combo": "en-390",
+   "check": "full test: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Score"
+  },
+  {
+   "combo": "en-1440",
+   "check": "Writing checker: answer box has a visible label that stays after typing",
+   "pass": true,
+   "detail": "{'label': 'Your answer', 'visible': True, 'aria': None, 'placeholder': 'Write your answer here…'}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "Writing checker: answer box has a visible label that stays after typing",
+   "pass": true,
+   "detail": "{'label': 'Ваш ответ', 'visible': True, 'aria': None, 'placeholder': 'Напишите здесь свой ответ…'}"
+  },
+  {
+   "combo": "en-390",
+   "check": "Writing checker: answer box has a visible label that stays after typing",
+   "pass": true,
+   "detail": "{'label': 'Your answer', 'visible': True, 'aria': None, 'placeholder': 'Write your answer here…'}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Writing checker: answer box has a visible label that stays after typing",
+   "pass": true,
+   "detail": "{'label': 'Ваш ответ', 'visible': True, 'aria': None, 'placeholder': 'Напишите здесь свой ответ…'}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "vocabulary overview: topic search, no 'No matches' before typing, all topics visible",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Find a topic', 'emptyShown': False, 'cards': 36, 'cardsVisible': 36, 'titles': ['Conjunctions & Linking Words', 'Environment & Ecology', 'Education & Learning']}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "vocabulary overview: 'Ecology' finds a topic",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Find a topic', 'emptyShown': False, 'cards': 36, 'cardsVisible': 1, 'titles': ['Environment & Ecology']}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "vocabulary overview: nonsense query shows the no-match message",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Find a topic', 'emptyShown': True, 'cards': 36, 'cardsVisible': 0, 'titles': []}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "vocabulary overview: clearing the box restores every topic",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Find a topic', 'emptyShown': False, 'cards': 36, 'cardsVisible': 36, 'titles': ['Conjunctions & Linking Words', 'Environment & Ecology', 'Education & Learning']}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "vocabulary overview: topic search, no 'No matches' before typing, all topics visible",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Найти тему', 'emptyShown': False, 'cards': 36, 'cardsVisible': 36, 'titles': ['Союзы и слова-связки', 'Окружающая среда и экология', 'Образование и обучение']}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "vocabulary overview: 'экология' finds a topic",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Найти тему', 'emptyShown': False, 'cards': 36, 'cardsVisible': 1, 'titles': ['Окружающая среда и экология']}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "vocabulary overview: nonsense query shows the no-match message",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Найти тему', 'emptyShown': True, 'cards': 36, 'cardsVisible': 0, 'titles': []}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "vocabulary overview: clearing the box restores every topic",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Найти тему', 'emptyShown': False, 'cards': 36, 'cardsVisible': 36, 'titles': ['Союзы и слова-связки', 'Окружающая среда и экология', 'Образование и обучение']}"
+  },
+  {
+   "combo": "en-390",
+   "check": "vocabulary overview: topic search, no 'No matches' before typing, all topics visible",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Find a topic', 'emptyShown': False, 'cards': 36, 'cardsVisible': 36, 'titles': ['Conjunctions & Linking Words', 'Environment & Ecology', 'Education & Learning']}"
+  },
+  {
+   "combo": "en-390",
+   "check": "vocabulary overview: 'Ecology' finds a topic",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Find a topic', 'emptyShown': False, 'cards': 36, 'cardsVisible': 1, 'titles': ['Environment & Ecology']}"
+  },
+  {
+   "combo": "en-390",
+   "check": "vocabulary overview: nonsense query shows the no-match message",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Find a topic', 'emptyShown': True, 'cards': 36, 'cardsVisible': 0, 'titles': []}"
+  },
+  {
+   "combo": "en-390",
+   "check": "vocabulary overview: clearing the box restores every topic",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Find a topic', 'emptyShown': False, 'cards': 36, 'cardsVisible': 36, 'titles': ['Conjunctions & Linking Words', 'Environment & Ecology', 'Education & Learning']}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "vocabulary overview: topic search, no 'No matches' before typing, all topics visible",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Найти тему', 'emptyShown': False, 'cards': 36, 'cardsVisible': 36, 'titles': ['Союзы и слова-связки', 'Окружающая среда и экология', 'Образование и обучение']}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "vocabulary overview: 'экология' finds a topic",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Найти тему', 'emptyShown': False, 'cards': 36, 'cardsVisible': 1, 'titles': ['Окружающая среда и экология']}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "vocabulary overview: nonsense query shows the no-match message",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Найти тему', 'emptyShown': True, 'cards': 36, 'cardsVisible': 0, 'titles': []}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "vocabulary overview: clearing the box restores every topic",
+   "pass": true,
+   "detail": "{'box': True, 'label': 'Найти тему', 'emptyShown': False, 'cards': 36, 'cardsVisible': 36, 'titles': ['Союзы и слова-связки', 'Окружающая среда и экология', 'Образование и обучение']}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "test player: Submit button fully visible and not cut off",
+   "pass": true,
+   "detail": "{'found': True, 'vw': 390, 'left': 286, 'right': 380, 'width': 94, 'top': 12, 'textOverflow': False, 'scrollW': 94, 'clientW': 94, 'headerRight': 390, 'clipper': None, 'fullyInView': True, 'centerHitsButton': True, 'docW': 390}"
+  },
+  {
+   "combo": "ru-375",
+   "check": "test player: Submit button fully visible and not cut off",
+   "pass": true,
+   "detail": "{'found': True, 'vw': 375, 'left': 271, 'right': 365, 'width': 94, 'top': 12, 'textOverflow': False, 'scrollW': 94, 'clientW': 94, 'headerRight': 375, 'clipper': None, 'fullyInView': True, 'centerHitsButton': True, 'docW': 375}"
+  },
+  {
+   "combo": "ru-360",
+   "check": "test player: Submit button fully visible and not cut off",
+   "pass": true,
+   "detail": "{'found': True, 'vw': 360, 'left': 256, 'right': 350, 'width': 94, 'top': 12, 'textOverflow': False, 'scrollW': 94, 'clientW': 94, 'headerRight': 360, 'clipper': None, 'fullyInView': True, 'centerHitsButton': True, 'docW': 360}"
+  },
+  {
+   "combo": "ru-320",
+   "check": "test player: Submit button fully visible and not cut off",
+   "pass": true,
+   "detail": "{'found': True, 'vw': 320, 'left': 228, 'right': 314, 'width': 86, 'top': 12, 'textOverflow': False, 'scrollW': 86, 'clientW': 86, 'headerRight': 320, 'clipper': None, 'fullyInView': True, 'centerHitsButton': True, 'docW': 320}"
+  },
+  {
+   "combo": "en-390",
+   "check": "test player: Submit button fully visible and not cut off",
+   "pass": true,
+   "detail": "{'found': True, 'vw': 390, 'left': 307, 'right': 380, 'width': 73, 'top': 12, 'textOverflow': False, 'scrollW': 73, 'clientW': 73, 'headerRight': 390, 'clipper': None, 'fullyInView': True, 'centerHitsButton': True, 'docW': 390}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "/lessons/writing: document width equals the phone width (no sideways scroll)",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390",
+   "check": "/lessons/writing-task1: document width equals the phone width (no sideways scroll)",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390",
+   "check": "/lessons/writing-task2: document width equals the phone width (no sideways scroll)",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "en-390",
+   "check": "/lessons/writing: document width equals the phone width (no sideways scroll)",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "en-390",
+   "check": "/lessons/writing-task1: document width equals the phone width (no sideways scroll)",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "en-390",
+   "check": "/lessons/writing-task2: document width equals the phone width (no sideways scroll)",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "en-390",
+   "check": "fresh student, Today first screen (goal questions stage): at most one filled primary action",
+   "pass": true,
+   "detail": "[{'text': 'Next', 'bg': 'rgb(38, 60, 53)', 'lum': 0.21}]"
+  },
+  {
+   "combo": "en-390",
+   "check": "goal questions answered",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "Today first phone screen: exactly one filled primary action",
+   "pass": true,
+   "detail": "[{'text': 'Start', 'bg': 'rgb(224, 235, 188)', 'lum': 0.9}]"
+  },
+  {
+   "combo": "en-390",
+   "check": "Today first phone screen: today's Start fully visible above the dock",
+   "pass": true,
+   "detail": "{'dockTop': 767, 'filled': [{'text': 'Start', 'bg': 'rgb(224, 235, 188)', 'lum': 0.9}], 'start': {'top': 591, 'bottom': 639}, 'offer': True}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "fresh student, Today first screen (goal questions stage): at most one filled primary action",
+   "pass": true,
+   "detail": "[{'text': 'Next', 'bg': 'rgb(38, 60, 53)', 'lum': 0.21}]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "goal questions answered",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "Today first phone screen: exactly one filled primary action",
+   "pass": true,
+   "detail": "[{'text': 'Начать', 'bg': 'rgb(224, 235, 188)', 'lum': 0.9}]"
+  },
+  {
+   "combo": "ru-390",
+   "check": "Today first phone screen: today's Start fully visible above the dock",
+   "pass": true,
+   "detail": "{'dockTop': 767, 'filled': [{'text': 'Начать', 'bg': 'rgb(224, 235, 188)', 'lum': 0.9}], 'start': {'top': 692, 'bottom': 740}, 'offer': True}"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /dashboard",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /start",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /learn",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /tests",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /trainers",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /lessons/vocabulary",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /lessons/writing",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /lessons/writing-task1",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /lessons/writing-task2",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /lessons/reading",
+   "pass": true,
+   "detail": "980/980 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /lessons/listening",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /lessons/speaking",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /lessons/reading/paraphrase",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /review",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /report",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /account",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /help",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /privacy",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /terms",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /support",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /plans",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /writing/checker",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /speaking/examiner",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /tests/reading-full-001",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /trainers/writing",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /placement",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /plan-settings",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /trial",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /sign-in",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /sign-up",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /forgot-password",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /learn/bands",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /writing/models",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /speaking/cue-cards",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /tests/listening-full-001",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-open",
+   "check": "no sideways scroll on /trainers/reading",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /dashboard",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /start",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /learn",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /tests",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /trainers",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /lessons/vocabulary",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /lessons/writing",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /lessons/writing-task1",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /lessons/writing-task2",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /lessons/reading",
+   "pass": true,
+   "detail": "980/980 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /lessons/listening",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /lessons/speaking",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /lessons/reading/paraphrase",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /review",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /report",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /account",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /help",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /privacy",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /terms",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /support",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /plans",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /writing/checker",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /speaking/examiner",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /tests/reading-full-001",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /trainers/writing",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /placement",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /plan-settings",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /trial",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /sign-in",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /sign-up",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /forgot-password",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /learn/bands",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /writing/models",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /speaking/cue-cards",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /tests/listening-full-001",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-390-trial",
+   "check": "no sideways scroll on /trainers/reading",
+   "pass": true,
+   "detail": "390/390 []"
+  },
+  {
+   "combo": "ru-320",
+   "check": "vocabulary overview: no sideways scroll at 320",
+   "pass": true,
+   "detail": "320/320 []"
+  },
+  {
+   "combo": "en-320",
+   "check": "vocabulary overview: no sideways scroll at 320",
+   "pass": true,
+   "detail": "320/320 []"
+  },
+  {
+   "combo": "open-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /dashboard",
+   "pass": true,
+   "detail": "present / 3 positions"
+  },
+  {
+   "combo": "open-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /dashboard",
+   "pass": true,
+   "detail": "present / 3 positions"
+  },
+  {
+   "combo": "open-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /dashboard",
+   "pass": true,
+   "detail": "present / 3 positions"
+  },
+  {
+   "combo": "open-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /lessons/reading/paraphrase",
+   "pass": true,
+   "detail": "present / 30 positions"
+  },
+  {
+   "combo": "open-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /lessons/reading/paraphrase",
+   "pass": true,
+   "detail": "present / 30 positions"
+  },
+  {
+   "combo": "open-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /lessons/reading/paraphrase",
+   "pass": true,
+   "detail": "present / 30 positions"
+  },
+  {
+   "combo": "open-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /tests",
+   "pass": true,
+   "detail": "present / 10 positions"
+  },
+  {
+   "combo": "open-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /tests",
+   "pass": true,
+   "detail": "present / 10 positions"
+  },
+  {
+   "combo": "open-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /tests",
+   "pass": true,
+   "detail": "present / 11 positions"
+  },
+  {
+   "combo": "open-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /trainers",
+   "pass": true,
+   "detail": "present / 2 positions"
+  },
+  {
+   "combo": "open-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /trainers",
+   "pass": true,
+   "detail": "present / 2 positions"
+  },
+  {
+   "combo": "open-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /trainers",
+   "pass": true,
+   "detail": "present / 2 positions"
+  },
+  {
+   "combo": "open-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /learn",
+   "pass": true,
+   "detail": "present / 6 positions"
+  },
+  {
+   "combo": "open-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /learn",
+   "pass": true,
+   "detail": "present / 6 positions"
+  },
+  {
+   "combo": "open-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /learn",
+   "pass": true,
+   "detail": "present / 6 positions"
+  },
+  {
+   "combo": "open-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /writing/checker",
+   "pass": true,
+   "detail": "present / 2 positions"
+  },
+  {
+   "combo": "open-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /writing/checker",
+   "pass": true,
+   "detail": "present / 2 positions"
+  },
+  {
+   "combo": "open-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /writing/checker",
+   "pass": true,
+   "detail": "present / 2 positions"
+  },
+  {
+   "combo": "open-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /report",
+   "pass": true,
+   "detail": "present / 2 positions"
+  },
+  {
+   "combo": "open-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /report",
+   "pass": true,
+   "detail": "present / 2 positions"
+  },
+  {
+   "combo": "open-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /report",
+   "pass": true,
+   "detail": "present / 2 positions"
+  },
+  {
+   "combo": "open-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /account",
+   "pass": true,
+   "detail": "present / 5 positions"
+  },
+  {
+   "combo": "open-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /account",
+   "pass": true,
+   "detail": "present / 5 positions"
+  },
+  {
+   "combo": "open-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /account",
+   "pass": true,
+   "detail": "present / 5 positions"
+  },
+  {
+   "combo": "trial-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /dashboard",
+   "pass": true,
+   "detail": "present / 3 positions"
+  },
+  {
+   "combo": "trial-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /dashboard",
+   "pass": true,
+   "detail": "present / 3 positions"
+  },
+  {
+   "combo": "trial-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /dashboard",
+   "pass": true,
+   "detail": "present / 3 positions"
+  },
+  {
+   "combo": "trial-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /lessons/reading/paraphrase",
+   "pass": true,
+   "detail": "present / 30 positions"
+  },
+  {
+   "combo": "trial-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /lessons/reading/paraphrase",
+   "pass": true,
+   "detail": "present / 30 positions"
+  },
+  {
+   "combo": "trial-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /lessons/reading/paraphrase",
+   "pass": true,
+   "detail": "present / 30 positions"
+  },
+  {
+   "combo": "trial-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /tests",
+   "pass": true,
+   "detail": "present / 10 positions"
+  },
+  {
+   "combo": "trial-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /tests",
+   "pass": true,
+   "detail": "present / 10 positions"
+  },
+  {
+   "combo": "trial-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /tests",
+   "pass": true,
+   "detail": "present / 10 positions"
+  },
+  {
+   "combo": "trial-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /trainers",
+   "pass": true,
+   "detail": "present / 3 positions"
+  },
+  {
+   "combo": "trial-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /trainers",
+   "pass": true,
+   "detail": "present / 3 positions"
+  },
+  {
+   "combo": "trial-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /trainers",
+   "pass": true,
+   "detail": "present / 3 positions"
+  },
+  {
+   "combo": "trial-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /learn",
+   "pass": true,
+   "detail": "present / 3 positions"
+  },
+  {
+   "combo": "trial-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /learn",
+   "pass": true,
+   "detail": "present / 3 positions"
+  },
+  {
+   "combo": "trial-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /learn",
+   "pass": true,
+   "detail": "present / 3 positions"
+  },
+  {
+   "combo": "trial-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /writing/checker",
+   "pass": true,
+   "detail": "present / 2 positions"
+  },
+  {
+   "combo": "trial-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /writing/checker",
+   "pass": true,
+   "detail": "present / 2 positions"
+  },
+  {
+   "combo": "trial-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /writing/checker",
+   "pass": true,
+   "detail": "present / 2 positions"
+  },
+  {
+   "combo": "trial-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /report",
+   "pass": true,
+   "detail": "present / 2 positions"
+  },
+  {
+   "combo": "trial-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /report",
+   "pass": true,
+   "detail": "present / 2 positions"
+  },
+  {
+   "combo": "trial-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /report",
+   "pass": true,
+   "detail": "present / 2 positions"
+  },
+  {
+   "combo": "trial-1440",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /account",
+   "pass": true,
+   "detail": "present / 6 positions"
+  },
+  {
+   "combo": "trial-1280",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /account",
+   "pass": true,
+   "detail": "present / 6 positions"
+  },
+  {
+   "combo": "trial-1024",
+   "check": "Mr EZ launcher intersects no button/link at any scroll position on /account",
+   "pass": true,
+   "detail": "present / 6 positions"
+  }
+ ]
+}

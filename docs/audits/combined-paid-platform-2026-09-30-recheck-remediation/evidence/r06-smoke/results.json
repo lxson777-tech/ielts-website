@@ -1,0 +1,18 @@
+{
+ "base": "http://localhost:4441/ielts-website",
+ "visits": 38,
+ "withErrors": 0,
+ "summary": [
+  {
+   "lang": "ru",
+   "size": "390x844",
+   "state": "trial",
+   "mode": "stress",
+   "visits": 38,
+   "withErrors": 0,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 9
+  }
+ ],
+ "errors": []
+}

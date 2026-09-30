@@ -1,0 +1,348 @@
+{
+ "suite": "cross-load",
+ "base": "http://localhost:4491/ielts-website",
+ "standin": "http://127.0.0.1:8491",
+ "passed": 56,
+ "total": 56,
+ "failed": [],
+ "page_errors": [],
+ "pack_requests": {},
+ "results": [
+  {
+   "combo": "en-1440",
+   "check": "drill: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "drill: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "drill: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Your Score\\n\\n0 / 13\\n\\n0% correct\\n\\nA single drill is ', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "drill: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Practise this type > Retry the 13 you got wrong > Back to today's session\n→ > Review Answers > More Tests > Review the lesson"
+  },
+  {
+   "combo": "en-1440",
+   "check": "drill: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Score"
+  },
+  {
+   "combo": "en-1440",
+   "check": "drill: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Your Score\n\n0 / 13\n\n0% correct\n\nA single drill is "
+  },
+  {
+   "combo": "en-1440",
+   "check": "drill: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Score"
+  },
+  {
+   "combo": "en-1440",
+   "check": "full test: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "full test: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-1440",
+   "check": "full test: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Your Score\\n\\n0 / 40\\n\\n0% correct\\n\\nEstimated Band: be', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "en-1440",
+   "check": "full test: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Practise this type > Retry the 40 you got wrong > Back to today's session\n→ > Review Answers > More Tests > Review the lesson"
+  },
+  {
+   "combo": "en-1440",
+   "check": "full test: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Score"
+  },
+  {
+   "combo": "en-1440",
+   "check": "full test: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Your Score\n\n0 / 40\n\n0% correct\n\nEstimated Band: be"
+  },
+  {
+   "combo": "en-1440",
+   "check": "full test: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Score"
+  },
+  {
+   "combo": "ru-390",
+   "check": "drill: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "drill: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "drill: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Ваш результат\\n\\n0 / 13\\n\\n0% верно\\n\\nОдного упражнения', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "drill: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Потренировать этот тип > Повторить 13 ошибок > Вернуться к сегодняшнему занятию\n→ > Разобрать ответы > Другие тесты > Повторить урок"
+  },
+  {
+   "combo": "ru-390",
+   "check": "drill: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "ru-390",
+   "check": "drill: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Ваш результат\n\n0 / 13\n\n0% верно\n\nОдного упражнения"
+  },
+  {
+   "combo": "ru-390",
+   "check": "drill: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "ru-390",
+   "check": "full test: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "full test: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-390",
+   "check": "full test: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Ваш результат\\n\\n0 / 40\\n\\n0% верно\\n\\nПримерный балл: н', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "ru-390",
+   "check": "full test: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Потренировать этот тип > Повторить 40 ошибок > Вернуться к сегодняшнему занятию\n→ > Разобрать ответы > Другие тесты > Повторить урок"
+  },
+  {
+   "combo": "ru-390",
+   "check": "full test: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "ru-390",
+   "check": "full test: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Ваш результат\n\n0 / 40\n\n0% верно\n\nПримерный балл: н"
+  },
+  {
+   "combo": "ru-390",
+   "check": "full test: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "drill: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "drill: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "drill: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Ваш результат\\n\\n0 / 13\\n\\n0% верно\\n\\nОдного упражнения', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "drill: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Потренировать этот тип > Повторить 13 ошибок > Вернуться к сегодняшнему занятию\n→ > Разобрать ответы > Другие тесты > Повторить урок"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "drill: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "drill: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Ваш результат\n\n0 / 13\n\n0% верно\n\nОдного упражнения"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "drill: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "full test: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "full test: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "ru-1440",
+   "check": "full test: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Ваш результат\\n\\n0 / 40\\n\\n0% верно\\n\\nПримерный балл: н', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "full test: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Потренировать этот тип > Повторить 40 ошибок > Вернуться к сегодняшнему занятию\n→ > Разобрать ответы > Другие тесты > Повторить урок"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "full test: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "full test: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Ваш результат\n\n0 / 40\n\n0% верно\n\nПримерный балл: н"
+  },
+  {
+   "combo": "ru-1440",
+   "check": "full test: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Результат"
+  },
+  {
+   "combo": "en-390",
+   "check": "drill: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "drill: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "drill: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Your Score\\n\\n0 / 13\\n\\n0% correct\\n\\nA single drill is ', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "en-390",
+   "check": "drill: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Practise this type > Retry the 13 you got wrong > Back to today's session\n→ > Review Answers > More Tests > Review the lesson"
+  },
+  {
+   "combo": "en-390",
+   "check": "drill: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Score"
+  },
+  {
+   "combo": "en-390",
+   "check": "drill: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Your Score\n\n0 / 13\n\n0% correct\n\nA single drill is "
+  },
+  {
+   "combo": "en-390",
+   "check": "drill: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Score"
+  },
+  {
+   "combo": "en-390",
+   "check": "full test: Start reached with Tab only",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "full test: header Submit reached with Tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "combo": "en-390",
+   "check": "full test: result dialog opened with focus inside, named by its heading",
+   "pass": true,
+   "detail": "{'text': 'Your Score\\n\\n0 / 40\\n\\n0% correct\\n\\nEstimated Band: be', 'tag': 'DIV', 'inside': True, 'dialog': True}"
+  },
+  {
+   "combo": "en-390",
+   "check": "full test: 20 Tab and 20 Shift+Tab stay inside the dialog",
+   "pass": true,
+   "detail": "Practise this type > Retry the 40 you got wrong > Back to today's session\n→ > Review Answers > More Tests > Review the lesson"
+  },
+  {
+   "combo": "en-390",
+   "check": "full test: Escape closes into the review and focus returns to Score",
+   "pass": true,
+   "detail": "Score"
+  },
+  {
+   "combo": "en-390",
+   "check": "full test: Score reopens the dialog with focus inside",
+   "pass": true,
+   "detail": "Your Score\n\n0 / 40\n\n0% correct\n\nEstimated Band: be"
+  },
+  {
+   "combo": "en-390",
+   "check": "full test: Review Answers closes it, focus on Score",
+   "pass": true,
+   "detail": "Score"
+  }
+ ]
+}

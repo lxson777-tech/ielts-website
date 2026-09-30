@@ -1,0 +1,111 @@
+# e01 trust journey, run 1790789775
+
+107 of 107 checks passed.
+
+- PASS en-1440 sign-up: explains the next step and links to /privacy
+- PASS en-1440 profile: why and who sees it, linked to /privacy
+- PASS en-1440 profile: no vague 'the centre' wording
+- PASS en-1440 /privacy: readable in the chosen language
+- PASS en-1440 /privacy: names the real services and says recordings are not saved
+- PASS en-1440 /privacy: no operator line while unpublished
+- PASS en-1440 /privacy: no sideways scroll
+- PASS en-1440 /terms: readable, with the approved prices
+- PASS en-1440 /terms: no refunds, no renewal, fair daily limits, results kept
+- PASS en-1440 /terms: says buying is not open yet
+- PASS en-1440 /terms: no sideways scroll
+- PASS en-1440 /help: 'Talk to a person' with the form link
+- PASS en-1440 footer: Help, Report a problem, Privacy, Terms
+- PASS en-1440 footer/help: no sideways scroll
+- PASS en-1440 /support signed in: no email asked, replies to the account
+- PASS en-1440 /support: a too-short message is refused in the form
+- PASS en-1440 /support signed in: stored with the account, from the footer
+- PASS en-1440 /support signed out: email is required
+- PASS en-1440 /support signed out: stored with the visitor's email and no account
+- PASS en-1440 /support signed out: sent through the support Worker, never straight to the database
+- PASS en-1440 /support signed out: the sender is kept as a hash, not an address
+- PASS ru-1440 sign-up: explains the next step and links to /privacy
+- PASS ru-1440 profile: why and who sees it, linked to /privacy
+- PASS ru-1440 profile: no vague 'the centre' wording
+- PASS ru-1440 /privacy: readable in the chosen language
+- PASS ru-1440 /privacy: names the real services and says recordings are not saved
+- PASS ru-1440 /privacy: no operator line while unpublished
+- PASS ru-1440 /privacy: no sideways scroll
+- PASS ru-1440 /terms: readable, with the approved prices
+- PASS ru-1440 /terms: no refunds, no renewal, fair daily limits, results kept
+- PASS ru-1440 /terms: says buying is not open yet
+- PASS ru-1440 /terms: no sideways scroll
+- PASS ru-1440 /help: 'Talk to a person' with the form link
+- PASS ru-1440 footer: Help, Report a problem, Privacy, Terms
+- PASS ru-1440 footer/help: no sideways scroll
+- PASS ru-1440 /support signed in: no email asked, replies to the account
+- PASS ru-1440 /support: a too-short message is refused in the form
+- PASS ru-1440 /support signed in: stored with the account, from the footer
+- PASS ru-1440 /support signed out: email is required
+- PASS ru-1440 /support signed out: stored with the visitor's email and no account
+- PASS ru-1440 /support signed out: sent through the support Worker, never straight to the database
+- PASS ru-1440 /support signed out: the sender is kept as a hash, not an address
+- PASS en-390 sign-up: explains the next step and links to /privacy
+- PASS en-390 profile: why and who sees it, linked to /privacy
+- PASS en-390 profile: no vague 'the centre' wording
+- PASS en-390 /privacy: readable in the chosen language
+- PASS en-390 /privacy: names the real services and says recordings are not saved
+- PASS en-390 /privacy: no operator line while unpublished
+- PASS en-390 /privacy: no sideways scroll
+- PASS en-390 /terms: readable, with the approved prices
+- PASS en-390 /terms: no refunds, no renewal, fair daily limits, results kept
+- PASS en-390 /terms: says buying is not open yet
+- PASS en-390 /terms: no sideways scroll
+- PASS en-390 /help: 'Talk to a person' with the form link
+- PASS en-390 footer: Help, Report a problem, Privacy, Terms
+- PASS en-390 footer/help: no sideways scroll
+- PASS en-390 /support signed in: no email asked, replies to the account
+- PASS en-390 /support: a too-short message is refused in the form
+- PASS en-390 /support signed in: stored with the account, from the footer
+- PASS en-390 /support signed out: email is required
+- PASS en-390 /support signed out: stored with the visitor's email and no account
+- PASS en-390 /support signed out: sent through the support Worker, never straight to the database
+- PASS en-390 /support signed out: the sender is kept as a hash, not an address
+- PASS ru-390 sign-up: explains the next step and links to /privacy
+- PASS ru-390 profile: why and who sees it, linked to /privacy
+- PASS ru-390 profile: no vague 'the centre' wording
+- PASS ru-390 /privacy: readable in the chosen language
+- PASS ru-390 /privacy: names the real services and says recordings are not saved
+- PASS ru-390 /privacy: no operator line while unpublished
+- PASS ru-390 /privacy: no sideways scroll
+- PASS ru-390 /terms: readable, with the approved prices
+- PASS ru-390 /terms: no refunds, no renewal, fair daily limits, results kept
+- PASS ru-390 /terms: says buying is not open yet
+- PASS ru-390 /terms: no sideways scroll
+- PASS ru-390 /help: 'Talk to a person' with the form link
+- PASS ru-390 footer: Help, Report a problem, Privacy, Terms
+- PASS ru-390 footer/help: no sideways scroll
+- PASS ru-390 /support signed in: no email asked, replies to the account
+- PASS ru-390 /support: a too-short message is refused in the form
+- PASS ru-390 /support signed in: stored with the account, from the footer
+- PASS ru-390 /support signed out: email is required
+- PASS ru-390 /support signed out: stored with the visitor's email and no account
+- PASS ru-390 /support signed out: sent through the support Worker, never straight to the database
+- PASS ru-390 /support signed out: the sender is kept as a hash, not an address
+- PASS R01 flood: of forty requests with forty emails from one sender, three are accepted
+- PASS R01 en-1440: the flooding sender is refused with their own reason, not 'many messages are arriving'
+- PASS R01 en-1440: a different visitor still sends, straight after the flood
+- PASS R01 ru-390: the flooding sender is refused with their own reason, not 'many messages are arriving'
+- PASS R01 ru-390: a different visitor still sends, straight after the flood
+- PASS R01: an anonymous call straight to the old database function is refused
+- PASS R01: an anonymous call straight to the Worker's database function is refused
+- PASS R01: neither direct call stored anything
+- PASS en-1440 Mr EZ failure: 'Ask a person' is offered
+- PASS en-1440 Mr EZ failure: the form knows where the student came from
+- PASS ru-390 Mr EZ failure: 'Ask a person' is offered
+- PASS ru-390 Mr EZ failure: the form knows where the student came from
+- PASS admin: newest first, the five newest shown at once
+- PASS admin: 'Show all' lists every stored request
+- PASS admin: mark as answered is stored
+- PASS student at /admin: refused, and no request is shown
+- PASS student calling the admin function directly: refused by the database
+- PASS trial-en-1440 ended trial: 'Ask a person' under the ended notice
+- PASS trial-en-1440 ended trial: locked lesson offers 'Ask a person'
+- PASS trial-en-1440 ended trial: request stored with its context
+- PASS trial-ru-390 ended trial: 'Ask a person' under the ended notice
+- PASS trial-ru-390 ended trial: locked lesson offers 'Ask a person'
+- PASS trial-ru-390 ended trial: request stored with its context
