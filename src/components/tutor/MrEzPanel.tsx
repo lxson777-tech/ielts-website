@@ -158,7 +158,7 @@ export default function MrEzPanel() {
   const epochRef = useRef(0);
 
   const configured = isTutorConfigured();
-  const unavailableReason = tutorUnavailableReason();
+  const unavailableReason = tutorUnavailableReason(t);
 
   // Restore the conversation: this session's copy immediately, then the
   // durable copy if it has more in it.

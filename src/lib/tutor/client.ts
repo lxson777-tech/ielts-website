@@ -60,10 +60,16 @@ export function isTutorConfigured(): boolean {
 }
 
 /** Why the tutor is unavailable, when it is — used for the one-line notice
-    in the panel rather than a generic shrug. */
-export function tutorUnavailableReason(): string | null {
-  if (!TUTOR_URL) return t('Mr EZ is not switched on for this build yet.');
-  if (!isAuthConfigured()) return t('Mr EZ needs accounts to be configured, because he only ever reads your own record.');
+    in the panel rather than a generic shrug.
+
+    A component that RENDERS the sentence passes the `t` from its own useT():
+    the plain `t` answers in whatever language the browser is in right now,
+    and on the first render of an island that has to be the English the page
+    was built with (src/lib/hydration.ts). The default is for code that runs
+    after a click. */
+export function tutorUnavailableReason(translate: (text: string) => string = t): string | null {
+  if (!TUTOR_URL) return translate('Mr EZ is not switched on for this build yet.');
+  if (!isAuthConfigured()) return translate('Mr EZ needs accounts to be configured, because he only ever reads your own record.');
   return null;
 }
 

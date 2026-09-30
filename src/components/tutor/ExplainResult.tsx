@@ -61,7 +61,7 @@ export default function ExplainResult({ attempt, summary }: ExplainResultProps) 
   if (!configured) {
     return (
       <div className="mrez-explain is-off">
-        <p>{tutorUnavailableReason()}</p>
+        <p>{tutorUnavailableReason(t)}</p>
       </div>
     );
   }
