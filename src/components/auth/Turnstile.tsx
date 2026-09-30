@@ -9,6 +9,11 @@
    page), the widget renders, and its one-time answer is handed to the form,
    which passes it to Supabase as `captchaToken`.
 
+   The support form uses the same widget for SIGNED-OUT visitors only
+   (re-audit R01, 30 September 2026). There the answer goes to the support
+   Worker (workers/support), which checks it with Cloudflare itself using
+   the same site's secret key (TURNSTILE_SECRET_KEY on that Worker).
+
    Supabase refuses sign-up, sign-in and password-reset requests without a
    valid token once "captcha protection" is switched on in its dashboard,
    with this same site's secret key. That switch, and the Turnstile site in

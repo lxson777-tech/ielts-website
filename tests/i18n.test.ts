@@ -71,6 +71,7 @@ import * as dRemediation from '../src/lib/i18n/dict/ru/d-remediation.ts';
 import * as eRemediation from '../src/lib/i18n/dict/ru/e-remediation.ts';
 import * as a2RemediationBatch from '../src/lib/i18n/dict/ru/a2-remediation.ts';
 import * as a3Remediation from '../src/lib/i18n/dict/ru/a3-remediation.ts';
+import * as r01Remediation from '../src/lib/i18n/dict/ru/r01-remediation.ts';
 
 import * as partStrategies from '../src/lib/i18n/dict/ru/parts/strategies.ts';
 import * as partStructures from '../src/lib/i18n/dict/ru/parts/structures.ts';
@@ -109,6 +110,7 @@ const BATCH_FILES: { file: string; mod: { strings: Record<string, string>; plura
   { file: 'dict/ru/e-remediation.ts', mod: eRemediation },
   { file: 'dict/ru/a2-remediation.ts', mod: a2RemediationBatch },
   { file: 'dict/ru/a3-remediation.ts', mod: a3Remediation },
+  { file: 'dict/ru/r01-remediation.ts', mod: r01Remediation },
 ];
 
 /* The extra dictionary parts (src/lib/i18n/dict/parts.ts): the big coaching

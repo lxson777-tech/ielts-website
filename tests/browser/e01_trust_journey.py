@@ -5,12 +5,23 @@ Needs four servers it does NOT start itself (Builder E, 29 September 2026):
   the open stand-in and site:
     MR_EZ_DEV_PORT=8572 MR_EZ_SITE_ORIGIN=http://localhost:4572 node tools/mr-ez-dev-server.mjs
     PUBLIC_SUPABASE_URL=http://127.0.0.1:8572 PUBLIC_SUPABASE_ANON_KEY=local-anon-key \
-      PUBLIC_MR_EZ_URL=http://127.0.0.1:8572/tutor npx astro dev --port 4572
+      PUBLIC_MR_EZ_URL=http://127.0.0.1:8572/tutor \
+      PUBLIC_SUPPORT_URL=http://127.0.0.1:8572/support npx astro dev --port 4572
 
   the trial stand-in and site (the commands in t01_trial_journey.py's header,
   on 8571 and 4571).
 
 Then: python tests/browser/e01_trust_journey.py
+
+Signed-out support (re-audit R01, 30 September 2026) goes to the REAL support
+Worker, which the stand-in mounts at /support and which limits each sender by
+network address. Every browser here shares this machine's address, so each
+signed-out visitor is played from its own address with the stand-in's
+test-only X-Standin-Source header (tools/stand-in/support.mjs). The header
+exists only in the stand-in's bridge, never in the Worker. The run also
+floods the form from one played address and shows that a different visitor
+still gets through, and that a direct anonymous call to the database is
+refused.
 
 Every account is synthetic (@example.test) and lives only in the stand-in's
 memory. Stored support requests are read back from the stand-in's own
@@ -168,6 +179,23 @@ def sign_up(page, base: str, email: str, locale: str, tag: str, capture: bool = 
     page.wait_for_timeout(800)
 
 
+def play_source(page, address: str):
+    """Signed-out requests from this page reach the support Worker as if from
+    `address` (the stand-in's test-only header; see this file's header)."""
+    page.route(
+        "**/support/request",
+        lambda route: route.continue_(headers={**route.request.headers, "x-standin-source": address}),
+    )
+
+
+def support_outcome(page, timeout_ms=20000) -> tuple[bool, str]:
+    """Waits for the form to answer: (sent, the refusal sentence if any)."""
+    page.wait_for_selector(".support-sent, .auth-form .auth-alert", timeout=timeout_ms)
+    if page.locator(".support-sent").count():
+        return True, ""
+    return False, page.locator(".auth-form .auth-alert").first.inner_text()
+
+
 def send_support(page, message: str, email: str | None = None) -> bool:
     page.wait_for_selector("#support-message", timeout=20000)
     page.locator("label:has(#support-topic-problem)").click()
@@ -247,12 +275,12 @@ def main() -> int:
             page.locator("label:has(#support-topic-question)").click()
             page.locator("#support-message").fill("short")
             page.locator(".auth-form button[type=submit]").click()
-            page.wait_for_timeout(400)
+            page.wait_for_selector("#support-message-error", timeout=10000)
             check(f"{tag} /support: a too-short message is refused in the form",
                   page.locator("#support-message-error").count() == 1 and len(requests(OPEN_STANDIN)) == before)
             shot(page, f"{tag}-support-signed-in", full=False)
             send_support(page, f"Signed-in request from {tag}: the footer link works.")
-            page.wait_for_timeout(600)
+            page.locator(".support-sent").wait_for(state="visible", timeout=15000)
             shot(page, f"{tag}-support-sent", full=False)
             rows = requests(OPEN_STANDIN)
             mine = [r for r in rows if r["account_email"] == email]
@@ -261,26 +289,94 @@ def main() -> int:
                   and mine[0]["contact_email"] is None and mine[0]["locale"] == locale, json.dumps(mine[:1])[:200])
             ctx.close()
 
-            # Signed out: an email is required.
+            # Signed out: an email is required. Each visitor has their own address.
             ctx, page = new_page(browser, locale, w, h)
+            play_source(page, f"198.51.100.{10 + COMBOS.index((locale, w, h))}")
+            posted: list[str] = []
+            page.on("request", lambda r, posted=posted: posted.append(r.url) if r.method == "POST" else None)
             goto(page, OPEN, "/support")
             page.wait_for_selector("#support-message", timeout=20000)
             page.locator("label:has(#support-topic-question)").click()
             page.locator("#support-message").fill(f"Visitor question from {tag}, before signing up.")
             page.locator(".auth-form button[type=submit]").click()
-            page.wait_for_timeout(400)
+            page.wait_for_selector("#support-email-error", timeout=10000)
             check(f"{tag} /support signed out: email is required",
                   page.locator("#support-email-error").count() == 1)
             shot(page, f"{tag}-support-signed-out", full=False)
             visitor = f"visitor-{tag}-{RUN}@example.test"
             page.locator("#support-email").fill(visitor)
             page.locator(".auth-form button[type=submit]").click()
-            page.wait_for_selector(".support-sent", timeout=15000)
+            sent, alert = support_outcome(page)
             rows = requests(OPEN_STANDIN)
             v = [r for r in rows if r["contact_email"] == visitor]
             check(f"{tag} /support signed out: stored with the visitor's email and no account",
-                  len(v) == 1 and v[0]["user_id"] is None, json.dumps(v[:1])[:200])
+                  sent and len(v) == 1 and v[0]["user_id"] is None, alert or json.dumps(v[:1])[:200])
+            check(f"{tag} /support signed out: sent through the support Worker, never straight to the database",
+                  any(u.endswith("/support/request") for u in posted)
+                  and not any("/rest/v1/rpc/support_request" in u for u in posted), str([u for u in posted if "support" in u]))
+            check(f"{tag} /support signed out: the sender is kept as a hash, not an address",
+                  len(v) == 1 and len(v[0]["source_hash"] or "") == 64 and "198.51.100" not in json.dumps(v))
             ctx.close()
+
+        # ── R01: one sender cannot use up everyone's signed-out support ──
+        flooder = "203.0.113.7"
+        before = len(requests(OPEN_STANDIN))
+        flood = [
+            call(OPEN_STANDIN, "/support/request",
+                 {"email": f"flood-{i}-{RUN}@example.test", "topic": "question",
+                  "message": f"Synthetic flood message {i} from one sender.", "locale": "en"},
+                 {"Origin": OPEN.split("/ielts-website")[0], "X-Standin-Source": flooder, "X-Forwarded-For": f"10.0.0.{i}"})
+            for i in range(1, 41)
+        ]
+        ok_count = sum(1 for status, body in flood if status == 200 and body.get("ok") is True)
+        codes = {(status, body.get("code")) for status, body in flood if status != 200}
+        check("R01 flood: of forty requests with forty emails from one sender, three are accepted",
+              ok_count == 3 and codes == {(429, "source-hour")} and len(requests(OPEN_STANDIN)) == before + 3,
+              f"{ok_count} accepted, refusals {sorted(codes)}, {len(requests(OPEN_STANDIN)) - before} stored")
+        for locale, w, h in [("en", 1440, 900), ("ru", 390, 844)]:
+            tag = f"{locale}-{w}"
+            # The flooding sender, in the real form: told it is their own limit.
+            ctx, page = new_page(browser, locale, w, h)
+            play_source(page, flooder)
+            goto(page, OPEN, "/support")
+            page.wait_for_selector("#support-message", timeout=20000)
+            page.locator("label:has(#support-topic-question)").click()
+            page.locator("#support-message").fill("One more from the sender who already sent forty.")
+            page.locator("#support-email").fill(f"flood-form-{tag}-{RUN}@example.test")
+            page.locator(".auth-form button[type=submit]").click()
+            sent, alert = support_outcome(page)
+            own = "in the last hour" if locale == "en" else "За последний час"
+            everyone = "Many messages are arriving" if locale == "en" else "приходит много сообщений"
+            check(f"R01 {tag}: the flooding sender is refused with their own reason, not 'many messages are arriving'",
+                  not sent and own in alert and everyone not in alert, alert)
+            shot(page, f"{tag}-r01-flood-sender-refused", full=False)
+            ctx.close()
+            # Straight afterwards, a new visitor on another address gets through.
+            ctx, page = new_page(browser, locale, w, h)
+            play_source(page, f"198.51.100.{20 if locale == 'en' else 21}")
+            goto(page, OPEN, "/support")
+            page.wait_for_selector("#support-message", timeout=20000)
+            fresh = f"fresh-visitor-{tag}-{RUN}@example.test"
+            page.locator("label:has(#support-topic-account)").click()
+            page.locator("#support-message").fill("I cannot sign in to my account and need help from a person.")
+            page.locator("#support-email").fill(fresh)
+            page.locator(".auth-form button[type=submit]").click()
+            sent, alert = support_outcome(page)
+            stored = [r for r in requests(OPEN_STANDIN) if r["contact_email"] == fresh]
+            check(f"R01 {tag}: a different visitor still sends, straight after the flood",
+                  sent and len(stored) == 1, alert or "stored")
+            shot(page, f"{tag}-r01-fresh-visitor-sent", full=False)
+            ctx.close()
+        anon = {"apikey": "local-anon-key"}
+        status, body = call(OPEN_STANDIN, "/rest/v1/rpc/support_request_create",
+                            {"p_topic": "question", "p_message": "A direct anonymous call.", "p_email": f"direct-{RUN}@example.test"}, anon)
+        check("R01: an anonymous call straight to the old database function is refused", status == 403, f"{status} {body}")
+        status, body = call(OPEN_STANDIN, "/rest/v1/rpc/support_request_visitor",
+                            {"p_source_hash": "f" * 64, "p_email": f"direct-{RUN}@example.test", "p_topic": "question",
+                             "p_message": "A direct anonymous call.", "p_challenged": True}, anon)
+        check("R01: an anonymous call straight to the Worker's database function is refused", status == 403, f"{status} {body}")
+        check("R01: neither direct call stored anything",
+              not [r for r in requests(OPEN_STANDIN) if (r["contact_email"] or "").startswith("direct-")])
 
         # ── Mr EZ failure leads to a person (open site) ──
         for locale, w, h in [("en", 1440, 900), ("ru", 390, 844)]:

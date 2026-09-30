@@ -6,6 +6,15 @@
    Messages are stored by supabase/migrations/2026-09-30-support.sql, which
    repeats every rule here, and Alex reads them in /admin.
 
+   The two ways in are different on purpose (re-audit R01, 30 September
+   2026). Signed in, the request goes to the database as the student.
+   Signed out, it goes to the support Worker (PUBLIC_SUPPORT_URL), which
+   limits each sender by where the request really came from and, when the
+   bot check is switched on (PUBLIC_TURNSTILE_SITE_KEY), verifies it on the
+   server. With no Worker configured the signed-out form says so and points
+   at signing in: it never pretends to send and never falls back to the
+   database, which refuses anonymous callers anyway.
+
    Opened from a link with ?reason=<screen>&from=<route> (SupportLink), the
    form pre-selects a sensible topic and remembers where the student was.
    If Alex has published a direct contact (src/lib/operator.ts), it is shown
@@ -27,8 +36,10 @@ import {
   parseFrom,
   parseReason,
   sendSupportRequest,
+  sendVisitorSupportRequest,
   topicForReason,
   validateSupport,
+  visitorSupportEnabled,
   type SupportErrors,
   type SupportReason,
   type SupportSendFailure,
@@ -36,6 +47,7 @@ import {
 } from '../../lib/support';
 import { Field, describedBy } from '../auth/fields';
 import { AuthShell } from '../auth/shell';
+import Turnstile, { captchaEnabled } from '../auth/Turnstile';
 import './support.css';
 
 const TOPIC_LABELS: Record<SupportTopic, string> = {
@@ -71,6 +83,9 @@ export default function SupportForm() {
   const [failure, setFailure] = useState<SupportSendFailure | null>(null);
   const [status, setStatus] = useState<Status>('idle');
   const [sentTo, setSentTo] = useState<string | null>(null);
+  // The bot check's one-time answer, signed out only (see Turnstile.tsx).
+  const [captcha, setCaptcha] = useState<string | null>(null);
+  const [captchaReset, setCaptchaReset] = useState(0);
   const headingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -113,6 +128,29 @@ export default function SupportForm() {
   const signedIn = !!user;
   const backHref = from ? hrefFor(from) : withBase('/dashboard');
 
+  // Signed out, with no support Worker on this build: say so. No form that
+  // cannot send, no pretend success, no quiet call to the database.
+  if (!signedIn && !visitorSupportEnabled()) {
+    return (
+      <AuthShell
+        eyebrow={t('Support')}
+        title={t('Ask a person')}
+        lede={t('Messages from signed-out visitors are not switched on here. Sign in and you can write to a person from your account.')}
+      >
+        <div className="auth-actions" data-testid="support-visitor-off" style={{ marginTop: 28 }}>
+          <a className="auth-button" href={signInHref(currentRoute())}>
+            {t('Sign in')}
+          </a>
+          <a className="auth-button is-secondary" href={withBase('/help')}>
+            {t('Read the help page')}
+          </a>
+        </div>
+        {direct}
+      </AuthShell>
+    );
+  }
+  const needsCaptcha = !signedIn && captchaEnabled() && !captcha;
+
   if (status === 'sent') {
     return (
       <AuthShell eyebrow={t('Support')} title={t('Thank you, your message is on its way')}>
@@ -154,8 +192,14 @@ export default function SupportForm() {
     switch (f) {
       case 'rate-limited':
         return t('You have sent several messages today. We will read them all; please wait until tomorrow before sending more.');
+      case 'source-limited':
+        return t('You have sent several messages in the last hour. We will read them all; please wait an hour before sending more.');
       case 'busy':
         return t('Many messages are arriving right now. Please try again in an hour.');
+      case 'challenge-failed':
+        return t('The security check did not pass. Please complete it again and send your message once more; nothing you wrote is lost.');
+      case 'visitor-off':
+        return t('Messages from signed-out visitors are not switched on here. Sign in to send your message.');
       case 'email-required':
       case 'email-invalid':
         return t('Please check the email address.');
@@ -185,14 +229,12 @@ export default function SupportForm() {
       return;
     }
     setStatus('sending');
-    const result = await sendSupportRequest({
-      topic: topic as SupportTopic,
-      message,
-      email: signedIn ? null : email,
-      context: reason,
-      page: from,
-      locale: locale === 'ru' ? 'ru' : 'en',
-    });
+    const common = { topic: topic as SupportTopic, message, context: reason, page: from, locale: locale === 'ru' ? ('ru' as const) : ('en' as const) };
+    const result = signedIn
+      ? await sendSupportRequest({ ...common, email: null })
+      : await sendVisitorSupportRequest({ ...common, email, challengeToken: captcha });
+    // The bot check's answer works once, whether the attempt worked or not.
+    if (!signedIn && captchaEnabled()) setCaptchaReset((n) => n + 1);
     if (!result.ok) {
       setStatus('idle');
       setFailure(result.reason);
@@ -308,6 +350,8 @@ export default function SupportForm() {
           <input id="support-website" name="website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
         </div>
 
+        {!signedIn && <Turnstile onToken={setCaptcha} resetSignal={captchaReset} />}
+
         {failure && (
           <p className="auth-alert" role="alert">
             {failureSentence(failure)}
@@ -315,7 +359,7 @@ export default function SupportForm() {
         )}
 
         <div className="auth-actions">
-          <button type="submit" className="auth-button" disabled={status === 'sending'}>
+          <button type="submit" className="auth-button" disabled={status === 'sending' || needsCaptcha}>
             {status === 'sending' ? t('Sending…') : t('Send to a person')}
           </button>
         </div>

@@ -5,39 +5,38 @@
    supabase/migrations/2026-09-30-support.sql (LOCAL ONLY, never applied to
    production without Alex's yes) and read by Alex in /admin.
 
+   TWO WAYS IN (re-audit R01, 30 September 2026):
+   - Signed in: the browser calls the database as the student
+     (support_request_create). The account is the limit.
+   - Signed out: the browser calls the support Worker (workers/support) at
+     PUBLIC_SUPPORT_URL. The database refuses anonymous callers outright, so
+     the Worker is the only way in, and it limits each sender by where the
+     request really came from, not by the email typed into the form. With
+     PUBLIC_SUPPORT_URL unset the signed-out form says so honestly and
+     points at signing in; it never pretends a message was sent.
+
    The database repeats every rule below, so a bypassed form still cannot
-   store a bad row. This file holds the site's copy of the limits
-   (tests/support-sql.test.ts fails if they drift), the link builder every
-   surface uses, and the calls. */
+   store a bad row. The rules themselves live in ./support-rules (shared with
+   the Worker; tests/support-sql.test.ts fails if they drift from the
+   database); this file holds the link builder every surface uses, and the
+   calls. */
 
 import { getSupabase } from './auth/supabase';
 import { safeNext } from './auth/profile';
 import { withBase } from './url';
+import { SUPPORT_LIMITS, SUPPORT_REASONS, SUPPORT_TOPICS, isSupportEmail, type SupportReason, type SupportTopic } from './support-rules';
 
-export const SUPPORT_TOPICS = ['problem', 'question', 'account', 'other'] as const;
-export type SupportTopic = (typeof SUPPORT_TOPICS)[number];
+export { SUPPORT_LIMITS, SUPPORT_REASONS, SUPPORT_TOPICS };
+export type { SupportReason, SupportTopic };
 
-export const SUPPORT_LIMITS = {
-  messageMin: 10,
-  messageMax: 2000,
-  emailMax: 254,
-  pageMax: 200,
-} as const;
+/** The support Worker (workers/support). Unset: signed-out visitors cannot
+    send, and the form says so. */
+export const SUPPORT_URL: string = String(import.meta.env?.PUBLIC_SUPPORT_URL ?? '').trim().replace(/\/+$/, '');
 
-/** Where a link to the form was placed. Stored with the request, so Alex
-    knows what the student was looking at, and used to pre-select a topic. */
-export const SUPPORT_REASONS = [
-  'mr-ez',
-  'grader',
-  'trial-ended',
-  'locked',
-  'plans',
-  'help',
-  'footer',
-  'terms',
-  'privacy',
-] as const;
-export type SupportReason = (typeof SUPPORT_REASONS)[number];
+/** True when a signed-out visitor can send a message on this build. */
+export function visitorSupportEnabled(): boolean {
+  return SUPPORT_URL !== '';
+}
 
 /** The topic a reason suggests. The student can always change it. */
 export function topicForReason(reason: SupportReason | null): SupportTopic | null {
@@ -88,8 +87,6 @@ export type SupportField = 'topic' | 'message' | 'email';
 export type SupportErrorCode = 'required' | 'tooShort' | 'tooLong' | 'invalidEmail';
 export type SupportErrors = Partial<Record<SupportField, SupportErrorCode>>;
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 export function validateSupport(input: SupportInput, signedIn: boolean): { ok: true } | { ok: false; errors: SupportErrors } {
   const errors: SupportErrors = {};
   if (!input.topic || !(SUPPORT_TOPICS as readonly string[]).includes(input.topic)) errors.topic = 'required';
@@ -99,7 +96,7 @@ export function validateSupport(input: SupportInput, signedIn: boolean): { ok: t
   else if (message.length > SUPPORT_LIMITS.messageMax) errors.message = 'tooLong';
   const email = input.email.trim();
   if (!signedIn && !email) errors.email = 'required';
-  else if (email && (email.length > SUPPORT_LIMITS.emailMax || !EMAIL_RE.test(email))) errors.email = 'invalidEmail';
+  else if (email && !isSupportEmail(email)) errors.email = 'invalidEmail';
   return Object.keys(errors).length ? { ok: false, errors } : { ok: true };
 }
 
@@ -108,8 +105,16 @@ export type SupportSendFailure =
   | 'email-required'
   | 'email-invalid'
   | 'message-length'
+  /** This account, this sender or this reply address has had its day's share. */
   | 'rate-limited'
+  /** This signed-out sender has had its hour's share. */
+  | 'source-limited'
+  /** Everyone together: the shared circuit breaker is open. */
   | 'busy'
+  /** The bot check was missing or did not pass. */
+  | 'challenge-failed'
+  /** Signed-out messages are not switched on (no Worker, or it is not set up). */
+  | 'visitor-off'
   | 'network';
 
 export type SupportSendResult = { ok: true; id: string } | { ok: false; reason: SupportSendFailure };
@@ -124,6 +129,36 @@ export function supportFailureFromMessage(message: string): SupportSendFailure {
   return 'network';
 }
 
+/** Maps the support Worker's refusal code to a reason the form words. */
+export function supportFailureFromCode(code: string): SupportSendFailure {
+  switch (code) {
+    case 'source-hour':
+      return 'source-limited';
+    case 'source-day':
+    case 'email-day':
+      return 'rate-limited';
+    case 'busy':
+      return 'busy';
+    case 'challenge-required':
+    case 'challenge-failed':
+      return 'challenge-failed';
+    case 'email-required':
+      return 'email-required';
+    case 'email-invalid':
+      return 'email-invalid';
+    case 'message-length':
+    case 'topic':
+      return 'message-length';
+    case 'not-configured':
+    case 'no-source':
+      return 'visitor-off';
+    default:
+      return 'network';
+  }
+}
+
+/** Sends a SIGNED-IN student's request, as the student. The database reads
+    the account from their sign-in; anonymous callers are refused there. */
 export async function sendSupportRequest(request: {
   topic: SupportTopic;
   message: string;
@@ -149,6 +184,53 @@ export async function sendSupportRequest(request: {
   } catch {
     return { ok: false, reason: 'network' };
   }
+}
+
+/** Sends a SIGNED-OUT visitor's request through the support Worker. There
+    is no other route: with no Worker configured this refuses, it never
+    falls back to the database. `challengeToken` is the bot check's one-time
+    answer when the check is switched on for this build. `url` and `fetchFn`
+    are only ever passed by the tests. */
+export async function sendVisitorSupportRequest(
+  request: {
+    topic: SupportTopic;
+    message: string;
+    email: string;
+    context?: SupportReason | null;
+    page?: string | null;
+    locale: 'en' | 'ru';
+    challengeToken?: string | null;
+  },
+  url: string = SUPPORT_URL,
+  fetchFn: typeof fetch = fetch,
+): Promise<SupportSendResult> {
+  if (!url) return { ok: false, reason: 'visitor-off' };
+  let resp: Response;
+  try {
+    resp = await fetchFn(`${url}/request`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: request.email.trim(),
+        topic: request.topic,
+        message: request.message.trim(),
+        context: request.context ?? null,
+        page: request.page || null,
+        locale: request.locale,
+        ...(request.challengeToken ? { challengeToken: request.challengeToken } : {}),
+      }),
+    });
+  } catch {
+    return { ok: false, reason: 'network' };
+  }
+  let body: { ok?: unknown; id?: unknown; code?: unknown } | null = null;
+  try {
+    body = (await resp.json()) as typeof body;
+  } catch {
+    body = null;
+  }
+  if (resp.ok && body?.ok === true && typeof body.id === 'string') return { ok: true, id: body.id };
+  return { ok: false, reason: supportFailureFromCode(typeof body?.code === 'string' ? body.code : '') };
 }
 
 /* ── Admin side (Alex's /admin page) ───────────────────────────────────── */

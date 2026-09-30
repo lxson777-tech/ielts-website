@@ -14,10 +14,12 @@ import {
   parseFrom,
   parseReason,
   replyAddress,
+  supportFailureFromCode,
   supportFailureFromMessage,
   supportHref,
   topicForReason,
   validateSupport,
+  visitorSupportEnabled,
 } from '../src/lib/support.ts';
 
 const read = (p: string) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
@@ -58,6 +60,29 @@ test('database refusals map to sentences the form can word', () => {
   assert.equal(supportFailureFromMessage('Failed to fetch'), 'network');
   assert.equal(replyAddress({ contact_email: null, account_email: 'a@example.test' }), 'a@example.test');
   assert.equal(replyAddress({ contact_email: 'v@example.test', account_email: null }), 'v@example.test');
+});
+
+test('R01: the support Worker’s refusals get their own sentences, and a signed-out form needs the Worker', () => {
+  assert.equal(supportFailureFromCode('source-hour'), 'source-limited');
+  assert.equal(supportFailureFromCode('source-day'), 'rate-limited');
+  assert.equal(supportFailureFromCode('email-day'), 'rate-limited');
+  assert.equal(supportFailureFromCode('busy'), 'busy');
+  assert.notEqual(supportFailureFromCode('source-hour'), supportFailureFromCode('busy'), 'a sender’s own limit is never worded as everyone’s');
+  assert.equal(supportFailureFromCode('challenge-required'), 'challenge-failed');
+  assert.equal(supportFailureFromCode('challenge-failed'), 'challenge-failed');
+  assert.equal(supportFailureFromCode('not-configured'), 'visitor-off');
+  assert.equal(supportFailureFromCode('no-source'), 'visitor-off');
+  assert.equal(supportFailureFromCode('unavailable'), 'network');
+  assert.equal(supportFailureFromCode(''), 'network');
+  // No PUBLIC_SUPPORT_URL in a test run: signed-out sending is off.
+  assert.equal(visitorSupportEnabled(), false);
+  const form = read('src/components/support/SupportForm.tsx');
+  assert.match(form, /data-testid="support-visitor-off"/);
+  for (const reason of ['source-limited', 'challenge-failed', 'visitor-off']) assert.match(form, new RegExp(`case '${reason}':`), reason);
+  // The library has one signed-out route, and it is not the database.
+  const lib = read('src/lib/support.ts');
+  assert.equal([...lib.matchAll(/\.rpc\('support_request_create'/g)].length, 1);
+  assert.doesNotMatch(lib, /support_request_visitor/);
 });
 
 test('a person is reachable from every place the audit named', () => {
