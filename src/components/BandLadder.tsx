@@ -10,13 +10,13 @@
    Deliberately one step at a time rather than a wall of five: a student who
    wants the whole ladder can open the steps below the one they picked. */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { WRITING_BAND_GUIDES, SPEAKING_BAND_GUIDES, type BandStepGuide } from '../data/band-guides';
 import { CRITERIA } from '../lib/writing/schema';
 import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
 import Tabs, { type TabDef } from './Tabs';
 import { useT } from '../lib/i18n/react';
-import { LIBRARY_REASON_SENTENCES, parseLibraryReason } from './library-links';
+import { LIBRARY_REASON_SENTENCES, parseLibraryReason, type LibraryReasonKey } from './library-links';
 import { recordLessonStudied } from '../lib/learning/store.browser';
 import SessionContinueBar from './learning/SessionContinueBar';
 
@@ -145,21 +145,29 @@ export default function BandLadder() {
   // Asked for here too, not only in StepCard, so the fetch starts with the
   // page rather than with the first card that happens to render.
   const { t } = useT('band-guides');
-  // Read once, via the lazy initializer, so the query string is parsed on
-  // the very first render only and never again on a later one.
-  const [initial] = useState(() => (typeof window !== 'undefined' ? deepLinkFromQuery(window.location.search) : null));
-  const deepLinked = useRef(initial !== null);
-  const [paper, setPaper] = useState<Paper>(initial?.paper ?? 'writing');
-  const [writingCriterion, setWritingCriterion] = useState<string>(
-    initial?.paper === 'writing' ? initial.criterion : CRITERIA[0]!.key,
-  );
-  const [speakingCriterion, setSpeakingCriterion] = useState<string>(
-    initial?.paper === 'speaking' ? initial.criterion : SPEAKING_CRITERIA[0]!.key,
-  );
+  const deepLinked = useRef(false);
+  const [paper, setPaper] = useState<Paper>('writing');
+  const [writingCriterion, setWritingCriterion] = useState<string>(CRITERIA[0]!.key);
+  const [speakingCriterion, setSpeakingCriterion] = useState<string>(SPEAKING_CRITERIA[0]!.key);
   /* Which step opens first. Not a score and not a guess about the student:
      they say where they are, and the ladder opens at that rung. */
-  const [from, setFrom] = useState(initial?.from ?? 6);
-  const [reason] = useState(() => (typeof window !== 'undefined' ? parseLibraryReason(window.location.search) : null));
+  const [from, setFrom] = useState(6);
+  const [reason, setReason] = useState<LibraryReasonKey | null>(null);
+
+  /* The query string is read once, after the first render: the page's HTML
+     was built without one, and React's first render in the browser has to
+     match it (src/lib/hydration.ts). A layout effect, so the linked step is
+     in place before the browser paints. */
+  useLayoutEffect(() => {
+    const link = deepLinkFromQuery(window.location.search);
+    if (!link) return;
+    deepLinked.current = true;
+    setPaper(link.paper);
+    if (link.paper === 'writing') setWritingCriterion(link.criterion);
+    else setSpeakingCriterion(link.criterion);
+    setFrom(link.from);
+    setReason(parseLibraryReason(window.location.search));
+  }, []);
 
   const criterion = paper === 'writing' ? writingCriterion : speakingCriterion;
   const steps = guidesFor(paper, criterion);

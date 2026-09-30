@@ -271,6 +271,26 @@ export function trialView(): TrialView {
   return view;
 }
 
+/** What the page was built with: the view before anything was asked. React
+    renders this during hydration (see useTrial), because the build knows
+    no student, so an island that wakes up after the answer has already
+    arrived still matches its HTML. */
+export function initialTrialView(): TrialView {
+  return INITIAL;
+}
+
+/** For useSyncExternalStore: tell `onChange` whenever the view changes.
+    Starts the client like onTrialChange does, but does not call back at
+    once; React reads the current view itself. */
+export function subscribeTrialView(onChange: () => void): () => void {
+  startTrialClient();
+  const listener = () => onChange();
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
 /* ── Actions ─────────────────────────────────────────────────────────── */
 
 export type TrialActionResult =
@@ -373,6 +393,11 @@ export function forgetQuestionnaire(): void {
   } catch {
     /* nothing to forget */
   }
+}
+
+/** For tests only: put a view in place as if the server had answered. */
+export function setTrialViewForTest(next: TrialView): void {
+  publish(next);
 }
 
 /** For tests only. */

@@ -10,11 +10,11 @@
    tokens, rather than importing lesson.css, since that sheet is scoped to
    LessonLayout and this page uses BaseLayout. */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { CUE_CARDS, CUE_CARD_FAMILIES, type CueCard, type CueCardFamily } from '../data/cue-cards';
 import { withBase } from '../lib/url';
 import { useT } from '../lib/i18n/react';
-import { LIBRARY_REASON_SENTENCES, parseLibraryReason } from './library-links';
+import { LIBRARY_REASON_SENTENCES, parseLibraryReason, type LibraryReasonKey } from './library-links';
 import { recordLessonStudied } from '../lib/learning/store.browser';
 import SessionContinueBar from './learning/SessionContinueBar';
 import Tabs, { type TabDef } from './Tabs';
@@ -62,16 +62,19 @@ export default function CueCardBank() {
      actually named, so the evidence recording below never fires for
      ordinary browsing of the grid. */
   const deepLinked = useRef(false);
-  const [selectedId, setSelectedId] = useState<string | null>(() => {
-    if (typeof window === 'undefined') return null;
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [reason, setReason] = useState<LibraryReasonKey | null>(null);
+  /* Read after the first render, never during it: the page's HTML is the
+     grid, built with no query string, and React's first render in the
+     browser has to match it (src/lib/hydration.ts). A layout effect, so the
+     linked card is in place before the browser paints. */
+  useLayoutEffect(() => {
     const asked = new URLSearchParams(window.location.search).get('card');
-    if (asked && CUE_CARDS.some((c) => c.id === asked)) {
-      deepLinked.current = true;
-      return asked;
-    }
-    return null;
-  });
-  const [reason] = useState(() => (typeof window !== 'undefined' ? parseLibraryReason(window.location.search) : null));
+    if (!asked || !CUE_CARDS.some((c) => c.id === asked)) return;
+    deepLinked.current = true;
+    setSelectedId(asked);
+    setReason(parseLibraryReason(window.location.search));
+  }, []);
   const [activeTab, setActiveTab] = useState('plan');
   const [prepPhase, setPrepPhase] = useState<PrepPhase>('idle');
   const [secondsLeft, setSecondsLeft] = useState(0);

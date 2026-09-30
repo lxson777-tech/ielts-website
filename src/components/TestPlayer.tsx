@@ -28,6 +28,7 @@ import {
   sittingRefOf,
   standaloneSitting,
   type PaperSittingRef,
+  type PaperSittingStore,
   type SittingLoss,
   type TestSession,
 } from '../lib/test-session';
@@ -46,6 +47,7 @@ import StrategyPanel from './StrategyPanel';
 import { LABELS as TYPE_LABELS, lessonHref, practiseHref } from './TypeAnalytics';
 import { withBase } from '../lib/url';
 import { useT } from '../lib/i18n/react';
+import { useHydrated } from '../lib/hydration';
 import {
   ExplanationsContext,
   baseTestId,
@@ -300,7 +302,51 @@ function recordStaleSessionAbandonment(stale: TestSession): void {
   });
 }
 
-export default function TestPlayer({
+/** Where a paper's sitting is kept: inside its mock sitting, inside its
+    placement sitting, or in the one standalone slot (see TestPlayerBody). */
+function sittingStoreFor(
+  test: PracticeTest,
+  mockOwner: string,
+  mockSittingId: string,
+  placementOwner: string,
+  placementSittingId: string,
+): PaperSittingStore {
+  return mockSittingId
+    ? mockLegSitting({ owner: mockOwner, sittingId: mockSittingId }, test)
+    : placementSittingId
+      ? placementLegSitting({ owner: placementOwner, sittingId: placementSittingId }, test)
+      : standaloneSitting(test);
+}
+
+/* A SAVED SITTING IS PICKED UP AFTER HYDRATION (hydration probe, 30 September
+   2026). On /tests/<id> and the trainers this player is an island, and its
+   HTML was built with no saved sitting: the instructions screen. A student
+   coming back to a paper they had started used to get the running paper on
+   React's very first render in the browser, which does not match that HTML,
+   so React threw it away ("Hydration failed ...") and redrew. Now the first
+   render never reads storage (`restore` is false only then, see
+   src/lib/hydration.ts), and the render straight after it looks: when a
+   sitting is waiting, the body is mounted afresh with it, exactly as a
+   reload used to start. A player mounted later in the browser (a mock leg,
+   a placement part, a retake, a trial paper) restores on its first render. */
+export default function TestPlayer(props: Props) {
+  const hydrated = useHydrated();
+  const { test, mockSitting, placementSitting } = props;
+  const mockOwner = mockSitting?.owner ?? '';
+  const mockSittingId = mockSitting?.sittingId ?? '';
+  const placementOwner = placementSitting?.owner ?? '';
+  const placementSittingId = placementSitting?.sittingId ?? '';
+  // Asked once per paper, when the browser can first be read: a sitting the
+  // student starts afterwards must never remount the paper under them.
+  const waiting = useMemo(
+    () =>
+      hydrated && sittingStoreFor(test, mockOwner, mockSittingId, placementOwner, placementSittingId).load() !== null,
+    [hydrated, test, mockOwner, mockSittingId, placementOwner, placementSittingId],
+  );
+  return <TestPlayerBody key={waiting ? 'resume' : 'fresh'} {...props} restore={hydrated} />;
+}
+
+function TestPlayerBody({
   test,
   hubUrl,
   attemptKind = 'full',
@@ -308,7 +354,8 @@ export default function TestPlayer({
   mockSitting,
   onSittingLost,
   placementSitting,
-}: Props) {
+  restore,
+}: Props & { restore: boolean }) {
   /* Interface language. Declared first so every hook below keeps a stable
      order, and read as `t`/`tn` only for text: nothing in the timer, the
      session or the scoring reads it. */
@@ -339,19 +386,15 @@ export default function TestPlayer({
       paper. Only the mode, the shared session id and the source key. */
   const placementRecording = inPlacement ? placementEvidence(placementSittingId) : null;
   const sittingStore = useMemo(
-    () =>
-      mockSittingId
-        ? mockLegSitting({ owner: mockOwner, sittingId: mockSittingId }, test)
-        : placementSittingId
-          ? placementLegSitting({ owner: placementOwner, sittingId: placementSittingId }, test)
-          : standaloneSitting(test),
+    () => sittingStoreFor(test, mockOwner, mockSittingId, placementOwner, placementSittingId),
     [test, mockOwner, mockSittingId, placementOwner, placementSittingId],
   );
 
-  // Resume an in-progress session if one exists (survives refresh / tab close).
+  // Resume an in-progress session if one exists (survives refresh / tab
+  // close). Never during hydration: see TestPlayer above.
   const resumed = useMemo(
-    () => (typeof window !== 'undefined' ? sittingStore.load() : null),
-    [sittingStore],
+    () => (restore && typeof window !== 'undefined' ? sittingStore.load() : null),
+    [sittingStore, restore],
   );
 
   /* WHOSE SITTING THIS IS (finding 1 of the 23 September 2026 review).

@@ -11,7 +11,7 @@
    prompt text itself stays in writing-prompts.ts and is only referenced by
    id, per that file's own comment about being the source of truth. */
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { WRITING_PROMPTS, getWritingPrompt } from '../data/writing-prompts';
 import { getModelAnswers, getModelBands, type ModelAnswer, type ModelBand } from '../data/model-answers';
 import type { EssayPrompt } from '../lib/writing/schema';
@@ -20,7 +20,7 @@ import { getWritingAttempts } from '../lib/progress';
 import { withBase } from '../lib/url';
 import { nt } from '../lib/i18n/translate';
 import { useT } from '../lib/i18n/react';
-import { canLinkModelAnswer, parseLibraryReason, LIBRARY_REASON_SENTENCES } from './library-links';
+import { canLinkModelAnswer, parseLibraryReason, LIBRARY_REASON_SENTENCES, type LibraryReasonKey } from './library-links';
 import { recordLessonStudied } from '../lib/learning/store.browser';
 import SessionContinueBar from './learning/SessionContinueBar';
 import Tabs, { type TabDef } from './Tabs';
@@ -264,30 +264,21 @@ export default function ModelAnswers() {
      really named this exact prompt, which is what decides whether the
      visit is worth a modest evidence event below, so a student who simply
      clicks around the sidebar does not generate noise. */
-  const deepLinked = useRef(false);
-  const [promptId, setPromptId] = useState<string>(() => {
-    if (typeof window !== 'undefined') {
-      const asked = new URLSearchParams(window.location.search).get('task');
-      if (asked && promptsWithModels.some((p) => p.id === asked)) {
-        deepLinked.current = true;
-        return asked;
-      }
-    }
-    return promptsWithModels[0]?.id ?? '';
-  });
+  const [deepLinked, setDeepLinked] = useState(false);
+  const [promptId, setPromptId] = useState<string>(promptsWithModels[0]?.id ?? '');
   const prompt = promptId ? (getWritingPrompt(promptId) as EssayPrompt | undefined) : undefined;
   const bands = useMemo(() => (promptId ? getModelBands(promptId) : []), [promptId]);
 
   /* The reason a caller sent the student here, read once: the URL is not
      re-read on every render, only what selectPrompt() cares about (a fresh
      click on the sidebar is the student's own choice and clears it). */
-  const [reason] = useState(() => (typeof window !== 'undefined' ? parseLibraryReason(window.location.search) : null));
+  const [reason, setReason] = useState<LibraryReasonKey | null>(null);
   const hasAttempted = useMemo(() => (promptId ? getWritingAttempts(promptId).length > 0 : false), [promptId]);
   // The rule from library-links.ts: the "compare with your attempt" framing
   // is only honoured once a real attempt on THIS prompt actually exists,
   // whatever the URL claims. Independent browsing is unaffected either way.
-  const showAttemptNote = deepLinked.current && reason === 'after-writing-attempt' && canLinkModelAnswer(hasAttempted);
-  const showSessionNote = deepLinked.current && reason === 'from-session' && !showAttemptNote;
+  const showAttemptNote = deepLinked && reason === 'after-writing-attempt' && canLinkModelAnswer(hasAttempted);
+  const showSessionNote = deepLinked && reason === 'from-session' && !showAttemptNote;
 
   /* Voluntary use of a reference page is "studied" context, never a
      demonstration (lead decision, brief section 7). Recorded once, only for
@@ -295,7 +286,7 @@ export default function ModelAnswers() {
      browsing. */
   const evidenceRecorded = useRef(false);
   useEffect(() => {
-    if (!deepLinked.current || evidenceRecorded.current) return;
+    if (!deepLinked || evidenceRecorded.current) return;
     evidenceRecorded.current = true;
     recordLessonStudied({
       lessonKey: 'model-answers',
@@ -305,13 +296,33 @@ export default function ModelAnswers() {
       estimatedMinutes: 2,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [deepLinked]);
 
   const [band, setBand] = useState<ModelBand | null>(bands[0] ?? null);
   const [compare, setCompare] = useState(false);
   const [bandA, setBandA] = useState<ModelBand | null>(bands[0] ?? null);
   const [bandB, setBandB] = useState<ModelBand | null>(bands[bands.length - 1] ?? null);
   const [activeHighlight, setActiveHighlight] = useState<string | null>(null);
+
+  /* The query string is read after the first render, never during it: the
+     page's HTML was built on the first task with no query string, and
+     React's first render in the browser has to match it
+     (src/lib/hydration.ts). A layout effect, so the linked task is in place
+     before the browser paints. `deepLinked` is state, not a ref, so the
+     evidence effect above runs with the linked task's note already worked
+     out. */
+  useLayoutEffect(() => {
+    const asked = new URLSearchParams(window.location.search).get('task');
+    if (!asked || !promptsWithModels.some((p) => p.id === asked)) return;
+    const linkedBands = getModelBands(asked);
+    setPromptId(asked);
+    setBand(linkedBands[0] ?? null);
+    setBandA(linkedBands[0] ?? null);
+    setBandB(linkedBands[linkedBands.length - 1] ?? null);
+    setReason(parseLibraryReason(window.location.search));
+    setDeepLinked(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Tapping (or clicking) anywhere outside an open highlight note closes it —
   // the highlight button itself stops propagation, so this only ever fires
