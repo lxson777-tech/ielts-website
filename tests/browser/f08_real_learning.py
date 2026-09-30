@@ -9,14 +9,25 @@ pilot.
 2. The "how did you choose it?" reasons must appear. Pick one.
 3. A TENTATIVE diagnosis and the teacher's own explanation must appear.
 4. Try the question again.
-5. Then open the Reading Headings lesson and use Hint on a quick-check item
-   BEFORE answering, then answer it correctly.
+5. Then open the Reading Headings lesson and answer its quick check
+   correctly.
 6. Then run the independent check exercise.
 7. Then read the STORED RECORD out of localStorage and prove: the first
-   answer is kept, the hinted item is marked assisted, the check items are
-   independent.
+   answer is kept, no quick-check answer is recorded as hint-assisted, the
+   check items are independent.
 8. Then open /report and prove no mastery wording appears and the certainty
    is expressed in words.
+
+CHANGED 30 September 2026: Mr EZ's help buttons ("Give me a hint",
+"Explain this differently", "Show me an example") now exist only for a
+signed-in student (src/components/learning/lesson-help.ts,
+mrEzHelpAvailable). This suite runs on a build with no accounts, so nobody
+here is ever signed in and no help button may appear anywhere. Steps 1 and 5
+used to press a hint as a signed-out visitor and step 7 used to find that
+hint recorded as assisted; they now check that no hint control is offered
+at all, and that nothing on the quick check is recorded as hint-assisted.
+Taking a hint while signed in, and its reply, is proven by
+f24_help_signed_in_only.py against the local accounts stand-in.
 """
 import json
 
@@ -55,9 +66,10 @@ MASTERY_WORDS = ["mastered", "mastery", "you have mastered", "perfected", "fully
 
 def run(base_url: str = BASE_URL):
     write_section(
-        "Scenario 8: Real learning (guided practice, hints, retries, independent check)",
+        "Scenario 8: Real learning (guided practice, retries, independent check)",
         "Seed a light confirmed plan (band 7.0, exam in 40 days, 60 minutes) so the student is a "
-        "returning one, then drive the Reading Matching Headings pilot for real.",
+        "returning one, then drive the Reading Matching Headings pilot for real. The visitor is "
+        "signed out (this build has no accounts), so no Mr EZ help button may appear anywhere.",
     )
     plan = saved_plan(target_band="7.0", test_date=days_after(40),
                       created_at="2026-08-01T09:00:00.000Z", daily_minutes=60,
@@ -75,12 +87,16 @@ def run(base_url: str = BASE_URL):
         assert_on(page, "the guided Matching Headings exercise", GUIDED,
                   "Matching Headings: guided practice")
         eyebrow = page.locator(".focused-eyebrow")
+        # Help is for signed-in students only, and nobody can sign in on
+        # this build, so a signed-out visitor is offered no hint at all.
+        guided_help = page.locator(".help-control, .help-controls, button:has-text('Give me a hint')")
         write_row(
-            "The guided exercise says it is guided, and hints exist BEFORE any answer",
+            "The guided exercise says it is guided, and offers a signed-out visitor no hint "
+            "control (Mr EZ's help is for signed-in students only)",
             "guided" in (eyebrow.first.inner_text().lower() if eyebrow.count() else "")
-            and page.locator(".help-control", has_text="Give me a hint").count() > 0,
+            and guided_help.count() == 0,
             f'eyebrow="{eyebrow.first.inner_text() if eyebrow.count() else "(missing)"}", '
-            f'{page.locator(".help-control", has_text="Give me a hint").count()} hint control(s)',
+            f'{guided_help.count()} help control(s) on the page (expected 0 signed out)',
         )
         shot(page, "s08-01-guided-before-answering-desktop", GUIDED)
 
@@ -198,14 +214,15 @@ def run(base_url: str = BASE_URL):
             f"stored item outcomes: {json.dumps(first_answers)[:900]}",
         )
 
-        # ── 5. the lesson quick check, Hint BEFORE answering ─────────────
+        # ── 5. the lesson quick check, signed out: no help offered ───────
         goto(page, LESSON)
         page.wait_for_timeout(2400)
         assert_on(page, "the Reading Headings lesson", LESSON, "")
         # The lesson's quick check is PracticeQuiz: two units of six
-        # matching-headings questions, each question with its own inline
-        # "Give me a hint". Unit 1 is Academic Reading Test 6, Passage 2;
-        # its answers are v, ii, iv, vii, iii, vi.
+        # matching-headings questions. A signed-in student gets an inline
+        # "Give me a hint" on each question; a signed-out visitor (everybody
+        # on this build) gets none. Unit 1 is Academic Reading Test 6,
+        # Passage 2; its answers are v, ii, iv, vii, iii, vi.
         legend = page.inner_text("body")
         unit_is_test6 = "Tried and tested solutions" in legend
         answers = ["v", "ii", "iv", "vii", "iii", "vi"] if unit_is_test6 else None
@@ -218,25 +235,24 @@ def run(base_url: str = BASE_URL):
         )
 
         quiz_hint = page.locator(".help-controls.is-inline button.help-control", has_text="hint")
-        hinted = False
-        hint_text = "(no inline hint control on the lesson quick check)"
-        if quiz_hint.count():
-            quiz_hint.first.scroll_into_view_if_needed()
-            quiz_hint.first.click()
-            page.wait_for_timeout(1600)
-            replies = page.locator(".help-controls.is-inline .help-replies")
-            hint_text = (replies.first.inner_text().replace("\n", " ") if replies.count()
-                         else quiz_hint.first.locator("xpath=../..").inner_text().replace("\n", " "))
-            hinted = True
+        block_help = page.locator(".lesson-block-help, button:has-text('Explain this differently'), "
+                                  "button:has-text('Show me an example')")
+        any_help = page.locator(".help-control, .help-controls")
+        body_now = page.inner_text("body")
+        fallback_note = ("Mr EZ could not be reached" in body_now
+                         or "the lesson's own answer" in body_now)
         write_row(
-            "A hint can be asked for BEFORE answering a lesson quick-check item, "
-            f"and there are {quiz_hint.count()} such controls",
-            hinted,
-            f'hint surface said: "{hint_text[:320]}"',
+            "A signed-out visitor is offered no Mr EZ help on the lesson: no hint on the quick "
+            "check, no 'Explain this differently' or 'Show me an example' under the blocks, and "
+            "no fallback note in their place",
+            quiz_hint.count() == 0 and block_help.count() == 0 and any_help.count() == 0
+            and not fallback_note,
+            f"quick-check hint controls={quiz_hint.count()}, block help controls={block_help.count()}, "
+            f"help controls of any kind={any_help.count()}, fallback note on the page={fallback_note}",
         )
-        shot(page, "s08-05-lesson-hint-before-answering-desktop", LESSON)
+        shot(page, "s08-05-lesson-no-help-signed-out-desktop", LESSON)
 
-        # Now answer the whole first unit correctly, the hinted item included.
+        # Now answer the whole first unit correctly.
         quiz_selects = page.locator("astro-island select").filter(
             has=page.locator("option", has_text="Choose heading"))
         picked = []
@@ -256,7 +272,7 @@ def run(base_url: str = BASE_URL):
             page.wait_for_timeout(1800)
             submitted = True
         write_row(
-            "The hinted item was then answered correctly and the quick check submitted",
+            "The quick check was then answered correctly and submitted",
             len(picked) == 6 and submitted,
             f"answers chosen = {picked}, submitted = {submitted}",
         )
@@ -312,10 +328,18 @@ def run(base_url: str = BASE_URL):
                     assisted_items.append(entry)
                 else:
                     independent_items.append(entry)
+        # No hint could be taken signed out, so no quick-check answer may be
+        # recorded as hint-assisted. (The guided exercise's own explanation
+        # after a wrong answer can still raise that item's level; that is
+        # the lesson's teaching, not Mr EZ, and is not counted here.)
+        quick_check_hinted = [a for a in assisted_items
+                              if (a["activity"] or "").startswith("check:") and a["assistance"] == "hint"]
         write_row(
-            "A correct answer that followed a hint is recorded as ASSISTED, for good",
-            len(assisted_items) > 0,
-            f"assisted item outcomes on the record: {json.dumps(assisted_items)[:700]}",
+            "With no hint offered to a signed-out visitor, no lesson quick-check answer is "
+            "recorded as hint-assisted",
+            len(quick_check_hinted) == 0,
+            f"hint-assisted quick-check items: {json.dumps(quick_check_hinted)[:400]}; every assisted "
+            f"item on the record: {json.dumps(assisted_items)[:600]}",
         )
         check_events = [e for e in all_events
                         if (e.get("activityId") or "").startswith("focus:")

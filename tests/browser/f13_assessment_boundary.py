@@ -5,6 +5,18 @@
 2. Start the independent check exercise. Same rule.
 3. Finish the paper. The review must show explanations, and the tutor must
    be available again.
+
+CHANGED 30 September 2026: Mr EZ's help buttons now exist only for a
+signed-in student (mrEzHelpAvailable in src/components/learning/
+lesson-help.ts). This suite runs on a build with no accounts, so on it the
+"no help control" rows below hold for that reason as well as for the
+assessment boundary; they are kept, and now also count the lesson-page
+"Show me an example" button and any help row, because a help control of any
+kind appearing here would break both rules. That a SIGNED-IN student still
+gets none on the independent check, while the guided exercise shows them
+theirs, is proven by f24_help_signed_in_only.py on the local accounts
+stand-in. The tutor launcher rows are unchanged: the launcher is Mr EZ's
+panel, not a help button, and it is not part of this change.
 """
 import json
 
@@ -34,8 +46,9 @@ CHECK = "/trainers/focused/reading-matching-headings-check-a"
 
 
 def help_controls(page):
-    return page.locator(".help-control, button:has-text('Give me a hint'), "
-                        "button:has-text('Explain this differently')").count()
+    return page.locator(".help-control, .help-controls, button:has-text('Give me a hint'), "
+                        "button:has-text('Explain this differently'), "
+                        "button:has-text('Show me an example')").count()
 
 
 def run(base_url: str = BASE_URL):

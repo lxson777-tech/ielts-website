@@ -18,6 +18,14 @@
  * When the page changes hands the buttons let go of the previous student's
  * replies at once, so the next student starts with none of them and never
  * sends them along as hints already given.
+ *
+ * ONLY FOR A SIGNED-IN STUDENT (30 September 2026)
+ * Nothing at all is rendered until mrEzHelpAvailable in ./lesson-help.ts
+ * says yes: the account has answered and a student is signed in. A visitor
+ * who is not signed in gets no button and no note in their place. A sign-in
+ * on the open page shows the buttons without a reload; a sign-out takes
+ * them away and lets go of a request still on its way, exactly as an
+ * account change already does below.
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -36,7 +44,7 @@ import {
   type OwnerBinding,
 } from '../../lib/store-owner';
 import { askContext } from './learning-versions';
-import { HELP_SOURCE_NOTE, requestOwnedLessonHelp, type HelpResult } from './lesson-help';
+import { HELP_SOURCE_NOTE, requestOwnedLessonHelp, watchMrEzHelpAvailable, type HelpResult } from './lesson-help';
 
 const KIND_LABEL: Readonly<Record<LessonHelpKind, string>> = {
   hint: 'Give me a hint',
@@ -123,9 +131,30 @@ export default function LessonHelpControls({
     };
   }, []);
 
+  /* Only for a signed-in student (see the header). Off until the account
+     has answered, so the server render and a signed-out visit draw nothing.
+     A sign-out lets go of the replies and of a request still on its way; it
+     is still kept for its own student (keepHelp), just never shown. */
+  const [helpOn, setHelpOn] = useState(false);
+  useEffect(
+    () =>
+      watchMrEzHelpAvailable((available) => {
+        setHelpOn(available);
+        if (available) return;
+        asking.current?.cancel();
+        asking.current = null;
+        repliesFor.current = null;
+        setReplies([]);
+        setBusy(null);
+      }),
+    [],
+  );
+
   /* No help inside a timed check. The Worker refuses as well; this is the
      door the student never sees. */
   if (underAssessment) return null;
+  /* No help button for anybody who is not signed in, and nothing instead. */
+  if (!helpOn) return null;
 
   const hintsGiven = replies.filter((reply) => reply.kind === 'hint').length;
   const previousHints = replies.map((reply) => reply.text);

@@ -284,18 +284,23 @@ def run(base_url: str = BASE_URL):
                 reached_check = True
                 break
         write_note("**Keyboard trail on the focused exercise:** " + " -> ".join(ex_trail))
-        write_row("[keyboard] the exercise's answer controls, hints and Check button are all "
+        write_row("[keyboard] the exercise's answer controls and Check button are all "
                   "reachable by Tab", reached_check,
                   f"reached the Check button = {reached_check} after {len(ex_trail)} stops")
         write_row("[keyboard] every control in the exercise shows a visible ring",
                   not ex_invisible, f"controls with no visible ring: {ex_invisible[:8] or 'none'}")
-        hint = page.locator(".help-control", has_text="hint").first
-        hint.focus()
-        page.keyboard.press("Enter")
-        page.wait_for_timeout(1400)
-        write_row("[keyboard] a hint can be asked for with Enter",
-                  page.locator(".help-replies").count() > 0,
-                  f'.help-replies present after Enter = {page.locator(".help-replies").count()}')
+        # CHANGED 30 September 2026: Mr EZ's hint buttons exist only for a
+        # signed-in student, and nobody can sign in on this build, so the
+        # keyboard walk must meet no hint control at all (it used to press
+        # one with Enter and read the signed-out fallback note). Pressing a
+        # hint with Enter while signed in is covered by
+        # f24_help_signed_in_only.py on the local accounts stand-in.
+        hint_stops = [stop for stop in ex_trail if "hint" in stop.lower()]
+        write_row("[keyboard] a signed-out visitor meets no hint control on the way, and none is "
+                  "on the page",
+                  page.locator(".help-control, .help-controls").count() == 0 and not hint_stops,
+                  f'help controls on the page = {page.locator(".help-control, .help-controls").count()}, '
+                  f"tab stops mentioning a hint = {hint_stops[:4] or 'none'}")
         shot(page, "s15-09-keyboard-focus-exercise-desktop", GUIDED)
 
         # ── Part C: reduced motion ───────────────────────────────────────

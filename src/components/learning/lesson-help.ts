@@ -35,10 +35,25 @@
  * writer, SHOWN only while that owner has been on the page throughout, and
  * otherwise let go of.
  *
+ * WHO SEES THE BUTTONS AT ALL (30 September 2026)
+ * Only a signed-in student. Mr EZ reads nothing but the student's own
+ * record and needs a verified account to do it, so a press from a visitor
+ * who is not signed in could only ever produce the lesson's own sentence
+ * and a sign-in invitation, which read as a broken button. The controls
+ * therefore do not exist until the account has answered AND a student is
+ * signed in, appear the moment one signs in, and go (with anything still on
+ * its way) the moment they sign out. Nothing stands in their place. The
+ * rule is mrEzHelpAvailable below, in this one place, and the two surfaces
+ * that draw help buttons (./lesson-block-help.ts on the lesson page and
+ * ./LessonHelpControls.tsx everywhere else) follow it through
+ * watchMrEzHelpAvailable. It only READS the account: whose work is whose is
+ * still decided in src/lib/store-owner.ts and nowhere else.
+ *
  * No JSX: this file is imported by tests and by a plain DOM script as well
  * as by React. See the header of ./focused-exercise.ts.
  */
 
+import { onAccountChange, type AccountState } from '../../lib/auth/lifecycle';
 import { askLessonHelp, TutorClientError, isTutorConfigured, tutorUnavailableReason } from '../../lib/tutor/client';
 import type { LessonHelpItemRef } from '../../lib/tutor/schema';
 import type { LessonHelpKind, LearningAiVersions } from '../../lib/learning/contracts/ai';
@@ -52,6 +67,43 @@ import {
 import type { Locale } from '../../lib/i18n/locale';
 import type { CacheOwner } from '../../lib/learning/contracts/sync';
 import { runOwnedGrade, type OwnerBinding, type OwnerBindingState } from '../../lib/store-owner';
+
+/* ── Who may see a help button ───────────────────────────────────────────── */
+
+/** Whether the Mr EZ help controls may exist on the page for this account
+ *  state: only once the account has answered and a student is signed in.
+ *
+ *  Before the account has answered it is no, so a signed-out visitor never
+ *  sees a button flash up and vanish (a signed-in student gets them a moment
+ *  later, when the lifecycle answers). On a build with no accounts at all
+ *  the lifecycle answers "known, nobody", so it is no for good. Pure: takes
+ *  the state, asks nothing else. */
+export function mrEzHelpAvailable(state: Pick<AccountState, 'known' | 'user'> | null | undefined): boolean {
+  return Boolean(state && state.known && state.user);
+}
+
+/** How a watcher hears the account. The app-wide lifecycle's own
+    subscription by default; a test hands in its own. */
+export type AccountSubscription = (listener: (state: AccountState) => void) => () => void;
+
+/** Follow mrEzHelpAvailable over time. `onChange` hears the first answer
+ *  straight away (no, until the account has answered) and after that only
+ *  when the answer flips: a sign-in, a sign-out. The same student's sign-in
+ *  finishing, or one student replacing another, is not a flip, and the
+ *  owner-change handling each surface already has lets go of the previous
+ *  student's replies in that case. Returns an unsubscribe. */
+export function watchMrEzHelpAvailable(
+  onChange: (available: boolean) => void,
+  subscribe: AccountSubscription = onAccountChange,
+): () => void {
+  let last: boolean | null = null;
+  return subscribe((state) => {
+    const now = mrEzHelpAvailable(state);
+    if (now === last) return;
+    last = now;
+    onChange(now);
+  });
+}
 
 /* ── Asking ──────────────────────────────────────────────────────────────── */
 
@@ -118,8 +170,9 @@ export const HELP_BLOCKED_TEXT =
  *
  *  Not a placeholder: the sentence in this block that actually decides the
  *  question, chosen by word overlap, plus the published explanation once
- *  the student has had a go. It is what a signed-out student and an AI
- *  outage both get. */
+ *  the student has had a go. It is what a signed-in student gets when the
+ *  tutor cannot be reached (a signed-out visitor is shown no help button to
+ *  press at all; see "Who sees the buttons at all" above). */
 export function offlineHelp(input: HelpAskInput, reason?: string): HelpResult {
   const prompt: LessonHelpPromptInput = {
     kind: input.kind,
