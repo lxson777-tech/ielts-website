@@ -13,6 +13,17 @@
  * and its one worked example, to list what that allowance hides (a review
  * run, not the release check).
  *
+ * Recorded run, 1 October 2026 (review P2-8, gated build of 4ac68c3, 1,594
+ * phrases from 70 papers and 479 supporting items): with the exclusion, 0
+ * leaking files. Without it, 11 LEAK findings, all on 7 public Writing
+ * lessons (advantages, charts, discussion, maps, method, opinion, process;
+ * the rest are single shared lines): every prompt phrase found is in that
+ * lesson's own public prose or its one worked example, and each of the
+ * four Task 1 lessons carries exactly ONE chart, its own example's
+ * (charts, method: wt-132; maps: wt-130; process: wt-131). No private chart
+ * sits beside a public one. Since this change every chart in a file is
+ * checked, not only the first.
+ *
  * Phrases are runs of plain words (letters, digits, spaces), so they survive
  * however a page stores text: inside HTML, inside an island's JSON props,
  * inside a JavaScript chunk.
