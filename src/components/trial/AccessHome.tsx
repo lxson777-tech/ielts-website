@@ -1,29 +1,31 @@
-/* Today, the lesson library and the course in the GATED build: the trial's
-   version for a trial (or signed-out, or ended) account, the full product for
-   a paid one.
+/* Today and the course in the GATED build (the free-account model, Alex,
+   1 October 2026; docs/paid-access/FREE-ACCOUNT-MODEL.md).
 
-   The gated build (PUBLIC_ACCESS_MODE=trial) shows the trial's own Today and
-   library, because the personal course would recommend lessons the trial
-   does not open. A paid account opens all of them (docs/paid-access/
-   CONTRACT.md), so it gets the same screens the open site shows: the
-   personal Today (LearningDashboard, with its session), the whole library
-   (LessonLibrary) and the course (CourseGate). Their study material (the
-   full learning index, the focused exercises, the vocabulary deck and, in
-   Russian, their translations) arrives through the content gate first
-   (src/lib/trial/packs.ts), and only then is the screen loaded, so it never
-   draws a frame with the empty stand-ins. When paid access ends, the trial's
-   screens return; every saved result stays.
+   - Practice and guidance (paid or complimentary) gets the same screens the
+     open site shows: the personal Today (LearningDashboard, with its
+     session) and the course (CourseGate). Their study material (the full
+     learning index, the focused exercises, the vocabulary deck and, in
+     Russian, their translations) arrives through the content gate first
+     (src/lib/trial/packs.ts), and only then is the screen loaded, so it never
+     draws a frame with the empty stand-ins.
+   - A free account (or one whose practice and guidance ended) gets Today as
+     its course and next lessons, with one calm card about practice and
+     guidance (FreeHome), and the course map by section (CourseSections).
+   - A visitor who is not signed in gets an invitation to create a free
+     account; the course map lists every lesson by title.
 
-   The switch happens here, at the page level: TrialHome and the full
-   screens are used exactly as they are. */
+   The trial's own Today, library and course were retired with the trial. */
 
 import { useEffect, useState, type ReactElement } from 'react';
 import { useT } from '../../lib/i18n/react';
 import { useTrial } from '../../lib/trial/react';
 import { commonPacks, loadPacks, paidNow, type PackFailure } from '../../lib/trial/packs';
-import type { TrialLibrarySection } from '../../lib/trial/library';
-import TrialHome, { TrialLibraryPage } from './TrialHome';
+import { browserTier } from '../../lib/access/tier';
 import { PaidFailed, PaidLoading } from './PaidStates';
+import TrialBlock, { accountBlock } from './TrialBlock';
+import FreeHome from '../access/FreeHome';
+import LessonInvite from '../access/LessonInvite';
+import CourseSections from '../CourseSections';
 
 export type AccessHomePage = 'dashboard' | 'learn' | 'start';
 
@@ -61,8 +63,20 @@ async function fullScreen(page: AccessHomePage): Promise<ReactElement> {
   );
 }
 
-export default function AccessHome({ page, sections }: { page: AccessHomePage; sections: TrialLibrarySection[] }) {
+/** The course map for anyone without practice and guidance. */
+function CourseMap({ signedOut }: { signedOut: boolean }) {
+  return (
+    <div className="platform-hub mx-auto max-w-4xl px-4 py-12 sm:px-6">
+      <CourseHeader />
+      {signedOut && <LessonInvite title="The IELTS course" what="page" />}
+      <CourseSections />
+    </div>
+  );
+}
+
+export default function AccessHome({ page }: { page: AccessHomePage; sections?: unknown }) {
   const trial = useTrial();
+  const tier = browserTier(trial, trial.now);
   const paid = paidNow(trial, trial.now);
   const [attempt, setAttempt] = useState(0);
   const [screen, setScreen] = useState<ReactElement | null>(null);
@@ -92,7 +106,15 @@ export default function AccessHome({ page, sections }: { page: AccessHomePage; s
     };
   }, [paid, page, attempt]);
 
-  if (!paid) return page === 'dashboard' ? <TrialHome sections={sections} /> : <TrialLibraryPage sections={sections} />;
+  if (!paid) {
+    if (tier === 'signed-out' && trial.phase !== 'no-accounts') {
+      return page === 'dashboard' ? <LessonInvite title="Your IELTS course" what="page" /> : <CourseMap signedOut />;
+    }
+    const account = accountBlock(trial);
+    if (account === 'checking') return <PaidLoading />;
+    if (account) return <TrialBlock reason={account} title={page === 'dashboard' ? 'Today' : 'The IELTS course'} />;
+    return page === 'dashboard' ? <FreeHome ended={tier === 'paid-ended'} /> : <CourseMap signedOut={false} />;
+  }
   if (screen) return screen;
   if (failed) return <PaidFailed reason={failed} onRetry={() => setAttempt((n) => n + 1)} />;
   return <PaidLoading />;

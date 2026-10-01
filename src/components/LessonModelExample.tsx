@@ -11,17 +11,19 @@
    first; the example is there for the student who wants to see it land, and
    for the one who comes back to the lesson after writing their own.
 
-   A TRIAL build (Alex, 24 September 2026) carries no model answers: the
-   trial's Task 2 lesson shows exactly one, fetched through the content gate
-   (TRIAL_WRITING.examplePromptId), with no "Another example" and no links to
-   the trainer or the model bank, which the trial does not include. Every
-   other writing lesson shows none. */
+   The GATED build (the free-account model, Alex, 1 October 2026) carries no
+   model answers in the page: each writing lesson's one worked example is
+   part of the lesson, so it comes through the content door for any
+   signed-in account (GET example/writing-<lesson>, Builder G's door: the
+   prompt and its Band 8 model, charts inline). There is no
+   "Another example" (the model bank comes with practice and guidance), and
+   the links to the trainer and the bank open the upgrade pop-up for a free
+   account (src/lib/access/paid-guard.ts). */
 
 import { useEffect, useState } from 'react';
 import { contentIsGated, fetchGated } from '../lib/trial/content';
-import { TRIAL_OFFER, TRIAL_WRITING } from '../lib/trial/offer';
 import { useTrial } from '../lib/trial/react';
-import { accountBlock } from './trial/TrialBlock';
+import { browserTier, readsLessons } from '../lib/access/tier';
 import type { EssayPrompt } from '../lib/writing/schema';
 import { WRITING_PROMPTS } from '../data/writing-prompts';
 import { getModelAnswers, type ModelAnswer } from '../data/model-answers';
@@ -52,9 +54,13 @@ const CRITERION_LABEL: { key: keyof ModelAnswer['criteria']; label: string }[] =
   { key: 'grammar', label: 'Grammatical Range and Accuracy' },
 ];
 
-export default function LessonModelExample({ lesson, example }: { lesson: string; example?: { prompt: EssayPrompt; model: ModelAnswer } | null }) {
-  if (example) return <ModelView prompt={example.prompt} model={example.model} links />;
-  return contentIsGated() ? <TrialLessonModel lesson={lesson} /> : <OpenLessonModel lesson={lesson} />;
+/** Where a writing lesson's worked example is asked for through the content
+    door (Builder G, free-account model): opened for any signed-in account
+    with a profile, as part of the lesson. */
+export const LESSON_EXAMPLE_PATH = (lesson: string): string => `example/writing-${lesson}`;
+
+export default function LessonModelExample({ lesson }: { lesson: string }) {
+  return contentIsGated() ? <GatedLessonModel lesson={lesson} /> : <OpenLessonModel lesson={lesson} />;
 }
 
 function OpenLessonModel({ lesson }: { lesson: string }) {
@@ -75,21 +81,24 @@ function OpenLessonModel({ lesson }: { lesson: string }) {
   );
 }
 
-/** The trial's one example, from the content gate, on its Task 2 lesson only. */
-function TrialLessonModel({ lesson }: { lesson: string }) {
+/** The lesson's one worked example, through the content door, for any
+    signed-in account. Nothing at all for a visitor (the page shows the
+    lesson's invitation) or when it cannot be fetched: the lesson itself is
+    unaffected. */
+function GatedLessonModel({ lesson }: { lesson: string }) {
   const trial = useTrial();
-  const account = accountBlock(trial);
-  const included = `writing-${lesson}` === TRIAL_OFFER.writing.lessonKey;
-  const [example, setExample] = useState<{ prompt: EssayPrompt; model: ModelAnswer } | null>(null);
+  const open = readsLessons(browserTier(trial, trial.now));
+  const [example, setExample] = useState<{ key: string; prompt: EssayPrompt; model: ModelAnswer } | null>(null);
+  const key = open && LESSON_VARIANTS[lesson] ? `${trial.userId}:${lesson}` : null;
 
   useEffect(() => {
-    if (!included || account || example) return;
+    if (!key || example?.key === key) return;
     let live = true;
-    void fetchGated(`model/${TRIAL_WRITING.examplePromptId}`).then((result) => {
+    void fetchGated(LESSON_EXAMPLE_PATH(lesson)).then((result) => {
       if (!live || !result.ok) return;
       try {
         const parsed = JSON.parse(result.text) as { prompt: EssayPrompt; model: ModelAnswer };
-        if (parsed?.prompt?.promptHtml && Array.isArray(parsed?.model?.text)) setExample(parsed);
+        if (parsed?.prompt?.promptHtml && Array.isArray(parsed?.model?.text)) setExample({ key, ...parsed });
       } catch {
         /* nothing shown: the lesson itself is unaffected */
       }
@@ -98,10 +107,10 @@ function TrialLessonModel({ lesson }: { lesson: string }) {
       live = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [included, account, trial.userId, trial.status]);
+  }, [key]);
 
-  if (!included || !example) return null;
-  return <ModelView prompt={example.prompt} model={example.model} links={false} />;
+  if (!key || example?.key !== key) return null;
+  return <ModelView prompt={example.prompt} model={example.model} links />;
 }
 
 function ModelView({

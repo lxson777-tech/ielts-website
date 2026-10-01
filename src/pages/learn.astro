@@ -1,10 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LessonLibrary from '../components/LessonLibrary';
-// Everyone can browse and read the lesson library without an account.
+import SignedOutInvite from '../components/access/SignedOutInvite';
+import { ACCESS_MODE } from '../lib/trial/mode';
+/* Everyone can browse the library by title. In the gated build a lesson
+   opens with a free account (the free-account model, 1 October 2026), so a
+   visitor who is not signed in is invited to create one. */
+const gated = ACCESS_MODE === 'trial';
 ---
 <BaseLayout title="Lessons · IELTS is EZ" description="Browse IELTS lessons for every skill.">
-  <LessonLibrary client:load />
+  {gated && <SignedOutInvite client:load title="Every lesson, free with an account" />}<LessonLibrary client:load />
 </BaseLayout>
 
 <style is:global>

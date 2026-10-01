@@ -3,14 +3,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import CourseGate from '../components/CourseGate';
 import AccessHome from '../components/trial/AccessHome';
 import { ACCESS_MODE } from '../lib/trial/mode';
-import { trialLibrary } from '../lib/trial/library';
-import { ALL_TESTS } from '../data/tests';
 
-/* A trial build shows the library with only the trial's lessons open. The
-   personal course, its intake and its pace wait for full access: a paid
-   account gets them (AccessHome switches on the account). */
+/* The gated build (the free-account model): every lesson by section for a
+   free account and, by title, for a visitor; the personal course, its
+   intake and its pace come with practice and guidance (AccessHome switches
+   on the account). */
 const trial = ACCESS_MODE === 'trial';
-const sections = trial ? trialLibrary((id) => ALL_TESTS.find((test) => test.id === id)?.title) : [];
 ---
 
 <BaseLayout
@@ -18,7 +16,7 @@ const sections = trial ? trialLibrary((id) => ALL_TESTS.find((test) => test.id =
   description="Work through every lesson on the site in the right order. Tell us your target band and test date, and the course sets your pace, tracks what you've finished, and always shows the next lesson."
 >
   {trial ? (
-    <AccessHome client:load page="start" sections={sections} />
+    <AccessHome client:load page="start" />
   ) : (
   <div class="platform-hub mx-auto max-w-4xl px-4 py-12 sm:px-6">
     <header class="hub-heading">

@@ -271,10 +271,12 @@ test('the placement test and mock exams say what they use before starting (P1-6)
 });
 
 test('no "Your result is saved" where an interrupted assessment has no result (P1-5)', () => {
+  /* The trial's "assessment used" screen was retired with the trial (the
+     free-account model, 1 October 2026): no locked screen may claim a result
+     was kept. */
   const block = read('src/components/trial/TrialBlock.tsx');
-  const used = block.slice(block.indexOf("case 'assessment-used':"), block.indexOf("case 'checking':"));
-  assert.doesNotMatch(used, /result is saved/i);
-  assert.match(used, /INTERRUPTED_GIVEN_BACK/);
+  assert.doesNotMatch(block, /result is saved/i);
+  assert.doesNotMatch(block, /case 'assessment-used':/);
 });
 
 /* ── The open build is today's live site (P2-9) ─────────────────────── */

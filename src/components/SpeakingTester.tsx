@@ -13,6 +13,7 @@ import { useTrialTest } from './trial/useTrialTest';
 import { refreshTrial, serverNow, trialView } from '../lib/trial/client';
 import { GraderRefusal } from '../lib/writing/grader';
 import { isAssessmentRefusalCode, refusalIsFinal, refusalKind, refusalMessage, refusalOffersPlans } from './access/assessment-refusal';
+import { upgradeOnRefusal } from './access/refusal-upgrade';
 import { TRIAL_RECORDED_TOPIC } from '../lib/trial/recorded-topic';
 import { useEffect, useRef, useState } from 'react';
 import type { AnsweredClip, SpeakingAttempt, SpeakingGradeResult, TopicVocab } from '../lib/speaking/schema';
@@ -417,6 +418,7 @@ export default function SpeakingTester({ trialRecorded = false }: { trialRecorde
          allowance used or a trial over is said plainly, with what to do. */
       if (err instanceof GraderRefusal && isAssessmentRefusalCode(err.code)) {
         const kind = refusalKind(err.code, err.message, err.reason);
+        upgradeOnRefusal(kind, 'speaking');
         await refreshTrial();
         setRefusal({ final: refusalIsFinal(kind), plans: refusalOffersPlans(kind) });
         setMicError(refusalMessage({ kind, what: 'speaking', serverMessage: err.message }, trialView().status, serverNow(), t, locale));

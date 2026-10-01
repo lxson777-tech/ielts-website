@@ -23,7 +23,13 @@ interface Props {
   html: string;
 }
 import { publicLessonHtml } from '../lib/access/public-lessons';
+import { ACCESS_MODE } from '../lib/trial/mode';
 const { slug, html } = Astro.props;
+/* The gated build (the free-account model, 1 October 2026) carries no lesson
+   text in the page: the wrapper is left empty and src/lib/i18n/lesson-body.ts
+   fills it through the content door (workers/content-gate) for any signed-in
+   account. The open site keeps the text inline, exactly as before. */
+const gated = ACCESS_MODE === 'trial';
 ---
 
-<div data-lesson-body={slug} set:html={publicLessonHtml(html)} />
+{gated ? <div data-lesson-body={slug} data-lesson-gated /> : <div data-lesson-body={slug} set:html={publicLessonHtml(html)} />}

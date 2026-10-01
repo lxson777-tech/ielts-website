@@ -63,9 +63,10 @@ export const LESSON_CARDS_ATTR = 'data-lesson-cards';
     arrives. Removed unconditionally after FAILSAFE_MS. */
 export const LESSON_BODY_LOADING_ATTR = 'data-lesson-body-loading';
 
-/** Marks a fragment a TRIAL build left empty on purpose: its text, in every
-    language, comes from the content gate (workers/content-gate) for a
-    student allowed to open the lesson, never from a public file. */
+/** Marks a fragment the GATED build left empty on purpose: its text, in
+    every language, comes from the content gate (workers/content-gate) for
+    any signed-in account (the free-account model), never from a public
+    file. */
 export const LESSON_GATED_ATTR = 'data-lesson-gated';
 
 /** Records which language the fragment currently shows, for debugging and
@@ -232,9 +233,12 @@ async function applyGated(el: HTMLElement, slug: string): Promise<void> {
   if (mine !== generation) return;
   setLoading(el, false);
   if (html === null) {
-    /* A lesson the trial does not open is already covered by the trial
-       gate, which says why; this only matters for one it does open. */
-    if (code !== 'not-included' && code !== 'trial-ended' && code !== 'trial-required' && code !== 'sign-in-required') {
+    /* A refusal is already explained by the page's gate (the lesson's
+       invitation when signed out, the profile page when the profile is not
+       finished); only an outage gets this line. Codes: Builder G's content
+       door, the free-account model of 1 October 2026. */
+    const REFUSALS = ['not-included', 'sign-in-required', 'profile-required', 'paid-required', 'trial-ended', 'trial-required'];
+    if (!code || !REFUSALS.includes(code)) {
       const note = document.createElement('p');
       note.className = 'trial-fine';
       note.setAttribute('role', 'status');

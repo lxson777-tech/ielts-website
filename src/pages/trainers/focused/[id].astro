@@ -54,7 +54,7 @@ const description = writtenView
 const gated = ACCESS_MODE === 'trial';
 ---
 
-<BaseLayout wide title={`${exercise.title} · IELTS Portal`} description={description} trialGate={{ kind: 'locked', title: exercise.title, paidContent: true }}>
+<BaseLayout wide title={`${exercise.title} · IELTS Portal`} description={description} trialGate={{ kind: 'locked', title: exercise.title, paidContent: true, feature: 'focused' }}>
   {/* The gated build carries only the gate and, for a paid account, the
       exercise from the content gate: never its passage or questions. */}
   {gated && <PaidContent client:load view={{ name: 'focused', id: exercise.id }} />}

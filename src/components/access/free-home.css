@@ -1,0 +1,206 @@
+/* Today for a free account (FreeHome). Gated build only. The workspace's
+   own tokens (src/styles/global.css), generous spacing, one quiet card. */
+
+.free-home {
+  display: grid;
+  gap: 28px;
+  padding: 8px 0 32px;
+}
+.free-home-head h1 {
+  font-family: var(--font-display-ui);
+  font-size: clamp(28px, 4vw, 38px);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  margin: 6px 0 12px;
+  color: var(--color-ink);
+}
+.free-home-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+  margin: 0;
+}
+.free-home-lead {
+  max-width: 620px;
+  margin: 0;
+  color: var(--color-ink-muted);
+  line-height: 1.7;
+}
+.free-home-start {
+  display: inline-block;
+  margin: 16px 0 0;
+  padding: 8px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  font-size: 13px;
+  color: var(--color-ink);
+}
+
+.free-home-course {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 26px;
+}
+.free-home-course-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 14px 24px;
+  margin-bottom: 18px;
+}
+.free-home-course h2 {
+  font-family: var(--font-display-ui);
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.free-home-progress {
+  display: grid;
+  gap: 6px;
+  min-width: 200px;
+  font-size: 12px;
+  color: var(--color-ink-muted);
+}
+.free-home-bar {
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-surface-alt);
+  overflow: hidden;
+}
+.free-home-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-success, #2f7d5b);
+  transition: width 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.free-home-lessons {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.free-home-lessons a {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+.free-home-lessons a:hover {
+  border-color: var(--skill, var(--color-brand));
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px -18px rgb(32 37 34 / 45%);
+}
+.free-home-index {
+  font-family: var(--font-display-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--skill, var(--color-ink-muted));
+}
+.free-home-lesson-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.free-home-lesson-text small {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+.free-home-lesson-text b {
+  font-weight: 600;
+  font-size: 15px;
+}
+.free-home-lesson-text span {
+  font-size: 13px;
+  color: var(--color-ink-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.free-home-open {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--skill, var(--color-brand));
+}
+.free-home-empty {
+  margin: 0;
+  color: var(--color-ink-muted);
+}
+.free-home-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin-top: 18px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.free-home-links a {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--color-border);
+}
+.free-home-links a:hover {
+  text-decoration-color: currentColor;
+}
+
+.free-home-pitch {
+  background: var(--trial-paper);
+  border: 1px solid var(--trial-line-soft);
+  border-radius: 20px;
+  padding: 28px;
+}
+.free-home-pitch h2 {
+  font-size: 22px;
+  margin: 12px 0 8px;
+}
+.free-home-pitch p {
+  margin: 0 0 20px;
+  max-width: 620px;
+  color: var(--trial-muted);
+  font-size: 14px;
+}
+.free-home-pitch-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+}
+.free-home-pitch-row small {
+  display: inline;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--trial-ink);
+}
+
+@media (max-width: 560px) {
+  .free-home-course, .free-home-pitch { padding: 20px 18px; }
+  .free-home-lessons a { grid-template-columns: auto 1fr; padding: 14px; }
+  .free-home-open { grid-column: 2; }
+  .free-home-pitch-row .trial-btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .free-home-lessons a, .free-home-bar > span { transition: none; }
+}

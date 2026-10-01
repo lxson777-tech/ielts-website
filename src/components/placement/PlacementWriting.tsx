@@ -21,6 +21,7 @@ import { GraderRefusal, gradeEssay, isGraderConfigured } from '../../lib/writing
 import { refreshTrial, serverNow, trialView } from '../../lib/trial/client';
 import AllowanceNote from '../access/AllowanceNote';
 import { isAssessmentRefusalCode, refusalIsFinal, refusalKind, refusalMessage } from '../access/assessment-refusal';
+import { upgradeOnRefusal } from '../access/refusal-upgrade';
 import { countWords } from '../../lib/writing/mechanics';
 import { deviceStorage, runOwnedGrade, type OwnerBinding } from '../../lib/store-owner';
 import { useT } from '../../lib/i18n/react';
@@ -167,6 +168,7 @@ export default function PlacementWriting({
       if (claim.binding.state() !== 'current') return;
       if (err instanceof GraderRefusal && isAssessmentRefusalCode(err.code)) {
         const kind = refusalKind(err.code, err.message, err.reason);
+        upgradeOnRefusal(kind, 'placement');
         await refreshTrial();
         setRefused({
           text: refusalMessage({ kind, what: 'placement', serverMessage: err.message }, trialView().status, serverNow(), t, locale),

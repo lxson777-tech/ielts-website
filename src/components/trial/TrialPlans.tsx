@@ -28,6 +28,7 @@ import { hasPaidAccess } from '../../lib/trial/status';
 import { AVAILABLE_PAID_PLANS, PAID_AI_ALLOWANCE, THREE_MONTH_SAVING, type PaidPlan } from '../../lib/access/plans';
 import { extendedUntil, formatDate, formatMoney } from '../access/access-state';
 import { PURCHASE_ENABLED } from '../access/payments';
+import { isTrialBuild } from '../../lib/trial/mode';
 import {
   AccessStrip,
   InterruptedPurchase,
@@ -67,7 +68,9 @@ function PlansNotConnected() {
         {t('Payment not connected yet')} {t(PAID_AI_ALLOWANCE)}
       </p>
       <a className="trial-btn" href={withBase('/dashboard')}>
-        {t('Back to my trial')}
+        {/* The gated build retired the trial (1 October 2026); the open
+            site's page is left exactly as it was. */}
+        {isTrialBuild() ? t('Back to Today') : t('Back to my trial')}
       </a>
     </section>
   );
@@ -133,7 +136,7 @@ function PlansWithPurchase() {
       <AssessmentBalance /><PurchaseTerms />
 
       <a className="trial-btn" href={withBase('/dashboard')}>
-        {paid ? t('Back to Today') : t('Back to my trial')}
+        {t('Back to Today')}
       </a>
     </section>
   );

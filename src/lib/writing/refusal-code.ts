@@ -11,12 +11,17 @@
 
 const REFUSAL_PREFIX = /^(trial|assessment|allowance)-/;
 
+/** The free-account model's refusal (HTTP 402): practice and guidance is
+    needed. src/lib/access/upgrade.ts PAID_REQUIRED_CODE, kept as a literal
+    here so this file stays dependency-free. */
+const PAID_REQUIRED = 'paid-required';
+
 export function isGraderRefusalCode(code: string): boolean {
-  return code === 'sign-in-required' || REFUSAL_PREFIX.test(code);
+  return code === 'sign-in-required' || code === PAID_REQUIRED || REFUSAL_PREFIX.test(code);
 }
 
 /** The live examiner's refusals: the same prefixes (its sign-in failure is
     a 401 the session client reports on its own). */
 export function isLiveRefusalCode(code: string): boolean {
-  return REFUSAL_PREFIX.test(code);
+  return code === PAID_REQUIRED || REFUSAL_PREFIX.test(code);
 }

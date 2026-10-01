@@ -70,8 +70,8 @@ export function AccessStrip({ trial, aside }: { trial: TrialHookView; aside?: Re
   } else {
     const summary = accessSummary(trial.status, trial.now);
     ({ title, detail } = describeAccess(summary, t, locale));
-    if (summary.kind === 'paid-ended' || summary.kind === 'trial-ended') tone = ' is-ended';
-    if (summary.kind === 'paid') tone = ' is-paid';
+    if (summary.kind === 'paid-ended') tone = ' is-ended';
+    if (summary.kind === 'paid' || summary.kind === 'complimentary') tone = ' is-paid';
   }
   return (
     <div className={`trial-status access-strip${tone}`} role="status">

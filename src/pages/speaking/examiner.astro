@@ -6,22 +6,18 @@ import PaidContent from '../../components/trial/PaidContent';
 import { withBase } from '../../lib/url';
 import { isTrialBuild } from '../../lib/trial/mode';
 
-/* A gated build: this page is the trial's Speaking test, Part 1 only, and
-   the cue-card bank is not part of the trial. A paid account gets the full
-   three-part test and the bank: its speaking material arrives through the
-   content gate and PaidContent mounts the examiner with the bank's link
-   under it (so a trial page carries no link to the bank at all), and the
-   subtitle follows the account (data-access-copy, src/lib/trial/hub.ts). */
+/* A gated build: live interviews come with practice and guidance (the
+   free-account model, 1 October 2026). A paid account's speaking material
+   arrives through the content gate and PaidContent mounts the examiner with
+   the cue-card bank's link under it; anyone else sees the page's gate. */
 const trial = isTrialBuild();
 const fullSubtitle =
   'A full three-part mock speaking test as a real conversation: the examiner speaks, listens, and asks follow-up questions based on what you actually say.';
-const trialSubtitle =
-  'Part 1 of the Speaking test as a real conversation: the examiner speaks, listens, and asks follow-up questions based on what you actually say.';
 ---
 
 <BaseLayout
   title="Live AI Examiner · IELTS Portal"
-  trialGate={{ kind: 'locked', title: 'Live AI Examiner', paidContent: true }}
+  trialGate={{ kind: 'locked', title: 'Live AI Examiner', paidContent: true, feature: 'live' }}
   description="Take a full mock IELTS Speaking test as a real-time voice conversation: an AI examiner asks questions out loud, listens, follows up on your answers, and grades you on the four official criteria."
 >
   <div class="skill-speaking mx-auto max-w-4xl px-4 py-12 sm:px-6">
@@ -29,8 +25,7 @@ const trialSubtitle =
       <div class="section-heading mb-8">
         <h1 class="text-3xl font-extrabold tracking-tight" data-i18n>Live AI Examiner</h1>
         <p class="heading-context" data-i18n>Speaking</p>
-        <p class="mt-2 max-w-xl text-ink-muted" data-access-copy="trial" data-i18n>{fullSubtitle}</p>
-        <p class="mt-2 max-w-xl text-ink-muted" data-access-copy="full" data-i18n hidden>{fullSubtitle}</p>
+        <p class="mt-2 max-w-xl text-ink-muted" data-i18n>{fullSubtitle}</p>
       </div>
     ) : (
       <SectionHeading eyebrow="Speaking" title="Live AI Examiner" subtitle={fullSubtitle} />
@@ -45,13 +40,6 @@ const trialSubtitle =
     )}
   </div>
 </BaseLayout>
-
-<script>
-  /* The words above follow the account: the trial's Part 1 test, or the
-     full test for paid access. Only a gated build loads this. */
-  import { isTrialBuild } from '../../lib/trial/mode';
-  if (isTrialBuild()) void import('../../lib/trial/hub').then((m) => m.initTrialHub());
-</script>
 
 <style is:global>
   @import '../../styles/platform-pages.css';

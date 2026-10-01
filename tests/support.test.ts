@@ -92,7 +92,8 @@ test('a person is reachable from every place the audit named', () => {
   assert.match(read('src/components/tutor/MrEzPanel.tsx'), /<SupportLink reason="mr-ez"/);
   assert.match(read('src/components/WritingTester.tsx'), /<SupportLink reason="grader"/);
   assert.match(read('src/components/SpeakingTester.tsx'), /<SupportLink reason="grader"/);
-  assert.match(read('src/components/trial/TrialBlock.tsx'), /<SupportLink reason=\{reason === 'ended'/);
+  assert.match(read('src/components/trial/TrialBlock.tsx'), /<SupportLink reason=\{reason === 'paid-ended'/);
+  assert.match(read('src/components/access/PaidLocked.tsx'), /<SupportLink reason="locked"/);
   assert.match(read('src/components/trial/TrialHome.tsx'), /ended && <SupportLink reason="trial-ended"/);
   assert.match(read('src/components/support/PurchaseTerms.tsx'), /<SupportLink reason="plans"/);
   assert.match(read('src/components/admin/AdminPanel.tsx'), /<SupportRequests \/>/);

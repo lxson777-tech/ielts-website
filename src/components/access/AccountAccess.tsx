@@ -40,7 +40,11 @@ function AccountAccessInner() {
 
   const summary = trial.status ? accessSummary(trial.status, trial.now) : null;
   const cta =
-    summary?.kind === 'paid' ? t('Add more time') : summary?.kind === 'paid-ended' ? t('Buy access again') : t('View plans');
+    summary?.kind === 'paid' || summary?.kind === 'complimentary'
+      ? t('Add more time')
+      : summary?.kind === 'paid-ended'
+        ? t('Buy access again')
+        : t('View plans');
 
   return (
     <section id="access" className="acct-settings access-account" aria-labelledby="access-account-title">

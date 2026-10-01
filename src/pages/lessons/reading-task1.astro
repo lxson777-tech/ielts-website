@@ -3,6 +3,7 @@ import LessonLayout from '../../layouts/LessonLayout.astro';
 import LessonTypeGrid from '../../components/LessonTypeGrid.astro';
 import { withBase } from '../../lib/url';
 import { publicLessonHtml } from '../../lib/access/public-lessons';
+import { ACCESS_MODE } from '../../lib/trial/mode';
 import { ALL_TESTS } from '../../data/tests';
 import { questionCount } from '../../lib/tests/schema';
 import Count from '../../components/Count.astro';
@@ -22,6 +23,9 @@ const markerIndex = body.indexOf(CARD_MARKER);
 if (markerIndex === -1) throw new Error('reading-task1.html is missing the "<!-- lesson-cards -->" marker');
 const bodyBeforeCards = body.slice(0, markerIndex);
 const bodyAfterCards = body.slice(markerIndex + CARD_MARKER.length);
+/* The gated build carries only the generated card grid (the free-account
+   model): the lesson text around it comes through the content door. */
+const gated = ACCESS_MODE === 'trial';
 
 ---
 
@@ -34,12 +38,12 @@ const bodyAfterCards = body.slice(markerIndex + CARD_MARKER.length);
   {/* A trial build carries only the generated card grid; the lesson text
       around it comes from the content gate (src/lib/i18n/lesson-body.ts puts
       it round the same grid node, at the fragment's marker). */}
-  <div data-lesson-body="reading-task1">
-    <Fragment set:html={bodyBeforeCards} />
+  <div data-lesson-body="reading-task1" data-lesson-gated={gated ? '' : undefined}>
+    {!gated && <Fragment set:html={bodyBeforeCards} />}
     <div data-lesson-cards style="display:contents">
       <LessonTypeGrid groups={READING_GROUPS} parts={READING_PARTS} hrefBase="reading" />
     </div>
-    <Fragment set:html={bodyAfterCards} />
+    {!gated && <Fragment set:html={bodyAfterCards} />}
   </div>
 
   <hr class="divider" />

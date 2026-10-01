@@ -30,6 +30,7 @@ import { publishedOperator } from '../../lib/operator';
 import { withBase } from '../../lib/url';
 import { useT } from '../../lib/i18n/react';
 import { nt } from '../../lib/i18n/translate';
+import { isTrialBuild } from '../../lib/trial/mode';
 import {
   SUPPORT_LIMITS,
   SUPPORT_TOPICS,
@@ -53,7 +54,9 @@ import './support.css';
 const TOPIC_LABELS: Record<SupportTopic, string> = {
   problem: nt('Something is not working'),
   question: nt('A question about studying'),
-  account: nt('My account, trial or access'),
+  /* The gated build retired the trial (the free-account model, 1 October
+     2026); the open site's wording is left exactly as it was. */
+  account: isTrialBuild() ? nt('My account or access') : nt('My account, trial or access'),
   other: nt('Something else'),
 };
 
@@ -61,7 +64,7 @@ const TOPIC_LABELS: Record<SupportTopic, string> = {
 const REASON_NOTES: Partial<Record<SupportReason, string>> = {
   'mr-ez': nt('You came here because Mr EZ could not answer. Tell us what you asked and what happened.'),
   grader: nt('You came here because your work could not be graded. Your essay or recording is not lost; tell us what happened.'),
-  'trial-ended': nt('You came here from the end of your trial.'),
+  'trial-ended': isTrialBuild() ? nt('You came here because your practice and guidance ended.') : nt('You came here from the end of your trial.'),
   locked: nt('You came here from a page that is not included in your access.'),
   plans: nt('You came here from the plans page.'),
 };

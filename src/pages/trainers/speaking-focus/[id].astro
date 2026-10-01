@@ -41,7 +41,7 @@ const gated = ACCESS_MODE === 'trial';
 <BaseLayout
   wide
   title={`${task.title} · IELTS Portal`}
-  trialGate={{ kind: 'locked', title: task.title, paidContent: true }}
+  trialGate={{ kind: 'locked', title: task.title, paidContent: true, feature: 'focused' }}
   description="A short self-check speaking task on one objective, built from a real Speaking prompt."
 >
   {/* The gated build carries only the gate and, for a paid account, the

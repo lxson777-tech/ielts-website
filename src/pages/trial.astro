@@ -1,11 +1,49 @@
 ---
-/* Joining the three-day trial. Meaningful only in a trial build
-   (PUBLIC_ACCESS_MODE=trial); on the open site the page says there is
-   nothing to start and is kept out of search either way. */
+/* /trial.
+
+   The GATED build (the free-account model, Alex, 1 October 2026) retired
+   the three-day trial: this address now sends the student to create a free
+   account, keeping everything after the `?` (the sales website's
+   questionnaire answers, `?journey=1&band=…`, travel on to sign-up inside
+   its `next`, and from there to Today, which reads them). Same meta-refresh + JS pattern as the renamed lessons
+   (src/pages/lessons/reading/cat.astro); the script keeps the query, the
+   meta refresh is the fallback without one.
+
+   The OPEN build (today's live site) keeps its page exactly as it was. */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TrialJoin from '../components/trial/TrialJoin';
+import { ACCESS_MODE } from '../lib/trial/mode';
+import { withBase } from '../lib/url';
+
+const retired = ACCESS_MODE === 'trial';
+const target = withBase('/sign-up');
 ---
 
-<BaseLayout noindex title="Start your free trial · IELTS is EZ" description="Three days, no payment card: a selected introduction and one test in each IELTS section.">
-  <TrialJoin client:load />
-</BaseLayout>
+{retired ? (
+  <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta http-equiv="refresh" content={`0;url=${target}`} />
+      <meta name="robots" content="noindex" />
+      <title>Create a free account · IELTS is EZ</title>
+      <script is:inline define:vars={{ target }}>
+        // Questionnaire answers with no `next` of their own ride inside
+        // sign-up's `next`, so they arrive on Today (the sales website's own
+        // links do the same, Builder W); anything else is kept as it is.
+        var q = new URLSearchParams(location.search);
+        var search = q.has('journey') && !q.has('next')
+          ? '?next=' + encodeURIComponent('/dashboard' + location.search)
+          : location.search;
+        location.replace(target + search + location.hash);
+      </script>
+    </head>
+    <body>
+      <a href={target}>Create a free account</a>
+    </body>
+  </html>
+) : (
+  <BaseLayout noindex title="Start your free trial · IELTS is EZ" description="Three days, no payment card: a selected introduction and one test in each IELTS section.">
+    <TrialJoin client:load />
+  </BaseLayout>
+)}

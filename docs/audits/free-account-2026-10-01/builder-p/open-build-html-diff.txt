@@ -1,0 +1,270 @@
+﻿754 pages compared, 40 differ
+== learn.html
+-  <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonLibrary&quot;,&quot;value&quot;:true}" await-children>
++ <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonLibrary&quot;,&quot;value&quot;:true}" await-children>
+== lessons/listening/form-completion.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/listening/map-labelling.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/listening/matching.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/listening/multiple-choice.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/listening/part1.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/listening/part2.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/listening/part3.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/listening/part4.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/listening/sentence-completion.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/listening/short-answer.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/reading/diagram.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/reading/headings.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/reading/matching-features.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/reading/matching-information.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/reading/matching-sentence-endings.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/reading/mc.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/reading/paraphrase.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/reading/sentence.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/reading/short-answer.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/reading/summary-completion.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/reading/tfng.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/reading/ynng.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+== lessons/writing/advantages.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+- <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;advantages&quot;],&quot;example&quot;:[0]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
++ <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;advantages&quot;]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
+== lessons/writing/charts.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+- <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;charts&quot;],&quot;example&quot;:[0]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
++ <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;charts&quot;]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
+== lessons/writing/discussion.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+- <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;discussion&quot;],&quot;example&quot;:[0]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
++ <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;discussion&quot;]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
+== lessons/writing/maps.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+- <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;maps&quot;],&quot;example&quot;:[0]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
++ <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;maps&quot;]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
+== lessons/writing/method.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+- <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;method&quot;],&quot;example&quot;:[0]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
++ <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;method&quot;]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
+== lessons/writing/opinion.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+- <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;opinion&quot;],&quot;example&quot;:[0]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
++ <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;opinion&quot;]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
+== lessons/writing/problem.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+- <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;problem&quot;],&quot;example&quot;:[0]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}">
++ <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;problem&quot;]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}">
+== lessons/writing/process.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+- <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;process&quot;],&quot;example&quot;:[0]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
++ <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;process&quot;]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
+== lessons/writing/task2-method.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+- <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;task2-method&quot;],&quot;example&quot;:[0]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
++ <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;task2-method&quot;]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
+== lessons/writing/twopart.html
+-.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++.lesson-step[data-astro-cid-X]{display:flex;align-items:center;gap:.7rem;margin-bottom:1.25rem;flex-wrap:wrap}.lesson-step-label[data-astro-cid-X]{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--skill, var(--color-brand));white-space:nowrap}.lesson-step-tra
++
+<style>
++.support-link{margin:12px 0 0;color:inherit;font-size:.86em;line-height:1.5;opacity:.92}p.support-link a{display:inline;min-height:0;border:0;background:none;box-shadow:none;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;bor
+- <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;twopart&quot;],&quot;example&quot;:[0]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
++ <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{&quot;lesson&quot;:[0,&quot;twopart&quot;]}" ssr client="load" opts="{&quot;name&quot;:&quot;LessonModelExample&quot;,&quot;value&quot;:true}" await-children>
+== speaking/examiner.html
+- <script type="module" src="/ielts-website/_astro/examiner.astro_astro_type_script_index_0_lang.HASH.js">
+-</script>
+== tests.html
+-
+<link rel="stylesheet" href="/ielts-website/_astro/index.HASH.css">
++
+<link rel="stylesheet" href="/ielts-website/_astro/dashboard.HASH.css">
+-  <p class="mt-1.5 text-sm text-ink-muted" data-i18n-n="40" data-i18n-one="{n} complete exam in rotation, a different one every attempt until you've taken them all." data-i18n-other="{n} complete exams in rotation, a different one every attempt until you've taken them all.">
++ <p class="mt-1.5 text-sm text-ink-muted" data-i18n-n="40" data-i18n-one="{n} complete exam in rotation, a different one every attempt until you've taken them all." data-i18n-other="{n} complete exams in rotation, a different one every attempt until you've taken them all.">
+-  <p class="text-center text-xs text-ink-muted" data-i18n>
++ <p class="text-center text-xs text-ink-muted" data-i18n>
+-  <a href="/ielts-website/trainers/reading" class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
++ <a href="/ielts-website/trainers/reading" class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
+-  <p class="mt-1.5 text-sm text-ink-muted" data-i18n>
++ <p class="mt-1.5 text-sm text-ink-muted" data-i18n>
+-  </div>
++ </div>
+== tests/mock.html
+-
+<link rel="stylesheet" href="/ielts-website/_astro/writing.HASH.css">
++
+<link rel="stylesheet" href="/ielts-website/_astro/writing.HASH.css">
+== trainers.html
+-  <a href="/ielts-website/trainers/reading" class="activity-start">
++ <a href="/ielts-website/trainers/reading" class="activity-start">
+-  <a href="/ielts-website/trainers/listening" class="activity-start">
++ <a href="/ielts-website/trainers/listening" class="activity-start">
+-  <a href="/ielts-website/trainers/speaking" class="activity-start">
++ <a href="/ielts-website/trainers/speaking" class="activity-start">
+-  <a href="/ielts-website/trainers/writing" class="activity-start">
++ <a href="/ielts-website/trainers/writing" class="activity-start">
+-  <script type="module" src="/ielts-website/_astro/index.astro_astro_type_script_index_0_lang.HASH.js">
+-</script>
+-
++ 
+== trainers/writing.html
+-.assessment-balance{margin:18px 0;border:1px solid var(--color-border, #dddfd6);border-radius:14px;background:var(--color-surface, #fffefa);padding:14px 16px;color:var(--color-ink-muted, #616c64);font-size:.86rem;line-height:1.55;text-align:left}.assessment-balance b{display:block;color:var(--color
++.assessment-balance{margin:18px 0;border:1px solid var(--color-border, #dddfd6);border-radius:14px;background:var(--color-surface, #fffefa);padding:14px 16px;color:var(--color-ink-muted, #616c64);font-size:.86rem;line-height:1.55;text-align:left}.assessment-balance b{display:block;color:var(--color
++
+<style>
++.vocab-mode-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px}.vocab-mode-row .vocab-progress{margin:0}.vocab-mode-badge{display:inline-flex;align-items:center;padding:5px 12px;border-radius:999px;background:color-mix(in srgb,var(--color-vocabulary, #d99000)
+== trial.html
+-  <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{}" ssr client="load" opts="{&quot;name&quot;:&quot;TrialJoin&quot;,&quot;value&quot;:true}" await-children>
++ <astro-island uid="X" prefix="r3" component-url="X" component-export="default" renderer-url="X" props="{}" ssr client="load" opts="{&quot;name&quot;:&quot;TrialJoin&quot;,&quot;value&quot;:true}" await-children>
+-  </div>
++ </div>
+== writing/checker.html
+-
+<style>
+-.assessment-balance{margin:18px 0;border:1px solid var(--color-border, #dddfd6);border-radius:14px;background:var(--color-surface, #fffefa);padding:14px 16px;color:var(--color-ink-muted, #616c64);font-size:.86rem;line-height:1.55;text-align:left}.assessment-balance b{display:block;color:var(--color
+-.vocab-mode-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px}.vocab-mode-row .vocab-progress{margin:0}.vocab-mode-badge{display:inline-flex;align-items:center;padding:5px 12px;border-radius:999px;background:color-mix(in srgb,var(--color-vocabulary, #d99000)
++.assessment-balance{margin:18px 0;border:1px solid var(--color-border, #dddfd6);border-radius:14px;background:var(--color-surface, #fffefa);padding:14px 16px;color:var(--color-ink-muted, #616c64);font-size:.86rem;line-height:1.55;text-align:left}.assessment-balance b{display:block;color:var(--color
+CSS bundles: old 17 new 16 | only in new (by content): ['listening.BjjxV6L_.css']

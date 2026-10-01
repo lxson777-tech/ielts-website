@@ -31,6 +31,7 @@ const historySubtitle = trialBuild
 
 <BaseLayout
   title="Writing Checker · IELTS Portal"
+  trialGate={{ kind: 'locked', title: 'Writing Checker', paidContent: true, feature: 'essay' }}
   description="Write a Task 1 or Task 2 answer under exam conditions and get an AI-graded band report against the four official IELTS Writing criteria."
 >
   <div class="skill-writing mx-auto max-w-4xl px-4 py-12 sm:px-6">
@@ -39,10 +40,9 @@ const historySubtitle = trialBuild
       title="Writing Checker"
       subtitle={introSubtitle}
     />
-    {/* The gated build: the trial's one essay for a trial account, every
-        question for a paid one (its questions arrive through the content
-        gate, PaidContent). */}
-    {trialBuild ? <PaidContent client:load shared view={{ name: 'writing-checker' }} /> : <WritingTester client:load variant="checker" />}
+    {/* The gated build: essay feedback comes with practice and guidance; its
+        questions arrive through the content gate (PaidContent). */}
+    {trialBuild ? <PaidContent client:load view={{ name: 'writing-checker' }} /> : <WritingTester client:load variant="checker" />}
 
     <p class="mt-6 text-center text-sm">
       {trialBuild ? (

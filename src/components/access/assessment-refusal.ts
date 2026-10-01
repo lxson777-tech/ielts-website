@@ -91,6 +91,9 @@ export const ASSESSMENT_REFUSAL_CODES: Readonly<Record<string, RefusalKind>> = {
   'trial-ended': 'trial-ended',
   'assessment-daily-limit': 'daily-limit',
   'assessment-paid-required': 'paid-required',
+  /* The free-account model (1 October 2026): every AI Worker refuses an
+     account without practice and guidance with HTTP 402 and this code. */
+  'paid-required': 'paid-required',
   'assessment-already-requested': 'already-requested',
   'assessment-in-flight': 'already-requested',
   'assessment-unknown-session': 'unknown-session',
@@ -218,7 +221,9 @@ export function refusalMessage(
     case 'daily-limit':
       return join(t("Today's safety limit for assessments is reached. Nothing was used: please try again tomorrow."), kept);
     case 'paid-required':
-      return t('Live interviews are included with paid access. Recorded Speaking and Writing assessments are on the Plans page too.');
+      return input.what === 'live' || input.what === 'feedback'
+        ? t('Live interviews are included with paid access. Recorded Speaking and Writing assessments are on the Plans page too.')
+        : join(t('AI feedback comes with practice and guidance. Nothing was used.'), kept);
     case 'already-requested':
       return t('This is already being assessed. Give it a moment, then refresh the page to see the result.');
     case 'unknown-session':

@@ -42,6 +42,8 @@ export function tutorErrorMessage(code: TutorErrorCode, locale?: Locale): string
       return t('Mr EZ is busy right now. Give it a few seconds and ask again.', undefined, undefined, locale);
     case 'unavailable':
       return t('Mr EZ could not answer just now.', undefined, undefined, locale);
+    case 'paid-required':
+      return t('Mr EZ, your personal tutor, comes with practice and guidance.', undefined, undefined, locale);
     /* The trial (a trial build only). None of these used a message. */
     case 'trial-required':
       return t('Start your free trial to talk to Mr EZ.', undefined, undefined, locale);

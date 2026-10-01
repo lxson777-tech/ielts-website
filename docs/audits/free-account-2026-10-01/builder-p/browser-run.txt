@@ -1,0 +1,90 @@
+﻿PASS signed-out lesson: title and invitation, no lesson text
+PASS signed-out lesson page carries no lesson text in its HTML
+PASS invitation's sign-up comes back to the lesson
+PASS signed-out lesson: no trial wording
+PASS signed-out: a paid button opens the pop-up, primary is sign-up then /plans
+PASS /trial goes to sign-up with the answers inside next
+PASS signed-out sweep: 16 pages visited and refreshed
+PASS free Today: questionnaire answers used (Writing first)
+PASS free Today: no trial wording
+PASS free Today: practice and guidance card opens the pop-up
+PASS Mr EZ launcher opens the pop-up
+PASS free: a lesson's text arrives through the door
+PASS free: the lesson's own quiz opens
+PASS lesson help button opens the pop-up for a free account
+PASS pop-up keyboard: focus in, Tab contained, Escape, focus back to the help button
+PASS free lesson: no trial wording
+PASS first-lesson nudge after 'studied'
+PASS no nudge on the second finished lesson
+PASS no nudge after a reload
+PASS free: a writing lesson's worked example arrives through the door
+PASS lesson's 'check your writing' link opens the pop-up
+PASS Tests: Reading start button
+PASS Tests: Listening start button
+PASS Tests: a paper in the catalogue
+PASS Tests: Mock Exam Day
+PASS Tests: Writing Checker
+PASS Tests: Live AI Examiner
+PASS Tests: Reading Trainer link
+PASS Tests: no trial wording
+PASS Practice: /trainers/reading
+PASS Practice: /trainers/listening
+PASS Practice: /trainers/speaking
+PASS Practice: /trainers/writing
+PASS Practice: no trial wording
+PASS free: vocabulary topic lists open
+PASS vocabulary practice opens the pop-up
+PASS direct link /trainers/writing: calm locked page
+PASS direct link /trainers/writing: its button opens the pop-up
+PASS direct link /tests/mock: calm locked page
+PASS direct link /tests/mock: its button opens the pop-up
+PASS direct link /placement: calm locked page
+PASS direct link /placement: its button opens the pop-up
+PASS direct link /writing/models: calm locked page
+PASS direct link /writing/models: its button opens the pop-up
+PASS direct link /speaking/cue-cards: calm locked page
+PASS direct link /speaking/cue-cards: its button opens the pop-up
+PASS direct link /learn/bands: calm locked page
+PASS direct link /learn/bands: its button opens the pop-up
+PASS direct link /writing/checker: calm locked page
+PASS direct link /writing/checker: its button opens the pop-up
+PASS direct link /speaking/examiner: calm locked page
+PASS direct link /speaking/examiner: its button opens the pop-up
+PASS direct link /speaking/recorded: calm locked page
+PASS direct link /speaking/recorded: its button opens the pop-up
+PASS direct link /tests/reading-full-001: calm locked page
+PASS direct link /tests/reading-full-001: its button opens the pop-up
+PASS /plans says Free account
+PASS /plans: no trial wording
+PASS /account says Free account
+PASS pop-up keyboard from a Tests start button
+PASS free sweep: 16 pages visited and refreshed
+PASS SIMULATED purchase confirmed
+PASS /plans says Practice and guidance until <date>
+PASS paid Today is the personal Today, not the free one
+PASS paid: Tests start button opens a paper
+PASS paid: a trainer page opens
+PASS paid: Mr EZ launcher opens the panel, no pop-up
+PASS paid sweep: 16 pages visited and refreshed
+PASS paid: no pop-up appeared anywhere in the sweep
+PASS complimentary grant given (stand-in admin helper)
+PASS /plans says Free access from your teacher until <date>
+PASS complimentary: the mock exam page opens
+PASS complimentary stopped: back to the locked page
+PASS en 390: the pop-up opens from Tests on a phone
+PASS en 390: no sideways scroll
+PASS ru 390: signed-out lesson invitation in Russian
+PASS ru 390: no sideways scroll on the invitation
+PASS ru 390: free Today in Russian
+PASS ru 390: pop-up in Russian with the price
+PASS ru 390: the pop-up fits the screen
+PASS ru 390: no trial wording on Today
+PASS ru 320: signed-out lesson invitation in Russian
+PASS ru 320: no sideways scroll on the invitation
+PASS ru 320: free Today in Russian
+PASS ru 320: pop-up in Russian with the price
+PASS ru 320: the pop-up fits the screen
+PASS ru 320: no trial wording on Today
+PASS zero uncaught page errors or hydration messages
+
+88 / 88 checks passed; 0 page errors

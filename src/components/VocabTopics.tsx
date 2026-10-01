@@ -23,6 +23,7 @@ import { withBase } from '../lib/url';
 import type { VocabTopicData } from '../lib/vocab-review';
 import { useT } from '../lib/i18n/react';
 import VocabReview from './VocabReview';
+import { isTrialBuild } from '../lib/trial/mode';
 
 type View = 'landing' | 'topic' | 'session';
 
@@ -101,7 +102,15 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
 
 
         <div className="vocab-topic-practise">
-          <button type="button" className="vocab-practise-link" onClick={() => setView('session')}>
+          <button
+            type="button"
+            className="vocab-practise-link"
+            /* The gated build: vocabulary practice comes with practice and
+               guidance, so for a free account the click guard opens the
+               upgrade pop-up instead (src/lib/access/paid-guard.ts). */
+            data-paid-feature={isTrialBuild() ? 'vocab-review' : undefined}
+            onClick={() => setView('session')}
+          >
             {t('Practise these words')}
           </button>
         </div>

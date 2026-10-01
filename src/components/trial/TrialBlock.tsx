@@ -1,19 +1,28 @@
-/* What a trial student sees instead of something the trial does not open
-   for them right now, and why. One wording for lessons, tests and trainers,
-   so the same situation always reads the same way.
+/* What a student sees, in the gated build, while their access is being
+   checked, when it could not be checked, or instead of something their
+   account does not open. One wording for lessons, tests and trainers, so the
+   same situation always reads the same way.
+
+   The free-account model (Alex, 1 October 2026; docs/paid-access/
+   FREE-ACCOUNT-MODEL.md) RETIRED THE TRIAL: nothing here offers one any
+   more. A free account reads every lesson; anything paid is "part of
+   practice and guidance", and its button opens the upgrade pop-up
+   (src/components/access/UpgradeDialog.tsx). The old trial reasons are kept
+   as names so an older caller still compiles, and all read as that.
 
    Presentational only: the decision is made by the caller from the server's
-   answer (src/lib/trial/status.ts). */
+   answer (src/lib/access/tier.ts). */
 
 import type { ReactNode } from 'react';
 import { useT } from '../../lib/i18n/react';
 import { withBase } from '../../lib/url';
 import { refreshTrial, type TrialView } from '../../lib/trial/client';
-import { hasPaidAccess, paidAccessEnded } from '../../lib/trial/status';
-import { signInHref } from '../../lib/auth/profile';
+import { paidAccessEnded } from '../../lib/trial/status';
+import { signInHref, signUpHref } from '../../lib/auth/profile';
 import { currentRoute } from '../../lib/auth/next';
+import { openUpgrade } from '../../lib/access/upgrade';
+import type { PaidFeature } from '../../lib/access/model';
 import SupportLink from '../support/SupportLink'; // [E trust]
-import { INTERRUPTED_GIVEN_BACK } from '../access/assessment-refusal';
 
 export type TrialBlockReason =
   | 'checking'
@@ -21,62 +30,78 @@ export type TrialBlockReason =
   | 'no-accounts'
   | 'error-offline'
   | 'error-server'
-  | 'no-trial'
   | 'locked'
-  | 'ended'
-  /** Paid access has ended (the account paid before). Said as it is, never
-      as a trial the student may not have had. */
+  /** Practice and guidance (paid or complimentary) has ended. Every lesson
+      stays open and every result is kept. */
   | 'paid-ended'
+  /* Retired with the trial; each now reads as 'locked'. */
+  | 'no-trial'
+  | 'ended'
   | 'speaking-unavailable'
-  /* The section's test only. */
   | 'test-used'
   | 'assessment-used'
   | 'test-other-in-progress'
   | 'test-ended';
 
 /** The reason that comes from the account and the connection, before the
-    page itself is considered. Null when the server has answered. An account
-    with running paid access and no trial is not "no trial": it holds more
-    than a trial would open (docs/paid-access/CONTRACT.md). */
+    page itself is considered. Null when the server has answered. */
 export function accountBlock(trial: TrialView): TrialBlockReason | null {
   if (trial.phase === 'checking') return 'checking';
   if (trial.phase === 'signed-out') return 'signed-out';
   if (trial.phase === 'no-accounts') return 'no-accounts';
   if (trial.phase === 'error') return trial.failure === 'offline' ? 'error-offline' : 'error-server';
-  if (!trial.status) return 'no-trial';
-  if (trial.status.state === 'none') {
-    const now = Date.now() + trial.offsetMs;
-    if (paidAccessEnded(trial.status, now)) return 'paid-ended';
-    if (!hasPaidAccess(trial.status, now)) return 'no-trial';
-  }
+  if (!trial.status) return 'checking';
   return null;
+}
+
+/** True when this account had practice and guidance and it ran out. */
+export function practiceEnded(trial: TrialView): boolean {
+  return trial.status !== null && paidAccessEnded(trial.status, Date.now() + trial.offsetMs);
 }
 
 export default function TrialBlock({
   reason,
   title,
-  section,
+  feature = 'test',
   variant = 'page',
 }: {
   reason: TrialBlockReason;
   /** The lesson's or test's own title, kept on screen. English registry
       text; translated here like every other title. */
   title: string;
-  /** The paper name, for the test sentences. Stays English in Russian. */
+  /** Kept for older callers; the paper name is in the title. */
   section?: string;
+  /** What the locked page is part of, for the upgrade pop-up's lead. */
+  feature?: PaidFeature;
   /** 'page' sits inside the workspace; 'full' fills a bare test page. */
   variant?: 'page' | 'full';
 }) {
   const { t } = useT();
+  const shell = `trial-ui trial-gate${variant === 'full' ? ' is-full' : ''}`;
 
-  const plans = (
-    <a className="trial-btn trial-primary" href={withBase('/plans')}>
-      {t('View plans')}
-    </a>
+  if (reason === 'checking') {
+    return (
+      <section className={shell} aria-busy="true" aria-live="polite">
+        <div className="trial-card">
+          <div className="trial-skeleton" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+          <p className="sr-only">{t('Checking your access…')}</p>
+        </div>
+      </section>
+    );
+  }
+
+  const upgrade = (
+    <button type="button" className="trial-btn trial-primary" onClick={() => openUpgrade(feature, { from: currentRoute() })}>
+      {t('See what practice and guidance adds')}
+    </button>
   );
-  const home = (
-    <a className="trial-btn" href={withBase('/dashboard')}>
-      {t('Back to my trial')}
+  const lessons = (
+    <a className="trial-btn" href={withBase('/learn')}>
+      {t('Keep reading lessons')}
     </a>
   );
 
@@ -84,41 +109,9 @@ export default function TrialBlock({
   let body = '';
   let actions: ReactNode = null;
   switch (reason) {
-    case 'assessment-used':
-      heading = t('Your trial AI assessment is used');
-      /* No claim that a result was kept: an assessment counts from the moment it
-         is sent, so one whose grading was interrupted is used with no result
-         yet. The server gives such an assessment back after a short while
-         (review of 1 October 2026, P1-5), and the page says so. */
-      body = [
-        t('Writing and recorded Speaking share one trial assessment, and yours has been used. Lessons stay free, and your Reading and Listening tests stay open while your trial runs.'),
-        t(INTERRUPTED_GIVEN_BACK),
-      ].join(' ');
-      actions = (
-        <>
-          {plans}
-          <a className="trial-btn" href={withBase('/report')}>
-            {t('See my results')}
-          </a>
-        </>
-      );
-      break;
-    case 'checking':
-      return (
-        <section className={`trial-ui trial-gate${variant === 'full' ? ' is-full' : ''}`} aria-busy="true" aria-live="polite">
-          <div className="trial-card">
-            <div className="trial-skeleton" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-            </div>
-            <p className="sr-only">{t('Checking your trial…')}</p>
-          </div>
-        </section>
-      );
     case 'signed-out':
-      heading = t('Sign in to continue your trial');
-      body = t('Your trial belongs to your account, so it is the same on every device. Signing out never restarts it.');
+      heading = t('Sign in to continue');
+      body = t('Your lessons, results and access belong to your account, so they are the same on every device.');
       actions = (
         <>
           {/* The sign-in page brings the student straight back here. Only
@@ -126,104 +119,62 @@ export default function TrialBlock({
           <a className="trial-btn trial-primary" href={signInHref(currentRoute())}>
             {t('Sign in')}
           </a>
-          <a className="trial-btn" href={withBase('/trial')}>
-            {t('New here? Start a free 3-day trial')}
+          <a className="trial-btn" href={signUpHref(currentRoute())}>
+            {t('Create a free account')}
           </a>
         </>
       );
       break;
     case 'no-accounts':
       heading = t('Accounts are not available on this build');
-      body = t('The trial needs an account, and accounts are not configured here.');
+      body = t('Lessons and practice need an account, and accounts are not configured here.');
       break;
     case 'error-offline':
     case 'error-server':
-      heading = t('We could not check your trial');
+      heading = t('We could not check your access');
       body =
         reason === 'error-offline'
-          ? t('You seem to be offline. Your trial and your work are safe; this page opens again once you are connected.')
-          : t('Something went wrong on our side. Your trial and your work are safe. Please try again.');
+          ? t('You seem to be offline. Your access and your work are safe; this page opens again once you are connected.')
+          : t('Something went wrong on our side. Your access and your work are safe. Please try again.');
       actions = (
         <button type="button" className="trial-btn trial-primary" onClick={() => void refreshTrial()}>
           {t('Try again')}
         </button>
       );
       break;
-    case 'no-trial':
-      heading = t('Start your free trial to open this');
-      body = t('One full Reading test, one full Listening test, and one AI assessment: choose a Writing Task 2 essay or recorded Speaking (up to five minutes).');
-      actions = (
-        <a className="trial-btn trial-primary" href={withBase('/trial')}>
-          {t('Start my free trial')}
-        </a>
-      );
-      break;
-    case 'ended':
-    case 'test-ended':
-      heading = t('Your trial has ended');
-      body = t('Lessons remain free. Choose paid access to continue practice and AI feedback.');
-      actions = (
-        <>
-          {plans}
-          {home}
-        </>
-      );
-      break;
     case 'paid-ended':
-      heading = t('Your full access has ended');
-      body = t('Your results and your work are saved. Choose a plan to open the full course again.');
+      heading = t('Your practice and guidance has ended');
+      body = t('Every lesson stays open, and your results are saved. Choose practice and guidance again to continue.');
       actions = (
         <>
-          {plans}
+          {upgrade}
           <a className="trial-btn" href={withBase('/report')}>
             {t('See my results')}
           </a>
         </>
       );
-      break;
-    case 'speaking-unavailable':
-      heading = t('The Speaking test is not open yet');
-      body = t('We are finalising how long the trial Speaking test lasts. Your Speaking introduction lesson is ready in the meantime.');
-      actions = home;
-      break;
-    case 'test-used':
-      heading = t('You have used this section’s trial test');
-      body = t('Your result is saved in your progress. The other sections still have their own test while your trial is active.');
-      actions = (
-        <>
-          {plans}
-          <a className="trial-btn" href={withBase('/report')}>
-            {t('See my results')}
-          </a>
-        </>
-      );
-      break;
-    case 'test-other-in-progress':
-      heading = t('You have already started your {section} test', { section: section ?? '' });
-      body = t('Your trial includes one test per section. Finish the one you started from your trial page.');
-      actions = home;
       break;
     case 'locked':
     default:
-      heading = t('Available with full access');
-      body = t('One full Reading test, one full Listening test, and one AI assessment: choose a Writing Task 2 essay or recorded Speaking (up to five minutes).');
+      heading = t('Part of practice and guidance');
+      body = t('Every lesson is free with your account. Practice, tests and personal guidance come with practice and guidance.');
       actions = (
         <>
-          {plans}
-          {home}
+          {upgrade}
+          {lessons}
         </>
       );
   }
 
   return (
-    <section className={`trial-ui trial-gate${variant === 'full' ? ' is-full' : ''}`} aria-labelledby="trial-block-title">
+    <section className={shell} aria-labelledby="trial-block-title">
       <div className="trial-card">
         <span className="trial-eyebrow">{t(title)}</span>
         <h2 id="trial-block-title">{heading}</h2>
         <p>{body}</p>
         {actions && <div className="trial-actions">{actions}</div>}
         {/* [E trust] a person is reachable from every locked or ended screen. */}
-        <SupportLink reason={reason === 'ended' || reason === 'test-ended' ? 'trial-ended' : 'locked'} lead="hand" />
+        <SupportLink reason={reason === 'paid-ended' ? 'trial-ended' : 'locked'} lead="hand" />
       </div>
     </section>
   );
