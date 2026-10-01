@@ -4,9 +4,12 @@ import { sales, type SalesKey } from '../../marketing/sales-copy';
 /* The wording of each demo lives in src/marketing/sales-copy.ts
    (demo.<id>.label / title / text / alt / zoom), in English and Russian. */
 const screens = [
- { id:'speaking', image:'platform-speaking-inside.png', route:'/trainers/speaking' },
- { id:'coach', image:'platform-speaking-coach.png', route:'/trainers/speaking' },
- { id:'lessons', image:'platform-learn.jpg', route:'/learn' },
+/* Real screenshots of the current platform, retaken with
+   tools/capture-sales-screens.py (1 October 2026); width and height are
+   each file's own size, so the page holds the right space while it loads. */
+ { id:'speaking', image:'platform-speaking-inside.png', route:'/trainers/speaking', width:1696, height:1206 },
+ { id:'coach', image:'platform-speaking-coach.png', route:'/trainers/speaking', width:680, height:922 },
+ { id:'lessons', image:'platform-learn.jpg', route:'/learn', width:2528, height:1520 },
 ];
 const k = (id: string, part: string) => `demo.${id}.${part}` as SalesKey;
 ---
@@ -15,7 +18,7 @@ const k = (id: string, part: string) => `demo.${id}.${part}` as SalesKey;
   <div class="sales-demo-heading"><h2 id="sales-demo-title" data-sales="demo.title" set:html={sales('demo.title')} /><div><p data-sales="demo.lead">{sales('demo.lead')}</p></div></div>
   <div class="sales-demo-tabs" role="tablist" aria-label={sales('demo.tabs')} data-sales-attr="aria-label:demo.tabs">{screens.map((screen,i)=><button type="button" role="tab" id={`demo-tab-${screen.id}`} aria-controls={`demo-panel-${screen.id}`} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} data-demo-tab={screen.id} data-sales={k(screen.id,'label')}>{sales(k(screen.id,'label'))}</button>)}</div>
   <div class="sales-demo-stage">
-  {screens.map((screen,i)=><div class="sales-demo-panel" id={`demo-panel-${screen.id}`} role="tabpanel" aria-labelledby={`demo-tab-${screen.id}`} hidden={i!==0} aria-hidden={i!==0?"true":undefined} inert={i!==0} tabindex="0"><div><h3 data-sales={k(screen.id,'title')}>{sales(k(screen.id,'title'))}</h3><p data-sales={k(screen.id,'text')}>{sales(k(screen.id,'text'))}</p><small data-sales="demo.note">{sales('demo.note')}</small></div><a href={withBase(`/pics/next-chapter/${screen.image}`)} target="_blank" rel="noopener" aria-label={sales(k(screen.id,'zoom'))} data-sales-attr={`aria-label:${k(screen.id,'zoom')}`}><img src={withBase(`/pics/next-chapter/${screen.image}`)} alt={sales(k(screen.id,'alt'))} data-sales-attr={`alt:${k(screen.id,'alt')}`} loading="lazy" width="1264" height="760" /></a></div>)}
+  {screens.map((screen,i)=><div class="sales-demo-panel" id={`demo-panel-${screen.id}`} role="tabpanel" aria-labelledby={`demo-tab-${screen.id}`} hidden={i!==0} aria-hidden={i!==0?"true":undefined} inert={i!==0} tabindex="0"><div><h3 data-sales={k(screen.id,'title')}>{sales(k(screen.id,'title'))}</h3><p data-sales={k(screen.id,'text')}>{sales(k(screen.id,'text'))}</p><small data-sales="demo.note">{sales('demo.note')}</small></div><a href={withBase(`/pics/next-chapter/${screen.image}`)} target="_blank" rel="noopener" aria-label={sales(k(screen.id,'zoom'))} data-sales-attr={`aria-label:${k(screen.id,'zoom')}`}><img src={withBase(`/pics/next-chapter/${screen.image}`)} alt={sales(k(screen.id,'alt'))} data-sales-attr={`alt:${k(screen.id,'alt')}`} loading="lazy" width={screen.width} height={screen.height} /></a></div>)}
   </div>
  </div>
 </section>
