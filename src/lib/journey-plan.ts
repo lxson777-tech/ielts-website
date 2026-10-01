@@ -190,3 +190,85 @@ export const trialQuery = journeyQuery;
 /** Where the questionnaire's sign-up link sends a new student once the
     account and profile exist: the dashboard, with the answers. */
 export const JOURNEY_LANDING = '/dashboard';
+
+/* The questionnaire's answer since 1 October 2026 (Alex: the three-day plan
+   "looks really bad", do something shorter). Two free lessons from the
+   section the visitor finds hardest, picked by what gets in their way, each
+   with one sentence on what it helps with. `key` is the lesson's progress
+   key in COURSE_UNITS; tests/journey-plan.test.ts checks every key and href
+   against the real course, so a renamed lesson fails the build rather than
+   leaving a dead suggestion. */
+export interface JourneyLesson {
+  key: string;
+  href: string;
+  title: string;
+  helps: string;
+}
+
+type LessonCopy = { key: string; href: string; title: Record<JourneyLocale, string>; helps: Record<JourneyLocale, string> };
+
+const LESSONS: Record<string, Record<'method' | 'confidence', [LessonCopy, LessonCopy]>> = {
+  speaking: {
+    method: [
+      { key: 'speaking', href: '/lessons/speaking', title: { en: 'Speaking Overview', ru: 'Обзор Speaking' },
+        helps: { en: 'Shows how the interview works and what the examiner listens for.', ru: 'Показывает, как устроено интервью и что слушает экзаменатор.' } },
+      { key: 'speaking-part1', href: '/lessons/speaking/part1', title: { en: 'Part 1 Interview', ru: 'Part 1. Интервью' },
+        helps: { en: 'Gives you a simple shape for every answer: an answer, a reason and an example.', ru: 'Даёт простую схему для каждого ответа: ответ, причина и пример.' } },
+    ],
+    confidence: [
+      { key: 'speaking-part2', href: '/lessons/speaking/part2', title: { en: 'Part 2 Cue Card', ru: 'Part 2. Карточка задания' },
+        helps: { en: 'Helps you keep talking for the full two minutes without running out of ideas.', ru: 'Помогает говорить все две минуты и не терять мысль.' } },
+      { key: 'speaking-part3', href: '/lessons/speaking/part3', title: { en: 'Part 3 Discussion', ru: 'Part 3. Дискуссия' },
+        helps: { en: 'Helps you give longer, well supported opinions on bigger questions.', ru: 'Помогает давать развёрнутые и обоснованные ответы на сложные вопросы.' } },
+    ],
+  },
+  writing: {
+    method: [
+      { key: 'writing', href: '/lessons/writing', title: { en: 'Writing Overview', ru: 'Обзор Writing' },
+        helps: { en: 'Shows how both tasks are marked, so you know exactly what to aim for.', ru: 'Показывает, как оценивают оба задания, чтобы вы знали, к чему стремиться.' } },
+      { key: 'writing-task2-method', href: '/lessons/writing/task2-method', title: { en: 'How to Answer Task 2', ru: 'Как отвечать на Task 2' },
+        helps: { en: 'Gives you one plan you can use for any essay question.', ru: 'Даёт один план, который подходит для любого эссе.' } },
+    ],
+    confidence: [
+      { key: 'writing-opinion', href: '/lessons/writing/opinion', title: { en: 'Opinion Essays', ru: 'Эссе с мнением' },
+        helps: { en: 'Helps you take a clear position and support it paragraph by paragraph.', ru: 'Помогает занять ясную позицию и поддержать её в каждом абзаце.' } },
+      { key: 'writing-charts', href: '/lessons/writing/charts', title: { en: 'Charts, Graphs & Tables', ru: 'Диаграммы, графики и таблицы' },
+        helps: { en: 'Helps you pick the key features of a chart and describe them clearly.', ru: 'Помогает выделить главное на диаграмме и ясно это описать.' } },
+    ],
+  },
+  reading: {
+    method: [
+      { key: 'reading-task1', href: '/lessons/reading-task1', title: { en: 'Reading Overview', ru: 'Обзор Reading' },
+        helps: { en: 'Shows every question type and how to share out your hour.', ru: 'Показывает все типы вопросов и как распределить час.' } },
+      { key: 'reading-paraphrase', href: '/lessons/reading/paraphrase', title: { en: 'Spotting Paraphrase', ru: 'Распознавание перефразирования' },
+        helps: { en: 'Teaches you to recognise the same idea in different words, the skill behind most answers.', ru: 'Учит узнавать одну мысль в других словах: на этом держится большинство ответов.' } },
+    ],
+    confidence: [
+      { key: 'reading-tfng', href: '/lessons/reading/tfng', title: { en: 'True / False / Not Given', ru: 'True / False / Not Given' },
+        helps: { en: 'Helps you tell False from Not Given, where many marks are lost.', ru: 'Помогает отличать False от Not Given: здесь теряют много баллов.' } },
+      { key: 'reading-headings', href: '/lessons/reading/headings', title: { en: 'Matching Headings', ru: 'Matching Headings' },
+        helps: { en: 'Helps you find the main idea of a paragraph quickly.', ru: 'Помогает быстро находить главную мысль абзаца.' } },
+    ],
+  },
+  listening: {
+    method: [
+      { key: 'listening', href: '/lessons/listening', title: { en: 'Listening Overview', ru: 'Обзор Listening' },
+        helps: { en: 'Shows how the four parts work and what to do before each recording starts.', ru: 'Показывает, как устроены четыре части и что делать до начала каждой записи.' } },
+      { key: 'listening-part1', href: '/lessons/listening/part1', title: { en: 'Part 1. Everyday Conversation', ru: 'Part 1. Обычный разговор' },
+        helps: { en: 'Helps you predict and catch names, numbers and dates.', ru: 'Помогает предугадывать и не пропускать имена, числа и даты.' } },
+    ],
+    confidence: [
+      { key: 'listening-part3', href: '/lessons/listening/part3', title: { en: 'Part 3. Academic Discussion', ru: 'Part 3. Академическая дискуссия' },
+        helps: { en: 'Helps you keep up when several speakers discuss ideas.', ru: 'Помогает успевать, когда несколько человек обсуждают идеи.' } },
+      { key: 'listening-map-labelling', href: '/lessons/listening/map-labelling', title: { en: 'Plan, Map & Diagram Labelling', ru: 'Планы, карты и схемы' },
+        helps: { en: 'Helps you follow directions on a map or plan as you listen.', ru: 'Помогает следить за направлениями на карте или плане во время записи.' } },
+    ],
+  },
+};
+
+/** The two lessons the questionnaire suggests for these answers, in one language. */
+export function journeyLessons(answers: Pick<JourneyAnswers, 'skill' | 'focus'>, locale: JourneyLocale = 'en'): JourneyLesson[] {
+  const bySkill = LESSONS[answers.skill] ?? LESSONS.reading!;
+  const picked = bySkill[answers.focus === 'confidence' ? 'confidence' : 'method'];
+  return picked.map((l) => ({ key: l.key, href: l.href, title: l.title[locale], helps: l.helps[locale] }));
+}

@@ -1,4 +1,4 @@
-/* "Your details and security", at the top of /account for a signed-in
+/* "Your details and security", the Profile category of /account for a signed-in
    student (24 September 2026): the saved profile with a link to edit it,
    change email, change password, and sign out on every device.
 
@@ -21,7 +21,6 @@ import { withBase } from '../lib/url';
 import { useT } from '../lib/i18n/react';
 import { Field, PasswordInput, PasswordStrength, SOURCE_LABELS, describedBy, passwordProblemSentence } from './auth/fields';
 import { friendlyAuthError } from './auth/shell';
-import AccountAccess from './access/AccountAccess';
 
 type Open = null | 'email' | 'password' | 'devices';
 
@@ -59,10 +58,6 @@ export default function AccountSettings() {
 
   return (
     <>
-    {/* "Your access" (Builder A2, audit F01): paid access, its end date,
-        purchase history and receipts. Gated build only; renders nothing on
-        the open site. */}
-    <AccountAccess />
     <section className="acct-settings" aria-labelledby="acct-settings-title">
       <div className="acct-settings-head">
         <div>

@@ -1,5 +1,5 @@
 import {createJourneyShader} from './journey-shader';
-import {journeySkill, journeySteps, journeyDays, journeyQuery, validJourney, JOURNEY_LANDING, type JourneyAnswers} from '../lib/journey-plan';
+import {journeySkill, journeyLessons, journeyQuery, validJourney, JOURNEY_LANDING, type JourneyAnswers} from '../lib/journey-plan';
 import {salesText, type SalesKey} from '../marketing/sales-copy';
 import {salesLocale, SALES_LOCALE_EVENT} from '../marketing/sales-i18n';
 /* Every "Create a free account" link on the page carries the four answers
@@ -96,27 +96,19 @@ if(root){
   // "Start with speaking" in English, "Начните с Speaking" in Russian: the paper name stays English there.
   const skillInSentence=locale==='ru'?skill.name:skill.name.toLowerCase();
   root!.querySelector('#journey-result-title')!.textContent=say('journey.plan.title',{band:answers.band==='8'?'8.0+':Number(answers.band).toFixed(1)});
-  root!.querySelector('[data-result-description]')!.textContent=say('journey.plan.lead',{skill:skillInSentence,time});
   root!.querySelector('[data-plan-label]')!.textContent=say('journey.plan.label',{skill:skill.name,time});
-  root!.querySelector('[data-plan-title]')!.textContent=say(answers.focus==='method'?'journey.plan.focus.method':'journey.plan.focus.confidence');
-  const days=journeyDays(answers as JourneyAnswers,locale);
-  const routine=journeySteps(answers as JourneyAnswers,locale);
-  const access=(day:{access:'free'|'paid'})=>say(day.access==='free'?'journey.plan.free':'journey.plan.paid');
-  root!.querySelector<HTMLTextAreaElement>('[data-copy-plan]')!.value=`${say('journey.copy.heading')}\n${say('journey.copy.target',{band:answers.band,skill:skill.name,time})}\n\n${days.map(day=>`${say('journey.copy.day',{day:day.day,title:day.title,minutes:day.minutes,access:access(day)})}\n${day.text}\n${say('journey.plan.outcome',{outcome:day.outcome})}`).join('\n\n')}\n\n${say('journey.copy.guide')}\n${routine.join('\n')}`;
-  root!.querySelector('[data-daily-routine]')!.textContent=routine.join(' ');
-  const list=root!.querySelector('[data-plan-steps]')!;
-  list.replaceChildren(...days.map(day=>{
+  root!.querySelector('[data-result-description]')!.textContent=say('journey.plan.lead',{skill:skillInSentence,focus:say(answers.focus==='method'?'journey.plan.help.method':'journey.plan.help.confidence')});
+  // Two free lessons, each with the one thing it helps with.
+  const list=root!.querySelector('[data-plan-lessons]')!;
+  list.replaceChildren(...journeyLessons(answers as JourneyAnswers,locale).map(lesson=>{
    const li=document.createElement('li');
-   const duration=document.createElement('span');duration.className='plan-duration';duration.textContent=say('journey.plan.day',{day:day.day,minutes:day.minutes});
-   // Free lesson or practice and guidance: which steps a free account can do.
-   const tag=document.createElement('span');tag.className=`plan-access is-${day.access}`;tag.dataset.planAccess=day.access;tag.textContent=access(day);
-   const heading=document.createElement('h3');heading.textContent=day.title;
-   const detail=document.createElement('p');detail.textContent=day.text;
-   const outcome=document.createElement('p');outcome.className='plan-outcome';outcome.textContent=say('journey.plan.outcome',{outcome:day.outcome});
-   li.append(duration,tag,heading,detail,outcome);return li;
+   li.dataset.lessonKey=lesson.key;
+   const tag=document.createElement('span');tag.className='plan-access is-free';tag.dataset.planAccess='free';tag.textContent=say('journey.plan.free');
+   const heading=document.createElement('h3');heading.textContent=lesson.title;
+   const detail=document.createElement('p');detail.textContent=lesson.helps;
+   li.append(tag,heading,detail);return li;
   }));
  }
- root.querySelector<HTMLTextAreaElement>('[data-copy-plan]')?.addEventListener('focus',event=>(event.target as HTMLTextAreaElement).select());
  // Keep this lightweight draft on this tab only, without changing an existing course plan.
  const storageKey='ielts.journey.draft.v1';
  try {

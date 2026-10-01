@@ -219,53 +219,54 @@ export const SALES_COPY = {
   'journey.d.time.30': { en: 'Time to practise and reflect', ru: 'Время потренироваться и подумать' },
   'journey.o.time.60': { en: '60 minutes', ru: '60 минут' },
   'journey.d.time.60': { en: 'Recommended by your teacher', ru: 'Рекомендация преподавателя' },
-  'journey.result.note': { en: 'Your suggested starting plan', ru: 'Предложенный план на старт' },
-  'journey.result.title': { en: 'Make your goal a daily habit.', ru: 'Превратите цель в ежедневную привычку.' },
-  'journey.result.lead': { en: 'Four choices. One clear place to start.', ru: 'Четыре ответа. Одна понятная точка старта.' },
-  'journey.routine': { en: 'How to use your daily time', ru: 'Как распределить время в день' },
-  'journey.action.title': { en: 'Start with these lessons.', ru: 'Начните с этих уроков.' },
-  'journey.action.text': {
-    en: 'Create a free account and begin with the lessons in this plan. Every lesson is free. Steps marked practice and guidance need paid access.',
-    ru: 'Создайте бесплатный аккаунт и начните с уроков из этого плана. Все уроки бесплатны. Для шагов с пометкой «практика и сопровождение» нужен платный доступ.',
+  'journey.result.note': {
+    en: 'Where to start',
+    ru: 'С чего начать',
   },
-  'journey.copy.summary': { en: 'Keep a copy of my plan', ru: 'Сохранить копию плана' },
-  'journey.copy.label': { en: 'Select the plan and copy it to your notes.', ru: 'Выделите план и скопируйте его в заметки.' },
+  'journey.result.title': { en: 'Make your goal a daily habit.', ru: 'Превратите цель в ежедневную привычку.' },
+  'journey.result.lead': {
+    en: 'Four choices. Two lessons to start with.',
+    ru: 'Четыре ответа. Два урока для старта.',
+  },
+  'journey.action.title': {
+    en: 'Start with these lessons.',
+    ru: 'Начните с этих уроков.',
+  },
+  'journey.action.text': {
+    en: 'Create a free account to open them. Every lesson is free. Practice tests, feedback on your answers and Mr EZ come with practice and guidance.',
+    ru: 'Создайте бесплатный аккаунт, чтобы открыть их. Все уроки бесплатны. Тесты, разбор ваших ответов и Mr EZ входят в доступ «практика и сопровождение».',
+  },
   'journey.disclaimer': {
-    en: 'A suggested routine, not a level assessment or guaranteed band. Create your account from here and your answers go with you as a suggestion you can change.',
-    ru: 'Это предложенный распорядок, а не оценка уровня и не гарантия балла. Если создать аккаунт отсюда, ваши ответы перейдут с вами как подсказка, которую можно изменить.',
+    en: 'A suggestion from your answers, not a level assessment. Your answers go with you when you sign up, and you can change them.',
+    ru: 'Это подсказка по вашим ответам, а не оценка уровня. Ответы перейдут в ваш аккаунт, и их можно изменить.',
   },
   'journey.placeholder': {
-    en: 'Choose your goal, your hardest section and your daily pace. Your short practice plan will appear here.',
-    ru: 'Выберите цель, самую трудную часть и темп на день. Здесь появится ваш короткий план практики.',
+    en: 'Choose your goal, your hardest section and your daily pace. The lessons to start with will appear here.',
+    ru: 'Выберите цель, самую трудную часть и темп на день. Здесь появятся уроки, с которых стоит начать.',
   },
   'journey.placeholder.cta': { en: 'Find my starting point', ru: 'Найти мою точку старта' },
 
   /* Sentences the questionnaire script writes (src/scripts/question-journey.ts). */
   'journey.progress': {
-    en: '{count} of 4 choices made. Finish the questions to see your suggested plan.',
-    ru: 'Выбрано ответов: {count} из 4. Ответьте на все вопросы, чтобы увидеть план.',
+    en: '{count} of 4 choices made. Finish the questions to see where to start.',
+    ru: 'Выбрано ответов: {count} из 4. Ответьте на все вопросы, чтобы увидеть, с чего начать.',
   },
-  'journey.plan.title': { en: 'Your Band {band} goal. Your first 3 days.', ru: 'Ваша цель: балл {band}. Ваши первые 3 дня.' },
+  'journey.plan.title': {
+    en: 'For Band {band}, start here.',
+    ru: 'Для балла {band} начните здесь.',
+  },
   'journey.plan.lead': {
-    en: 'Start with {skill}, the section you want most help with. Set aside {time} minutes each day. Learn one method, practise it, then try a fresh task.',
-    ru: 'Начните с {skill}: здесь вам больше всего нужна помощь. Уделяйте занятиям {time} минут в день. Изучите один метод, отработайте его, затем попробуйте новое задание.',
+    en: 'You chose {skill} as the hardest section. These two lessons help most with {focus}.',
+    ru: 'Самой трудной частью вы выбрали {skill}. Эти два урока больше всего помогут {focus}.',
   },
   'journey.plan.label': { en: '{skill} / {time} minutes a day', ru: '{skill} / {time} минут в день' },
   'journey.plan.focus.method': { en: 'A clear method', ru: 'Понятный метод' },
+  /* {focus} in journey.plan.lead. */
+  'journey.plan.help.method': { en: 'knowing how to answer', ru: 'понять, как отвечать' },
+  'journey.plan.help.confidence': { en: 'putting it into practice', ru: 'применить знания на практике' },
   'journey.plan.focus.confidence': { en: 'More confident practice', ru: 'Более уверенная практика' },
-  'journey.plan.day': { en: 'Day {day} / {minutes} minutes', ru: 'День {day} / {minutes} минут' },
-  'journey.plan.outcome': { en: 'Take away: {outcome}', ru: 'Итог: {outcome}' },
-  /* Which steps a free account can do (journeyDays in src/lib/journey-plan.ts
-     says which day is which). */
+  /* The tag on each suggested lesson. */
   'journey.plan.free': { en: 'Free lesson', ru: 'Бесплатный урок' },
-  'journey.plan.paid': { en: 'Practice and guidance', ru: 'Практика и сопровождение' },
-  'journey.copy.heading': { en: 'IELTS is EZ: suggested three-day plan', ru: 'IELTS is EZ: предложенный план на три дня' },
-  'journey.copy.target': {
-    en: 'Target Band {band}, {skill}, {time} minutes daily',
-    ru: 'Целевой балл {band}, {skill}, {time} минут в день',
-  },
-  'journey.copy.day': { en: 'Day {day}: {title} ({minutes} min, {access})', ru: 'День {day}: {title} ({minutes} мин, {access})' },
-  'journey.copy.guide': { en: 'Daily time guide', ru: 'Как распределить время в день' },
 
   /* Mr EZ. */
   'ez.alt': {

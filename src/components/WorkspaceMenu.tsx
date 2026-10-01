@@ -31,6 +31,10 @@ export default function WorkspaceMenu() {
   const reduceMotion = usePlatformReducedMotion();
   const { t, locale } = useT();
   const [user, setUser] = useState<User | null>(null);
+  /* Whether the lifecycle has said who is signed in yet. Until it has, the
+     button is drawn but inert, so a signed-in student never sees "Log in"
+     flash first. */
+  const [known, setKnown] = useState(false);
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -40,7 +44,10 @@ export default function WorkspaceMenu() {
        hydrates before that script runs still gets it going. It is
        idempotent, so the second call does nothing. */
     startAccountLifecycle();
-    return onAccountChange((account) => setUser(account.user));
+    return onAccountChange((account) => {
+      setUser(account.user);
+      setKnown(account.known);
+    });
   }, []);
 
   const profile = useKnownProfile(user?.id ?? null);
@@ -116,9 +123,32 @@ export default function WorkspaceMenu() {
           </button>
         ))}
       </div>
+      {/* Signed out, there is no account to show (Alex, 1 October 2026): the
+          round button becomes one "Log in" button, and the menu with
+          details, plan settings and saved work is never offered. */}
+      {authAvailable && known && !user ? (
+        <a
+          className="ws-login"
+          href={withBase('/sign-in')}
+          onClick={(e) => {
+            e.currentTarget.href = signInHref(currentRoute());
+          }}
+        >
+          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path
+              fillRule="evenodd"
+              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 8a7 7 0 1114 0H3z"
+              clipRule="evenodd"
+            />
+          </svg>
+          <span>{t('Log in')}</span>
+        </a>
+      ) : (
+      <>
       <button
         type="button"
         ref={buttonRef}
+        disabled={authAvailable && !known}
         className="ws-avatar"
         aria-haspopup="menu"
         aria-expanded={open}
@@ -216,37 +246,12 @@ export default function WorkspaceMenu() {
             </div>
           )}
 
-          {/* The language switch. Two quiet options rather than a select, so
-              the current choice is visible without opening anything, and each
-              language is named in its own language (never translated). The
-              menu deliberately stays open: the student sees the whole shell
-              change under them, which is the confirmation that it worked. */}
-          <div className="ws-menu-group">
-            <p className="ws-menu-lang-label" style={{ '--i': step() } as React.CSSProperties}>
-              {t('Language')}
-            </p>
-            <div className="ws-menu-langs" role="group" aria-label={t('Language')}>
-              {SUPPORTED_LOCALES.map((code) => (
-                <button
-                  key={code}
-                  type="button"
-                  className="ws-menu-lang"
-                  lang={code}
-                  aria-pressed={code === locale}
-                  style={{ '--i': step() } as React.CSSProperties}
-                  onClick={() => {
-                    void switchLocale(code);
-                  }}
-                >
-                  {LOCALE_LABEL[code]}
-                </button>
-              ))}
-            </div>
-          </div>
         </motion.div>
       )}
       </AnimatePresence>
       </div>
+      </>
+      )}
     </div>
   );
 }

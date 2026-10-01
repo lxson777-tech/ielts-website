@@ -310,3 +310,37 @@ button.auth-link { padding: 0; border: 0; background: none; font: inherit; curso
   .auth-button, .auth-input, .auth-select, .auth-strength-bar span, .auth-rules li, .auth-choice { transition-duration: 1ms; }
   .auth-button:hover { transform: none; }
 }
+
+/* /account in three categories (1 October 2026): a quiet capsule switch in
+   the same family as the workspace tabs, one category on screen at a time. */
+.account-page[data-state="loading"] .account-body { visibility: hidden; }
+.account-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--color-border); }
+.account-head h1 { margin: 0; font-family: var(--font-display-ui, var(--font-display)); font-size: clamp(28px, 4vw, 36px); font-weight: 700; letter-spacing: -.025em; color: var(--color-ink); }
+.account-tabs { display: inline-flex; gap: 2px; padding: 4px; border-radius: 999px; background: #eaece3; }
+.account-tabs[hidden] { display: none; }
+.account-tabs button { height: 40px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: #56665c; font-family: var(--font-display-ui, inherit); font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background 200ms ease, color 200ms ease, box-shadow 200ms ease; }
+.account-tabs button:hover { color: #263c35; }
+.account-tabs button[aria-selected="true"] { background: #fffefa; color: #263c35; box-shadow: 0 1px 2px rgb(38 60 53 / 10%), 0 4px 12px -6px rgb(38 60 53 / 25%); }
+.account-tabs button:focus-visible { outline: 2px solid #263c35; outline-offset: 2px; }
+[data-account-panel] { animation: account-panel-in 260ms cubic-bezier(.2,.7,.2,1); }
+@keyframes account-panel-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.account-work-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; margin-bottom: 18px; }
+.account-work-head p { margin: 0; color: var(--color-ink-muted); }
+.account-quiet-link { font-family: var(--font-display-ui, inherit); font-size: 14px; font-weight: 600; color: #263c35; text-decoration: underline; text-decoration-color: rgb(38 60 53 / 30%); text-underline-offset: 4px; transition: text-decoration-color 200ms ease; }
+.account-quiet-link:hover { text-decoration-color: currentColor; }
+.account-signed-out { max-width: 460px; margin: 48px auto; padding: 40px 32px; border: 1px solid var(--color-border); border-radius: 28px; background: var(--color-surface); text-align: center; box-shadow: 0 18px 40px -28px rgb(38 60 53 / 35%); }
+.account-signed-out h1 { margin: 0 0 10px; font-family: var(--font-display-ui, var(--font-display)); font-size: 28px; font-weight: 700; letter-spacing: -.02em; color: var(--color-ink); }
+.account-signed-out p { margin: 0 0 26px; color: var(--color-ink-muted); }
+.account-signed-out-actions { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.account-login-button { display: inline-flex; align-items: center; justify-content: center; min-width: 200px; height: 48px; padding: 0 28px; border-radius: 999px; background: #263c35; color: #fffefa; font-family: var(--font-display-ui, inherit); font-weight: 700; text-decoration: none; transition: background 200ms ease, transform 200ms ease; }
+.account-login-button:hover { background: #1b2d27; transform: translateY(-1px); }
+@media (max-width: 560px) {
+  .account-head { flex-direction: column; align-items: stretch; }
+  .account-tabs { display: flex; }
+  .account-tabs button { flex: 1 1 0; padding: 0 8px; font-size: 13px; }
+  .account-signed-out { padding: 32px 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-account-panel] { animation: none; }
+  .account-login-button, .workspace-v2 .ws-login { transition: none; }
+}

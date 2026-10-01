@@ -30,3 +30,25 @@ test('every questionnaire answer reaches the trial page exactly as chosen', () =
  // The questionnaire offers exactly the trial's four sections.
  assert.deepEqual(Object.keys(journeySkills).sort(), [...TRIAL_SECTIONS].sort());
 });
+
+test('the questionnaire suggests two real free lessons for every answer, in both languages', async () => {
+ const { journeyLessons } = await import('../src/lib/journey-plan.ts');
+ const { buildCourse } = await import('../src/lib/course.ts');
+ const lessons = new Map(buildCourse().flatMap((m) => m.lessons).map((l) => [l.key, l]));
+ for (const skill of ['reading', 'listening', 'writing', 'speaking']) for (const focus of ['method', 'confidence']) {
+  for (const locale of ['en', 'ru'] as const) {
+   const picked = journeyLessons({ skill, focus }, locale);
+   assert.equal(picked.length, 2);
+   for (const l of picked) {
+    const real = lessons.get(l.key);
+    assert.ok(real, `${skill}/${focus}: ${l.key} is not a lesson in the course`);
+    assert.equal(l.href, real!.href, `${l.key}: the suggested link is not the lesson's address`);
+    assert.equal(real!.skill, skill, `${l.key} is not a ${skill} lesson`);
+    assert.ok(l.helps.length > 20 && !/[–—]/.test(l.helps + l.title));
+    if (locale === 'en') assert.equal(l.title, real!.title, `${l.key}: title differs from the lesson's own`);
+   }
+  }
+ }
+ // Different answers, different lessons.
+ assert.notDeepEqual(journeyLessons({ skill: 'reading', focus: 'method' }), journeyLessons({ skill: 'reading', focus: 'confidence' }));
+});

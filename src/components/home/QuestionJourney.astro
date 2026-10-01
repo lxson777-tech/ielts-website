@@ -34,10 +34,11 @@ const k = (key: string) => key as SalesKey;
   <section id="journey-result" class="journey-result" aria-labelledby="journey-result-title" tabindex="-1">
    <div class="journey-result-intro"><p class="section-note" data-sales="journey.result.note">{sales('journey.result.note')}</p><h2 id="journey-result-title">{sales('journey.result.title')}</h2><p data-result-description aria-live="polite">{sales('journey.result.lead')}</p></div>
    <div class="journey-plan" data-plan-card hidden>
-    <div class="journey-plan-summary"><span data-plan-label></span><span data-plan-title></span></div>
-    <ol data-plan-steps></ol><details class="journey-copy"><summary data-sales="journey.routine">{sales('journey.routine')}</summary><p data-daily-routine></p></details>
+    <div class="journey-plan-summary"><span data-plan-label></span></div>
+    {/* Two free lessons from the hardest section, each with what it helps with (1 October 2026). */}
+    <ol class="journey-lessons" data-plan-lessons></ol>
     <div class="journey-plan-action"><div><h3 data-sales="journey.action.title">{sales('journey.action.title')}</h3><p data-sales="journey.action.text">{sales('journey.action.text')}</p></div><a class="button" data-plan-link data-signup-link href={signUpHref()} data-sales="nav.signUp">{sales('nav.signUp')}</a></div>
-    <details class="journey-copy"><summary data-sales="journey.copy.summary">{sales('journey.copy.summary')}</summary><label for="journey-copy-text" data-sales="journey.copy.label">{sales('journey.copy.label')}</label><textarea id="journey-copy-text" data-copy-plan readonly rows="8"></textarea></details><small data-sales="journey.disclaimer">{sales('journey.disclaimer')}</small>
+    <small data-sales="journey.disclaimer">{sales('journey.disclaimer')}</small>
    </div>
    <div class="journey-plan-placeholder" data-plan-placeholder><p data-sales="journey.placeholder">{sales('journey.placeholder')}</p><a href="#journey-band" data-plan-complete data-sales="journey.placeholder.cta">{sales('journey.placeholder.cta')}</a></div>
   </section>

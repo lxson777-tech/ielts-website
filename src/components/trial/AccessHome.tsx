@@ -23,6 +23,7 @@ import { commonPacks, loadPacks, paidNow, type PackFailure } from '../../lib/tri
 import { browserTier } from '../../lib/access/tier';
 import { PaidFailed, PaidLoading } from './PaidStates';
 import TrialBlock, { accountBlock } from './TrialBlock';
+import { withBase } from '../../lib/url';
 import FreeHome from '../access/FreeHome';
 import LessonInvite from '../access/LessonInvite';
 import CourseSections from '../CourseSections';
@@ -40,6 +41,13 @@ function CourseHeader() {
             "Every lesson on the site, in an order that builds. Tell us your target band and test date, and we'll set your pace and keep a Continue button on the next lesson you haven't finished.",
           )}
         </p>
+        {/* The lessons library's home since the account menu was shortened (1 October 2026). */}
+        <a
+          href={withBase('/learn')}
+          className="mt-3 inline-block text-sm font-semibold text-brand underline decoration-brand/30 underline-offset-4 transition-colors hover:decoration-brand"
+        >
+          {t('Lessons library')}
+        </a>
       </div>
     </header>
   );

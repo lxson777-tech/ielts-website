@@ -91,3 +91,8 @@
 .journey-plan-placeholder p{font-size:14px;line-height:1.7;color:#53665b;margin-bottom:18px}
 .journey-plan-placeholder a{display:inline-block;background:#efa260;color:#193335;border-radius:30px;padding:14px 22px;font-size:13px;font-weight:600}
 @media(max-width:760px){.journey-result{padding:28px 22px}.journey-result h2{font-size:30px}.journey-plan ol{grid-template-columns:1fr;gap:10px}.journey-plan li{padding:18px}.journey-plan li::before{margin-bottom:8px}.journey-plan-action{display:block;padding:22px}.journey-plan-action .button{display:block;width:100%;margin-top:22px}.journey-plan-action h3{font-size:22px}}
+/* Two suggested lessons since 1 October 2026: two columns, one on phones. */
+.journey-plan ol.journey-lessons{grid-template-columns:repeat(2,1fr)}
+.journey-lessons li h3{margin-top:14px}
+@media(max-width:760px){.journey-plan ol.journey-lessons{grid-template-columns:1fr}}
+.journey-plan .journey-lessons .plan-access{margin:0}

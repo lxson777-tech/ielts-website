@@ -34,20 +34,18 @@ export interface WorkspaceMenuItem {
   label: string;
 }
 
-/** The avatar menu, grouped. Auth actions are appended by the island itself. */
+/** The avatar menu, grouped. Auth actions are appended by the island itself.
+    Kept short on purpose (Alex, 1 October 2026): the account page holds your
+    details, access, saved work and results in its own categories, and each
+    study resource lives in its own section (the lessons library in Course,
+    model answers and cue cards in Practice, the band guide in Tests, study
+    plan settings on Today). The language switch sits in the header. */
 export const WORKSPACE_MENU: WorkspaceMenuItem[][] = [
   [
     { href: '/account', label: nt('Account') },
-    { href: '/profile', label: nt('My details') },
-    { href: '/plan-settings', label: nt('Study plan settings') },
-    { href: '/account#saved', label: nt('Saved and notes') },
     { href: '/report', label: nt('Progress report') },
   ],
   [
-    { href: '/learn', label: nt('Lessons library') },
-    { href: '/learn/bands', label: nt('What each band needs') },
-    { href: '/writing/models', label: nt('Model answers') },
-    { href: '/speaking/cue-cards', label: nt('Cue cards') },
     { href: '/help', label: nt('Help') },
   ],
 ];

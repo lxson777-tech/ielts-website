@@ -32,6 +32,12 @@
 .workspace-v2 .ws-tab:focus-visible { outline-offset: 2px; }
 .workspace-v2 .ws-avatar { width: 44px; height: 44px; background: #eaece3; border-color: transparent; color: #263c35; }
 .workspace-v2 .ws-account { margin-left: 0; }
+/* Signed out, the account button is a plain "Log in" capsule. */
+.workspace-v2 .ws-login { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px 0 14px; border-radius: 999px; background: #263c35; color: #fffefa; font-family: var(--font-display-ui, inherit); font-size: 14px; font-weight: 700; text-decoration: none; transition: background 200ms ease, transform 200ms ease; }
+.workspace-v2 .ws-login:hover { background: #1b2d27; transform: translateY(-1px); }
+.workspace-v2 .ws-login:focus-visible { outline: 2px solid #263c35; outline-offset: 2px; }
+.workspace-v2 .ws-login svg { width: 16px; height: 16px; }
+.workspace-v2 .ws-avatar:disabled { cursor: default; }
 /* The always-visible language switch beside the account button. A quiet
    two-option capsule in the same family as the tabs: the chosen language is
    the filled one. */
@@ -200,6 +206,7 @@
   .workspace-v2 .ws-wordmark { font-size: 21px; }
   .workspace-v2 .ws-account { margin-left: auto; }
   .workspace-v2 .ws-avatar { width: 38px; height: 38px; }
+  .workspace-v2 .ws-login { height: 38px; padding: 0 14px 0 11px; font-size: 13px; }
   .workspace-v2 .ws-page { padding: 22px 20px 40px; }
   .workspace-v2 .ws-tabbar { left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); height: 65px; padding: 6px; border: 1px solid #dce0d6; border-radius: 999px; background: #fffefa; box-shadow: 0 10px 35px -12px rgb(38 60 53 / 25%); }
   .workspace-v2 .ws-tabbar-link { border-radius: 999px; font-size: 10px; gap: 5px; color: #56665c; }

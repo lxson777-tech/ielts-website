@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import CourseGate from '../components/CourseGate';
 import AccessHome from '../components/trial/AccessHome';
 import { ACCESS_MODE } from '../lib/trial/mode';
+import { withBase } from '../lib/url';
 
 /* The gated build (the free-account model): every lesson by section for a
    free account and, by title, for a visitor; the personal course, its
@@ -23,6 +24,8 @@ const trial = ACCESS_MODE === 'trial';
       <div>
         <h1 data-i18n>The IELTS course</h1>
         <p data-i18n>Every lesson on the site, in an order that builds. Tell us your target band and test date, and we'll set your pace and keep a Continue button on the next lesson you haven't finished.</p>
+        {/* The lessons library's home since the account menu was shortened (1 October 2026). */}
+        <a href={withBase('/learn')} class="mt-3 inline-block text-sm font-semibold text-brand underline decoration-brand/30 underline-offset-4 transition-colors hover:decoration-brand" data-i18n>Lessons library</a>
       </div>
     </header>
     <CourseGate client:load />

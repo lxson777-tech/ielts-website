@@ -58,6 +58,8 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
       ) : (
         <p class="mt-2 max-w-xl text-ink-muted" data-i18n>Full timed tests, exactly like the real exam: no hints, no coaching, just the question and the clock. You get a band estimate and a full answer review afterwards. Results stay on this device so you can see your progress over time.</p>
       )}
+      {/* The band guide's home since the account menu was shortened (1 October 2026). */}
+      <a href={withBase('/learn/bands')} class="mt-3 inline-block text-sm font-semibold text-brand underline decoration-brand/30 underline-offset-4 transition-colors hover:decoration-brand" data-i18n>What each band needs</a>
     </div>
 
 

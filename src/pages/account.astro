@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import AccountOverview from '../components/AccountOverview';
+import AccountAccess from '../components/access/AccountAccess';
 import TypeAnalytics from '../components/TypeAnalytics';
 import ScoreHistory from '../components/ScoreHistory';
 import WritingHistory from '../components/WritingHistory';
@@ -9,93 +10,186 @@ import SpeakingHistory from '../components/SpeakingHistory';
 import SavedItems from '../components/SavedItems';
 import AccountSettings from '../components/AccountSettings';
 import { withBase } from '../lib/url';
+import { ACCESS_MODE } from '../lib/trial/mode';
+
+/* Three categories instead of one long page (Alex, 1 October 2026): Profile
+   (details, email, password, devices), Access (plan and purchases, gated
+   build only) and Saved and results. Signed out, the page is one sign-in
+   card and nothing else. The switch is the page script below. Old links keep
+   working: #access opens Access; #saved, #reading, #listening, #writing and
+   #speaking open Saved and results with that section unfolded. */
+const showAccess = ACCESS_MODE === 'trial';
 ---
 
 <BaseLayout
   title="My Account · IELTS Portal"
   description="Track your progress across Reading, Writing and Speaking in one place: lessons completed, band history, and your course progress."
 >
-  <div class="account-page platform-hub mx-auto max-w-5xl px-4 py-12 sm:px-6">
-    <header class="mb-10 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-8">
-      <div>
-        <h1 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl" data-i18n>Your account</h1>
-        <p class="mt-3 max-w-2xl text-ink-muted" data-i18n>Your saved work and account details. Open your progress report for the bigger picture.</p>
+  <div class="account-page platform-hub mx-auto max-w-5xl px-4 py-12 sm:px-6" data-account-root data-state="loading">
+    <section class="account-signed-out" data-account-signed-out hidden aria-labelledby="account-signed-out-title">
+      <h1 id="account-signed-out-title" data-i18n>Your account</h1>
+      <p data-i18n>Log in to see your details, your saved work and your results.</p>
+      <div class="account-signed-out-actions">
+        <a class="account-login-button" href={withBase('/sign-in?next=%2Faccount')} data-i18n>Log in</a>
+        <a class="account-quiet-link" href={withBase('/sign-up?next=%2Faccount')} data-i18n>Create a free account</a>
       </div>
-      <a href={withBase('/report')} class="shrink-0 rounded-button border border-border px-4 py-2 font-display text-sm font-semibold text-ink-muted transition-colors hover:border-brand hover:text-brand" data-i18n>
-        Progress report
-      </a>
-    </header>
+    </section>
 
-    {/* Your details, email, password and devices. Signed-in only; renders
-        nothing otherwise. */}
-    <AccountSettings client:load />
+    <div class="account-body" data-account-body>
+      <header class="account-head">
+        <h1 data-i18n>Your account</h1>
+        <div class="account-tabs" role="tablist" aria-label="Account" data-i18n-attr="aria-label" data-account-tabs>
+          <button type="button" role="tab" id="account-tab-profile" aria-controls="account-panel-profile" aria-selected="true" data-account-tab="profile" data-i18n>Profile</button>
+          {showAccess && <button type="button" role="tab" id="account-tab-access" aria-controls="account-panel-access" aria-selected="false" tabindex="-1" data-account-tab="access" data-i18n>Access</button>}
+          <button type="button" role="tab" id="account-tab-work" aria-controls="account-panel-work" aria-selected="false" tabindex="-1" data-account-tab="work" data-i18n>Saved and results</button>
+        </div>
+      </header>
 
-    <AccountOverview client:load />
-
-    <nav class="account-section-links" aria-label="Account sections" data-i18n-attr="aria-label">
-      <a href="#saved" data-i18n>Saved lessons & questions</a>
-      <a href="#reading" data-i18n>Reading</a>
-      <a href="#listening" data-i18n>Listening</a>
-      <a href="#writing" data-i18n>Writing</a>
-      <a href="#speaking" data-i18n>Speaking</a>
-    </nav>
-
-    <details id="saved" class="support-disclosure account-history">
-      <summary data-i18n>Saved lessons & questions</summary>
-      <div class="account-history-body">
-      <SectionHeading eyebrow="Saved" title="Saved lessons & questions" subtitle="Everything you have bookmarked while studying, plus your lesson notes." />
-      <SavedItems client:load />
+      <div role="tabpanel" id="account-panel-profile" aria-labelledby="account-tab-profile" data-account-panel="profile">
+        {/* Your details, email, password and devices. Signed-in only. */}
+        <AccountSettings client:load />
       </div>
-    </details>
 
-    <details id="reading" class="support-disclosure account-history">
-      <summary data-i18n>Reading history</summary>
-      <div class="account-history-body">
-      <SectionHeading eyebrow="Reading" title="Your weak spots" subtitle="Accuracy by question type across every attempt. Drill the red ones first." />
-      <TypeAnalytics client:load />
-      <div class="mt-8">
-        <SectionHeading eyebrow="Reading" title="Score history" />
-        <ScoreHistory client:load />
-      </div>
-      </div>
-    </details>
+      {showAccess && (
+        <div role="tabpanel" id="account-panel-access" aria-labelledby="account-tab-access" data-account-panel="access" hidden>
+          <AccountAccess client:load />
+        </div>
+      )}
 
-    <details id="listening" class="support-disclosure account-history">
-      <summary data-i18n>Listening history</summary>
-      <div class="account-history-body">
-      <SectionHeading eyebrow="Listening" title="Your weak spots" subtitle="Accuracy by question type across every listening test." />
-      <TypeAnalytics client:load skill="listening" />
-      <div class="mt-8">
-        <SectionHeading eyebrow="Listening" title="Score history" />
-        <ScoreHistory client:load skill="listening" showReset={false} />
-      </div>
-      </div>
-    </details>
+      <div role="tabpanel" id="account-panel-work" aria-labelledby="account-tab-work" data-account-panel="work" hidden>
+        <div class="account-work-head">
+          <p data-i18n>Your best bands, everything you saved, and the history of each paper.</p>
+          <a href={withBase('/report')} class="account-quiet-link" data-i18n>Open your progress report</a>
+        </div>
+        <AccountOverview client:load />
 
-    <details id="writing" class="support-disclosure account-history">
-      <summary data-i18n>Writing history</summary>
-      <div class="account-history-body">
-      <SectionHeading eyebrow="Writing" title="Score history" subtitle="Every essay you've submitted to the AI examiner." />
-      <WritingHistory client:load />
-      </div>
-    </details>
+        <details id="saved" class="support-disclosure account-history">
+          <summary data-i18n>Saved lessons & questions</summary>
+          <div class="account-history-body">
+          <SectionHeading eyebrow="Saved" title="Saved lessons & questions" subtitle="Everything you have bookmarked while studying, plus your lesson notes." />
+          <SavedItems client:load />
+          </div>
+        </details>
 
-    <details id="speaking" class="support-disclosure account-history">
-      <summary data-i18n>Speaking history</summary>
-      <div class="account-history-body">
-      <SectionHeading eyebrow="Speaking" title="Score history" subtitle="Every part you've practiced with the AI examiner." />
-      <SpeakingHistory client:load />
+        <details id="reading" class="support-disclosure account-history">
+          <summary data-i18n>Reading history</summary>
+          <div class="account-history-body">
+          <SectionHeading eyebrow="Reading" title="Your weak spots" subtitle="Accuracy by question type across every attempt. Drill the red ones first." />
+          <TypeAnalytics client:load />
+          <div class="mt-8">
+            <SectionHeading eyebrow="Reading" title="Score history" />
+            <ScoreHistory client:load />
+          </div>
+          </div>
+        </details>
+
+        <details id="listening" class="support-disclosure account-history">
+          <summary data-i18n>Listening history</summary>
+          <div class="account-history-body">
+          <SectionHeading eyebrow="Listening" title="Your weak spots" subtitle="Accuracy by question type across every listening test." />
+          <TypeAnalytics client:load skill="listening" />
+          <div class="mt-8">
+            <SectionHeading eyebrow="Listening" title="Score history" />
+            <ScoreHistory client:load skill="listening" showReset={false} />
+          </div>
+          </div>
+        </details>
+
+        <details id="writing" class="support-disclosure account-history">
+          <summary data-i18n>Writing history</summary>
+          <div class="account-history-body">
+          <SectionHeading eyebrow="Writing" title="Score history" subtitle="Every essay you've submitted to the AI examiner." />
+          <WritingHistory client:load />
+          </div>
+        </details>
+
+        <details id="speaking" class="support-disclosure account-history">
+          <summary data-i18n>Speaking history</summary>
+          <div class="account-history-body">
+          <SectionHeading eyebrow="Speaking" title="Score history" subtitle="Every part you've practiced with the AI examiner." />
+          <SpeakingHistory client:load />
+          </div>
+        </details>
       </div>
-    </details>
+    </div>
   </div>
   <script>
-    function openAccountSection() {
-      const target = document.getElementById(location.hash.slice(1));
-      if (target instanceof HTMLDetailsElement) target.open = true;
+    import { isAuthConfigured } from '../lib/auth/supabase';
+    import { onAccountChange, startAccountLifecycle } from '../lib/auth/lifecycle';
+
+    type Category = 'profile' | 'access' | 'work';
+    const WORK_SECTIONS = ['work', 'saved', 'reading', 'listening', 'writing', 'speaking'];
+
+    function setup() {
+      const root = document.querySelector<HTMLElement>('[data-account-root]');
+      if (!root || root.dataset.wired) return;
+      root.dataset.wired = '1';
+      const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-account-tab]'));
+      const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-account-panel]'));
+      const has = (category: string) => tabs.some((tab) => tab.dataset.accountTab === category);
+
+      function categoryFromHash(): Category {
+        const hash = location.hash.slice(1);
+        if (hash === 'access' && has('access')) return 'access';
+        if (WORK_SECTIONS.includes(hash)) return 'work';
+        return 'profile';
+      }
+
+      function show(category: Category) {
+        for (const tab of tabs) {
+          const on = tab.dataset.accountTab === category;
+          tab.setAttribute('aria-selected', String(on));
+          tab.tabIndex = on ? 0 : -1;
+        }
+        for (const panel of panels) panel.hidden = panel.dataset.accountPanel !== category;
+        // A link straight to one paper's history (#writing from the essay checker) unfolds it.
+        const section = document.getElementById(location.hash.slice(1));
+        if (category === 'work' && section instanceof HTMLDetailsElement) {
+          section.open = true;
+          section.scrollIntoView({ block: 'start' });
+        }
+      }
+
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => {
+          const category = tab.dataset.accountTab as Category;
+          history.replaceState(null, '', category === 'profile' ? location.pathname : `#${category}`);
+          show(category);
+        });
+        // Arrow keys move between categories, as in any tab list.
+        tab.addEventListener('keydown', (event) => {
+          const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+          if (!step) return;
+          event.preventDefault();
+          const next = tabs[(index + step + tabs.length) % tabs.length];
+          next.click();
+          next.focus();
+        });
+      });
+      window.addEventListener('hashchange', () => show(categoryFromHash()));
+
+      const signedOut = root.querySelector<HTMLElement>('[data-account-signed-out]')!;
+      const body = root.querySelector<HTMLElement>('[data-account-body]')!;
+      if (!isAuthConfigured()) {
+        // No accounts on this build at all: only the work kept on this device.
+        root.querySelector<HTMLElement>('[data-account-tabs]')!.hidden = true;
+        root.dataset.state = 'ready';
+        show('work');
+        return;
+      }
+      startAccountLifecycle();
+      onAccountChange((account) => {
+        if (!account.known) return;
+        // Signed out there is no account to show: one sign-in card, nothing else.
+        const out = !account.user;
+        signedOut.hidden = !out;
+        body.hidden = out;
+        root.dataset.state = 'ready';
+        if (!out) show(categoryFromHash());
+      });
     }
-    openAccountSection();
-    document.addEventListener('astro:page-load', openAccountSection);
-    window.addEventListener('hashchange', openAccountSection);
+    setup();
+    document.addEventListener('astro:page-load', setup);
   </script>
 </BaseLayout>
 

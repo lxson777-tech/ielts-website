@@ -173,7 +173,7 @@ test('prices are formatted for each language from the one approved source', () =
   // Every placeholder is filled in both languages.
   for (const key of Object.keys(SALES_COPY) as SalesKey[]) {
     for (const locale of ['en', 'ru'] as const) {
-      const text = salesText(key, locale, { count: 1, band: '7.0', skill: 'Reading', time: 30, day: 1, minutes: 30, outcome: 'x', title: 'x', access: 'x' });
+      const text = salesText(key, locale, { count: 1, band: '7.0', skill: 'Reading', time: 30, focus: 'x' });
       assert.doesNotMatch(text, /\{\w+\}/, `${key} (${locale}) leaves a placeholder unfilled: ${text}`);
     }
   }
