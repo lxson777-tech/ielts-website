@@ -39,32 +39,30 @@ import { reserveAssessment, finishAssessment, type AssessmentClaim } from '../..
    talks to this endpoint through the provider-agnostic RemoteSpeakingGrader. */
 
 import { SPEAKING_ANCHORS } from './anchors';
-import { TRIAL_OFFER, parseAccessMode } from '../../../src/lib/trial/offer';
+import { parseAccessMode } from '../../../src/lib/trial/offer';
 import { bandStepsFor, readBandStepLocale } from '../../../src/lib/trial/band-steps';
 import {
   TrialRefusal,
   refusalBody,
+  refusalStatus,
   bearer,
-  leaseTrialTest,
   paidAccessRunning,
-  readSittingId,
-  refusal,
-  releaseUse,
+  paidRequired,
   serviceRpc,
-  settleUse,
   verifyAccessToken,
-  type TrialRpc,
 } from '../../../src/lib/trial/gate';
 
 export interface Env {
   /** vars: 'openai' (default) | 'gemini'. */
   GRADER_PROVIDER?: string;
-  /** 'trial' makes this grader the three-day trial's Speaking test grader:
-      only the live interview (the trial's Part 1 test), only for a signed-in
-      student who has begun that test, which is used when a grade comes back
-      and kept when grading fails (src/lib/trial/gate.ts). Needs
-      SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY then. Anything else,
-      including unset, is today's open grader. */
+  /** 'trial' is the commercial build (the name stays): only a signed-in
+      student with paid or complimentary access running is graded, each
+      recording set using one of the purchase's Speaking assessments, and
+      a live interview's feedback finishing within a day of an interview
+      begun while access was valid (docs/paid-access/FREE-ACCOUNT-MODEL.md).
+      A free account is refused with 402 paid-required before anything is
+      spent. Needs SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY then.
+      Anything else, including unset, is today's open grader. */
   ACCESS_MODE?: string;
   SUPABASE_URL?: string; // vars, trial mode only
   SUPABASE_SERVICE_ROLE_KEY?: string; // wrangler secret, trial mode only
@@ -1892,14 +1890,15 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
         if (duration > maximum + 1000) return json({ error: body.kind === 'interview' ? 'Live recordings may be up to 15 minutes.' : 'Recorded assessments may be up to 5 minutes.' }, 413, cors);
       } catch { return json({ error: 'The recording could not be read. Please record it again.' }, 400, cors); }
     }
-    /* The trial, before a single token is paid for: a signed-in student,
-       grading the live interview of the Speaking test they began, with
-       nobody else grading it right now. The recorded Part 1 / Part 2-3
-       practice is not the trial's test. */
-    let trial: { rpc: TrialRpc; userId: string; sitting: string } | null = null;
-    /* A paid account in a trial build: graded exactly as the open grader
-       grades (any of the three kinds, no trial test used), plus the band
-       guide steps a trial build's browser does not carry. */
+    /* Commercial mode, before a single token is paid for: a signed-in
+       student with paid or complimentary access running (a free account is
+       refused here with 402 paid-required; the trial is retired), and one
+       of the purchase's assessments reserved. The one exception is a live
+       interview's feedback: the database admits it within a day of an
+       interview begun while access was valid, even if that access has just
+       ended, and refuses anyone else (unknown-session), which is answered
+       as paid-required too. Graded exactly as the open grader grades, plus
+       the band guide steps a commercial build's browser does not carry. */
     let paid = false;
     let assessmentClaim: AssessmentClaim | null = null;
     if (trialMode) {
@@ -1911,30 +1910,24 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
         const userId = token ? await verifyAccessToken(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, token) : null;
         if (!userId) return json({ error: 'Sign in to have your speaking graded.', code: 'sign-in-required' }, 401, cors);
         const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
-        /* Paid accounts use the purchased allowance; trials share one
-           Writing or recorded Speaking assessment (30 September offer). */
-        paid = await paidAccessRunning(rpc, userId);
-        if (!paid && body.kind !== 'interview') {
-          if (!TRIAL_OFFER.speaking.testEnabled) throw refusal('trial-not-included');
-          if (body.kind !== 'part1') throw refusal('trial-not-included');
-          const sitting = readSittingId(body.trialSitting);
-          if (!sitting) throw refusal('trial-no-test');
-          await leaseTrialTest(rpc, userId, 'speaking', sitting);
-          trial = { rpc, userId, sitting };
+        const running = await paidAccessRunning(rpc, userId);
+        if (!running && body.kind !== 'interview') throw paidRequired();
+        try {
+          assessmentClaim = await reserveAssessment(rpc, userId, body.kind === 'interview' ? 'feedback' : 'speaking', body.liveSessionId);
+        } catch (err) {
+          if (!running && err instanceof TrialRefusal && err.reason === 'unknown-session') throw paidRequired();
+          throw err;
         }
-        assessmentClaim = await reserveAssessment(rpc, userId, body.kind === 'interview' ? 'feedback' : 'speaking', body.liveSessionId);
+        paid = true;
       } catch (err) {
-        if (err instanceof TrialRefusal) {
-          return json(refusalBody(err), err.code === 'trial-in-flight' ? 409 : 403, cors);
-        }
-        return json({ error: 'Your trial could not be checked just now. Try again shortly.', code: 'unavailable' }, 503, cors);
+        if (err instanceof TrialRefusal) return json(refusalBody(err), refusalStatus(err), cors);
+        return json({ error: 'Your access could not be checked just now. Try again shortly.', code: 'unavailable' }, 503, cors);
       }
     }
-    /* Nothing was graded: the Speaking test stays the student's to submit
-       again. A release that fails expires on its own in minutes. */
+    /* Nothing was graded: the assessment is given back. A release that
+       fails expires on its own (the 15-minute stale rule). */
     const keepTest = async () => {
       await finishAssessment(assessmentClaim, false).catch(() => undefined);
-      if (trial) await releaseUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);
     };
 
     const modelDeps = {...deps, fetch: meteredFetch(deps.fetch, assessmentClaim)};
@@ -1977,17 +1970,6 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
     }
 
     await finishAssessment(assessmentClaim, true).catch(() => undefined);
-    if (trial) {
-      /* Graded: the Speaking test is used, settled here on the server. */
-      await settleUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);
-      /* The band guide step for each band given, in the student's
-         language: a trial build's browser carries no band guides. */
-      const graded = medianRun(good) as Record<string, unknown>;
-      const criteria = (graded.criteria ?? {}) as Record<string, { band?: unknown }>;
-      const bands = Object.fromEntries(Object.entries(criteria).map(([key, value]) => [key, value?.band]));
-      const guides = bandStepsFor('speaking', bands, readBandStepLocale(body.locale));
-      return json({ ...graded, guides, trial: { section: 'speaking', test: 'used' } }, 200, cors);
-    }
     if (paid) {
       const graded = medianRun(good) as Record<string, unknown>;
       const criteria = (graded.criteria ?? {}) as Record<string, { band?: unknown }>;

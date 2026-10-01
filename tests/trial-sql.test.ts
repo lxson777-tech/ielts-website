@@ -11,12 +11,18 @@
  *   node --import ./tests/ts-extension-loader.mjs --test tests/trial-sql.test.ts
  *
  * Every account is a synthetic uuid created in a fresh database per test.
+ *
+ * HISTORY since 1 October 2026: the free-account model
+ * (supabase/migrations/2026-10-01-free-account.sql) retired the trial, so
+ * these run the migrations as they stood before it (PRE_FREE_MIGRATIONS).
+ * They keep proving what the trial file itself does; what a project runs
+ * today, with the trial refused, is proved in tests/free-account-sql.test.ts.
  */
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { createTrialDb, TRIAL_MIGRATION } from '../tools/trial-db.mjs';
+import { createTrialDb, TRIAL_MIGRATION, PRE_FREE_MIGRATIONS } from '../tools/trial-db.mjs';
 import {
   TRIAL_HOURS,
   TRIAL_OFFER,
@@ -34,7 +40,7 @@ const B = 'bbbbbbbb-0000-4000-8000-00000000000b';
 type Db = Awaited<ReturnType<typeof createTrialDb>>;
 
 async function world(): Promise<Db> {
-  const db = await createTrialDb();
+  const db = await createTrialDb({ migrations: PRE_FREE_MIGRATIONS });
   await db.addUser(A, 'synthetic-a@example.test');
   await db.addUser(B, 'synthetic-b@example.test');
   return db;

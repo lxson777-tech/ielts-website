@@ -2,7 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { createTrialDb, TRIAL_MIGRATION, PAID_MIGRATION } from '../tools/trial-db.mjs';
+import { createTrialDb, TRIAL_MIGRATION, PAID_MIGRATION, PRE_FREE_MIGRATIONS } from '../tools/trial-db.mjs';
+
+/* The tests marked HISTORY run the migrations as they stood before the
+   free-account model retired the trial (1 October 2026,
+   supabase/migrations/2026-10-01-free-account.sql): they prove what those
+   files did, trial assessment included. What a project runs today is
+   proved in tests/free-account-sql.test.ts. */
 import { audioDurationMs } from '../src/lib/access/audio-duration.ts';
 import { createHandler } from '../workers/grade-essay/src/index.ts';
 import { reserveAssessment } from '../src/lib/access/assessment.ts';
@@ -12,8 +18,8 @@ import { serviceRpc, TrialRefusal, TrialServiceError } from '../src/lib/trial/ga
 const A='aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa', B='bbbbbbbb-1111-4111-8111-bbbbbbbbbbbb';
 const service={role:'service_role' as const};
 
-test('commercial offer: authoritative price, shared free assessment, paid quotas, failures, ownership and renewals', async () => {
-  const db=await createTrialDb();
+test('HISTORY commercial offer: authoritative price, shared free assessment, paid quotas, failures, ownership and renewals', async () => {
+  const db=await createTrialDb({ migrations: PRE_FREE_MIGRATIONS });
   try {
     await db.addUser(A,'paid@example.test'); await db.addUser(B,'trial@example.test');
     const reserve=(user:string,kind:string,id:string,session:string|null=null)=>db.rpc('assessment_reserve',{p_user:user,p_kind:kind,p_request:id,p_session:session},service) as Promise<any>;
@@ -99,8 +105,8 @@ const OFFER_FILE = new URL('../supabase/migrations/2026-09-30-profitable-offer.s
 const ADMIN_FILE = new URL('../supabase/migrations/2026-09-24-admin.sql', import.meta.url);
 const C = 'cccccccc-1111-4111-8111-cccccccccccc';
 
-async function offerWorld() {
-  const db = await createTrialDb();
+async function offerWorld(migrations?: string[]) {
+  const db = await createTrialDb(migrations ? { migrations } : {});
   await db.addUser(A, 'paid@example.test');
   await db.addUser(B, 'trial@example.test');
   const reserve = (user: string, kind: string, id: string, session: string | null = null, purpose?: string) =>
@@ -254,8 +260,8 @@ test('P2-1: the offer migration carries a commented rollback and runs twice with
   } finally { await w.db.close(); }
 });
 
-test('P2-3: a trial-only account can be deleted; an account with payment records still cannot', async () => {
-  const w = await offerWorld();
+test('HISTORY P2-3: a trial-only account can be deleted; an account with payment records still cannot', async () => {
+  const w = await offerWorld(PRE_FREE_MIGRATIONS);
   try {
     await w.db.rpc('trial_start', {}, { userId: B });
     assert.equal((await w.reserve(B, 'writing', 'w-delete-1')).ok, true);

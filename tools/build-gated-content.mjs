@@ -1,6 +1,13 @@
-/* Collects the course content a trial build must NOT publish into one
- * private folder, for the content gate (workers/content-gate) to hand out
- * only to a student allowed to open it.
+/* Collects the course content a commercial build (PUBLIC_ACCESS_MODE=trial,
+ * the name stays) must NOT publish into one private folder, for the content
+ * gate (workers/content-gate) to hand out only to a student allowed to open
+ * it.
+ *
+ * The free-account model (Alex, 1 October 2026,
+ * docs/paid-access/FREE-ACCOUNT-MODEL.md) puts the lessons behind the door
+ * again: a lesson body, its worked example and its own quiz are served here
+ * to any signed-in account with a completed profile, and never published
+ * in a signed-out page. Everything else here is paid.
  *
  *   node --import ./tests/ts-extension-loader.mjs tools/build-gated-content.mjs [out-dir]
  *
@@ -17,6 +24,10 @@
  *                                 questions, answers, explanations)
  *   explanations/ru/<id>.json     the Russian answer explanations
  *   practice/<set id>.json        a Reading or Listening lesson's practice quiz
+ *   examples/writing-<slug>.json  a Writing lesson's one worked example,
+ *                                 {prompt, model}, its charts inline (the
+ *                                 gate's /example/<lesson key>, opened with
+ *                                 the lesson)
  *   prompts/<prompt id>.json      a Writing question
  *   models/<prompt id>.json       a Band 8 model with its question
  *   data/tests/<id>.json          the compact paper Mr EZ reads (toSiteTest)
@@ -93,10 +104,20 @@ export async function buildGatedContent(out = DEFAULT_OUT) {
   for (const [slug, set] of Object.entries(READING_PRACTICE)) put(`practice/practice-reading-${slug}.json`, JSON.stringify(set));
   for (const [slug, set] of Object.entries(LISTENING_PRACTICE)) put(`practice/practice-listening-${slug}.json`, JSON.stringify(set));
 
+  // Each Writing lesson's one worked example, exactly as the open build's
+  // lesson page passes it (src/lib/access/lesson-examples.server.ts), for
+  // the gate's /example/<lesson key>. Opened with its lesson, for any
+  // signed-in account; the rest of the model bank stays paid.
+  const { WRITING_PARTS } = await import('../src/data/writing.ts');
+  const { lessonExample } = await import('../src/lib/access/lesson-examples.server.ts');
+  for (const part of WRITING_PARTS) {
+    const example = withCwd(REPO, () => lessonExample(part.slug));
+    if (example) put(`examples/writing-${part.slug}.json`, JSON.stringify(example));
+  }
+
   // Writing questions and Band 8 models (Alex, 24 September 2026: lock the
   // remaining material). Every question, and every model with its question,
-  // for the gate's /prompt/<id> and /model/<id>; the trial opens only its
-  // own essay question and its one example.
+  // for the gate's /prompt/<id> and /model/<id>: the bank, paid only.
   const { WRITING_PROMPTS } = await import('../src/data/writing-prompts.ts');
   const { getModelAnswers } = await import('../src/data/model-answers.ts');
   for (const prompt of WRITING_PROMPTS) {
@@ -139,6 +160,18 @@ export async function buildGatedContent(out = DEFAULT_OUT) {
 
   put('manifest.json', JSON.stringify({ keys: [...keys].sort(), audio }, null, 1));
   return { out: OUT, keys: keys.length };
+}
+
+/** lessonExample reads chart files relative to the working directory (the
+    repository, when the site builds); this script may be run from anywhere. */
+function withCwd(dir, work) {
+  const before = process.cwd();
+  process.chdir(dir);
+  try {
+    return work();
+  } finally {
+    process.chdir(before);
+  }
 }
 
 /* ── Paid packs ────────────────────────────────────────────────────────────

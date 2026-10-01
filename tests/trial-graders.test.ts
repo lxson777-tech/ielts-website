@@ -1,12 +1,21 @@
 const validMp3 = () => { const b=Buffer.alloc(288); b[0]=255; b[1]=243; b[2]=136; return b.toString('base64'); };
-/* The graders and the live examiner running the trial: the REAL grade-essay handler against
- * the REAL trial database functions (PGlite, tools/trial-db.mjs) and a fake
- * OpenAI. No key, no model, no money.
+/* The graders and the live examiner in the commercial build (ACCESS_MODE=
+ * trial, the name stays): the REAL grade-essay, grade-speaking and
+ * live-examiner handlers against the REAL database functions (every
+ * migration a project runs today, ending with 2026-10-01-free-account.sql,
+ * in PGlite via tools/trial-db.mjs) and a fake OpenAI. No key, no model, no
+ * money.
  *
- * Proves, in trial mode: sign-in and a begun Writing test are required
- * before anything is paid for; a grade uses the test; a failed grade leaves
- * it available to submit again; two submissions of the one test cannot both
- * be graded; and the open grader is unchanged.
+ * The free-account model (Alex, 1 October 2026,
+ * docs/paid-access/FREE-ACCOUNT-MODEL.md): every AI assessment is part of
+ * practice and guidance. Proves: sign-in, then paid or complimentary access,
+ * before anything is paid for (a free account or an old trial is refused
+ * 402 paid-required); a paid grade uses one of the purchase's assessments
+ * and a failed one gives it back; complimentary access counts from the same
+ * allowances; the open grader is unchanged; and the live examiner's paid
+ * allowances (Builder M's review fixes) stand. The trial's own Writing and
+ * Speaking test rules are history: tests/trial-sql.test.ts still proves the
+ * trial file itself.
  */
 
 import test from 'node:test';
@@ -14,10 +23,7 @@ import assert from 'node:assert/strict';
 import { createHandler } from '../workers/grade-essay/src/index.ts';
 import { bandStepsFor, readBandStepLocale } from '../src/lib/trial/band-steps.ts';
 import { SPEAKING_BAND_GUIDES, WRITING_BAND_GUIDES, guideFor, type BandStepGuide } from '../src/data/band-guides.ts';
-import { getWritingPrompt } from '../src/data/writing-prompts.ts';
-import { TRIAL_WRITING } from '../src/lib/trial/offer.ts';
 import { createTrialDb } from '../tools/trial-db.mjs';
-import { parseTrialStatus } from '../src/lib/trial/status.ts';
 import { createHandler as createSpeakingHandler } from '../workers/grade-speaking/src/index.ts';
 import { createHandler as createLiveHandler, closeOverdueTrialSessions } from '../workers/live-examiner/src/index.ts';
 import { TRIAL_OFFER, TRIAL_SPEAKING_MINUTES, TRIAL_SPEAKING_MODE, TRIAL_SPEAKING_SESSIONS } from '../src/lib/trial/offer.ts';
@@ -49,11 +55,17 @@ function envelope() {
   };
 }
 
+/** Alex, as the database knows an admin (2026-09-24-admin.sql). */
+const ADMIN = 'adadadad-1111-4111-8111-adadadadadad';
+
 async function world() {
   const db = await createTrialDb();
   await db.addUser(A);
   await db.addUser(B);
-  await db.rpc('trial_start', {}, { userId: A });
+  await db.addUser(ADMIN);
+  await db.addProfile(A);
+  await db.addProfile(B);
+  await db.makeAdmin(ADMIN);
   const calls = { openAi: 0, bodies: [] as string[] };
   const model = { status: 200 };
   const fetchFn = (async (input: unknown, init?: RequestInit) => {
@@ -107,46 +119,40 @@ async function world() {
     const response = await handler.fetch(new Request('https://grader.test/', { method: 'POST', headers, body: JSON.stringify(body) }), env(overrides));
     return { status: response.status, body: (await response.json()) as Record<string, unknown> };
   };
-  const writingTest = async () =>
-    parseTrialStatus(await db.rpc('trial_status', {}, { userId: A }))!.sections.writing.test;
-  return { db, calls, model, submit, writingTest };
+  const balance = (user: string) => db.rpc('assessment_balance', {}, { userId: user });
+  const buy = async (user: string) => {
+    const o = (await db.rpc('access_order_create', { p_plan: 'month-1' }, { userId: user })) as { orderId: string; amount: number };
+    const paid = (await db.rpc('access_order_paid', { p_order: o.orderId, p_provider: 'simulated', p_ref: `sim_${o.orderId}`, p_amount: o.amount, p_currency: 'KZT' }, { role: 'service_role' })) as { ok: boolean };
+    assert.equal(paid.ok, true);
+  };
+  const complimentary = (user: string, action: 'give' | 'renew' | 'stop') =>
+    db.rpc('access_admin_complimentary', { p_user: user, p_action: action }, { userId: ADMIN }) as Promise<{ ok: boolean }>;
+  return { db, calls, model, submit, balance, buy, complimentary };
 }
 
-test('in trial mode no sign-in, or no begun Writing test, means no grading and no spend', async () => {
+test('commercial mode: no sign-in is 401, and a free account is refused 402 paid-required before anything is spent', async () => {
   const w = await world();
-  assert.equal((await w.submit(null, 'sit-w-00001')).status, 401);
-  assert.equal((await w.submit('forged', 'sit-w-00001')).status, 401);
-  const noSitting = await w.submit('token-a');
-  assert.equal(noSitting.status, 403);
-  assert.equal(noSitting.body.code, 'trial-no-test');
-  const notBegun = await w.submit('token-a', 'sit-w-00001');
-  assert.equal(notBegun.body.code, 'trial-no-test');
+  assert.equal((await w.submit(null)).status, 401);
+  assert.equal((await w.submit('forged')).status, 401);
+  const free = await w.submit('token-a');
+  assert.equal(free.status, 402);
+  assert.deepEqual([free.body.code, free.body.reason], ['paid-required', 'paid-required']);
+  assert.equal(typeof free.body.error, 'string');
+  // An old trial sitting buys nothing either (the trial is retired).
+  const oldTrial = await w.submit('token-a', 'sit-w-00001');
+  assert.equal(oldTrial.status, 402);
   assert.equal(w.calls.openAi, 0);
+  assert.equal(((await w.balance(A)) as { writingUsed: number }).writingUsed, 0, 'nothing reserved');
   await w.db.close();
 });
 
-test('a graded essay uses the Writing test, and it cannot be graded again', async () => {
+test('a paid essay is graded on the student’s own question, uses one of the 12, and returns the band steps it earned, in the student’s language', async () => {
   const w = await world();
-  await w.db.rpc('trial_test_begin', { p_section: 'writing', p_activity: 'writing-checker', p_request: 'sit-w-00002' }, { userId: A });
-  const graded = await w.submit('token-a', 'sit-w-00002');
+  await w.buy(A);
+  const graded = await w.submit('token-a', undefined, {}, { locale: 'ru' });
   assert.equal(graded.status, 200);
-  assert.deepEqual(graded.body.trial, { section: 'writing', test: 'used' });
-  assert.equal((await w.writingTest())?.status, 'settled');
-  const again = await w.submit('token-a', 'sit-w-00002');
-  assert.equal(again.body.code, 'trial-test-used');
-  assert.equal(w.calls.openAi, 1);
-  await w.db.close();
-});
-
-test('the trial essay is graded against the server’s own question, and returns only the band steps it earned, in the student’s language', async () => {
-  const w = await world();
-  await w.db.rpc('trial_test_begin', { p_section: 'writing', p_activity: 'writing-checker', p_request: 'sit-w-00009' }, { userId: A });
-  const graded = await w.submit('token-a', 'sit-w-00009', {}, { locale: 'ru' });
-  assert.equal(graded.status, 200);
-  const question = getWritingPrompt(TRIAL_WRITING.essayPromptId)!;
-  const sent = w.calls.bodies.join(' ');
-  assert.ok(!sent.includes('Discuss both views.'), 'the question the browser sent is not used');
-  assert.ok(sent.includes(question.title.slice(0, 30)), 'the trial question is');
+  assert.equal(graded.body.trial, undefined, 'no trial test is used');
+  assert.ok(w.calls.bodies.join(' ').includes('Discuss both views.'), "the student's own question is graded");
   const guides = graded.body.guides as Record<string, BandStepGuide>;
   assert.deepEqual(Object.keys(guides).sort(), ['coherenceCohesion', 'grammaticalRange', 'lexicalResource', 'taskResponse']);
   const english = guideFor(WRITING_BAND_GUIDES.taskResponse, 6)!;
@@ -154,6 +160,8 @@ test('the trial essay is graded against the server’s own question, and returns
   assert.notEqual(guides.taskResponse.whatChanges, english.whatChanges, 'in Russian');
   assert.match(guides.taskResponse.whatChanges, /[А-Яа-я]/);
   assert.equal(guides.taskResponse.example.before, english.example.before, 'the example sentences stay English');
+  const balance = (await w.balance(A)) as { writingUsed: number; kind: string };
+  assert.deepEqual([balance.writingUsed, balance.kind], [1, 'paid']);
   await w.db.close();
 });
 
@@ -166,63 +174,55 @@ test('band steps: one per criterion for the band given, in English or Russian', 
   assert.equal(readBandStepLocale('de'), 'en');
 });
 
-test('a failed grade leaves the Writing test available to submit again', async () => {
+test('a failed grade gives the essay assessment back', async () => {
   const w = await world();
-  await w.db.rpc('trial_test_begin', { p_section: 'writing', p_activity: 'writing-checker', p_request: 'sit-w-00003' }, { userId: A });
+  await w.buy(A);
   w.model.status = 500;
-  const failed = await w.submit('token-a', 'sit-w-00003');
+  const failed = await w.submit('token-a');
   assert.equal(failed.status >= 500, true);
-  assert.equal((await w.writingTest())?.status, 'reserved');
+  assert.equal(((await w.balance(A)) as { writingUsed: number }).writingUsed, 0);
   w.model.status = 200;
-  assert.equal((await w.submit('token-a', 'sit-w-00003')).status, 200);
-  assert.equal((await w.writingTest())?.status, 'settled');
+  assert.equal((await w.submit('token-a')).status, 200);
+  assert.equal(((await w.balance(A)) as { writingUsed: number }).writingUsed, 1);
   await w.db.close();
 });
 
-test('two submissions of the one test at the same moment are graded once', async () => {
+test('complimentary access grades exactly like paid access, from the same allowance; stopping it returns the account to 402', async () => {
   const w = await world();
-  await w.db.rpc('trial_test_begin', { p_section: 'writing', p_activity: 'writing-checker', p_request: 'sit-w-00004' }, { userId: A });
-  const [one, two] = await Promise.all([w.submit('token-a', 'sit-w-00004'), w.submit('token-a', 'sit-w-00004')]);
-  const statuses = [one.status, two.status].sort();
-  assert.deepEqual(statuses, [200, 409]);
+  assert.equal((await w.complimentary(A, 'give')).ok, true);
+  const graded = await w.submit('token-a');
+  assert.equal(graded.status, 200);
+  assert.ok(graded.body.guides, 'the band steps a commercial build carries only for paid access');
+  const balance = (await w.balance(A)) as { writingUsed: number; kind: string; limits: { writing: number } };
+  assert.deepEqual([balance.writingUsed, balance.kind, balance.limits.writing], [1, 'complimentary', 12]);
+  assert.equal((await w.submit('token-b')).status, 402, 'another student is still free');
+  assert.equal((await w.complimentary(A, 'stop')).ok, true);
+  assert.equal((await w.submit('token-a')).status, 402);
   assert.equal(w.calls.openAi, 1);
   await w.db.close();
 });
 
-test('another student cannot submit into someone else’s Writing test', async () => {
-  const w = await world();
-  await w.db.rpc('trial_start', {}, { userId: B });
-  await w.db.rpc('trial_test_begin', { p_section: 'writing', p_activity: 'writing-checker', p_request: 'sit-w-00005' }, { userId: A });
-  const b = await w.submit('token-b', 'sit-w-00005');
-  assert.equal(b.body.code, 'trial-no-test');
-  assert.equal(w.calls.openAi, 0);
-  assert.equal((await w.writingTest())?.status, 'reserved', 'A’s test untouched');
-  await w.db.close();
-});
-
-test('the open grader (no ACCESS_MODE) needs no sign-in and asks the trial nothing', async () => {
+test('the open grader (no ACCESS_MODE) needs no sign-in and asks the database nothing', async () => {
   const w = await world();
   const open = await w.submit(null, undefined, { ACCESS_MODE: undefined });
   assert.equal(open.status, 200);
   assert.equal(open.body.trial, undefined);
+  assert.equal(open.body.guides, undefined, 'the open site carries its own band guides');
   await w.db.close();
 });
 
-test('an unreachable trial database fails closed', async () => {
+test('an unreachable database fails closed', async () => {
   const w = await world();
-  const down = await w.submit('token-a', 'sit-w-00006', { SUPABASE_URL: 'https://unreachable.invalid' });
+  const down = await w.submit('token-a', undefined, { SUPABASE_URL: 'https://unreachable.invalid' });
   assert.equal(down.status, 503);
   assert.equal(w.calls.openAi, 0);
   await w.db.close();
 });
 
-/* ── Speaking: a Part 1 interview of about five minutes ────────────────
-   Alex's decision of 23 September 2026. The live examiner opens a paid voice
-   session only for a student's own begun Speaking test, only for Part 1, at
-   most twice; a scheduled check hangs up any session older than five
-   minutes; the speaking grader uses the test on a grade and keeps it on a
-   failure. The open behaviour of both Workers is covered by their own test
-   files. */
+/* ── Speaking and the live examiner ─────────────────────────────────────
+   Every live interview and every recorded Speaking assessment needs paid or
+   complimentary access (the trial's Part 1 test is retired with the trial).
+   The open behaviour of both Workers is covered by their own test files. */
 
 const OFFER_SDP = 'v=0\r\no=- 1 1 IN IP4 0.0.0.0\r\n';
 
@@ -230,8 +230,8 @@ async function speakingWorld() {
   const db = await createTrialDb();
   await db.addUser(A);
   await db.addUser(B);
-  await db.rpc('trial_start', {}, { userId: A });
-  await db.rpc('trial_start', {}, { userId: B });
+  await db.addProfile(A);
+  await db.addProfile(B);
   const sessions: Record<string, unknown>[] = [];
   const calls = { openAiLive: 0, openAiGrade: 0, closes: [] as string[] };
   const model = { liveStatus: 201 };
@@ -388,12 +388,23 @@ async function buyLive(w: Awaited<ReturnType<typeof speakingWorld>>) {
     const o=await w.db.rpc('access_order_create',{p_plan:'month-1'},{userId:A}) as any;
     await w.db.rpc('access_order_paid',{p_order:o.orderId,p_provider:'simulated',p_ref:`sim_${o.orderId}`,p_amount:o.amount,p_currency:'KZT'},{role:'service_role'});
 }
-test('trial live requests are refused even with a begun Speaking sitting',async()=>{
+test('a free account, or an old trial, is refused 402 before the voice service is asked',async()=>{
  const w=await speakingWorld();
- assert.equal((await w.openInterview('token-a',undefined)).status,403);
- await w.db.rpc('trial_test_begin',{p_section:'speaking',p_activity:'speaking-test',p_request:'sit-live-trial'},{userId:A});
- assert.equal((await w.openInterview('token-a','sit-live-trial')).status,403);
- assert.equal(w.calls.openAiLive,0);await w.db.close();
+ const free=await w.openInterview('token-a',undefined);
+ assert.equal(free.status,402);
+ assert.deepEqual([free.body.code,free.body.reason],['paid-required','paid-required']);
+ // An old trial with a begun Speaking sitting buys nothing; a new one cannot be begun.
+ await w.db.raw.query("insert into public.trial_accounts (user_id, started_at, ends_at) values ($1, now(), now() + interval '72 hours')",[A]);
+ await w.db.raw.query("insert into public.trial_usage (user_id, kind, section, request_id, activity_id, status) values ($1, 'test', 'speaking', 'sit-live-trial', 'speaking-test', 'reserved')",[A]);
+ assert.equal((await w.openInterview('token-a','sit-live-trial')).status,402);
+ assert.equal(((await w.db.rpc('trial_test_begin',{p_section:'speaking',p_activity:'speaking-test',p_request:'sit-live-new1'},{userId:B})) as any).reason,'trial-retired');
+ for(const purpose of ['placement','mock']){
+  const r=await w.openInterview('token-a',undefined,purpose==='mock'?'full-valid':'part1',{purpose});
+  assert.equal(r.status,402,purpose);
+ }
+ assert.equal(w.calls.openAiLive,0);
+ assert.equal(w.sessions.length,0,'no session was even reserved');
+ await w.db.close();
 });
 test('paid live quota: failed handshake restores allowance, successful sessions use two',async()=>{
  const w=await speakingWorld();await buyLive(w);w.model.liveStatus=500;
@@ -524,57 +535,10 @@ test('commercial scheduled closer ends paid voice after minute 14, independently
  assert.deepEqual(await w.close(),{closed:0,failed:0});await w.db.close();
 });
 
-test('speaking grader: only the begun interview is graded, and a failed grade keeps the Speaking test', async () => {
-  const w = await speakingWorld();
-  await w.db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-s-00004' }, { userId: A });
-  let paid = 0;
-  const grader = createSpeakingHandler({
-    fetch: (async (input: unknown, init?: RequestInit) => {
-      const url = String(input);
-      const headers = (init?.headers ?? {}) as Record<string, string>;
-      if (url === `${SUPABASE_URL}/auth/v1/user`) {
-        const id = TOKENS[(headers.Authorization ?? '').replace('Bearer ', '')];
-        return id ? new Response(JSON.stringify({ id })) : new Response('{}', { status: 401 });
-      }
-      if (url.startsWith(`${SUPABASE_URL}/rest/v1/rpc/`)) {
-        const fn = url.slice(`${SUPABASE_URL}/rest/v1/rpc/`.length);
-        return new Response(JSON.stringify(await w.db.rpc(fn, JSON.parse(String(init?.body)), { role: 'service_role' })));
-      }
-      paid += 1;
-      return new Response('{}', { status: 500 });
-    }) as typeof fetch,
-    sleep: async () => undefined,
-  });
-  const submit = async (token: string | null, body: Record<string, unknown>) => {
-    const headers: Record<string, string> = { Origin: ORIGIN, 'Content-Type': 'application/json' };
-    if (token) headers.Authorization = `Bearer ${token}`;
-    const response = await grader.fetch(
-      new Request('https://speaking.test/', { method: 'POST', headers, body: JSON.stringify(body) }),
-      {
-        ALLOWED_ORIGINS: ORIGIN,
-        OPENAI_API_KEY: 'sk-test-dummy',
-        ACCESS_MODE: 'trial',
-        SUPABASE_URL,
-        SUPABASE_SERVICE_ROLE_KEY: SERVICE_KEY,
-      } as never,
-    );
-    return { status: response.status, body: (await response.json()) as Record<string, unknown> };
-  };
-  const clip = { question: 'Tell me about your work.', mimeType: 'audio/mpeg', audioBase64: validMp3(), durationMs: 60000 };
-  const interview = {kind:'part1',part1:{topic:'Work',answers:[clip]}};
-  assert.equal((await submit(null,{...interview,trialSitting:'sit-s-00004'})).status,401);
-  assert.equal((await submit('token-a',interview)).body.code,'trial-no-test');
-  assert.equal(paid,0);
-  const failed = await submit('token-a', { ...interview, trialSitting: 'sit-s-00004' });
-  assert.ok(failed.status >= 500, `a failed grade (${failed.status})`);
-  const status = parseTrialStatus(await w.db.rpc('trial_status', {}, { userId: A }))!;
-  assert.equal(status.sections.speaking.test?.status, 'reserved', 'the Speaking test is still theirs to submit');
-  await w.db.close();
-});
-
-test('speaking grader: a trial grade uses the test and returns only the band steps it earned, in the student’s language', async () => {
-  const w = await speakingWorld();
-  await w.db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-s-00006' }, { userId: A });
+/** The recorded Speaking grader against this world's database, with a
+    model that answers `reply` (a fixed grade) or fails. */
+function speakingGrader(w: Awaited<ReturnType<typeof speakingWorld>>, reply: 'grade' | 'fail') {
+  const calls = { model: 0 };
   const criterion = (band: number) => ({ evidence: 'quoted', band, comment: 'A comment.', tip: 'A tip.' });
   const grader = createSpeakingHandler({
     fetch: (async (input: unknown, init?: RequestInit) => {
@@ -588,6 +552,8 @@ test('speaking grader: a trial grade uses the test and returns only the band ste
         const fn = url.slice(`${SUPABASE_URL}/rest/v1/rpc/`.length);
         return new Response(JSON.stringify(await w.db.rpc(fn, JSON.parse(String(init?.body)), { role: 'service_role' })));
       }
+      calls.model += 1;
+      if (reply === 'fail') return new Response('{}', { status: 500 });
       if (url === 'https://api.openai.com/v1/audio/transcriptions') {
         const text = 'I work in a bank and I enjoy it very much.';
         return new Response(JSON.stringify({ text, duration: 40, words: [], segments: [{ type: 'speech', text, speaker: 'A', start: 0, end: 40, id: 'seg_0' }] }));
@@ -611,28 +577,56 @@ test('speaking grader: a trial grade uses the test and returns only the band ste
     }) as typeof fetch,
     sleep: async () => undefined,
   });
-  const clip = { question: 'Tell me about your work.', mimeType: 'audio/mpeg', audioBase64: validMp3(), durationMs: 60000 };
-  const response = await grader.fetch(
-    new Request('https://speaking.test/', {
-      method: 'POST',
-      headers: { Origin: ORIGIN, 'Content-Type': 'application/json', Authorization: 'Bearer token-a' },
-      body: JSON.stringify({
-        kind: 'part1',
-        part1: {topic:'Work',answers:[clip]},
-        trialSitting: 'sit-s-00006',
-        locale: 'ru',
-      }),
-    }),
-    { ALLOWED_ORIGINS: ORIGIN, OPENAI_API_KEY: 'sk-test-dummy', GRADING_SAMPLES: '1', ACCESS_MODE: 'trial', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY: SERVICE_KEY } as never,
-  );
-  const body = (await response.json()) as Record<string, unknown>;
-  assert.equal(response.status, 200, JSON.stringify(body).slice(0, 200));
-  const guides = body.guides as Record<string, BandStepGuide>;
+  const submit = async (token: string | null, body: Record<string, unknown>) => {
+    const headers: Record<string, string> = { Origin: ORIGIN, 'Content-Type': 'application/json' };
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const response = await grader.fetch(
+      new Request('https://speaking.test/', { method: 'POST', headers, body: JSON.stringify(body) }),
+      { ALLOWED_ORIGINS: ORIGIN, OPENAI_API_KEY: 'sk-test-dummy', GRADING_SAMPLES: '1', ACCESS_MODE: 'trial', SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY: SERVICE_KEY } as never,
+    );
+    return { status: response.status, body: (await response.json()) as Record<string, unknown> };
+  };
+  return { submit, calls };
+}
+
+const SPEAKING_CLIP = { question: 'Tell me about your work.', mimeType: 'audio/mpeg', audioBase64: validMp3(), durationMs: 60000 };
+const RECORDED = { kind: 'part1', part1: { topic: 'Work', answers: [SPEAKING_CLIP] } };
+
+test('speaking grader: a free account is refused 402 for recorded practice and for interview feedback, before anything is spent', async () => {
+  const w = await speakingWorld();
+  const { submit, calls } = speakingGrader(w, 'grade');
+  assert.equal((await submit(null, RECORDED)).status, 401);
+  const recorded = await submit('token-a', { ...RECORDED, trialSitting: 'sit-s-00004' });
+  assert.equal(recorded.status, 402);
+  assert.deepEqual([recorded.body.code, recorded.body.reason], ['paid-required', 'paid-required']);
+  const feedback = await submit('token-a', {
+    kind: 'interview',
+    interview: { transcript: [{ role: 'examiner', text: 'Hello' }, { role: 'candidate', text: 'Hi' }], audio: SPEAKING_CLIP },
+    liveSessionId: 'live_not_mine',
+  });
+  assert.equal(feedback.status, 402, 'no interview of their own: paid-required, not an allowance message');
+  assert.equal(feedback.body.code, 'paid-required');
+  assert.equal(calls.model, 0);
+  await w.db.close();
+});
+
+test('speaking grader: a paid grade uses one of the 6 and returns only the band steps it earned, in the student’s language; a failed one gives it back', async () => {
+  const w = await speakingWorld();
+  await buyLive(w);
+  const failing = speakingGrader(w, 'fail');
+  const failed = await failing.submit('token-a', RECORDED);
+  assert.ok(failed.status >= 500, `a failed grade (${failed.status})`);
+  assert.equal(((await w.db.rpc('assessment_balance', {}, { userId: A })) as { speakingUsed: number }).speakingUsed, 0, 'given back');
+
+  const { submit } = speakingGrader(w, 'grade');
+  const graded = await submit('token-a', { ...RECORDED, locale: 'ru' });
+  assert.equal(graded.status, 200, JSON.stringify(graded.body).slice(0, 200));
+  const guides = graded.body.guides as Record<string, BandStepGuide>;
   assert.deepEqual(Object.keys(guides).sort(), ['fluencyCoherence', 'grammaticalRange', 'lexicalResource', 'pronunciation']);
   assert.equal(guides.fluencyCoherence.from, 7);
   assert.equal(guides.pronunciation.from, 5);
   assert.match(guides.fluencyCoherence.whatChanges, /[А-Яа-я]/, 'in Russian');
-  const status = parseTrialStatus(await w.db.rpc('trial_status', {}, { userId: A }))!;
-  assert.equal(status.sections.speaking.test?.status, 'settled', 'the graded interview used the Speaking test');
+  assert.equal(graded.body.trial, undefined, 'no trial test is used');
+  assert.equal(((await w.db.rpc('assessment_balance', {}, { userId: A })) as { speakingUsed: number }).speakingUsed, 1);
   await w.db.close();
 });

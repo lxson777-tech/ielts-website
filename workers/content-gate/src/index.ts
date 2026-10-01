@@ -1,32 +1,44 @@
-/* Cloudflare Worker: the content gate, the trial's locked door.
+/* Cloudflare Worker: the content gate, the commercial build's locked door.
 
    Alex, 23 September 2026: protect the content itself, not only the screen.
-   In a trial build (PUBLIC_ACCESS_MODE=trial) the public site carries no
-   lesson body and no practice paper at all: the pages are shells, and they
-   ask this Worker for their content with the student's sign-in. The content
-   lives in a PRIVATE store (an R2 bucket bound as CONTENT, filled by
-   tools/build-gated-content.mjs), which the public cannot list or read.
+   In the commercial build (PUBLIC_ACCESS_MODE=trial, the name stays) the
+   public site carries no lesson body and no practice paper at all: the
+   pages are shells, and they ask this Worker for their content with the
+   student's sign-in. The content lives in a PRIVATE store (an R2 bucket
+   bound as CONTENT, filled by tools/build-gated-content.mjs), which the
+   public cannot list or read.
 
    Every request is answered by one question to the database
-   (`trial_can_open` in supabase/migrations/2026-09-23-trial.sql, made
-   paid-aware by 2026-09-30-paid-access.sql): may this signed-in student
-   open this item right now? A running paid grant opens every lesson, test,
-   practice set, Writing question, model answer and pack; when it ends the
-   trial's own rules apply again. The browser names only WHAT
-   it wants; WHO is asking comes from the verified sign-in, never from the
-   request. Anything the database cannot answer is refused (fails closed).
+   (`trial_can_open`, which since supabase/migrations/2026-10-01-free-
+   account.sql asks `access_can_open`): may this signed-in student open this
+   item right now? The free-account model (Alex, 1 October 2026,
+   docs/paid-access/FREE-ACCOUNT-MODEL.md):
+     - a lesson (its body in either language, its worked example and its own
+       short quiz, all named `lesson:<key>`) opens for ANY signed-in account
+       with a completed profile;
+     - tests, other practice, packs, Writing questions and the model answer
+       bank open only for paid or complimentary access;
+     - signed out, nothing.
+   The browser names only WHAT it wants; WHO is asking comes from the
+   verified sign-in, never from the request. Anything the database cannot
+   answer is refused (fails closed). Refusals:
+     401 sign-in-required    no valid sign-in
+     403 profile-required    a lesson, but the profile is not completed yet
+     402 paid-required       anything but a lesson, without paid access
+     403 not-included        an item the database does not recognise
+   each as { error, code, reason } (code and reason are the same word).
 
      GET /lesson/<key>?locale=en|ru      a lesson body (HTML)
      GET /test/<id>                      a practice paper or drill (JSON)
      GET /explanations/<locale>/<id>     a paper's translated explanations
      GET /practice/<set id>              a lesson's practice quiz (JSON),
                                          opened with its lesson
-     GET /prompt/<prompt id>             a Writing question (JSON); the
-                                         trial's own essay question opens
-                                         with its Writing test
+     GET /example/<lesson key>           a Writing lesson's one worked
+                                         example, {prompt, model} (JSON),
+                                         opened with its lesson
+     GET /prompt/<prompt id>             a Writing question (JSON), paid
      GET /model/<prompt id>              a Band 8 model answer with its
-                                         question (JSON); the trial's one
-                                         example opens with its lesson
+                                         question (JSON), the bank: paid
      GET /pack/<name>                    one module's paid material (JSON),
                                          for a running paid grant only
      GET /audio/<file>?exp=&sig=         a listening recording, by a signed
@@ -52,8 +64,7 @@
    stops working when it expires; a student who needs longer reloads the
    page and gets a fresh one. */
 
-import { bearer, serviceRpc, verifyAccessToken, TrialServiceError } from '../../../src/lib/trial/gate';
-import { TRIAL_OFFER, TRIAL_WRITING } from '../../../src/lib/trial/offer';
+import { bearer, serviceRpc, verifyAccessToken, TrialServiceError, PAID_REQUIRED_TEXT } from '../../../src/lib/trial/gate';
 
 /** What the handler needs from the private store: R2Bucket.get's shape. A
     ranged read returns just those bytes; `size` is always the whole object. */
@@ -153,23 +164,28 @@ export function route(url: URL): Route {
     if (!match) return null;
     return { kind: 'student', item: `lesson:${match[1]}-${match[2]}`, key: `practice/${parts[1]}.json`, type: json };
   }
-  /* Writing material (Alex, 24 September 2026). The trial includes exactly
-     two pieces: its essay question, which opens with the Writing test, and
-     one Band 8 example, which opens with the Task 2 lesson. Any other
-     question or model is its own item, which the trial does not include. */
+  /* A Writing lesson's one worked example (a Band 8 answer to a real task
+     of the type the lesson teaches, chosen at build time by
+     src/lib/access/lesson-examples.server.ts) opens with its lesson, for
+     any signed-in account. Only that one model: the bank stays paid. */
+  if (parts.length === 2 && parts[0] === 'example' && /^writing-[a-z0-9][a-z0-9-]{0,80}$/.test(parts[1])) {
+    return { kind: 'student', item: `lesson:${parts[1]}`, key: `examples/${parts[1]}.json`, type: json };
+  }
+  /* Writing material (Alex, 24 September 2026; free-account model,
+     1 October 2026). Every Writing question and every Band 8 model answer
+     is its own paid item: the trial's question and example no longer open
+     with a trial test or lesson (the trial is retired). */
   if (parts.length === 2 && parts[0] === 'prompt' && SAFE.test(parts[1])) {
-    const item = parts[1] === TRIAL_WRITING.essayPromptId ? `test:${TRIAL_OFFER.writing.testId}` : `writing-prompt:${parts[1]}`;
-    return { kind: 'student', item, key: `prompts/${parts[1]}.json`, type: json };
+    return { kind: 'student', item: `writing-prompt:${parts[1]}`, key: `prompts/${parts[1]}.json`, type: json };
   }
   if (parts.length === 2 && parts[0] === 'model' && SAFE.test(parts[1])) {
-    const item = parts[1] === TRIAL_WRITING.examplePromptId ? `lesson:${TRIAL_OFFER.writing.lessonKey}` : `writing-model:${parts[1]}`;
-    return { kind: 'student', item, key: `models/${parts[1]}.json`, type: json };
+    return { kind: 'student', item: `writing-model:${parts[1]}`, key: `models/${parts[1]}.json`, type: json };
   }
   /* Paid content (docs/paid-access/CONTRACT.md). A pack is one module's
-     material the trial build's browser does not carry (written by
-     tools/build-gated-content.mjs into packs/<name>.json). Only a running
-     paid grant opens a pack: trial_can_open answers not-included to anyone
-     else, signed out, trial, ended or paid-ended. */
+     material the commercial build's browser does not carry (written by
+     tools/build-gated-content.mjs into packs/<name>.json). Only running paid
+     or complimentary access opens a pack: anyone else is refused
+     paid-required. */
   if (parts.length === 2 && parts[0] === 'pack' && SAFE.test(parts[1])) {
     return { kind: 'student', item: `pack:${parts[1]}`, key: `packs/${parts[1]}.json`, type: json };
   }
@@ -266,11 +282,21 @@ async function serveRecording(
   return new Response(body, { status: range ? 206 : 200, headers });
 }
 
-const REFUSALS: Record<string, [number, string]> = {
-  'trial-required': [403, 'Start your free trial to open this.'],
-  'trial-ended': [403, 'Your trial has ended.'],
-  'not-included': [403, 'This is not included in your trial.'],
+/** The database's reasons, as HTTP. The sentences are also in
+    src/lib/i18n/dict/ru/g-free.ts, so a screen's t(error) shows them in
+    Russian. */
+export const REFUSALS: Record<string, [number, string]> = {
+  'sign-in-required': [401, 'Sign in to open this.'],
+  'profile-required': [403, 'Complete your profile to open the lessons.'],
+  'paid-required': [402, PAID_REQUIRED_TEXT.en],
+  'not-included': [403, 'This is not available.'],
 };
+
+function refuseReason(reason: unknown, cors: Record<string, string>): Response {
+  const known = typeof reason === 'string' && reason in REFUSALS ? reason : 'not-included';
+  const [status, message] = REFUSALS[known]!;
+  return reply(JSON.stringify({ error: message, code: known, reason: known }), status, 'application/json; charset=utf-8', cors);
+}
 
 export function createHandler(deps: Deps): { fetch(request: Request, env: Env): Promise<Response> } {
   async function handle(request: Request, env: Env): Promise<Response> {
@@ -304,13 +330,10 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
 
     try {
       const userId = token ? await verifyAccessToken(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, token) : null;
-      if (!userId) return refuse(401, 'sign-in-required', 'Sign in to open this.', cors);
+      if (!userId) return refuseReason('sign-in-required', cors);
       const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
       const answer = await rpc('trial_can_open', { p_user: userId, p_item: target.item });
-      if (answer.ok !== true) {
-        const [status, message] = REFUSALS[String(answer.reason)] ?? REFUSALS['not-included'];
-        return refuse(status, String(answer.reason ?? 'not-included'), message, cors);
-      }
+      if (answer.ok !== true) return refuseReason(answer.reason, cors);
     } catch (err) {
       if (!(err instanceof TrialServiceError)) console.error('content-gate: unexpected failure');
       return refuse(503, 'unavailable', 'The content could not be checked just now. Try again shortly.', cors);
@@ -320,7 +343,7 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
     if (!object) return refuse(404, 'not-found', 'Not found.', cors);
     let text = await object.text();
     /* A paper or quiz the student may open: its recordings become signed
-       links of this gate, so a trial build needs no public audio. */
+       links of this gate, so a commercial build needs no public audio. */
     if (target.key.startsWith('tests/') || target.key.startsWith('practice/') || target.key.startsWith('packs/')) {
       text = await signRecordings(text, env, env.AUDIO_BASE_URL ?? url.origin, nowMs);
     }

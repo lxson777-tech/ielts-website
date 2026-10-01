@@ -7,22 +7,22 @@
  * src/content/lesson-bodies, English and Russian), takes a few distinctive
  * phrases from each, and searches every file under a build folder for them.
  *
- *   node --import ./tests/ts-extension-loader.mjs tools/trial-content-audit.mjs [dist] [--json] [--no-lesson-exclusion]
+ *   node --import ./tests/ts-extension-loader.mjs tools/trial-content-audit.mjs [dist] [--json]
  *
- * --no-lesson-exclusion drops the allowance for a public lesson's own prose
- * and its one worked example, to list what that allowance hides (a review
- * run, not the release check).
+ * THE FREE-ACCOUNT MODEL (Alex, 1 October 2026,
+ * docs/paid-access/FREE-ACCOUNT-MODEL.md): lessons are behind the door
+ * again. A signed-out page carries no lesson body, no worked example and no
+ * lesson quiz; a signed-in account fetches them through the content gate.
+ * So every lesson body (English and Russian), every Writing lesson's worked
+ * example (a model answer and its question, with its chart) and every lesson
+ * quiz is checked in EVERY public file, like the papers. The 1 October
+ * allowance for a public lesson's own prose and its one worked example (and
+ * its --no-lesson-exclusion review switch) is removed.
  *
- * Recorded run, 1 October 2026 (review P2-8, gated build of 4ac68c3, 1,594
- * phrases from 70 papers and 479 supporting items): with the exclusion, 0
- * leaking files. Without it, 11 LEAK findings, all on 7 public Writing
- * lessons (advantages, charts, discussion, maps, method, opinion, process;
- * the rest are single shared lines): every prompt phrase found is in that
- * lesson's own public prose or its one worked example, and each of the
- * four Task 1 lessons carries exactly ONE chart, its own example's
- * (charts, method: wt-132; maps: wt-130; process: wt-131). No private chart
- * sits beside a public one. Since this change every chart in a file is
- * checked, not only the first.
+ * Earlier recorded run, 1 October 2026 (review P2-8, gated build of 4ac68c3,
+ * when lessons were briefly public): with that allowance 0 leaking files;
+ * without it 11 LEAK findings, all on the 7 then-public Writing lessons.
+ * Every chart in a file is checked, not only the first.
  *
  * Phrases are runs of plain words (letters, digits, spaces), so they survive
  * however a page stores text: inside HTML, inside an island's JSON props,
@@ -53,18 +53,11 @@
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, resolve, dirname, relative, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { lessonExample } from '../src/lib/access/lesson-examples.server.ts';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const DIST = resolve(REPO, args.find((a) => !a.startsWith('--')) ?? 'dist');
 const AS_JSON = args.includes('--json');
-/* --no-lesson-exclusion: check public lessons like every other file, with no
-   allowance for their own prose or their one worked example. A one-off
-   review run (review P2-8, 1 October 2026) to list exactly what the
-   exclusion hides; its findings are expected and are not a failure on
-   their own. */
-const NO_LESSON_EXCLUSION = args.includes('--no-lesson-exclusion');
 /* Named exceptions, each with its reason (tools/trial-content-allowed.json). */
 const ALLOWED = JSON.parse(readFileSync(resolve(REPO, 'tools/trial-content-allowed.json'), 'utf8')).allowed.map((a) => ({
   file: new RegExp(a.file),
@@ -117,9 +110,25 @@ async function sentinels() {
     for (const file of readdirSync(dir)) {
       if (!file.endsWith('.html')) continue;
       const slug = file.replace(/\.html$/, '');
-      for (const p of phrases(readFileSync(join(dir, file), 'utf8'), 3)) {
-        // Public teaching prose is not a protected-content sentinel.
+      /* Eight tries per lesson (the papers take two per part): teaching prose
+         is broken by headings, lists and examples, so fewer tries leave some
+         lessons with a single phrase, and one phrase alone is only SHARED.
+         Free-account model, 1 October 2026: a lesson body in a signed-out
+         page must be caught, not merely noticed. */
+      for (const p of phrases(readFileSync(join(dir, file), 'utf8'), 8)) {
+        list.push({ kind: dir === bodies ? 'lesson' : 'lesson-ru', id: slug, phrase: p });
       }
+    }
+  }
+  /* Each Reading and Listening lesson's own short quiz (src/data/*-practice
+     .ts): its questions and explanations. Their passages are the papers',
+     already checked above. */
+  const { READING_PRACTICE } = await import('../src/data/reading-practice.ts');
+  const { LISTENING_PRACTICE } = await import('../src/data/listening-practice.ts');
+  for (const [skill, sets] of [['reading', READING_PRACTICE], ['listening', LISTENING_PRACTICE]]) {
+    for (const [slug, set] of Object.entries(sets)) {
+      const asked = (set.units ?? []).flatMap((unit) => (unit.questions ?? []).map((q) => `${q.prompt ?? ''} ${q.explanation ?? ''}`)).join(' ');
+      for (const p of phrases(asked, 3)) list.push({ kind: 'quiz', id: `${skill}-${slug}`, phrase: p });
     }
   }
   await materialSentinels(list);
@@ -246,13 +255,10 @@ async function main() {
   const charts = chartSentinels();
   for (const path of files(DIST)) {
     const raw = readFileSync(path, 'utf8');
-    const publicLesson = /^lessons\/writing\/([a-z0-9-]+)\.html$/.exec(relative(DIST, path).replace(/\\/g, '/'));
-    const example = publicLesson && !NO_LESSON_EXCLUSION ? lessonExample(publicLesson[1]) : null;
-    const publicExampleText = example ? decodeFile(JSON.stringify(example)) : '';
-    /* EVERY chart in the file, not only the first (review P2-8): a lesson's
-       own public example chart must not hide a private one next to it. */
-    const exampleJson = example ? JSON.stringify(example) : '';
-    const leakedCharts = charts.filter((c) => raw.includes(c.head) && !exampleJson.includes(c.head));
+    /* EVERY chart in the file, not only the first (review P2-8). A worked
+       example's chart is no exception any more: it is fetched through the
+       door with its lesson. */
+    const leakedCharts = charts.filter((c) => raw.includes(c.head));
     if (leakedCharts.length) {
       found.push({
         file: relative(DIST, path).replace(/\\/g, '/'),
@@ -262,15 +268,7 @@ async function main() {
       });
     }
     const text = decodeFile(raw);
-    const rel = relative(DIST, path).replace(/\\/g, '/');
-    const translated = /^lesson-bodies\/(ru)\/([a-z0-9-]+)\.html$/.exec(rel);
-    const lessonPath = /^lessons\/([a-z0-9/-]+)\.html$/.exec(rel);
-    const bodyFile = translated ? join(REPO, 'src/content/lesson-bodies', translated[1], `${translated[2]}.html`) : lessonPath ? join(REPO, 'src/content/lesson-bodies', `${lessonPath[1].replaceAll('/', '-')}.html`) : null;
-    const publicProse = bodyFile && existsSync(bodyFile) && !NO_LESSON_EXCLUSION ? decodeFile(readFileSync(bodyFile, 'utf8')) : '';
-    // The one selected worked example is public on its own lesson only.
-    // All other prompts/models and every protected paper remain checked.
-    const hits = marks.filter((m) => text.includes(m.phrase) && !publicProse.includes(m.phrase) &&
-      !(example && ['model', 'prompt'].includes(m.kind) && publicExampleText.includes(m.phrase)));
+    const hits = marks.filter((m) => text.includes(m.phrase));
     if (hits.length) {
       const perItem = new Map();
       for (const h of hits) perItem.set(`${h.kind}:${h.id}`, (perItem.get(`${h.kind}:${h.id}`) ?? 0) + 1);
@@ -290,8 +288,10 @@ async function main() {
     build: relative(REPO, DIST) || '.',
     phrasesChecked: marks.length,
     tests: new Set(marks.filter((m) => m.kind === 'test' || m.kind === 'answers').map((m) => m.id)).size,
-    material: new Set(marks.filter((m) => !['test', 'answers', 'lesson', 'lesson-ru'].includes(m.kind)).map((m) => `${m.kind}:${m.id}`)).size,
+    material: new Set(marks.filter((m) => !['test', 'answers', 'lesson', 'lesson-ru', 'quiz'].includes(m.kind)).map((m) => `${m.kind}:${m.id}`)).size,
     lessonBodies: new Set(marks.filter((m) => m.kind.startsWith('lesson')).map((m) => `${m.kind}:${m.id}`)).size,
+    lessonPhrases: marks.filter((m) => m.kind.startsWith('lesson')).length,
+    lessonQuizzes: new Set(marks.filter((m) => m.kind === 'quiz').map((m) => m.id)).size,
     filesLeaking: found.filter((f) => f.verdict === 'LEAK').length,
     filesSharingALine: found.filter((f) => f.verdict === 'SHARED').length,
     filesAllowed: found.filter((f) => f.verdict === 'ALLOWED').length,
@@ -300,7 +300,7 @@ async function main() {
   if (AS_JSON) console.log(JSON.stringify(summary, null, 2));
   else {
     console.log(
-      `Checked ${summary.phrasesChecked} phrases from ${summary.tests} papers, ${summary.lessonBodies} lesson bodies and ${summary.material} pieces of supporting material against ${summary.build}.`,
+      `Checked ${summary.phrasesChecked} phrases from ${summary.tests} papers, ${summary.lessonBodies} lesson bodies (${summary.lessonPhrases} phrases), ${summary.lessonQuizzes} lesson quizzes and ${summary.material} pieces of supporting material (worked examples among the models) against ${summary.build}.`,
     );
     console.log(
       `${summary.filesLeaking} file(s) leak locked content; ${summary.filesSharingALine} share a single line; ${summary.filesAllowed} named exception(s).`,

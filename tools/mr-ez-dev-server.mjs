@@ -99,6 +99,23 @@
  *     {email} ends that student's paid access now; GET /__trial/state lists
  *     orders and grants too.
  *   No money moves, and every screen says SIMULATED.
+ *
+ *   THE FREE-ACCOUNT MODEL (docs/paid-access/FREE-ACCOUNT-MODEL.md), also
+ *   only with --trial: every migration a project runs is loaded, ending with
+ *   supabase/migrations/2026-10-01-free-account.sql, so a signed-in account
+ *   with a completed profile opens every lesson through /content, practice
+ *   and AI answer 402 paid-required, and the trial is refused.
+ *   - Profiles saved through /rest/v1/student_profiles are copied into the
+ *     database too, because the lesson door asks for a completed profile.
+ *   - The STAND-IN admin is the account that signs up as
+ *     MR_EZ_STAND_IN_ADMIN (default admin@example.test): it is added to
+ *     public.admins, so /admin and the complimentary-access functions work
+ *     for it exactly as they do for Alex, and refuse everyone else.
+ *   - POST /__access/complimentary {email, action: give|renew|stop}, a
+ *     STAND-IN TEST HELPER: runs the real admin function
+ *     access_admin_complimentary as the stand-in admin, for scripts. The
+ *     browser's admin panel calls the same function itself.
+ *   - GET /__trial/state lists every grant with its kind.
  */
 
 import { createServer } from 'node:http';
@@ -117,6 +134,31 @@ if (LIVE && TRIAL) {
 }
 /** The trial migration in PGlite, only with --trial. */
 let trialDb = null;
+/** STAND-IN ONLY: the account that becomes an admin in the local database
+    when it signs up (see the header). Synthetic, never a real address. */
+const STAND_IN_ADMIN = String(process.env.MR_EZ_STAND_IN_ADMIN || 'admin@example.test').trim().toLowerCase();
+
+/** Copies a saved profile into the local database (the free account's
+    lesson door asks access_profile_complete there). The database's own
+    trigger checks it again. Only with --trial. */
+async function mirrorProfile(row) {
+  if (!trialDb || !row?.user_id) return;
+  try {
+    await trialDb.raw.query(
+      `insert into public.student_profiles
+         (user_id, first_name, last_name, date_of_birth, phone, city, occupation, source, parent_name, parent_phone, parent_consent_at)
+       values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+       on conflict (user_id) do update set
+         first_name = excluded.first_name, last_name = excluded.last_name, date_of_birth = excluded.date_of_birth,
+         phone = excluded.phone, city = excluded.city, occupation = excluded.occupation, source = excluded.source,
+         parent_name = excluded.parent_name, parent_phone = excluded.parent_phone, parent_consent_at = excluded.parent_consent_at`,
+      [row.user_id, row.first_name, row.last_name, row.date_of_birth, row.phone, row.city, row.occupation, row.source,
+        row.parent_name ?? null, row.parent_phone ?? null, row.parent_consent_at ?? null],
+    );
+  } catch (err) {
+    console.error('stand-in: could not copy a profile into the local database', err?.message ?? err);
+  }
+}
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 /* ── In-memory database ────────────────────────────────────────────────── */
@@ -255,6 +297,8 @@ async function handleAuth(req, res, url) {
       user_metadata: { full_name: 'Aigerim Google', given_name: 'Aigerim', family_name: 'Google', provider: 'google' },
     };
     db.users.set(email, user);
+    // The local database needs the account too (access checks, profile).
+    if (trialDb) await trialDb.addUser(user.id, email);
     const s = session(user);
     const back = url.searchParams.get('redirect_to') || 'http://127.0.0.1:4321/';
     const fragment = new URLSearchParams({
@@ -281,7 +325,11 @@ async function handleAuth(req, res, url) {
     // account's user_metadata, as in the real project.
     if (body.data && typeof body.data === 'object') user.user_metadata = { ...(user.user_metadata ?? {}), ...body.data };
     db.users.set(email, user);
-    if (trialDb) await trialDb.addUser(user.id, email);
+    if (trialDb) {
+      await trialDb.addUser(user.id, email);
+      // STAND-IN ONLY: the one local admin (see the header).
+      if (email === STAND_IN_ADMIN) await trialDb.makeAdmin(user.id, 'stand-in admin (local only)');
+    }
     return send(res, 200, session(user));
   }
 
@@ -455,6 +503,15 @@ async function handleRpc(req, res, fn) {
       ? { role: 'authenticated', userId: caller }
       : { role: 'anon' };
   try {
+    /* admin_list_users returns a table (one row per account), which
+       PostgREST answers as a JSON array; every other function here returns
+       one value. The local database's user_state is empty (this server keeps
+       study progress in memory), so the counts read zero: labelled a
+       stand-in in the panel's own data, not hidden. */
+    if (fn === 'admin_list_users') {
+      const rows = await trialDb.select('select * from public.admin_list_users()', [], opts);
+      return send(res, 200, rows);
+    }
     const result = await trialDb.rpc(fn, args, opts);
     /* PostgREST answers a function that returns SQL null with the JSON
        literal `null`, not an empty body (send() writes '' for null, which
@@ -702,6 +759,7 @@ async function handleRest(req, res, url) {
         const result = guardProfileRow({ ...(existing ?? {}), ...item }, existing);
         if (result.error) return send(res, 400, { code: '23514', message: result.error });
         db.profiles.set(result.row.user_id, result.row);
+        await mirrorProfile(result.row);
         written.push(result.row);
       }
       if (!prefer.includes('return=representation')) return send(res, 201, null);
@@ -759,6 +817,7 @@ async function handleRest(req, res, url) {
       const result = guardProfileRow({ ...existing, ...body, user_id: owner }, existing);
       if (result.error) return send(res, 400, { code: '23514', message: result.error });
       db.profiles.set(owner, result.row);
+      await mirrorProfile(result.row);
       const prefer = String(req.headers.prefer ?? '');
       if (!prefer.includes('return=representation')) return send(res, 204, null);
       return send(res, 200, wantsObject(req) ? result.row : [result.row]);
@@ -2050,6 +2109,30 @@ const server = createServer(async (req, res) => {
       await trialDb.rewind(user.id, Number(body.minutes) || 0);
       return send(res, 200, { rewound: user.email, minutes: Number(body.minutes) || 0 });
     }
+    if (url.pathname === '/__access/complimentary' && req.method === 'POST') {
+      /* STAND-IN TEST HELPER (local only, never a site route): runs the real
+         admin function as the stand-in admin, for scripts. The admin panel
+         in the browser calls the same function with Alex's own sign-in. */
+      if (!trialDb) return send(res, 404, { message: 'start with --trial' });
+      const body = await readBody(req);
+      const user = db.users.get(String(body.email ?? '').trim().toLowerCase());
+      if (!user) return send(res, 404, { message: 'no such local user' });
+      const action = String(body.action ?? '');
+      if (!['give', 'renew', 'stop'].includes(action)) return send(res, 400, { message: 'action must be give, renew or stop' });
+      let admin = db.users.get(STAND_IN_ADMIN);
+      if (!admin) {
+        admin = { id: randomUUID(), email: STAND_IN_ADMIN, password: randomUUID(), user_metadata: {} };
+        db.users.set(STAND_IN_ADMIN, admin);
+        await trialDb.addUser(admin.id, STAND_IN_ADMIN);
+      }
+      await trialDb.makeAdmin(admin.id, 'stand-in admin (local only)');
+      const result = await trialDb.rpc(
+        'access_admin_complimentary',
+        { p_user: user.id, p_action: action, p_note: typeof body.note === 'string' ? body.note : 'stand-in helper' },
+        { role: 'authenticated', userId: admin.id },
+      );
+      return send(res, 200, { standIn: true, email: user.email, ...result });
+    }
     if (url.pathname === '/__trial/state') {
       if (!trialDb) return send(res, 404, { message: 'start with --trial' });
       const emailOf = (id) => [...db.users.values()].find((u) => u.id === id)?.email ?? id;
@@ -2065,7 +2148,7 @@ const server = createServer(async (req, res) => {
         { role: 'service_role' },
       );
       const grants = await trialDb.select(
-        'select id, user_id, order_id, plan_id, starts_at, ends_at, revoked_at, (revoked_at is null and starts_at <= now() and ends_at > now()) as running from public.access_grants order by starts_at',
+        'select id, user_id, kind, order_id, plan_id, starts_at, ends_at, revoked_at, stopped_at, granted_by, note, (revoked_at is null and starts_at <= now() and ends_at > now()) as running from public.access_grants order by starts_at',
         [],
         { role: 'service_role' },
       );
@@ -2073,7 +2156,13 @@ const server = createServer(async (req, res) => {
         accounts: accounts.map((a) => ({ ...a, email: emailOf(a.user_id) })),
         usage: usage.map((u) => ({ ...u, email: emailOf(u.user_id) })),
         orders: orders.map((o) => ({ ...o, email: emailOf(o.user_id) })),
-        grants: grants.map((g) => ({ ...g, email: emailOf(g.user_id) })),
+        grants: grants.map((g) => ({ ...g, email: emailOf(g.user_id), grantedByEmail: g.granted_by ? emailOf(g.granted_by) : null })),
+        tiers: await Promise.all(
+          [...db.users.values()].map(async (u) => ({
+            email: u.email,
+            tier: (await trialDb.select('select public.access_tier($1) as tier', [u.id], { role: 'service_role' }).catch(() => [{ tier: null }]))[0]?.tier ?? null,
+          })),
+        ),
       });
     }
     if (url.pathname === '/__force') {
@@ -2139,6 +2228,9 @@ server.listen(PORT, '127.0.0.1', () => {
     console.log('  Live examiner     : /live  (real Worker, ACCESS_MODE=trial, SIMULATED session, no voice call)');
     console.log('  Speaking grader   : /grade-speaking  (real Worker, ACCESS_MODE=trial, SIMULATED assessment)');
     console.log('  Payments          : /payments  (real Worker, SIMULATED provider at /__pay, no money moves)');
+    console.log(`  Free accounts     : lessons open with a profile; practice and AI 402 paid-required; trial retired`);
+    console.log(`  Stand-in admin    : ${STAND_IN_ADMIN} (sign up with it; /admin and complimentary access, local only)`);
+    console.log('  Test helper       : POST /__access/complimentary {email, action}  (STAND-IN ONLY)');
   } else if (LIVE) {
     console.log('  Tutor             : /tutor  *** LIVE: real Worker, real model, REAL MONEY ***');
     console.log('                      roughly $0.0005 per message');
