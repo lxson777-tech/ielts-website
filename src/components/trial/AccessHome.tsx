@@ -108,7 +108,18 @@ export default function AccessHome({ page }: { page: AccessHomePage; sections?: 
 
   if (!paid) {
     if (tier === 'signed-out' && trial.phase !== 'no-accounts') {
-      return page === 'dashboard' ? <LessonInvite title="Your IELTS course" what="page" /> : <CourseMap signedOut />;
+      /* Today for a visitor: the invitation, then the course's lesson titles,
+         so they see what a free account opens (free-account verification,
+         1 October 2026, finding 5). Each title still opens only the
+         invitation until they sign up. */
+      return page === 'dashboard' ? (
+        <>
+          <LessonInvite title="Your IELTS course" what="page" />
+          <CourseMap signedOut />
+        </>
+      ) : (
+        <CourseMap signedOut />
+      );
     }
     const account = accountBlock(trial);
     if (account === 'checking') return <PaidLoading />;

@@ -12,6 +12,7 @@
 
 import { useCallback, useEffect, useId, useState } from 'react';
 import {
+  accessRunsUntil,
   allowanceLines,
   availableActions,
   changeComplimentary,
@@ -20,6 +21,7 @@ import {
   dayLabel,
   kindLabel,
   loadAccountAccess,
+  periodsQueued,
   refusalText,
   tierSentence,
   type AccountAccess,
@@ -91,6 +93,8 @@ export default function StudentAccess({ userId, onChanged }: { userId: string; o
   const grant = currentGrant(access.grants);
   const actions = availableActions(access);
   const waiting = grant && !grant.running && Date.parse(grant.startsAt) > Date.now();
+  const runsUntil = accessRunsUntil(access.grants);
+  const queued = periodsQueued(access.grants);
 
   return (
     <section className="admin-access" aria-label="Access">
@@ -114,6 +118,17 @@ export default function StudentAccess({ userId, onChanged }: { userId: string; o
                 <span className="admin-kv-sub">From {dayLabel(grant.startsAt)}</span>
               </dd>
             </div>
+            {runsUntil && runsUntil !== grant.endsAt && (
+              <div>
+                <dt>Access runs until</dt>
+                <dd>
+                  {dayLabel(runsUntil)}
+                  <span className="admin-kv-sub">
+                    {queued === 1 ? '1 more period queued after this one' : `${queued} more periods queued after this one`}
+                  </span>
+                </dd>
+              </div>
+            )}
             {grant.kind === 'complimentary' && (
               <div>
                 <dt>Given by</dt>

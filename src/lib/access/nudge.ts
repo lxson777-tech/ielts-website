@@ -7,10 +7,13 @@
    - only when the student has just FINISHED a lesson: pressed "Mark this
      lesson as studied", or checked every part of the lesson's own quiz.
      Both sit at the end of the lesson, so it is never shown mid-reading;
-   - once per account, ever: remembered under the account's own key on this
-     device (src/lib/store-owner.ts naming), and marked the moment it is
-     shown, so dismissing it, reloading or finishing a second lesson never
-     brings it back.
+   - once per account, ever: only for the account's FIRST finished lesson,
+     judged from its lesson progress, which is saved to the account and the
+     same on every device (user_state.progress), so a second device that
+     finishes another lesson does not show it again (free-account
+     verification, 1 October 2026, finding 3). It is also remembered under
+     the account's own key on this device and marked the moment it is shown,
+     so dismissing it or reloading never brings it back.
 
    The decision is pure (shouldNudge) so it is tested without a browser; the
    rest is two small browser helpers. */
@@ -40,8 +43,12 @@ export function shouldNudge(input: {
   storage: BrowserStorage | null;
   /** A timed paper or check is running on this page. */
   underExam?: boolean;
+  /** Lessons this account had already finished before the one just
+      finished (from its synced progress). Any at all: not the first. */
+  finishedBefore?: number;
 }): boolean {
   if (input.tier !== 'free' || !input.userId || input.underExam) return false;
+  if ((input.finishedBefore ?? 0) > 0) return false;
   /* No storage (a private window that refuses it): showing it on every
      finished lesson would break "once", so it is not shown at all. */
   if (!input.storage) return false;

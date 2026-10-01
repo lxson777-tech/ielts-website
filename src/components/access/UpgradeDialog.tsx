@@ -29,6 +29,7 @@ import { LESSON_FINISHED_EVENT, markNudgeShown, shouldNudge } from '../../lib/ac
 import { PITCH_PRICE_LINE, pitchPlan, pitchPrice, upgradePitch } from '../../lib/access/upgrade-pitch';
 import { trialView } from '../../lib/trial/client';
 import { deviceStorage } from '../../lib/store-owner';
+import { getProgress } from '../../lib/progress';
 import { signUpHref } from '../../lib/auth/profile';
 import { useT } from '../../lib/i18n/react';
 import { withBase } from '../../lib/url';
@@ -73,13 +74,17 @@ export default function UpgradeDialog() {
     const off = onUpgrade(show);
 
     let timer = 0;
-    const onFinished = () => {
+    const onFinished = (event: Event) => {
+      const finishedKey = (event as CustomEvent<string>).detail;
       window.clearTimeout(timer);
       timer = window.setTimeout(() => {
         const view = trialView();
         const storage = deviceStorage();
         const underExam = document.body.dataset.examRunning === 'true';
-        if (!shouldNudge({ tier: currentTier(), userId: view.userId, storage, underExam })) return;
+        /* The account's synced lesson progress decides "first": any lesson
+           finished before this one, on any device, means it is not. */
+        const finishedBefore = Object.keys(getProgress().lessons).filter((key) => key !== finishedKey).length;
+        if (!shouldNudge({ tier: currentTier(), userId: view.userId, storage, underExam, finishedBefore })) return;
         markNudgeShown(storage, view.userId!, new Date().toISOString());
         show({ feature: 'first-lesson' });
       }, NUDGE_DELAY_MS);

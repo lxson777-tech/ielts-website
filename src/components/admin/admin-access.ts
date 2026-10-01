@@ -140,6 +140,21 @@ export function currentGrant(grants: AdminGrant[], nowMs: number = Date.now()): 
   return [...grants].sort((a, b) => Date.parse(b.endsAt) - Date.parse(a.endsAt))[0] ?? null;
 }
 
+/** When access runs out once every period already given or bought has run:
+    the latest end among live grants (a Renew queues another 30 days after the
+    current one, so the current grant's own end is not the answer). Null when
+    nothing is running or waiting. */
+export function accessRunsUntil(grants: AdminGrant[], nowMs: number = Date.now()): string | null {
+  const ahead = grants.filter((g) => !g.revokedAt && !g.stoppedAt && Date.parse(g.endsAt) > nowMs);
+  if (ahead.length === 0) return null;
+  return ahead.reduce((latest, g) => (Date.parse(g.endsAt) > Date.parse(latest) ? g.endsAt : latest), ahead[0]!.endsAt);
+}
+
+/** Periods waiting to start after the current one. */
+export function periodsQueued(grants: AdminGrant[], nowMs: number = Date.now()): number {
+  return grants.filter((g) => !g.revokedAt && !g.stoppedAt && Date.parse(g.startsAt) > nowMs).length;
+}
+
 export function kindLabel(kind: GrantKind): string {
   return kind === 'complimentary' ? 'Free access (given by you)' : 'Paid';
 }

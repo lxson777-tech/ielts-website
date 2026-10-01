@@ -36,6 +36,11 @@
 .platform-hub .group:hover{transform:translateY(-2px)}
 .platform-hub .skill-speaking span.inline-flex{color:var(--color-ink-muted)!important;background:var(--color-surface-alt)!important}
 .platform-hub .skill-speaking a:not([class*="bg-"]){color:var(--color-brand,#e76f51)}
+/* Small phones: a catalogue row (number, name, "Unseen" badge) did not fit
+   in Russian at 320px and the whole Tests page scrolled 27px sideways
+   (free-account verification, 1 October 2026). The column may shrink, and the
+   badge moves under the name instead of pushing past the screen. */
+@media (max-width:420px){.test-catalog-columns{grid-template-columns:minmax(0,1fr)}.test-catalog-group li a{flex-wrap:wrap;row-gap:4px}.test-catalog-group li a .test-name{flex-basis:calc(100% - 32px)}.test-catalog-group li a .checkpoint-badge{margin-left:32px}}
 @media (max-width:760px){.test-catalog-heading{display:block}.test-catalog-heading>p{margin-top:8px}.test-catalog-columns{grid-template-columns:1fr}.test-meta{display:none}.platform-hub{padding-top:32px;padding-bottom:56px}.platform-hub>div.grid>div>div:first-of-type{height:72px}}
 
 /* The "Today" card on /dashboard (src/components/plan/PlanToday.tsx): the

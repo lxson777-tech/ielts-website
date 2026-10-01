@@ -158,6 +158,13 @@ test('the first-lesson nudge: a free account only, once, never during a timed ch
   assert.notEqual(nudgeKeyFor('u-1'), nudgeKeyFor('u-2'));
 });
 
+test('the first-lesson nudge is per account across devices: a fresh device whose synced progress shows an earlier lesson stays quiet', () => {
+  const freshDevice = memory();
+  assert.equal(shouldNudge({ tier: 'free', userId: 'u-1', storage: freshDevice, finishedBefore: 0 }), true, 'the first lesson of this account');
+  assert.equal(shouldNudge({ tier: 'free', userId: 'u-1', storage: freshDevice, finishedBefore: 1 }), false, 'not the first lesson of this account');
+  assert.equal(shouldNudge({ tier: 'free', userId: 'u-1', storage: freshDevice, finishedBefore: 7 }), false);
+});
+
 test('the nudge listens only for the two ends of a lesson, and the dialog never opens for practice and guidance', () => {
   const layout = read('src/layouts/LessonLayout.astro');
   assert.match(layout, /if \(isTrialBuild\(\)\) announceLessonFinished\(slug\);/, '"Mark this lesson as studied" announces it, gated build only');
