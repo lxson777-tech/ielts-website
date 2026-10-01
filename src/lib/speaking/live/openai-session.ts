@@ -389,13 +389,25 @@ export class OpenAiLiveSession {
   }
 }
 
-/** The live examiner refused a trial session (a code from
-    src/lib/trial/gate.ts, e.g. 'trial-sessions-used'). Nothing was paid for. */
+/** What an interview is for, when it is not an ordinary live interview. */
+export type LiveSessionPurpose = 'placement' | 'mock';
+/** The request field that carries it. ALIGN AT MERGE with Builder M. */
+export const LIVE_PURPOSE_FIELD = 'purpose';
+
+/* Which codes are refusals: src/lib/writing/refusal-code.ts. */
+export { isLiveRefusalCode } from '../../writing/refusal-code';
+import { isLiveRefusalCode } from '../../writing/refusal-code';
+
+/** The live examiner refused a session: a trial code or an allowance code
+    (isLiveRefusalCode). Nothing was paid for. */
 export class LiveTrialRefusal extends Error {
   readonly code: string;
-  constructor(code: string, message: string) {
+  /** The server's reason for an allowance refusal (see GraderRefusal). */
+  readonly reason: string;
+  constructor(code: string, message: string, reason = '') {
     super(message);
     this.code = code;
+    this.reason = reason;
     this.name = 'LiveTrialRefusal';
   }
 }
@@ -412,6 +424,14 @@ export interface WebRtcConnectOptions {
       which the Worker checks (and counts) before it pays for a session. Not
       sent at all on the open site. */
   trialSitting?: string;
+  /** A gated build only: this interview is the placement test's or a full
+      mock exam's, so it should not use one of the 2 live interviews of a
+      30-day purchase (Alex, 1 October 2026). The server decides and
+      enforces which allowance it uses (once per account for placement, 2
+      per purchase for mocks); this field only says what the student
+      started. Not sent on the open site. ALIGN AT MERGE: the field name is
+      LIVE_PURPOSE_FIELD. */
+  purpose?: LiveSessionPurpose;
   onRemoteStream(stream: MediaStream): void;
   iceTimeoutMs?: number;
   /** Asked before anything is made, immediately before the request that
@@ -568,13 +588,20 @@ export async function connectWebRtc(
       const resp = await fetch(opts.endpoint, {
         method: 'POST',
         headers,
-        body: JSON.stringify(opts.trialSitting ? { sdp, plan: opts.plan, trialSitting: opts.trialSitting } : { sdp, plan: opts.plan }),
+        body: JSON.stringify({
+          sdp,
+          plan: opts.plan,
+          ...(opts.trialSitting ? { trialSitting: opts.trialSitting } : {}),
+          ...(opts.purpose ? { [LIVE_PURPOSE_FIELD]: opts.purpose } : {}),
+        }),
       });
       if (!resp.ok) {
-        const body = (await resp.json().catch(() => null)) as { error?: string; code?: string } | null;
-        /* The trial's refusals carry a code the screen words itself. */
-        if (resp.status === 403 && typeof body?.code === 'string' && body.code.startsWith('trial-')) {
-          throw new LiveTrialRefusal(body.code, body.error ?? 'Your trial does not include this session.');
+        const body = (await resp.json().catch(() => null)) as { error?: string; code?: string; reason?: string } | null;
+        /* The trial's and the allowance's refusals carry a code the screen
+           words itself (an 'assessment-*' or 'allowance-*' code is a used-up
+           allowance, never an outage: review of 1 October 2026, P1-2). */
+        if (resp.status >= 400 && resp.status < 500 && typeof body?.code === 'string' && isLiveRefusalCode(body.code)) {
+          throw new LiveTrialRefusal(body.code, body.error ?? 'Your trial does not include this session.', typeof body.reason === 'string' ? body.reason : '');
         }
         // A 400 here means the Worker rejected the plan, which in practice only
         // happens when the site ships a question bank the deployed Worker does

@@ -10,7 +10,9 @@ import TrialBlock from './trial/TrialBlock';
    transcript — so Pronunciation can be judged from what was really said. */
 
 import { useTrialTest } from './trial/useTrialTest';
-import { refreshTrial } from '../lib/trial/client';
+import { refreshTrial, serverNow, trialView } from '../lib/trial/client';
+import { GraderRefusal } from '../lib/writing/grader';
+import { isAssessmentRefusalCode, refusalIsFinal, refusalKind, refusalMessage, refusalOffersPlans } from './access/assessment-refusal';
 import { TRIAL_RECORDED_TOPIC } from '../lib/trial/recorded-topic';
 import { useEffect, useRef, useState } from 'react';
 import type { AnsweredClip, SpeakingAttempt, SpeakingGradeResult, TopicVocab } from '../lib/speaking/schema';
@@ -108,7 +110,7 @@ const SESSION_CLOSED_NOTICE = nt(
 export default function SpeakingTester({ trialRecorded = false }: { trialRecorded?: boolean }) {
   const trialTest = useTrialTest('speaking-test', !trialRecorded);
   const trialSittingRef = useRef<string | null>(null);
-  const { t, tn } = useT();
+  const { t, tn, locale } = useT();
   const [mode, setMode] = useState<Mode | null>(null);
   const [promptTitle, setPromptTitle] = useState('');
   const [phase, setPhase] = useState<Phase>('menu');
@@ -119,6 +121,10 @@ export default function SpeakingTester({ trialRecorded = false }: { trialRecorde
   const [elapsedMs, setElapsedMs] = useState(0);
   const [notes, setNotes] = useState('');
   const [micError, setMicError] = useState<string | null>(null);
+  /** The grading error is a deliberate refusal (an allowance used, the
+      trial over): 'final' hides "Try grading again", which would only be
+      refused again, and 'plans' shows the way forward. */
+  const [refusal, setRefusal] = useState<{ final: boolean; plans: boolean } | null>(null);
   const [result, setResult] = useState<SpeakingGradeResult | null>(null);
   /* Identity of the recorded attempt, so "ask Mr EZ to explain this" points
      at marking that already happened rather than sending the clip again. */
@@ -384,9 +390,10 @@ export default function SpeakingTester({ trialRecorded = false }: { trialRecorde
     setGradingAudioSeconds(recordedMs / 1000);
     setGradingStartedAt(Date.now());
     setPhase('grading');
+    setRefusal(null);
     try {
       await runGrading(attempt);
-    } catch {
+    } catch (err) {
       // Without this, any failure in the pipeline (audio decode, blob
       // conversion, grading) left the student stuck on "Grading…" forever.
       // The mic is released (recording is over either way), but the clips
@@ -406,6 +413,16 @@ export default function SpeakingTester({ trialRecorded = false }: { trialRecorde
       // isSpeakingGraderConfigured() gates the Start cards, so any failure
       // reaching here happened after a real request went out — network,
       // timeout, or the Worker itself failing, not a missing config.
+      /* A refusal is not an outage (review of 1 October 2026, P1-2): an
+         allowance used or a trial over is said plainly, with what to do. */
+      if (err instanceof GraderRefusal && isAssessmentRefusalCode(err.code)) {
+        const kind = refusalKind(err.code, err.message, err.reason);
+        await refreshTrial();
+        setRefusal({ final: refusalIsFinal(kind), plans: refusalOffersPlans(kind) });
+        setMicError(refusalMessage({ kind, what: 'speaking', serverMessage: err.message }, trialView().status, serverNow(), t, locale));
+        setPhase('error');
+        return;
+      }
       setMicError(t('We could not reach the grading service. Your answers are still here, try grading them again in a minute.'));
       setPhase('error');
     }
@@ -448,7 +465,9 @@ export default function SpeakingTester({ trialRecorded = false }: { trialRecorde
                 followUps: answered.filter((_, i) => i !== monologueIdx),
               };
         const graded = await gradeSpeaking(attempt, clips, expectedMinMs, trialSittingRef.current ?? undefined);
-        if (trialTest.active) void refreshTrial();
+        /* Trial or paid: the "assessments remaining" line should count the
+           recording just graded (P2-6). Gated build only. */
+        if (trialTest.active || isTrialBuild()) void refreshTrial();
         return graded;
       },
       {
@@ -591,15 +610,24 @@ export default function SpeakingTester({ trialRecorded = false }: { trialRecorde
     return (
       <div className="screen-in mx-auto max-w-md space-y-4 rounded-card border border-border bg-surface p-6 text-center shadow-card">
         <p className="rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{micError}</p>
+        {refusal?.plans && (
+          <p className="text-sm">
+            <a className="font-semibold underline" href={withBase('/plans')}>
+              {t('See plans and what is included')}
+            </a>
+          </p>
+        )}
         <SupportLink reason="grader" />{/* [E trust] */}
         <div className="flex flex-wrap justify-center gap-3">
-          <button
-            type="button"
-            onClick={retryGrading}
-            className="rounded-button bg-brand px-5 py-2.5 font-semibold text-white hover:bg-brand-hover"
-          >
-            {t('Try grading again')}
-          </button>
+          {!refusal?.final && (
+            <button
+              type="button"
+              onClick={retryGrading}
+              className="rounded-button bg-brand px-5 py-2.5 font-semibold text-white hover:bg-brand-hover"
+            >
+              {t('Try grading again')}
+            </button>
+          )}
           <button
             type="button"
             onClick={backToMenu}

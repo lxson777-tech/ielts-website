@@ -1,0 +1,68 @@
+/* "Assessments left" (AssessmentBalance) and the one-line "what this uses"
+   notes before a placement test or a mock exam (AllowanceNote). Quiet by
+   design: a fact to glance at, never a banner. Tokens from DESIGN.md. */
+
+.assessment-balance {
+  margin: 18px 0;
+  border: 1px solid var(--color-border, #dddfd6);
+  border-radius: 14px;
+  background: var(--color-surface, #fffefa);
+  padding: 14px 16px;
+  color: var(--color-ink-muted, #616c64);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  text-align: left;
+}
+.assessment-balance b {
+  display: block;
+  color: var(--color-ink, #263c35);
+  font-weight: 650;
+}
+.assessment-balance p {
+  margin: 4px 0 0;
+}
+.assessment-balance ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 6px 18px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.assessment-balance li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px dashed var(--color-border, #dddfd6);
+  padding: 2px 0;
+}
+.assessment-balance-count {
+  color: var(--color-ink, #263c35);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.assessment-balance li.is-empty .assessment-balance-count {
+  color: var(--color-brand, #b94b36);
+}
+
+.allowance-note {
+  margin: 14px 0 0;
+  border-radius: 12px;
+  background: var(--color-surface-alt, #f5f5f0);
+  padding: 10px 14px;
+  color: var(--color-ink-muted, #616c64);
+  font-size: 0.84rem;
+  line-height: 1.55;
+  text-align: left;
+}
+.allowance-note.is-empty {
+  background: var(--color-brand-tint, #faebe4);
+  color: var(--color-ink, #263c35);
+}
+.allowance-note a {
+  color: var(--color-ink, #263c35);
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

@@ -1,0 +1,47 @@
+# Builder S browser journey (2026-10-01 15:03)
+
+All grades and payments SIMULATED on the local stand-in.
+
+- PASS SIMULATED purchase gives running paid access
+- PASS paid balance shows 12, 6, 2 and 2 mocks
+- PASS SIMULATED essay grade returned
+- PASS the page asked the server again right after the grade, and heard 1 essay used
+- PASS the graded essay is counted by the server
+- PASS balance on the page reads 11 of 12 after one graded essay
+- PASS eleven more essays graded (SIMULATED)
+- PASS server counts 12 essays used
+- PASS a 13th essay is refused by the Worker
+- PASS English: balance said Writing 0 of 12 before starting
+- PASS English: says all 12 essays are used
+- PASS English: says when the period ends
+- PASS English: the essay is kept
+- PASS English: no outage wording
+- PASS English: a link to Plans
+- PASS phone: no sideways scroll
+- PASS placement intro: once per account
+- PASS placement intro: does not use live interviews
+- PASS placement intro: the essay uses the 12, 0 left now
+- PASS mock start: 2 of 2 mocks left, no live interviews used
+- PASS Russian 390: balance in Russian
+- PASS Russian 390: says all 12 essays are used
+- PASS Russian 390: period end date in Russian
+- PASS Russian 390: Plans link in Russian
+- PASS Russian 390: no sideways scroll
+- PASS Russian 1440: balance in Russian
+- PASS Russian 1440: says all 12 essays are used
+- PASS Russian 1440: period end date in Russian
+- PASS Russian 1440: Plans link in Russian
+- PASS Russian 1440: no sideways scroll
+- PASS Russian placement intro
+- PASS no access: no assessments-left box
+- PASS refund FAQ (en): no refunds after purchase, shown when opened
+- PASS refund FAQ (ru): no refunds after purchase, shown when opened
+- PASS no page errors on the gated journey
+- PASS open build (this commit): help buttons for a signed-out reader
+- PASS open build (this commit): part-of-lesson link scrolls to its block
+- PASS open build (this commit): no Live AI Examiner card on the trainer
+- PASS open build (this commit): /speaking/recorded is not published
+- PASS open build (fe4ebdb): help buttons for a signed-out reader
+- PASS open build (fe4ebdb): part-of-lesson link scrolls to its block
+- PASS open build (fe4ebdb): no Live AI Examiner card on the trainer
+- PASS open build (fe4ebdb): /speaking/recorded is not published

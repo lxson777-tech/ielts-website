@@ -172,7 +172,6 @@ export function mountLessonBlockHelp(options: LessonBlockHelpOptions): void {
   /* A control left behind by an earlier pass has no listeners any more. */
   removeControls(root);
   stampBlockIds(root, options.ids);
-  if (currentOwner().kind !== 'user') return;
 
   /* The controls themselves only for a signed-in student. The first time,
      the watcher answers at once and adds them if one is; after that the

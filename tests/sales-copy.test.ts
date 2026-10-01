@@ -122,7 +122,9 @@ test('the corrected trial wording is on the page in both languages', () => {
   assert.match(start.ru + SALES_COPY['price.includes.1'].ru, /Academic IELTS/);
   // Alex, 29 September 2026: fixed periods, no automatic renewal, no refunds.
   assert.match(SALES_COPY['price.status'].en, /no automatic renewal/);
-  assert.match(SALES_COPY['faq.refund.a'].en, /purchase terms/);
+  // Review of 1 October 2026, P2-10: the FAQ says it plainly, in both languages.
+  assert.match(SALES_COPY['faq.refund.a'].en, /no refunds after purchase/);
+  assert.match(SALES_COPY['faq.refund.a'].ru, /после покупки деньги не возвращаются/);
 });
 
 test('prices are formatted for each language from the one approved source', () => {

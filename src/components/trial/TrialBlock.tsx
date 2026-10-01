@@ -13,6 +13,7 @@ import { hasPaidAccess, paidAccessEnded } from '../../lib/trial/status';
 import { signInHref } from '../../lib/auth/profile';
 import { currentRoute } from '../../lib/auth/next';
 import SupportLink from '../support/SupportLink'; // [E trust]
+import { INTERRUPTED_GIVEN_BACK } from '../access/assessment-refusal';
 
 export type TrialBlockReason =
   | 'checking'
@@ -85,8 +86,22 @@ export default function TrialBlock({
   switch (reason) {
     case 'assessment-used':
       heading = t('Your trial AI assessment is used');
-      body = t('Writing and recorded Speaking share one trial assessment. Your result is saved. You can still use your included lessons, Reading and Listening.');
-      actions = <>{plans}{home}</>;
+      /* No claim that a result was kept: an assessment counts from the moment it
+         is sent, so one whose grading was interrupted is used with no result
+         yet. The server gives such an assessment back after a short while
+         (review of 1 October 2026, P1-5), and the page says so. */
+      body = [
+        t('Writing and recorded Speaking share one trial assessment, and yours has been used. Lessons stay free, and your Reading and Listening tests stay open while your trial runs.'),
+        t(INTERRUPTED_GIVEN_BACK),
+      ].join(' ');
+      actions = (
+        <>
+          {plans}
+          <a className="trial-btn" href={withBase('/report')}>
+            {t('See my results')}
+          </a>
+        </>
+      );
       break;
     case 'checking':
       return (

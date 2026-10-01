@@ -18,7 +18,7 @@ import { overallSpeakingBand } from '../schema';
 import { analyzeAudio } from '../mechanics';
 import { blobToMp3Base64 } from '../encode';
 import type { TranscriptTurn } from './session';
-import { GraderRefusal, type TrialGrading } from '../../writing/grader';
+import { GraderRefusal, isGraderRefusalCode, type TrialGrading } from '../../writing/grader';
 import { gatedSignIn } from '../../trial/content';
 import { getLocale } from '../../i18n/locale';
 
@@ -93,9 +93,9 @@ export async function gradeInterview(
   });
 
   if (!resp.ok) {
-    const err = (await resp.json().catch(() => null)) as { error?: string; code?: string } | null;
+    const err = (await resp.json().catch(() => null)) as { error?: string; code?: string; reason?: string } | null;
     const code = err?.code ?? '';
-    if (code === 'sign-in-required' || code.startsWith('trial-')) throw new GraderRefusal(code, err?.error ?? '');
+    if (isGraderRefusalCode(code)) throw new GraderRefusal(code, err?.error ?? '', typeof err?.reason === 'string' ? err.reason : '');
     throw new Error(err?.error ?? `Grader error (${resp.status})`);
   }
 

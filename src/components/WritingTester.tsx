@@ -23,7 +23,8 @@ import { countWords } from '../lib/writing/mechanics';
 import { GraderRefusal, gradeEssay, isGraderConfigured, type TrialGrading } from '../lib/writing/grader';
 import TrialBlock from './trial/TrialBlock';
 import { useTrialTest } from './trial/useTrialTest';
-import { refreshTrial } from '../lib/trial/client';
+import { refreshTrial, serverNow, trialView } from '../lib/trial/client';
+import { isAssessmentRefusalCode, refusalKind, refusalMessage, refusalOffersPlans } from './access/assessment-refusal';
 import { TRIAL_OFFER, TRIAL_WRITING } from '../lib/trial/offer';
 import { fetchGated } from '../lib/trial/content';
 import { getAccessToken } from '../lib/auth/session';
@@ -105,7 +106,7 @@ const SUBMISSION_REFUSED_NOTE = nt(
 );
 
 export default function WritingTester({ variant = 'trainer' }: { variant?: 'trainer' | 'checker' }) {
-  const { t, tn } = useT();
+  const { t, tn, locale } = useT();
   const essayId = useId();
   const coached = variant === 'trainer';
   /* The trial's Writing test is the checker (a trial build only; inert on
@@ -123,6 +124,9 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   const [result, setResult] = useState<GradeResult | null>(null);
   const [grading, setGrading] = useState(false);
   const [gradingError, setGradingError] = useState<string | null>(null);
+  /** The grading error is a used-up allowance or an ended trial: the Plans
+      page is the way forward, and "try again" would only be refused again. */
+  const [gradingErrorPlans, setGradingErrorPlans] = useState(false);
   // When the grading request went out (ms epoch). GradingProgress derives the
   // real percentage from this, so it survives re-renders of this component.
   const [gradingStartedAt, setGradingStartedAt] = useState(0);
@@ -418,8 +422,20 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         // timeout, or the Worker itself failing. Show one calm, specific
         // message rather than surfacing the raw error (which might read like a
         // permanent "not configured" state the student can't do anything about).
+        /* An allowance refusal (every essay of this period used, the trial's
+           one assessment used, the trial over) is said as what it is, with
+           the way forward, never as an outage (review of 1 October 2026,
+           P1-2). The trial's own test codes keep their own sentences. */
+        const allowance =
+          err instanceof GraderRefusal && err.code !== 'trial-test-used' && isAssessmentRefusalCode(err.code)
+            ? refusalKind(err.code, err.message, err.reason)
+            : null;
+        setGradingErrorPlans(allowance ? refusalOffersPlans(allowance) : false);
+        if (allowance) await refreshTrial();
         setGradingError(
-          err instanceof GraderRefusal
+          allowance
+            ? refusalMessage({ kind: allowance, what: 'writing', serverMessage: (err as GraderRefusal).message }, trialView().status, serverNow(), t, locale)
+            : err instanceof GraderRefusal
             ? err.code === 'trial-test-used'
               ? t('Your trial Writing test has already been graded. Your essay is safe on this page.')
               : err.code === 'sign-in-required'
@@ -433,7 +449,9 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
     } finally {
       // The server may have used the Writing test (a grade) or kept it (a
       // failure). Either way the trial page should say what it now says.
-      if (trialTest.active) void refreshTrial();
+      /* Paid essays too: the "assessments remaining" line on this page
+         should count the essay just graded (P2-6). Gated build only. */
+      if (trialTest.active || isTrialBuild()) void refreshTrial();
       if (binding.state() !== 'cancelled') {
         gradingRef.current = false;
         setGrading(false);
@@ -927,6 +945,14 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
           {gradingError && (
             <div className="rounded-card border border-error/30 bg-error-tint px-4 py-3 text-sm text-error">
               ⚠ {gradingError}
+              {gradingErrorPlans && (
+                <>
+                  {' '}
+                  <a className="font-semibold underline" href={withBase('/plans')}>
+                    {t('See plans and what is included')}
+                  </a>
+                </>
+              )}
               <SupportLink reason="grader" />{/* [E trust] */}
             </div>
           )}

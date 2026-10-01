@@ -62,7 +62,7 @@ import type { LiveMode, LiveProvider, SessionPlanRequest } from './instructions'
 import type { TranscriptTurn } from './session';
 import { ExaminerSession } from './session';
 import { ExaminerPlayback, MicCapture, RemoteAudioOutput, StreamLevelMeter } from './audio';
-import { OpenAiLiveSession, connectWebRtc } from './openai-session';
+import { OpenAiLiveSession, connectWebRtc, type LiveSessionPurpose } from './openai-session';
 import type { DirectorCue } from './cues';
 import { cueText } from './cues';
 import { watchStart, type MayContinue, type StartHandle } from './start-check';
@@ -129,6 +129,10 @@ export interface ExaminerLinkCallbacks {
   onTranscript(turns: TranscriptTurn[]): void;
   onClosed(reason: string, wasClean: boolean): void;
   onError(message: string): void;
+  /** Gated build: the Worker gave this paid interview back when it was ended
+      (the examiner never began, review P1-4). `purpose` is the allowance it
+      used: 'practice', 'placement' or 'mock'. The open site never hears it. */
+  onInterviewGivenBack?(purpose: string): void;
 }
 
 export interface ExaminerLink {
@@ -170,6 +174,9 @@ export interface OpenExaminerLinkOptions {
   /** A trial build only: the student's begun Speaking test (see
       WebRtcConnectOptions.trialSitting). */
   trialSitting?: string;
+  /** A gated build only: the interview is the placement test's or a full
+      mock exam's (see WebRtcConnectOptions.purpose). */
+  purpose?: LiveSessionPurpose;
   cb: ExaminerLinkCallbacks;
   /** The caller's "may I continue" check, asked inside the setup right
       before the paid session request and right before the Gemini socket
@@ -366,9 +373,17 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
       /* A trial interview names its test, so an interview the examiner never
          began can be given back (the Worker decides). */
       body: JSON.stringify(opts.trialSitting ? { sessionId, trialSitting: opts.trialSitting } : { sessionId }),
-    }).catch(() => {
-      /* best effort */
-    });
+    })
+      .then((resp) => (resp.ok ? resp.json() : null))
+      .then((body: unknown) => {
+        const answer = body as { interviewGivenBack?: unknown; purpose?: unknown } | null;
+        if (answer?.interviewGivenBack === true) {
+          opts.cb.onInterviewGivenBack?.(typeof answer.purpose === 'string' ? answer.purpose : 'practice');
+        }
+      })
+      .catch(() => {
+        /* best effort */
+      });
   }
 
   /** R2E-01: lets go of everything this setup has made, at once, on a pull
@@ -405,6 +420,7 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
       plan: opts.plan,
       accessToken,
       trialSitting: opts.trialSitting,
+      purpose: opts.purpose,
       onRemoteStream: (stream) => {
         /* R2E-01: the examiner's audio arrives while the setup is still
            under way. A start that was let go plays none of it. */

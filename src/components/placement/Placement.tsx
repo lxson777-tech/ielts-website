@@ -65,6 +65,7 @@ import PlacementWriting from './PlacementWriting';
 import PlacementSpeaking from './PlacementSpeaking';
 import PlacementResults from './PlacementResults';
 import { placementScreen } from './placement-screen';
+import AllowanceNote from '../access/AllowanceNote';
 import '../../styles/placement.css';
 
 ensureLearningWired();
@@ -334,6 +335,7 @@ export default function Placement({ material }: { material: PlacementMaterialPro
           <p className="pl-note">
             {t('The result is an estimate from one sitting, not a band score. You can stop between parts and come back later on this device; once a part has started, its clock keeps running.')}
           </p>
+          <AllowanceNote use="placement" />
           <div className="pl-actions">
             <button type="button" className="pl-primary" onClick={startSitting}>
               {t('Start the placement test')}

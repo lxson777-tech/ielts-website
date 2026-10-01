@@ -28,6 +28,7 @@ import {
 import type { ExerciseRefusal } from '../learning/exercise-owner';
 import { claimPlacementPress, type PlacementSession } from './placement-owner';
 import { PartBrief } from './PlacementFrame';
+import AllowanceNote from '../access/AllowanceNote';
 
 const TOKEN_URL: string | undefined = import.meta.env?.PUBLIC_LIVE_EXAMINER_URL;
 
@@ -127,6 +128,7 @@ export default function PlacementSpeaking({
       lead={t('A short Part 1 interview with the AI examiner: everyday questions about one familiar topic. Answer out loud, and say a little more than yes or no.')}
       facts={[t('About {n} min', { n: PLACEMENT.speaking.minutes }), 'Part 1', t('Microphone needed')]}
       note={t('The examiner marks your answers from the recording itself. The recording is not kept.')}
+      extra={<AllowanceNote use="placement-speaking" />}
       action={
         <button type="button" className="pl-primary" onClick={start}>
           {t('Start Speaking')}

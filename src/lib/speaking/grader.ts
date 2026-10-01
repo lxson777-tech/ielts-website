@@ -15,6 +15,7 @@
 
 import { t } from '../i18n/translate';
 import { gatedSignIn } from '../trial/content';
+import { GraderRefusal, isGraderRefusalCode } from '../writing/grader';
 import type {
   AudioMechanicsReport,
   SpeakingAssessment,
@@ -61,11 +62,20 @@ class RemoteSpeakingGrader implements SpeakingGrader {
     });
     if (!resp.ok) {
       let detail = '';
+      let code = '';
+      let reason = '';
       try {
-        detail = ((await resp.json()) as { error?: string }).error ?? '';
+        const body = (await resp.json()) as { error?: string; code?: string; reason?: string };
+        detail = body.error ?? '';
+        code = typeof body.code === 'string' ? body.code : '';
+        reason = typeof body.reason === 'string' ? body.reason : '';
       } catch {
         /* non-JSON error body */
       }
+      /* A refusal (allowance used, trial over, sign in again) is not an
+         outage: the screen words it and does not offer a retry that would
+         be refused again. */
+      if (isGraderRefusalCode(code)) throw new GraderRefusal(code, detail, reason);
       throw new Error(detail || `Grader responded ${resp.status}`);
     }
     const a = (await resp.json()) as SpeakingAssessment;

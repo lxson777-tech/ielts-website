@@ -19,6 +19,7 @@ import { WRITING_PROMPTS } from '../data/writing-prompts';
 import type { EssayPrompt } from '../lib/writing/schema';
 import { countWords } from '../lib/writing/mechanics';
 import { isGraderConfigured } from '../lib/writing/grader';
+import AllowanceNote, { mockSpeakingAllowed, usePaidBalance } from './access/AllowanceNote';
 import { getAttempts } from '../lib/progress';
 import {
   pickDefaultPair,
@@ -1135,6 +1136,8 @@ function StartScreen({
         </ul>
         </details>
 
+        <AllowanceNote use="mock" />
+
         <div className="mt-6 space-y-3 rounded-card border border-border bg-surface-alt p-4">
           <p className="text-sm font-semibold">{t('Choose your tests')}</p>
           <label className="block text-sm">
@@ -1470,7 +1473,11 @@ function SpeakingBriefScreen({
   const needsSignIn = requiresSignIn && authConfigured && !user;
   const authUnavailable = requiresSignIn && !authConfigured;
   const examinerConfigured = !!LIVE_EXAMINER_URL;
-  const canStart = examinerConfigured && !needsSignIn && !authUnavailable;
+  /* A gated build's paid account: both full mocks of this 30-day period
+     used means the server will refuse the interview, so the button says so
+     before the microphone is asked for (Alex, 1 October 2026). */
+  const mockAllowed = mockSpeakingAllowed(usePaidBalance());
+  const canStart = examinerConfigured && !needsSignIn && !authUnavailable && mockAllowed;
 
   return (
     <div className="screen-in grid min-h-dvh place-items-center bg-surface-alt p-4">
@@ -1511,6 +1518,7 @@ function SpeakingBriefScreen({
             {t("The speaking test isn't configured on this site yet.")}
           </p>
         )}
+        <AllowanceNote use="mock-speaking" />
 
         <div className="mt-7 flex flex-col items-center gap-3">
           <button
