@@ -61,7 +61,32 @@ def check(name: str, ok: bool, detail: str = "") -> bool:
 
 
 def shot(page: Page, name: str, full: bool = True) -> None:
+    # A focused skip link or a sticky header repeated down a full-page capture
+    # is a screenshot artefact, not the page: let go of focus first.
+    page.evaluate("document.activeElement && document.activeElement.blur && document.activeElement.blur()")
+    settle(page)
     page.screenshot(path=str(SHOTS / f"{name}.png"), full_page=full)
+
+
+def settle(page: Page) -> None:
+    """Entrance animations finished, so the capture is the settled screen.
+    Infinite (ambient) animations are ignored."""
+    page.wait_for_function(
+        "()=>document.getAnimations().every(a=>a.playState!=='running' || a.effect?.getTiming().iterations===Infinity)",
+        timeout=15000,
+    )
+
+
+def shot_alert(page: Page, name: str) -> None:
+    """The grading message in view, as the student sees it."""
+    page.evaluate("document.activeElement && document.activeElement.blur && document.activeElement.blur()")
+    page.locator(".bg-error-tint").first.evaluate("el => el.scrollIntoView({block: 'center'})")
+    page.wait_for_function(
+        "()=>{const r=document.querySelector('.bg-error-tint').getBoundingClientRect(); return r.top>=0 && r.bottom<=innerHeight;}",
+        timeout=10000,
+    )
+    settle(page)
+    page.screenshot(path=str(SHOTS / f"{name}.png"))
 
 
 ESSAY = (
@@ -154,21 +179,23 @@ def grade_directly(request, session: dict) -> int:
     return resp.status
 
 
-def open_checker_and_submit(page: Page) -> str:
+def open_checker_and_submit(page: Page) -> tuple[str, str]:
     """Opens the Writing Checker, starts a Task 2 essay, writes and submits.
-    Returns the text of the grading error box once it appears."""
+    Returns the balance shown before starting and the text of the grading
+    error box once it appears."""
     page.goto(f"{GATED}/writing/checker", wait_until="domcontentloaded")
-    start = page.get_by_role("button", name=re.compile(r"^(Start|Начать)"))
-    start.first.wait_for(timeout=60000)
+    start = page.locator(".writing-choice button", has_text="Task 2")
+    start.wait_for(timeout=60000)
     page.locator("[data-assessment-balance='paid']").wait_for(timeout=30000)
-    start.last.click()
+    balance = page.locator("[data-assessment-balance='paid']").inner_text()
+    start.click()
     box = page.locator("textarea").first
     box.wait_for(timeout=30000)
     box.fill(ESSAY)
     page.locator("button", has_text="Check my essay").or_(page.locator("button", has_text="Проверить")).first.click()
     alert = page.locator(".bg-error-tint").first
     alert.wait_for(timeout=60000)
-    return alert.inner_text()
+    return balance, alert.inner_text()
 
 
 def gated_journey(p) -> None:
@@ -192,8 +219,7 @@ def gated_journey(p) -> None:
     shot(page, "01-checker-balance-paid-en-1440")
 
     # One essay through the page (SIMULATED grade): the count follows without a reload.
-    start = page.get_by_role("button", name=re.compile(r"^Start"))
-    start.last.click()
+    page.locator(".writing-choice button", has_text="Task 2").click()
     page.locator("textarea").first.fill(ESSAY)
     with page.expect_response(lambda r: "/grade-essay" in r.url and r.request.method == "POST", timeout=90000) as graded:
         with page.expect_response(
@@ -226,31 +252,17 @@ def gated_journey(p) -> None:
     check("a 13th essay is refused by the Worker", over == 403, str(over))
 
     # The 13th through the page: a plain "used up", never an outage.
-    alert = open_checker_and_submit(page)
+    balance, alert = open_checker_and_submit(page)
+    check("English: balance said Writing 0 of 12 before starting", "0 of 12" in balance, balance.replace(chr(10), " | "))
     check("English: says all 12 essays are used", "You have used all 12 essay assessments in this 30-day period." in alert, alert)
     check("English: says when the period ends", "This 30-day period ends on" in alert, alert)
     check("English: the essay is kept", "Your essay is safe on this page." in alert, alert)
     check("English: no outage wording", "could not reach" not in alert.lower(), alert)
     check("English: a link to Plans", page.get_by_role("link", name="See plans and what is included").count() >= 1)
-    check("English: balance shows Writing 0 of 12", "0 of 12" in page.locator("[data-assessment-balance]").inner_text())
-    shot(page, "03-essay-used-up-en-1440")
+    shot_alert(page, "03-essay-used-up-en-1440")
     page.set_viewport_size({"width": 390, "height": 844})
-    page.locator(".bg-error-tint").first.scroll_into_view_if_needed()
     check("phone: no sideways scroll", page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
-    shot(page, "04-essay-used-up-en-390")
-
-    # Russian, phone and desktop.
-    for vp, tag in (({"width": 390, "height": 844}, "390"), ({"width": 1440, "height": 900}, "1440")):
-        ru = signed_in_context(browser, session, "ru", vp)
-        rp = ru.new_page()
-        rp.on("pageerror", lambda e: errors.append(str(e)))
-        alert = open_checker_and_submit(rp)
-        check(f"Russian {tag}: says all 12 essays are used", "Вы использовали все 12 проверок эссе" in alert, alert)
-        check(f"Russian {tag}: period end date in Russian", "октября" in alert or "ноября" in alert, alert)
-        check(f"Russian {tag}: Plans link in Russian", rp.get_by_role("link", name="Посмотреть тарифы и что в них входит").count() >= 1)
-        check(f"Russian {tag}: no sideways scroll", rp.evaluate("document.documentElement.scrollWidth <= innerWidth"))
-        shot(rp, f"05-essay-used-up-ru-{tag}")
-        ru.close()
+    shot_alert(page, "04-essay-used-up-en-390")
 
     # Placement and Mock Exam Day say what they use, before starting.
     page.set_viewport_size({"width": 1440, "height": 900})
@@ -270,6 +282,20 @@ def gated_journey(p) -> None:
     shot(page, "07-mock-start-en-1440")
     page.set_viewport_size({"width": 390, "height": 844})
     shot(page, "08-mock-start-en-390")
+    # Russian, phone and desktop.
+    for vp, tag in (({"width": 390, "height": 844}, "390"), ({"width": 1440, "height": 900}, "1440")):
+        ru = signed_in_context(browser, session, "ru", vp)
+        rp = ru.new_page()
+        rp.on("pageerror", lambda e: errors.append(str(e)))
+        balance, alert = open_checker_and_submit(rp)
+        check(f"Russian {tag}: balance in Russian", "Осталось проверок" in balance and "0 из 12" in balance, balance.replace(chr(10), " | "))
+        check(f"Russian {tag}: says all 12 essays are used", "Вы использовали все 12 проверок эссе" in alert, alert)
+        check(f"Russian {tag}: period end date in Russian", "октября" in alert or "ноября" in alert, alert)
+        check(f"Russian {tag}: Plans link in Russian", rp.get_by_role("link", name="Посмотреть тарифы и что в них входит").count() >= 1)
+        check(f"Russian {tag}: no sideways scroll", rp.evaluate("document.documentElement.scrollWidth <= innerWidth"))
+        shot_alert(rp, f"05-essay-used-up-ru-{tag}")
+        ru.close()
+
     ru = signed_in_context(browser, session, "ru", {"width": 390, "height": 844})
     rp = ru.new_page()
     rp.goto(f"{GATED}/placement", wait_until="domcontentloaded")
@@ -293,11 +319,23 @@ def gated_journey(p) -> None:
     shot(pp, "11-plans-no-access-en-1440")
     pc.close()
 
-    # The refund answer (sales page).
-    page.set_viewport_size({"width": 1440, "height": 900})
-    page.goto(f"{GATED}/", wait_until="domcontentloaded")
-    body = page.locator("body").inner_text()
-    check("refund FAQ: no refunds after purchase", "There are no refunds after purchase." in body)
+    # The refund answer (sales page, signed out), both languages.
+    for lang, phrase, question in (
+        ("en", "There are no refunds after purchase.", "Can I get a refund?"),
+        ("ru", "после покупки деньги не возвращаются", "Можно ли вернуть деньги?"),
+    ):
+        sc = browser.new_context(viewport={"width": 390, "height": 844}, locale="ru-RU" if lang == "ru" else "en-US")
+        sc.add_init_script(f'localStorage.setItem("ielts.locale.v1","{lang}");')
+        sp = sc.new_page()
+        sp.goto(f"{GATED}/", wait_until="networkidle")
+        q = sp.get_by_text(question, exact=True).first
+        q.wait_for(timeout=30000)
+        q.scroll_into_view_if_needed()
+        q.click()
+        sp.wait_for_function("(p)=>document.body.innerText.includes(p)", arg=phrase, timeout=30000)
+        check(f"refund FAQ ({lang}): no refunds after purchase, shown when opened", True)
+        shot(sp, f"13-refund-faq-{lang}-390", full=False)
+        sc.close()
 
     check("no page errors on the gated journey", not errors, "; ".join(errors[:3]))
     desk.close()

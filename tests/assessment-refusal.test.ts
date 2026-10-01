@@ -188,7 +188,8 @@ test('every refusal message is in Russian, with the date in Russian (P2-12)', as
   const s = paidNoQueue();
   const used = refusalMessage({ kind: 'used-up', what: 'writing' }, s, NOW, ru, 'ru');
   assert.match(used, /Вы использовали все 12 проверок эссе/);
-  assert.match(used, /31 октября 2026/);
+  assert.match(used, /31 октября 2026\./);
+  assert.doesNotMatch(used, /г\.\./, 'no double full stop after a Russian date');
   assert.match(used, /Ваше эссе сохранено/);
   const queued = refusalMessage({ kind: 'used-up', what: 'writing' }, paidQueued(), NOW, ru, 'ru');
   assert.match(queued, /Следующий 30-дневный период начнётся 31 октября 2026/);

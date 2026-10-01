@@ -12,7 +12,7 @@
 import { useT } from '../../lib/i18n/react';
 import { useTrial } from '../../lib/trial/react';
 import { PAID_ALLOWANCE, assessmentBalance } from '../../lib/trial/status';
-import { formatDate } from './access-state';
+import { periodDate } from './assessment-refusal';
 import './assessment.css';
 
 export default function AssessmentBalance() {
@@ -43,9 +43,9 @@ export default function AssessmentBalance() {
         ))}
       </ul>
       {view.nextPeriodStartsAt ? (
-        <p>{t('Your next 30-day period starts on {date}.', { date: formatDate(view.nextPeriodStartsAt, locale) })}</p>
+        <p>{t('Your next 30-day period starts on {date}.', { date: periodDate(view.nextPeriodStartsAt, locale) })}</p>
       ) : view.periodEndsAt ? (
-        <p>{t('This period ends on {date}. Unused assessments do not carry over.', { date: formatDate(view.periodEndsAt, locale) })}</p>
+        <p>{t('This period ends on {date}. Unused assessments do not carry over.', { date: periodDate(view.periodEndsAt, locale) })}</p>
       ) : null}
     </aside>
   );

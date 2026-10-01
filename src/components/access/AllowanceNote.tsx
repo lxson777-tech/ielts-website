@@ -17,7 +17,7 @@ import { useTrial } from '../../lib/trial/react';
 import { isTrialBuild } from '../../lib/trial/mode';
 import { PAID_ALLOWANCE, assessmentBalance, type AssessmentBalanceView } from '../../lib/trial/status';
 import { withBase } from '../../lib/url';
-import { formatDate } from './access-state';
+import { periodDate } from './assessment-refusal';
 import './assessment.css';
 
 export type AllowanceUse =
@@ -97,7 +97,7 @@ export default function AllowanceNote({ use }: { use: AllowanceUse }) {
         ? [
             t('You have used both full mock exams in this 30-day period, so this Speaking interview cannot start. You can skip Speaking and keep your other papers.'),
             balance.nextPeriodStartsAt
-              ? t('Your next 30-day period starts on {date}.', { date: formatDate(balance.nextPeriodStartsAt, locale) })
+              ? t('Your next 30-day period starts on {date}.', { date: periodDate(balance.nextPeriodStartsAt, locale) })
               : '',
           ]
             .filter(Boolean)

@@ -139,6 +139,14 @@ export function refusalOffersPlans(kind: RefusalKind): boolean {
   return kind === 'used-up' || kind === 'mock-used-up' || kind === 'trial-ended' || kind === 'paid-required';
 }
 
+/** A period's date inside a sentence: "31 October 2026" / "31 октября 2026".
+    Russian's own "г." is left off, so a sentence ending on the date does not
+    end in "г..". */
+export function periodDate(iso: string, locale: Locale): string {
+  const text = formatDate(iso, locale);
+  return locale === 'ru' ? text.replace(/\s*г\.$/, '') : text;
+}
+
 /** When the allowance comes back, said plainly. Only for a paid period:
     the trial's one assessment never comes back. */
 function renewalSentence(status: TrialStatus | null, nowMs: number, t: Translate, locale: Locale): string {
@@ -146,12 +154,12 @@ function renewalSentence(status: TrialStatus | null, nowMs: number, t: Translate
   if (balance.kind !== 'paid') return '';
   if (balance.nextPeriodStartsAt) {
     return t('Your next 30-day period starts on {date}, with a fresh set of assessments.', {
-      date: formatDate(balance.nextPeriodStartsAt, locale),
+      date: periodDate(balance.nextPeriodStartsAt, locale),
     });
   }
   if (balance.periodEndsAt) {
     return t('This 30-day period ends on {date}. Another purchase on the Plans page starts a new period after it, with a fresh set of assessments.', {
-      date: formatDate(balance.periodEndsAt, locale),
+      date: periodDate(balance.periodEndsAt, locale),
     });
   }
   return t('Another purchase on the Plans page starts a new 30-day period with a fresh set of assessments.');
