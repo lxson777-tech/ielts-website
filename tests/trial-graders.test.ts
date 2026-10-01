@@ -280,7 +280,12 @@ async function speakingWorld() {
       }
       const rows = sessions.filter((row) => [...u.searchParams.entries()].every(([k, v]) => k === 'select' || matches(row, k, v)));
       if (method === 'PATCH') {
-        for (const row of rows) Object.assign(row, JSON.parse(String(init?.body)));
+        const patch = JSON.parse(String(init?.body)) as Record<string, unknown>;
+        if (failNextPatch.on && 'provider_session_id' in patch) {
+          failNextPatch.on = false;
+          return new Response('{}', { status: 500 });
+        }
+        for (const row of rows) Object.assign(row, patch);
         return new Response(null, { status: 204 });
       }
       return new Response(JSON.stringify(rows));
@@ -314,16 +319,18 @@ async function speakingWorld() {
     SUPABASE_SERVICE_ROLE_KEY: SERVICE_KEY,
     ACCESS_MODE: 'trial',
   } as never;
-  const openInterview = async (token: string, sitting: string | undefined, mode = 'part1') => {
+  const openInterview = async (token: string, sitting: string | undefined, mode = 'part1', extra: Record<string, unknown> = {}) => {
     const plan =
       mode === 'part1'
         ? { mode, part1TopicIds: ['p1-work'] }
-        : { mode, part1TopicIds: ['p1-work', 'p1-work'], cueCardId: 'unknown' };
+        : mode === 'full-valid'
+          ? { mode: 'full', part1TopicIds: ['p1-work', 'p1-food'], cueCardId: 'cc-2026-04' }
+          : { mode, part1TopicIds: ['p1-work', 'p1-work'], cueCardId: 'unknown' };
     const response = await live.fetch(
       new Request('https://live.test/', {
         method: 'POST',
         headers: { Origin: ORIGIN, 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ sdp: OFFER_SDP, plan, ...(sitting ? { trialSitting: sitting } : {}) }),
+        body: JSON.stringify({ sdp: OFFER_SDP, plan, ...(sitting ? { trialSitting: sitting } : {}), ...extra }),
       }),
       env,
     );
@@ -341,6 +348,12 @@ async function speakingWorld() {
     );
     return { status: response.status, body: (await response.json()) as Record<string, unknown> };
   };
+  /** Test only: the database's own record of a session's assessment. */
+  const liveRow = async (session: string) =>
+    ((await db.select('select status, purpose, release_reason from public.assessment_usage where provider_session_id = $1', [session], {
+      role: 'service_role',
+    })) as { status: string; purpose: string; release_reason: string | null }[])[0] ?? null;
+  const failNextPatch = { on: false };
   const sessionsOf = async (sitting: string) =>
     (
       (await db.select('select sessions from public.trial_usage where request_id = $1', [sitting], {
@@ -355,6 +368,8 @@ async function speakingWorld() {
     openInterview,
     post,
     sessionsOf,
+    liveRow,
+    failNextPatch,
     advance: (minutes: number) => {
       now = new Date(now.getTime() + minutes * 60_000);
     },
@@ -395,9 +410,110 @@ test('paid live end is owned and cannot refund quota by claiming an unused trial
  const w=await speakingWorld();await buyLive(w);
  assert.equal((await w.openInterview('token-a',undefined)).status,201);
  assert.equal((await w.post('/end','token-b',{sessionId:'live_1'})).status,403);
- assert.equal((await w.post('/end','token-a',{sessionId:'live_1',trialSitting:'forged-sitting'})).status,200);
+ // The examiner began (the begin cue was delivered), so this interview happened.
+ assert.equal((await w.post('/direct','token-a',{sessionId:'live_1',cue:{type:'begin'}})).status,200);
+ const ended=await w.post('/end','token-a',{sessionId:'live_1',trialSitting:'forged-sitting'});
+ assert.equal(ended.status,200);
+ assert.deepEqual(ended.body,{ok:true});
  const b=await w.db.rpc('assessment_balance',{}, {userId:A}) as any;
  assert.equal(b.liveUsed,1);await w.db.close();
+});
+
+/* ── Review of 1 October 2026, P1-4 and P1-6 (server, Builder M) ──────── */
+
+test('P1-4: a paid live interview dropped before the examiner began is given back by the server; one that began is not',async()=>{
+ const w=await speakingWorld();await buyLive(w);
+ assert.equal((await w.openInterview('token-a',undefined)).status,201);
+ w.advance(1); // a minute later the connection failed; the begin cue never went out
+ const dropped=await w.post('/end','token-a',{sessionId:'live_1'});
+ assert.equal(dropped.status,200);
+ assert.deepEqual(dropped.body,{ok:true,interviewGivenBack:true,purpose:'practice'});
+ assert.equal((await w.liveRow('live_1'))?.status,'released');
+ assert.equal(((await w.db.rpc('assessment_balance',{}, {userId:A})) as any).liveUsed,0);
+ // Ending it again gives nothing more back.
+ assert.deepEqual((await w.post('/end','token-a',{sessionId:'live_1'})).body,{ok:true});
+ // Two real interviews still fit, and a third does not.
+ for(const n of [2,3]){
+  assert.equal((await w.openInterview('token-a',undefined)).status,201);
+  assert.equal((await w.post('/direct','token-a',{sessionId:`live_${n}`,cue:{type:'begin'}})).status,200);
+  assert.deepEqual((await w.post('/end','token-a',{sessionId:`live_${n}`})).body,{ok:true});
+ }
+ const third=await w.openInterview('token-a',undefined);
+ assert.equal(third.status,403);
+ assert.equal(third.body.code,'assessment-unavailable');
+ assert.equal(third.body.reason,'allowance-used');
+ await w.db.close();
+});
+
+test('P1-4: an interview that was never begun but ran past 90 seconds is not given back',async()=>{
+ const w=await speakingWorld();await buyLive(w);
+ assert.equal((await w.openInterview('token-a',undefined)).status,201);
+ w.advance(2);
+ assert.deepEqual((await w.post('/end','token-a',{sessionId:'live_1'})).body,{ok:true});
+ assert.equal(((await w.db.rpc('assessment_balance',{}, {userId:A})) as any).liveUsed,1);
+ await w.db.close();
+});
+
+test('P1-4: when the session cannot be recorded after the voice service opened it, the interview is given back',async()=>{
+ const w=await speakingWorld();await buyLive(w);
+ w.failNextPatch.on=true;
+ const r=await w.openInterview('token-a',undefined);
+ assert.equal(r.status,503);
+ assert.deepEqual(w.calls.closes,['live_1'],'the opened voice session is closed');
+ assert.equal(((await w.db.rpc('assessment_balance',{}, {userId:A})) as any).liveUsed,0);
+ await w.db.close();
+});
+
+test('P1-6: a placement interview and full mock exams use their own allowances, checked on the server against the plan',async()=>{
+ const w=await speakingWorld();await buyLive(w);
+ // Placement: a Part 1 interview, once per account.
+ const place=await w.openInterview('token-a',undefined,'part1',{purpose:'placement'});
+ assert.equal(place.status,201,JSON.stringify(place.body));
+ assert.equal((await w.liveRow('live_1'))?.purpose,'placement');
+ assert.equal((await w.post('/direct','token-a',{sessionId:'live_1',cue:{type:'begin'}})).status,200);
+ await w.post('/end','token-a',{sessionId:'live_1'});
+ const again=await w.openInterview('token-a',undefined,'part1',{purpose:'placement'});
+ assert.equal(again.status,403);
+ assert.deepEqual([again.body.code,again.body.reason],['assessment-unavailable','placement-used']);
+ // A placement is a Part 1 interview, and a mock is a full test: the label cannot buy a different session.
+ const wrongPlacement=await w.openInterview('token-a',undefined,'full-valid',{purpose:'placement'});
+ assert.equal(wrongPlacement.status,400);
+ assert.equal(wrongPlacement.body.code,'purpose-plan-mismatch');
+ const wrongMock=await w.openInterview('token-a',undefined,'part1',{purpose:'mock'});
+ assert.equal(wrongMock.status,400);
+ assert.equal(wrongMock.body.code,'purpose-plan-mismatch');
+ // Two full mock exams per purchase.
+ for(const n of [2,3]){
+  const mock=await w.openInterview('token-a',undefined,'full-valid',{purpose:'mock'});
+  assert.equal(mock.status,201,JSON.stringify(mock.body));
+  assert.equal((await w.post('/direct','token-a',{sessionId:`live_${n}`,cue:{type:'begin'}})).status,200);
+  await w.post('/end','token-a',{sessionId:`live_${n}`});
+ }
+ const thirdMock=await w.openInterview('token-a',undefined,'full-valid',{purpose:'mock'});
+ assert.equal(thirdMock.status,403);
+ assert.deepEqual([thirdMock.body.code,thirdMock.body.reason],['assessment-unavailable','mock-allowance-used']);
+ assert.equal(thirdMock.body.limit,2);
+ // The two ordinary live interviews are still both there.
+ const b=await w.db.rpc('assessment_balance',{}, {userId:A}) as any;
+ assert.deepEqual([b.liveUsed,b.mockUsed,b.placementUsed],[0,2,true]);
+ const practice=await w.openInterview('token-a',undefined);
+ assert.equal(practice.status,201);
+ // An unknown purpose is refused rather than treated as practice.
+ const odd=await w.openInterview('token-b',undefined,'part1',{purpose:'free'});
+ assert.equal(odd.status,400);
+ // The session cannot spend before checking: no refused request reached the voice service.
+ assert.equal(w.calls.openAiLive,4);
+ await w.db.close();
+});
+
+test('P1-6: a dropped mock interview is given back to the mock allowance, not the practice one',async()=>{
+ const w=await speakingWorld();await buyLive(w);
+ assert.equal((await w.openInterview('token-a',undefined,'full-valid',{purpose:'mock'})).status,201);
+ const dropped=await w.post('/end','token-a',{sessionId:'live_1'});
+ assert.deepEqual(dropped.body,{ok:true,interviewGivenBack:true,purpose:'mock'});
+ const b=await w.db.rpc('assessment_balance',{}, {userId:A}) as any;
+ assert.deepEqual([b.liveUsed,b.mockUsed],[0,0]);
+ await w.db.close();
 });
 test('commercial scheduled closer ends paid voice after minute 14, independently of the browser',async()=>{
  const w=await speakingWorld();await buyLive(w);

@@ -250,6 +250,9 @@ const WEBHOOK_REFUSALS: Record<string, number> = {
   'ref-in-use': 409,
   refunded: 409,
   'not-paid': 409,
+  // The order's plan is no longer on sale (review P2-11): nothing granted,
+  // so the payment shows in the provider's log as refused, to refund by hand.
+  'plan-unavailable': 409,
 };
 
 export function createHandler(deps: Deps): { fetch(request: Request, env: Env): Promise<Response> } {

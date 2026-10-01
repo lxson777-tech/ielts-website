@@ -43,6 +43,7 @@ import { TRIAL_OFFER, parseAccessMode } from '../../../src/lib/trial/offer';
 import { bandStepsFor, readBandStepLocale } from '../../../src/lib/trial/band-steps';
 import {
   TrialRefusal,
+  refusalBody,
   bearer,
   leaseTrialTest,
   paidAccessRunning,
@@ -1924,7 +1925,7 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
         assessmentClaim = await reserveAssessment(rpc, userId, body.kind === 'interview' ? 'feedback' : 'speaking', body.liveSessionId);
       } catch (err) {
         if (err instanceof TrialRefusal) {
-          return json({ error: err.message, code: err.code }, err.code === 'trial-in-flight' ? 409 : 403, cors);
+          return json(refusalBody(err), err.code === 'trial-in-flight' ? 409 : 403, cors);
         }
         return json({ error: 'Your trial could not be checked just now. Try again shortly.', code: 'unavailable' }, 503, cors);
       }

@@ -36,13 +36,40 @@ export type TrialRefusalCode =
   /** Both interviews allowed under the Speaking test have been started. */
   | 'trial-sessions-used';
 
+/** What an assessment refusal adds for the screens (review of 1 October
+    2026): which allowance, and how much of it is used. */
+export interface RefusalDetails {
+  kind?: string;
+  purpose?: string;
+  used?: number;
+  limit?: number;
+}
+
 export class TrialRefusal extends Error {
   readonly code: TrialRefusalCode;
-  constructor(code: TrialRefusalCode, message: string) {
+  /** The database's own reason, for `assessment-unavailable` refusals:
+      allowance-used | mock-allowance-used | placement-used | trial-ended |
+      daily-limit | paid-required | already-requested | unknown-session. */
+  readonly reason?: string;
+  readonly details?: RefusalDetails;
+  constructor(code: TrialRefusalCode, message: string, reason?: string, details?: RefusalDetails) {
     super(message);
     this.code = code;
     this.name = 'TrialRefusal';
+    if (reason) this.reason = reason;
+    if (details) this.details = details;
   }
+}
+
+/** The JSON body every Worker returns for a refusal: the message, the code,
+    and for an assessment refusal its reason and numbers. */
+export function refusalBody(err: TrialRefusal): Record<string, unknown> {
+  return {
+    error: err.message,
+    code: err.code,
+    ...(err.reason ? { reason: err.reason } : {}),
+    ...(err.details ?? {}),
+  };
 }
 
 /** The database could not be asked. Workers fail CLOSED on this: an
@@ -74,35 +101,65 @@ export function refusal(code: TrialRefusalCode): TrialRefusal {
 
 export type TrialRpc = (fn: string, args: Record<string, unknown>) => Promise<Record<string, unknown>>;
 
-/** PostgREST's /rest/v1/rpc/<fn> with the service role key. */
-export function serviceRpc(fetchFn: typeof fetch, supabaseUrl: string, serviceKey: string): TrialRpc {
+/** How long a Worker waits for the database before it refuses (review P2-5,
+    1 October 2026). Every allowance check happens before an AI call, so a
+    database that hangs must not hold the student's request open: after this
+    the Worker fails CLOSED with its plain "could not be checked" answer. */
+export const SERVICE_RPC_TIMEOUT_MS = 8000;
+
+/** PostgREST's /rest/v1/rpc/<fn> with the service role key. Gives up after
+    `timeoutMs` (the request is aborted, and the answer is not waited for
+    even if the network ignores the abort). */
+export function serviceRpc(fetchFn: typeof fetch, supabaseUrl: string, serviceKey: string, timeoutMs = SERVICE_RPC_TIMEOUT_MS): TrialRpc {
   return async (fn, args) => {
-    let resp: Response;
+    const controller = new AbortController();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timedOut = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => {
+        controller.abort();
+        reject(new TrialServiceError(`trial: ${fn} timed out`));
+      }, timeoutMs);
+    });
     try {
-      resp = await fetchFn(`${supabaseUrl.replace(/\/$/, '')}/rest/v1/rpc/${fn}`, {
-        method: 'POST',
-        headers: {
-          apikey: serviceKey,
-          Authorization: `Bearer ${serviceKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(args),
-      });
-    } catch {
-      throw new TrialServiceError(`trial: ${fn} unreachable`);
+      let resp: Response;
+      try {
+        resp = await Promise.race([
+          fetchFn(`${supabaseUrl.replace(/\/$/, '')}/rest/v1/rpc/${fn}`, {
+            method: 'POST',
+            headers: {
+              apikey: serviceKey,
+              Authorization: `Bearer ${serviceKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(args),
+            signal: controller.signal,
+          }),
+          timedOut,
+        ]);
+      } catch (err) {
+        if (err instanceof TrialServiceError) throw err;
+        throw new TrialServiceError(`trial: ${fn} unreachable`);
+      }
+      if (!resp.ok) throw new TrialServiceError(`trial: ${fn} answered ${resp.status}`);
+      let body: unknown;
+      try {
+        body = await Promise.race([resp.json(), timedOut]);
+      } catch (err) {
+        if (err instanceof TrialServiceError) throw err;
+        throw new TrialServiceError(`trial: ${fn} answered unreadably`);
+      }
+      return checkObject(fn, body);
+    } finally {
+      clearTimeout(timer);
     }
-    if (!resp.ok) throw new TrialServiceError(`trial: ${fn} answered ${resp.status}`);
-    let body: unknown;
-    try {
-      body = await resp.json();
-    } catch {
-      throw new TrialServiceError(`trial: ${fn} answered unreadably`);
-    }
-    if (typeof body !== 'object' || body === null || Array.isArray(body)) {
-      throw new TrialServiceError(`trial: ${fn} answered with no object`);
-    }
-    return body as Record<string, unknown>;
   };
+}
+
+function checkObject(fn: string, body: unknown): Record<string, unknown> {
+  if (typeof body !== 'object' || body === null || Array.isArray(body)) {
+    throw new TrialServiceError(`trial: ${fn} answered with no object`);
+  }
+  return body as Record<string, unknown>;
 }
 
 const REASON_TO_CODE: Record<string, TrialRefusalCode> = {

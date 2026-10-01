@@ -354,6 +354,21 @@ no-fabrication rule (silent audio scores band 1 with no invented quotes).
   silently falling back to the other provider or calling an upstream with no
   key.
 
+## Commercial build (`ACCESS_MODE=trial`): the allowance
+
+Only with `ACCESS_MODE=trial`; the open build is unchanged. A recorded
+assessment (`part1`, `part2and3`) uses one of the 6 per 30-day purchase, or
+the trial's one shared assessment. Live-interview feedback (`interview`, with
+`liveSessionId`) is one per interview from the student's own account, for
+practice, placement and mock interviews alike. Reserved before any model call
+(supabase/migrations/2026-09-30-profitable-offer.sql); a failed grade is given
+back; an abandoned request is released after 15 minutes unless a model had
+already answered it. Refusal, HTTP 403:
+`{ error, code: "assessment-unavailable", reason, kind?, purpose?, used?, limit? }`
+with `reason` one of `allowance-used`, `trial-ended`, `daily-limit`,
+`already-requested`, `unknown-session`. A database that does not answer within
+8 seconds is a `503` (`code: "unavailable"`).
+
 ## Free-tier quota (gemini rollback path only)
 
 This section applies only when `GRADER_PROVIDER` is rolled back to
