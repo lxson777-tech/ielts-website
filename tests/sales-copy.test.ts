@@ -16,7 +16,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { SALES_COPY, isSalesKey, salesText, salesVars, tenge, type SalesKey } from '../src/marketing/sales-copy.ts';
-import { journeyDays, journeySteps, type JourneyAnswers } from '../src/lib/journey-plan.ts';
+import { journeyDays, journeyQuery, journeySteps, type JourneyAnswers } from '../src/lib/journey-plan.ts';
+import { PAID_AI_ALLOWANCE } from '../src/lib/access/plans.ts';
 
 const REPO_ROOT = fileURLToPath(new URL('..', import.meta.url));
 const SALES_FILES = [
@@ -24,7 +25,7 @@ const SALES_FILES = [
   'src/components/home/NextChapter.astro',
   'src/components/home/QuestionJourney.astro',
   'src/components/home/SalesDemo.astro',
-  'src/components/home/TrialPricing.astro',
+  'src/components/home/PricingPlans.astro',
 ];
 const SCRIPT_FILES = ['src/scripts/question-journey.ts', 'src/scripts/next-chapter.ts', 'src/marketing/sales-i18n.ts'];
 
@@ -102,29 +103,62 @@ test('keys built from a template in the markup all exist', () => {
       ...['15', '30', '60'].flatMap((v) => [`journey.o.time.${v}`, `journey.d.time.${v}`]),
     ],
     skills: ['reading', 'listening', 'writing', 'speaking'].flatMap((id) => ['headline', 'text', 'm1', 'm2', 'm3'].map((p) => `skill.${id}.${p}`)),
-    faq: ['trial', 'cost', 'refund', 'unlimited', 'start', 'account', 'official', 'exam', 'phone', 'speed'].flatMap((id) => [`faq.${id}.q`, `faq.${id}.a`]),
+    faq: ['free', 'paid', 'cost', 'renewal', 'refund', 'unlimited', 'account', 'academic', 'official', 'exam', 'phone', 'speed'].flatMap((id) => [`faq.${id}.q`, `faq.${id}.a`]),
   };
   const missing = Object.values(ids).flat().filter((key) => !isSalesKey(key));
   assert.deepEqual(missing, []);
 });
 
-test('the corrected trial wording is on the page in both languages', () => {
-  const start = SALES_COPY['faq.start.a'];
-  assert.match(start.en, /one AI assessment: choose Writing or recorded Speaking/);
-  assert.match(start.en, /up to five minutes/);
-  assert.match(SALES_COPY['faq.trial.a'].en, /72-hour/);
-  assert.match(SALES_COPY['faq.trial.a'].ru, /Writing или запись Speaking/);
-  assert.doesNotMatch(start.en, /full test in each section/);
-  assert.match(start.ru, /одна проверка ИИ на выбор/);
-  assert.match(start.ru, /до пяти минут/);
+test('the free-account model is on the page in both languages, and no trial is', () => {
+  // Alex, 1 October 2026: every lesson free with an account; practice and
+  // guidance paid; no free trial anywhere.
+  for (const [key, entry] of Object.entries(SALES_COPY)) {
+    // ("пробный экзамен", a mock exam, is not a trial.)
+    assert.doesNotMatch(entry.en, /trial|72-hour/i, `${key} (en) still mentions a trial`);
+    assert.doesNotMatch(entry.ru, /пробн\S* (период|доступ)|72 час/i, `${key} (ru) still mentions a trial`);
+  }
+  assert.match(SALES_COPY['hero.label'].en, /free with an account/);
+  assert.match(SALES_COPY['faq.free.a'].en, /Every lesson, with an account/);
+  assert.match(SALES_COPY['faq.account.a'].en, /^Yes\. Lessons open with a free account/);
+  assert.match(SALES_COPY['faq.account.a'].ru, /^Да\. Уроки открываются с бесплатным аккаунтом/);
+  // The one name for what paying adds.
+  assert.equal(SALES_COPY['price.paid.label'].en, 'Practice and guidance');
+  assert.equal(SALES_COPY['price.paid.label'].ru, 'Практика и сопровождение');
+  assert.match(SALES_COPY['journey.action.text'].ru, /практика и сопровождение/);
   assert.match(SALES_COPY['faq.unlimited.a'].en, /12 essay assessments, 6 recorded Speaking assessments/);
-  assert.match(start.en + SALES_COPY['price.includes.1'].en, /Academic IELTS/);
-  assert.match(start.ru + SALES_COPY['price.includes.1'].ru, /Academic IELTS/);
-  // Alex, 29 September 2026: fixed periods, no automatic renewal, no refunds.
-  assert.match(SALES_COPY['price.status'].en, /no automatic renewal/);
-  // Review of 1 October 2026, P2-10: the FAQ says it plainly, in both languages.
-  assert.match(SALES_COPY['faq.refund.a'].en, /no refunds after purchase/);
-  assert.match(SALES_COPY['faq.refund.a'].ru, /после покупки деньги не возвращаются/);
+  assert.match(SALES_COPY['faq.academic.a'].en, /Academic IELTS/);
+  assert.match(SALES_COPY['faq.academic.a'].ru, /Academic IELTS/);
+  // Alex, 29 September 2026: fixed periods, no automatic renewal, no refunds after purchase.
+  assert.match(SALES_COPY['price.status'].en, /no automatic renewal, no refunds after purchase/);
+  assert.match(SALES_COPY['faq.renewal.a'].en, /never charged automatically/);
+  assert.match(SALES_COPY['faq.refund.a'].en, /^No\. Payments are not refunded after purchase/);
+  assert.match(SALES_COPY['faq.refund.a'].ru, /^Нет\. После покупки деньги не возвращаются/);
+  assert.match(SALES_COPY['faq.refund.a'].en, /purchase terms/);
+});
+
+test('the allowances on the page are the approved ones', () => {
+  // PAID_AI_ALLOWANCE (src/lib/access/plans.ts) is the approved wording; the
+  // page's own sentences must name the same numbers. The mock exam and
+  // placement allowances are the database's (2026-09-30-profitable-offer.sql).
+  const approved = PAID_AI_ALLOWANCE;
+  for (const fact of [/12 essay assessments/, /6 recorded Speaking assessments \(up to 5 minutes each\)/, /2 live interviews with feedback \(up to 15 minutes each\)/, /40 chat messages and 60 lesson-help requests per day/]) {
+    assert.match(approved, fact, 'the approved allowance changed: update the sales copy with it');
+  }
+  const page = SALES_COPY['faq.unlimited.a'].en;
+  assert.match(page, /12 essay assessments, 6 recorded Speaking assessments \(up to 5 minutes each\), 2 live interviews with feedback \(up to 15 minutes each\), 2 full mock exams, and the placement test once per account/);
+  assert.match(page, /40 chat messages and 60 lesson-help requests a day/);
+  assert.match(SALES_COPY['faq.unlimited.a'].ru, /12 проверок эссе, 6 проверок записей Speaking до 5 минут, 2 устных собеседования с разбором до 15 минут, 2 полных пробных экзамена/);
+  assert.match(SALES_COPY['price.paid.2'].en, /^12 essay assessments and 6 recorded Speaking assessments$/);
+  assert.match(SALES_COPY['price.paid.3'].en, /^2 live interviews/);
+  assert.match(SALES_COPY['price.paid.4'].en, /^2 full mock exams and the placement test$/);
+  const sql = fs.readFileSync(path.join(REPO_ROOT, 'supabase/migrations/2026-09-30-profitable-offer.sql'), 'utf8');
+  assert.match(sql, /v_purpose = 'mock' then[\s\S]{0,200}allowance := 2;/, 'the mock exam allowance changed: update the sales copy with it');
+});
+
+test('the questionnaire plan says which days are free lessons', () => {
+  const days = journeyDays({ band: '7', skill: 'reading', focus: 'method', time: '30' });
+  assert.deepEqual(days.map((d) => d.access), ['free', 'paid', 'paid']);
+  assert.equal(journeyQuery({ band: '7.5', skill: 'writing', focus: 'confidence', time: '15' }), '?journey=1&band=7.5&skill=writing&focus=confidence&time=15');
 });
 
 test('prices are formatted for each language from the one approved source', () => {
@@ -135,13 +169,11 @@ test('prices are formatted for each language from the one approved source', () =
   assert.equal(en.oneMonth, '₸12,990');
   assert.equal(en.threeMonths, '₸25,000');
   assert.equal(en.saving, '₸13,970');
-  assert.equal(en.tutorMessages, '5 Mr EZ messages');
-  assert.equal(ru.tutorMessages, '5 сообщений Mr EZ');
   assert.match(salesText('faq.cost.a', 'ru'), /30 дней стоят 12\s990 ₸/);
   // Every placeholder is filled in both languages.
   for (const key of Object.keys(SALES_COPY) as SalesKey[]) {
     for (const locale of ['en', 'ru'] as const) {
-      const text = salesText(key, locale, { count: 1, band: '7.0', skill: 'Reading', time: 30, day: 1, minutes: 30, outcome: 'x', title: 'x' });
+      const text = salesText(key, locale, { count: 1, band: '7.0', skill: 'Reading', time: 30, day: 1, minutes: 30, outcome: 'x', title: 'x', access: 'x' });
       assert.doesNotMatch(text, /\{\w+\}/, `${key} (${locale}) leaves a placeholder unfilled: ${text}`);
     }
   }

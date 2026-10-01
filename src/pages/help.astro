@@ -7,17 +7,54 @@
    "Talk to a person" (Builder E, 29 September 2026, audit F04): the
    support form (/support), which needs no published contact; Alex reads
    the messages in /admin. A direct contact appears beside it only once
-   Alex publishes one in src/lib/operator.ts. The trial-sensitive answers
-   below belong to Builder B and are untouched here.
+   Alex publishes one in src/lib/operator.ts.
+   Free and paid (Builder W, 1 October 2026): in the gated build every
+   lesson is free with an account and practice and guidance are paid
+   (docs/paid-access/FREE-ACCOUNT-MODEL.md), so two answers say how that
+   works and how to get guidance, and Mr EZ's answer says he comes with it.
+   The open build (today's live site) sells nothing and keeps its answers.
    Presentation is Codex's; this uses the existing account/report page shell. */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { withBase } from '../lib/url';
 import { nt } from '../lib/i18n/translate';
 import { publishedOperator } from '../lib/operator';
+import { isTrialBuild } from '../lib/trial/mode';
+import { PURCHASE_ENABLED } from '../components/access/payments';
 
 const operator = publishedOperator();
+const sellsAccess = isTrialBuild();
+
+/* Gated build only: what is free, what is paid, and how to get guidance. */
+const accessSections: { id: string; question: string; answers: string[] }[] = [
+  {
+    id: 'free-paid',
+    question: nt('What is free, and what is paid?'),
+    answers: [
+      /* The access tiers: src/lib/access/model.ts. */
+      nt('Every lesson is free with an account: the explanations, worked examples, each lesson’s own short quiz and the vocabulary lists.'),
+      nt('Practice and guidance are paid: practice exercises and timed tests with band estimates, AI feedback on essays and recorded Speaking, live interviews with the AI examiner, full mock exams, the placement test, Mr EZ and the practice in your personal study plan.'),
+      /* src/lib/access/plans.ts: 30 days, no renewal, no refunds after purchase. */
+      nt('Practice and guidance last 30 days and then simply end. Nothing renews, and payments are not refunded after purchase. The Plans page shows the price and what 30 days include.'),
+    ],
+  },
+  {
+    id: 'guidance',
+    question: nt('How do I get practice and guidance?'),
+    answers: PURCHASE_ENABLED
+      ? [
+          /* /plans: sign in, pay once; access starts when the payment is confirmed. */
+          nt('Open the Plans page, sign in and pay once for 30 days. Your access starts as soon as the payment is confirmed, and your Account page shows when it ends.'),
+          nt('When you reach for something that comes with practice and guidance, the platform tells you what it adds and links to the Plans page. Your lessons stay open either way.'),
+        ]
+      : [
+          nt('Buying practice and guidance is not open yet. The Plans page shows the price and what 30 days include.'),
+          nt('When you reach for something that comes with practice and guidance, the platform tells you what it adds and links to the Plans page. Your lessons stay open either way.'),
+        ],
+  },
+];
 
 const sections: { id: string; question: string; answers: string[] }[] = [
+  ...(sellsAccess ? accessSections : []),
   {
     id: 'start',
     question: nt('Where do I start?'),
@@ -74,8 +111,11 @@ const sections: { id: string; question: string; answers: string[] }[] = [
     id: 'mr-ez',
     question: nt('What can Mr EZ do?'),
     answers: [
-      /* MrEzPanel: sign-in required; reads only the student's own record. */
-      nt('Mr EZ is your AI tutor. He explains results, suggests what to practise next and answers questions about your own work. He needs you to be signed in, because he only ever reads your own results.'),
+      /* MrEzPanel: sign-in required; reads only the student's own record.
+         Gated build: he comes with practice and guidance (PaidFeature 'tutor'). */
+      sellsAccess
+        ? nt('Mr EZ is your AI tutor, and he comes with practice and guidance. He explains results, suggests what to practise next and answers questions about your own work, reading only your own results.')
+        : nt('Mr EZ is your AI tutor. He explains results, suggests what to practise next and answers questions about your own work. He needs you to be signed in, because he only ever reads your own results.'),
       /* HELP_BLOCKED_MODES */
       nt('He does not help during a timed test. Once you submit, he can go through your mistakes with you.'),
     ],
@@ -95,7 +135,9 @@ const sections: { id: string; question: string; answers: string[] }[] = [
   <div class="platform-hub mx-auto max-w-3xl px-4 py-12 sm:px-6">
     <header class="mb-10 border-b border-border pb-8">
       <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl" data-i18n>How the platform works</h1>
-      <p class="mt-3 max-w-2xl text-ink-muted" data-i18n>Short answers about lessons, tests, scores, saving your work and Mr EZ.</p>
+      {sellsAccess
+        ? <p class="mt-3 max-w-2xl text-ink-muted" data-i18n>Short answers about free lessons, practice and guidance, tests, scores, saving your work and Mr EZ.</p>
+        : <p class="mt-3 max-w-2xl text-ink-muted" data-i18n>Short answers about lessons, tests, scores, saving your work and Mr EZ.</p>}
     </header>
 
     <section class="help-person" aria-labelledby="help-person-title">

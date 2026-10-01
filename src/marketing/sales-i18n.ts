@@ -2,7 +2,7 @@
 
    Reads and writes the SAME stored choice as the workspace
    (`ielts.locale.v1` through src/lib/i18n/locale.ts), so the language a
-   visitor picks here is the language of /trial, sign-up, profile and the
+   visitor picks here is the language of sign-up, sign-in, profile and the
    workspace, and a student who chose Russian in the workspace sees this page
    in Russian. With nothing stored, a device set to Russian or Kazakh opens in
    Russian, exactly like the workspace (detectLocale).

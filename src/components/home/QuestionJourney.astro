@@ -1,10 +1,11 @@
 ---
-import { withBase } from '../../lib/url';
+import { signUpHref } from '../../lib/auth/profile';
 import { sales, type SalesKey } from '../../marketing/sales-copy';
 /* The four questions. Their wording lives in src/marketing/sales-copy.ts
    (journey.q.<id>, journey.n.<id>, journey.o.<id>.<value>,
    journey.d.<id>.<value>), in English and Russian; the values are what the
-   trial page reads back, so they never change with the language. */
+   platform reads back after sign-up (journeyQuery in src/lib/journey-plan.ts),
+   so they never change with the language. */
 const questions = [
  {id:'band', options:['7','7.5','8']},
  {id:'skill', options:['speaking','writing','reading','listening']},
@@ -17,7 +18,7 @@ const k = (key: string) => key as SalesKey;
  <div class="journey-atmosphere" aria-hidden="true"><canvas class="journey-shader"></canvas></div>
  <div class="content-wrap journey-intro" id="your-plan"><p class="section-note" data-sales="journey.note">{sales('journey.note')}</p><h2 id="journey-title" data-sales="journey.title" set:html={sales('journey.title')} /><p data-sales="journey.lead">{sales('journey.lead')}</p><a class="journey-skip" href="#your-classroom" data-sales="journey.skip">{sales('journey.skip')}</a></div>
  {/* Without JavaScript nothing can translate this line either, so it stays English. */}
- <noscript><p class="content-wrap" lang="en">Enable JavaScript to build your suggested plan, or <a href="#pricing">see trial and pricing details</a>.</p></noscript>
+ <noscript><p class="content-wrap" lang="en">Enable JavaScript to build your suggested plan, or <a href="#pricing">see what is free and what is paid</a>.</p></noscript>
  <div class="content-wrap journey-layout" data-journey-interactive hidden>
   <div class="journey-answer-trail" aria-label={sales('journey.answers')} data-sales-attr="aria-label:journey.answers">{questions.map((q,i)=><button type="button" data-edit-step={i} hidden><span data-sales={k(`journey.chip.${q.id}`)}>{sales(k(`journey.chip.${q.id}`))}</span><b data-answer-chip={q.id}></b></button>)}</div>
 
@@ -35,7 +36,7 @@ const k = (key: string) => key as SalesKey;
    <div class="journey-plan" data-plan-card hidden>
     <div class="journey-plan-summary"><span data-plan-label></span><span data-plan-title></span></div>
     <ol data-plan-steps></ol><details class="journey-copy"><summary data-sales="journey.routine">{sales('journey.routine')}</summary><p data-daily-routine></p></details>
-    <div class="journey-plan-action"><div><h3 data-sales="journey.action.title">{sales('journey.action.title')}</h3><p data-sales="journey.action.text">{sales('journey.action.text')}</p></div><a class="button" data-plan-link data-trial-link href={withBase('/trial')} data-sales="journey.action.cta">{sales('journey.action.cta')}</a></div>
+    <div class="journey-plan-action"><div><h3 data-sales="journey.action.title">{sales('journey.action.title')}</h3><p data-sales="journey.action.text">{sales('journey.action.text')}</p></div><a class="button" data-plan-link data-signup-link href={signUpHref()} data-sales="nav.signUp">{sales('nav.signUp')}</a></div>
     <details class="journey-copy"><summary data-sales="journey.copy.summary">{sales('journey.copy.summary')}</summary><label for="journey-copy-text" data-sales="journey.copy.label">{sales('journey.copy.label')}</label><textarea id="journey-copy-text" data-copy-plan readonly rows="8"></textarea></details><small data-sales="journey.disclaimer">{sales('journey.disclaimer')}</small>
    </div>
    <div class="journey-plan-placeholder" data-plan-placeholder><p data-sales="journey.placeholder">{sales('journey.placeholder')}</p><a href="#journey-band" data-plan-complete data-sales="journey.placeholder.cta">{sales('journey.placeholder.cta')}</a></div>

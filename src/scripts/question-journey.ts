@@ -1,15 +1,21 @@
 import {createJourneyShader} from './journey-shader';
-import {journeySkill, journeySteps, journeyDays, trialQuery, validJourney, type JourneyAnswers} from '../lib/journey-plan';
+import {journeySkill, journeySteps, journeyDays, journeyQuery, validJourney, JOURNEY_LANDING, type JourneyAnswers} from '../lib/journey-plan';
 import {salesText, type SalesKey} from '../marketing/sales-copy';
 import {salesLocale, SALES_LOCALE_EVENT} from '../marketing/sales-i18n';
-/* Every "start your free trial" link on the page carries the four answers
-   once all are chosen, so the trial page can offer them as a suggested
-   starting point (src/lib/trial/offer.ts, questionnaireFromSearch). */
-function carryAnswersToTrial(answers:Record<string,string>){
+/* Every "Create a free account" link on the page carries the four answers
+   once all are chosen. They ride inside the sign-up page's own `next`
+   (`/sign-up?next=/dashboard?journey=1&band=...`), which sign-up hands to the
+   profile page and the profile page follows once the details are given, so
+   the answers arrive on the dashboard after the whole round trip, where
+   questionnaireFromSearch (src/lib/trial/offer.ts) reads them. The same
+   answers also stay in this tab's session storage (`ielts.journey.draft.v1`,
+   below), as they always have. Sign-in links are left alone: a returning
+   student already has a plan. */
+function carryAnswersToSignUp(answers:Record<string,string>){
  const complete=validJourney(answers);
- document.querySelectorAll<HTMLAnchorElement>('a[data-trial-link]').forEach(link=>{
-  const plain=link.dataset.trialHref??(link.dataset.trialHref=link.getAttribute('href')!.split('?')[0]);
-  link.setAttribute('href',complete?`${plain}${trialQuery(answers as JourneyAnswers)}`:plain);
+ document.querySelectorAll<HTMLAnchorElement>('a[data-signup-link]').forEach(link=>{
+  const plain=link.dataset.signupHref??(link.dataset.signupHref=link.getAttribute('href')!.split('?')[0]);
+  link.setAttribute('href',complete?`${plain}?next=${encodeURIComponent(JOURNEY_LANDING+journeyQuery(answers as JourneyAnswers))}`:plain);
  });
 }
 const root=document.querySelector<HTMLElement>('[data-question-journey]');
@@ -77,7 +83,7 @@ if(root){
   }
   const count=names.filter(n=>answers[n]).length;
   const ready=count===4;
-  carryAnswersToTrial(answers);
+  carryAnswersToSignUp(answers);
   (root!.querySelector('[data-plan-card]') as HTMLElement).hidden=!ready;
   (root!.querySelector('[data-plan-placeholder]') as HTMLElement).hidden=ready;
   if(!ready){
@@ -95,16 +101,19 @@ if(root){
   root!.querySelector('[data-plan-title]')!.textContent=say(answers.focus==='method'?'journey.plan.focus.method':'journey.plan.focus.confidence');
   const days=journeyDays(answers as JourneyAnswers,locale);
   const routine=journeySteps(answers as JourneyAnswers,locale);
-  root!.querySelector<HTMLTextAreaElement>('[data-copy-plan]')!.value=`${say('journey.copy.heading')}\n${say('journey.copy.target',{band:answers.band,skill:skill.name,time})}\n\n${days.map(day=>`${say('journey.copy.day',{day:day.day,title:day.title,minutes:day.minutes})}\n${day.text}\n${say('journey.plan.outcome',{outcome:day.outcome})}`).join('\n\n')}\n\n${say('journey.copy.guide')}\n${routine.join('\n')}`;
+  const access=(day:{access:'free'|'paid'})=>say(day.access==='free'?'journey.plan.free':'journey.plan.paid');
+  root!.querySelector<HTMLTextAreaElement>('[data-copy-plan]')!.value=`${say('journey.copy.heading')}\n${say('journey.copy.target',{band:answers.band,skill:skill.name,time})}\n\n${days.map(day=>`${say('journey.copy.day',{day:day.day,title:day.title,minutes:day.minutes,access:access(day)})}\n${day.text}\n${say('journey.plan.outcome',{outcome:day.outcome})}`).join('\n\n')}\n\n${say('journey.copy.guide')}\n${routine.join('\n')}`;
   root!.querySelector('[data-daily-routine]')!.textContent=routine.join(' ');
   const list=root!.querySelector('[data-plan-steps]')!;
   list.replaceChildren(...days.map(day=>{
    const li=document.createElement('li');
    const duration=document.createElement('span');duration.className='plan-duration';duration.textContent=say('journey.plan.day',{day:day.day,minutes:day.minutes});
+   // Free lesson or practice and guidance: which steps a free account can do.
+   const tag=document.createElement('span');tag.className=`plan-access is-${day.access}`;tag.dataset.planAccess=day.access;tag.textContent=access(day);
    const heading=document.createElement('h3');heading.textContent=day.title;
    const detail=document.createElement('p');detail.textContent=day.text;
    const outcome=document.createElement('p');outcome.className='plan-outcome';outcome.textContent=say('journey.plan.outcome',{outcome:day.outcome});
-   li.append(duration,heading,detail,outcome);return li;
+   li.append(duration,tag,heading,detail,outcome);return li;
   }));
  }
  root.querySelector<HTMLTextAreaElement>('[data-copy-plan]')?.addEventListener('focus',event=>(event.target as HTMLTextAreaElement).select());

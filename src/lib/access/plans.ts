@@ -55,7 +55,7 @@ export const THREE_MONTH_SAVING = FULL_ACCESS_PRICES_KZT.oneMonth * 3 - FULL_ACC
     Ordinary study stays unrestricted; billable assessments use the ledger
     in 2026-09-30-profitable-offer.sql. Legacy plan definitions above remain
     available for reading old receipts, not for selling the paused plan. */
-export const PAID_AI_ALLOWANCE = 'Each 30-day purchase includes 12 essay assessments, 6 recorded Speaking assessments (up to 5 minutes each), and 2 live interviews with feedback (up to 15 minutes each). Unused assessments expire with that purchase. Lessons remain free for everyone. Paid access includes unlimited Reading and Listening practice. Mr EZ includes 40 chat messages and 60 lesson-help requests per day.';
+export const PAID_AI_ALLOWANCE = 'Each 30-day purchase includes 12 essay assessments, 6 recorded Speaking assessments (up to 5 minutes each), and 2 live interviews with feedback (up to 15 minutes each), plus 2 full mock exams and the placement test once per account. Unused assessments expire with that purchase. Every lesson stays free with an account. Paid access includes unlimited Reading and Listening practice. Mr EZ includes 40 chat messages and 60 lesson-help requests per day.';
 
 /** Also decided on 29 September 2026: a purchase is a fixed period that
     simply ends. There is no automatic renewal and no refund after purchase

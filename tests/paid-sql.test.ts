@@ -9,12 +9,18 @@
  *   node --import ./tests/ts-extension-loader.mjs --test tests/paid-sql.test.ts
  *
  * Every account is a synthetic uuid in a fresh database per test.
+ *
+ * Tests named HISTORY run the migrations as they stood before the free-
+ * account model retired the trial (supabase/migrations/2026-10-01-free-
+ * account.sql): they prove what the paid-access file did beside the trial.
+ * The rest run every migration, as a project runs them today; the free
+ * account's own rules are in tests/free-account-sql.test.ts.
  */
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { createTrialDb, PAID_MIGRATION } from '../tools/trial-db.mjs';
+import { createTrialDb, PAID_MIGRATION, TRIAL_MIGRATION, OFFER_MIGRATION, FREE_MIGRATION, PRE_FREE_MIGRATIONS } from '../tools/trial-db.mjs';
 import { PAID_PLANS, parsePaymentOrder } from '../src/lib/access/plans.ts';
 import { FULL_ACCESS_PRICES_KZT } from '../src/lib/trial/offer.ts';
 import { hasPaidAccess, paidAccessEnded, parseTrialStatus } from '../src/lib/trial/status.ts';
@@ -30,8 +36,8 @@ const ms = (value: unknown) => new Date(value as string).getTime();
 
 type Db = Awaited<ReturnType<typeof createTrialDb>>;
 
-async function world(): Promise<Db> {
-  const db = await createTrialDb();
+async function world(migrations?: string[]): Promise<Db> {
+  const db = await createTrialDb(migrations ? { migrations } : {});
   await db.addUser(A, 'paid-a@example.test');
   await db.addUser(B, 'paid-b@example.test');
   return db;
@@ -134,10 +140,14 @@ test('the migration is idempotent: running it again changes nothing and keeps ev
 test('every migration re-applied in order, twice, keeps the approved prices and every record', async () => {
   const db = await world();
   const first = await buy(db);
+  /* Every access file, in the order a project runs them, ending with the
+     free-account model (an older file re-run on its own would put back its
+     own versions of the functions the newer files redefine). The admin and
+     profile files are left out: 2026-09-24-admin.sql cannot be re-run after
+     2026-09-24-profiles.sql has widened admin_list_users (Postgres refuses
+     to change a function's return type in place). */
   for (let i = 0; i < 2; i++) {
-    for (const file of ['2026-09-23-trial.sql', '2026-09-30-paid-access.sql', '2026-09-30-profitable-offer.sql']) {
-      await db.raw.exec(readFileSync(new URL(`../supabase/migrations/${file}`, import.meta.url), 'utf8'));
-    }
+    for (const file of [TRIAL_MIGRATION, PAID_MIGRATION, OFFER_MIGRATION, FREE_MIGRATION]) await db.raw.exec(readFileSync(file, 'utf8'));
   }
   assert.deepEqual(await db.select(PLAN_ROWS, [], service), APPROVED);
   assert.deepEqual(await db.select('select id, status from public.payment_orders', [], service), [{ id: first.orderId, status: 'paid' }]);
@@ -361,8 +371,8 @@ test('a refund revokes that order\'s grant and pulls later grants back, with no 
 
 /* ── What trial_state and trial_can_open say ──────────────────────────── */
 
-test('trial_state.paid: null before paying, the grant while it runs, the end date after it ends', async () => {
-  const db = await world();
+test('HISTORY trial_state.paid: null before paying, the grant while it runs, the end date after it ends', async () => {
+  const db = await world(PRE_FREE_MIGRATIONS);
   await db.rpc('trial_start', {}, asA);
   assert.equal((await status(db)).paid, null);
   assert.equal((await status(db, B)).paid, null, 'no trial, no payment');
@@ -389,8 +399,8 @@ test('trial_state.paid: null before paying, the grant while it runs, the end dat
   await db.close();
 });
 
-test('trial_can_open: a running grant opens everything; after it ends the trial rules apply again', async () => {
-  const db = await world();
+test('HISTORY trial_can_open: a running grant opens everything; after it ends the trial rules apply again', async () => {
+  const db = await world(PRE_FREE_MIGRATIONS);
   const locked = ['lesson:reading-tfng', 'test:reading-full-029', 'practice:practice-reading-tfng', 'pack:writing-models', 'writing-prompt:pte-wt-121-task2', 'writing-model:pte-wt-121-task2'];
 
   // No trial, no payment.
@@ -422,8 +432,8 @@ test('trial_can_open: a running grant opens everything; after it ends the trial 
   await db.close();
 });
 
-test('a refund takes access away at once, and saved trial results stay', async () => {
-  const db = await world();
+test('HISTORY a refund takes access away at once, and saved trial results stay', async () => {
+  const db = await world(PRE_FREE_MIGRATIONS);
   await db.rpc('trial_start', {}, asA);
   await db.rpc('trial_test_begin', { p_section: 'reading', p_activity: 'reading-full-001', p_request: 'sit-r-paid-002' }, asA);
   await db.rpc('trial_test_finish', { p_section: 'reading', p_request: 'sit-r-paid-002' }, asA);

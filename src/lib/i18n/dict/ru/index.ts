@@ -41,6 +41,8 @@ import * as a3Remediation from './a3-remediation';
 import * as r01Remediation from './r01-remediation';
 import * as accessModel from './access-model';
 import * as sOffer from './s-offer';
+import * as wFree from './w-free';
+import * as gFree from './g-free';
 import * as pFree from './p-free';
 
 /** Every batch module, in merge order. The test imports this same list. */
@@ -78,6 +80,8 @@ export const BATCHES = [
   r01Remediation,
   accessModel,
   sOffer,
+  wFree,
+  gFree,
   pFree,
 ];
 

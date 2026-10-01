@@ -122,6 +122,8 @@ import {
   readSittingId,
   refusal,
   refusalBody,
+  refusalStatus,
+  requirePaidAccess,
   releaseSpeakingSession,
   serviceRpc,
   startSpeakingSession,
@@ -596,9 +598,13 @@ async function handleOpenAiCreate(deps: Deps, request: Request, env: Env, cors: 
     }
     try {
       const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL as string, env.SUPABASE_SERVICE_ROLE_KEY as string);
+      /* Free-account model (1 October 2026): paid or complimentary access
+         first, or 402 paid-required, before anything is reserved or the
+         voice service is asked for anything. */
+      await requirePaidAccess(rpc, userId);
       assessmentClaim = await reserveAssessment(rpc, userId, 'live', undefined, purpose);
     } catch (err) {
-      if (err instanceof TrialRefusal) return json(refusalBody(err),403,cors);
+      if (err instanceof TrialRefusal) return json(refusalBody(err),refusalStatus(err),cors);
       return json({error:'Your allowance could not be checked.',code:'unavailable'},503,cors);
     }
   }

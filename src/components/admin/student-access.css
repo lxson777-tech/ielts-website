@@ -1,0 +1,38 @@
+/* The Access block of one student in /admin (Builder G). Sits on admin.css
+   and reuses its buttons, notes and key-value grid. */
+.admin-access { padding-bottom: 20px; margin-bottom: 4px; border-bottom: 1px solid var(--color-border); }
+.admin-access h3 { margin: 0; }
+.admin-access-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.admin-access-tier { border-radius: 999px; padding: 3px 10px; font-size: .72rem; font-weight: 700; letter-spacing: .02em; background: var(--color-surface-alt); color: var(--color-ink-muted); }
+.admin-access-tier.is-paid { background: var(--color-ink); color: var(--color-surface); }
+.admin-access-tier.is-complimentary { background: var(--color-brand-tint); color: var(--color-brand-hover, var(--color-brand)); }
+.admin-access-lede { margin: 8px 0 14px; color: var(--color-ink-muted); font-size: .86rem; line-height: 1.5; }
+.admin-access-grant { display: grid; gap: 16px; }
+.admin-access-uses { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px 28px; margin: 0; padding: 0; list-style: none; }
+.admin-access-uses li { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 12px; font-size: .82rem; color: var(--color-ink-muted); }
+.admin-access-uses b { color: var(--color-ink); font-weight: 650; font-variant-numeric: tabular-nums; }
+.admin-access-meter { grid-column: 1 / -1; height: 4px; border-radius: 999px; background: var(--color-surface-alt); overflow: hidden; }
+.admin-access-meter > span { display: block; height: 100%; border-radius: inherit; background: var(--color-ink); transition: width 400ms cubic-bezier(.2, .7, .2, 1); }
+.admin-access-controls { margin-top: 18px; display: grid; gap: 12px; }
+.admin-access-note { display: grid; gap: 6px; max-width: 420px; font-size: .74rem; font-weight: 600; color: var(--color-ink-muted); }
+.admin-access-note input { border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-surface); padding: 9px 12px; color: var(--color-ink); font: inherit; font-size: .86rem; font-weight: 500; transition: border-color var(--dur-fast, 150ms) ease; }
+.admin-access-note input:hover { border-color: color-mix(in srgb, var(--color-ink) 30%, var(--color-border)); }
+.admin-access-note input:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+.admin-access-buttons { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.admin-button.is-danger { color: var(--color-danger, #9b2c2c); }
+.admin-button.is-danger:hover { border-color: var(--color-danger, #9b2c2c); }
+.admin-button.is-danger-solid { border-color: var(--color-danger, #9b2c2c); background: var(--color-danger, #9b2c2c); color: #fff; }
+.admin-access-confirm { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; border-radius: 14px; background: var(--color-surface-alt); padding: 6px 6px 6px 14px; font-size: .84rem; color: var(--color-ink); }
+.admin-access-message { min-height: 1.3em; margin: 0; font-size: .84rem; font-weight: 600; }
+.admin-access-message.is-done { color: var(--color-ink); }
+.admin-access-message.is-refused { color: var(--color-danger, #9b2c2c); }
+.admin-tag.is-paid { background: var(--color-ink); }
+.admin-tag.is-gift { background: var(--color-brand-tint); color: var(--color-brand-hover, var(--color-brand)); }
+.admin-tag.is-ended { border: 1px solid var(--color-border); background: transparent; color: var(--color-ink-muted); }
+@media (prefers-reduced-motion: reduce) {
+  .admin-access-meter > span, .admin-access-note input { transition: none; }
+}
+@media (max-width: 640px) {
+  .admin-access-buttons .admin-button { flex: 1 1 100%; justify-content: center; }
+  .admin-access-confirm { width: 100%; }
+}

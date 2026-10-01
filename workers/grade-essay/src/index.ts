@@ -19,22 +19,16 @@ import { reserveAssessment, finishAssessment, type AssessmentClaim } from '../..
    The Worker is the ONLY provider-specific code in the project, the site
    talks to this endpoint through the provider-agnostic RemoteGrader. */
 
-import { TRIAL_WRITING, parseAccessMode } from '../../../src/lib/trial/offer';
+import { parseAccessMode } from '../../../src/lib/trial/offer';
 import { bandStepsFor, readBandStepLocale } from '../../../src/lib/trial/band-steps';
-import { getWritingPrompt } from '../../../src/data/writing-prompts';
 import {
   TrialRefusal,
   refusalBody,
+  refusalStatus,
   bearer,
-  leaseTrialTest,
-  paidAccessRunning,
-  readSittingId,
-  refusal,
-  releaseUse,
+  requirePaidAccess,
   serviceRpc,
-  settleUse,
   verifyAccessToken,
-  type TrialRpc,
 } from '../../../src/lib/trial/gate';
 
 export interface Env {
@@ -49,13 +43,15 @@ export interface Env {
   /** How many independent grading runs to take the median of (vars,
       default 3). More runs = less band variance; all run in parallel. */
   GRADING_SAMPLES?: string;
-  /** 'trial' makes grading part of the three-day trial: the student must be
-      signed in and must have begun the trial's Writing test, and that test
-      is used only when a grade comes back (src/lib/trial/gate.ts). Anything
-      else, including unset, is today's open grader. */
+  /** 'trial' is the commercial build (the name stays): the student must be
+      signed in with paid or complimentary access running, and each essay
+      uses one of the purchase's assessments (docs/paid-access/
+      FREE-ACCOUNT-MODEL.md). A free account is refused with 402
+      paid-required before anything is spent. Anything else, including
+      unset, is today's open grader. */
   ACCESS_MODE?: string;
-  /** Needed only in trial mode, to verify the student and to take and
-      settle the test in supabase/migrations/2026-09-23-trial.sql. */
+  /** Needed only in commercial mode, to verify the student and to ask
+      supabase/migrations/2026-10-01-free-account.sql. */
   SUPABASE_URL?: string; // vars
   SUPABASE_SERVICE_ROLE_KEY?: string; // wrangler secret
 }
@@ -961,14 +957,12 @@ export function createHandler(deps: { fetch: typeof fetch }) {
         return json({ error: 'The essay grader is not configured' }, 503, cors);
       }
 
-      /* The trial, before a single token is paid for: who is asking, and
-         is this their begun Writing test that nobody else is grading right
-         now. The lease is what stops two submissions of the one test both
-         being paid for. */
-      let trial: { rpc: TrialRpc; userId: string; sitting: string } | null = null;
-      /* A paid account in a trial build: graded exactly as the open grader
-         grades (the student's own question, no trial test used), plus the
-         band guide steps a trial build's browser does not carry. */
+      /* Commercial mode, before a single token is paid for: who is asking,
+         whether paid or complimentary access is running (a free account is
+         refused here with 402 paid-required, the trial is retired), and one
+         of the purchase's essay assessments reserved. Paid accounts are
+         graded exactly as the open grader grades (their own question), plus
+         the band guide steps a commercial build's browser does not carry. */
       let paid = false;
       let assessmentClaim: AssessmentClaim | null = null;
       if (parseAccessMode(env.ACCESS_MODE) === 'trial') {
@@ -980,32 +974,13 @@ export function createHandler(deps: { fetch: typeof fetch }) {
           const userId = token ? await verifyAccessToken(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, token) : null;
           if (!userId) return json({ error: 'Sign in to have your essay graded.', code: 'sign-in-required' }, 401, cors);
           const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
-          /* Both paid and trial requests reserve an assessment before
-             spending. Trial essays also need the student's own sitting. */
-          paid = await paidAccessRunning(rpc, userId);
-          if (!paid) {
-            const sitting = readSittingId(body.trialSitting);
-            if (!sitting) throw refusal('trial-no-test');
-            /* The trial essay answers the trial's own question, read here from
-               the server's copy, never from the request (Alex, 24 September). */
-            const question = getWritingPrompt(TRIAL_WRITING.essayPromptId);
-            if (!question) throw refusal('trial-not-included');
-            body.prompt = {
-              task: question.task,
-              variant: question.variant,
-              promptHtml: question.promptHtml,
-              minWords: question.minWords,
-            };
-            await leaseTrialTest(rpc, userId, 'writing', sitting);
-            trial = { rpc, userId, sitting };
-          }
+          await requirePaidAccess(rpc, userId);
+          paid = true;
           assessmentClaim = await reserveAssessment(rpc, userId, 'writing');
         } catch (err) {
-          if (err instanceof TrialRefusal) {
-            return json(refusalBody(err), err.code === 'trial-in-flight' ? 409 : 403, cors);
-          }
+          if (err instanceof TrialRefusal) return json(refusalBody(err), refusalStatus(err), cors);
           // Fail closed: an allowance that cannot be checked is not spent.
-          return json({ error: 'Your trial could not be checked just now. Try again shortly.', code: 'unavailable' }, 503, cors);
+          return json({ error: 'Your access could not be checked just now. Try again shortly.', code: 'unavailable' }, 503, cors);
         }
       }
 
@@ -1032,17 +1007,15 @@ export function createHandler(deps: { fetch: typeof fetch }) {
         runs = await Promise.all(Array.from({ length: samples }, gradeOnce));
       } catch (err) {
         await finishAssessment(assessmentClaim, false).catch(() => undefined);
-        if (trial) await releaseUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);
         throw err;
       }
       const good = runs.filter((r): r is { assessment: Record<string, unknown> } => 'assessment' in r);
 
       if (good.length === 0) {
         const firstFail = runs.find((r): r is { failStatus: number; failError: string } => 'failStatus' in r)!;
-        /* Nothing was graded, so the trial test is still the student's to
-           submit again. A release that fails expires on its own in minutes. */
+        /* Nothing was graded, so the assessment is given back. A release
+           that fails expires on its own (the 15-minute stale rule). */
         await finishAssessment(assessmentClaim, false).catch(() => undefined);
-        if (trial) await releaseUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);
         return json({ error: firstFail.failError }, firstFail.failStatus, cors);
       }
 
@@ -1054,17 +1027,6 @@ export function createHandler(deps: { fetch: typeof fetch }) {
       const median = good[Math.floor((good.length - 1) / 2)]!.assessment;
 
       await finishAssessment(assessmentClaim, true).catch(() => undefined);
-      if (trial) {
-        /* Graded: the Writing test is used. Settled here, on the server, so
-           a browser that closes now does not get it back. */
-        await settleUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);
-        /* The band guide step for each band given, in the student's
-           language: a trial build's browser carries no band guides. */
-        const criteria = (median.criteria ?? {}) as Record<string, { band?: unknown }>;
-        const bands = Object.fromEntries(Object.entries(criteria).map(([key, value]) => [key, value?.band]));
-        const guides = bandStepsFor('writing', bands, readBandStepLocale(body.locale));
-        return json({ ...median, guides, trial: { section: 'writing', test: 'used' } }, 200, cors);
-      }
       if (paid) {
         const criteria = (median.criteria ?? {}) as Record<string, { band?: unknown }>;
         const bands = Object.fromEntries(Object.entries(criteria).map(([key, value]) => [key, value?.band]));

@@ -16,7 +16,19 @@
      grade-essay and grade-speaking Workers on Cloudflare (their READMEs);
    - live examiner: audio goes browser to OpenAI directly; the Worker only
      brokers the session and keeps a timing row (live_examiner_sessions);
-   - trial: trial_accounts (start, end, the goal questions) and trial_usage;
+   - trial: trial_accounts (start, end, the goal questions) and trial_usage.
+     The trial is retired (Alex, 1 October 2026): nothing starts a new one,
+     but the rows already written are kept (nothing is deleted), so the
+     page still says they exist, in the past tense;
+   - allowances (gated build): assessment_usage counts each essay, recorded
+     Speaking, live interview and mock or placement interview against the
+     30 days (kind, purpose, status, times), and assessment_provider_usage
+     keeps the AI service's usage figures, model and outcome for each call,
+     never the essay, the audio or the reply (2026-09-30-profitable-offer.sql,
+     src/lib/access/metering.ts);
+   - complimentary access (Builder G, 2026-10-01-free-account.sql): an
+     access_grants row of kind complimentary with its start, end and the
+     admin who gave it;
    - purchases (re-audit R02, 30 September 2026), from
      supabase/migrations/2026-09-30-paid-access.sql and workers/payments:
      payment_orders keeps the plan, amount, currency, provider name and the
@@ -80,7 +92,7 @@ const kept: string[] = [
   nt('Essays you have had graded, with their feedback, so you can reread them later.'),
   nt('For Speaking, your scores. The recording itself is not saved by this site.'),
   nt('Your conversations with Mr EZ, so he can carry on where you left off. You can clear them at any time in Study plan settings.'),
-  nt('If you take the free trial: when it started, which trial tests and Mr EZ messages you used, and your answers to the short questions about your goals.'),
+  nt('If you took the free trial while it was offered: when it started, which trial tests and Mr EZ messages you used, and your answers to the short questions about your goals. The trial is no longer offered, so no new trial records are made.'),
   nt('Messages you send through the support form, with the page you sent them from.'),
   nt('If you write without signing in: the email address you give for the reply. To stop one sender from flooding the form, your internet connection’s address is also kept for 24 hours, only as a scrambled code that cannot be read back. The address itself is never stored.'),
   ...(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
@@ -98,6 +110,9 @@ const purchaseRecord: string[] = [
   nt('The name of the payment company and its reference number for the payment.'),
   nt('A receipt number for each paid purchase.'),
   nt('The dates your paid access starts and ends, and the date it was withdrawn if a payment was refunded.'),
+  nt('How many of the included assessments you have used: each essay, recorded Speaking, live interview and mock exam or placement interview, with its time and whether it finished.'),
+  nt('For each AI assessment, the AI service’s usage figures and the result of the call, to keep costs in check. Your essay, your recording and the feedback text are not part of this record.'),
+  nt('If the person who runs the site gives you free access, the dates it starts and ends and who gave it.'),
 ];
 
 const undecided = sellsAccess
@@ -128,7 +143,7 @@ const services: { name: string; role: string }[] = [
       <p class="policy-eyebrow" data-i18n>Privacy</p>
       <h1 data-i18n>How your information is used</h1>
       <p class="policy-lede" data-i18n>What the site asks for and why, what it keeps, and which services handle it. Only what the site actually does, in plain words.</p>
-      <p class="policy-updated" data-i18n>Updated 30 September 2026</p>
+      <p class="policy-updated" data-i18n>Updated 1 October 2026</p>
     </header>
 
     {operator && (
@@ -174,7 +189,7 @@ const services: { name: string; role: string }[] = [
     {sellsAccess && (
       <section class="policy-section" aria-labelledby="privacy-purchases">
         <h2 id="privacy-purchases" data-i18n>Purchases and payment records</h2>
-        <p data-i18n>When you buy access, the site keeps a record of the purchase:</p>
+        <p data-i18n>When you buy practice and guidance, or are given it, the site keeps these records:</p>
         <ul class="policy-list">
           {purchaseRecord.map((line) => <li data-i18n>{line}</li>)}
         </ul>

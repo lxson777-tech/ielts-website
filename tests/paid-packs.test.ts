@@ -218,7 +218,7 @@ const PAID = 'aaaaaaaa-7777-4777-8777-aaaaaaaaaaaa';
 const TRIAL = 'bbbbbbbb-7777-4777-8777-bbbbbbbbbbbb';
 const TOKENS: Record<string, string> = { 'token-paid': PAID, 'token-trial': TRIAL };
 
-test('the gate hands the built packs to a running paid grant only', async () => {
+test('the gate hands the built packs to a running paid grant only; a free account is refused 402', async () => {
   const db = await createTrialDb();
   await db.addUser(PAID, 'packs-paid@example.test');
   await db.addUser(TRIAL, 'packs-trial@example.test');
@@ -249,6 +249,8 @@ test('the gate hands the built packs to a running paid grant only', async () => 
     return { status: r.status, text: await r.text() };
   };
 
+  // A free account (the trial is retired: trial_start is refused).
+  await db.addProfile(TRIAL);
   await db.rpc('trial_start', {}, { userId: TRIAL });
   const created = (await db.rpc('access_order_create', { p_plan: 'month-1' }, { userId: PAID })) as { orderId: string; amount: number; currency: string };
   await db.rpc(
@@ -259,13 +261,13 @@ test('the gate hands the built packs to a running paid grant only', async () => 
 
   for (const name of ['model-answers', 'cue-cards', 'placement', `focused-${realFocused.FOCUSED_EXERCISES[0]!.id}`]) {
     assert.equal((await get(`/pack/${name}`)).status, 401, `signed out ${name}`);
-    assert.equal((await get(`/pack/${name}`, 'token-trial')).status, 403, `trial ${name}`);
+    assert.equal((await get(`/pack/${name}`, 'token-trial')).status, 402, `free ${name}`);
     const opened = await get(`/pack/${name}`, 'token-paid');
     assert.equal(opened.status, 200, `paid ${name}`);
     assert.deepEqual(JSON.parse(opened.text), pack(name));
   }
   await db.expirePaid(PAID);
-  assert.equal((await get('/pack/model-answers', 'token-paid')).status, 403, 'ended paid access');
+  assert.equal((await get('/pack/model-answers', 'token-paid')).status, 402, 'ended paid access is a free account again');
   await db.close();
 });
 

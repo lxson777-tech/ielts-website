@@ -60,6 +60,7 @@ const SKIP_DIRS = ['lib/i18n', 'data/tests', 'content'];
 const EXEMPT: Record<string, string> = {
   'components/admin/AdminPanel.tsx': 'staff-only page for Alex, deliberately English',
   'components/admin/SupportRequests.tsx': 'part of the staff-only admin page, deliberately English like AdminPanel',
+  'components/admin/StudentAccess.tsx': 'part of the staff-only admin page (give, renew, stop free access), deliberately English like AdminPanel',
 };
 
 function isRedirectStub(rel: string): boolean {

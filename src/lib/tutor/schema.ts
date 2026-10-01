@@ -306,8 +306,10 @@ export type TutorErrorCode =
   | 'trial-ended' // the 72 hours are over
   | 'trial-allowance-used' // this section's five messages are used
   | 'trial-not-included' // about something the trial does not include
-  /* The free-account model (1 October 2026): Mr EZ comes with practice and
-     guidance. HTTP 402 from a gated Worker for any other account. */
+  /* The free-account model (docs/paid-access/FREE-ACCOUNT-MODEL.md): a
+     signed-in account without paid or complimentary access, answered with
+     HTTP 402 { error, code: 'paid-required', reason: 'paid-required' }.
+     Only from a Worker running ACCESS_MODE=trial (the commercial build). */
   | 'paid-required';
 
 /** How much of one section's trial allowance is used, after this reply.

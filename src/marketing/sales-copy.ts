@@ -8,9 +8,17 @@
    future.</em>"), and its copy has nothing to do with the workspace. Putting
    it in the workspace chunk would make every student download marketing
    copy on every page. What the two DO share is the stored language choice
-   (`ielts.locale.v1`, src/lib/i18n/locale.ts): choose Russian here and the
-   trial, sign-up, profile and workspace open in Russian; choose it in the
+   (`ielts.locale.v1`, src/lib/i18n/locale.ts): choose Russian here and
+   sign-up, profile and workspace open in Russian; choose it in the
    workspace and this page opens in Russian.
+
+   The offer it describes (Alex, 1 October 2026,
+   docs/paid-access/FREE-ACCOUNT-MODEL.md): every lesson is free with an
+   account; practice, tests and personal guidance are paid ("practice and
+   guidance", in Russian "практика и сопровождение", always that one name),
+   one price for 30 days, no automatic renewal, no refunds after purchase.
+   There is no free trial. Nothing here promises free practice to the
+   public: students Alex teaches get theirs from him directly.
 
    How it is used
    ---------------
@@ -27,10 +35,16 @@
    Rules for the Russian are the workspace's (docs/I18N-GUIDE.md): "вы",
    natural and short, no em or en dashes, and IELTS, Mr EZ, the four paper
    names, Task / Part numbers and official criterion names stay English.
-   Placeholders ({oneMonth}, {threeMonths}, {saving}, {tutorMessages}) are
-   filled per language by salesVars(). */
+   Placeholders ({oneMonth}, {threeMonths}, {saving}) are filled per
+   language by salesVars().
 
-import { FULL_ACCESS_PRICES_KZT, TRIAL_TUTOR_PER_SECTION } from '../lib/trial/offer';
+   The allowances (12 essay assessments, 6 recorded Speaking assessments,
+   2 live interviews, 2 mock exams, the placement test once per account)
+   are written out in the sentences below; tests/sales-copy.test.ts holds
+   them to PAID_AI_ALLOWANCE in src/lib/access/plans.ts, the approved
+   wording, so the two cannot drift apart. */
+
+import { paidPlan } from '../lib/access/plans';
 
 export type SalesLocale = 'en' | 'ru';
 
@@ -46,8 +60,8 @@ export const SALES_COPY = {
     ru: 'IELTS is EZ | Откройте ворота в своё будущее',
   },
   'meta.description': {
-    en: 'Make your next chapter possible. Clear IELTS lessons, guided practice, realistic tests and useful AI feedback, all in one study space.',
-    ru: 'Откройте свою следующую главу. Понятные уроки IELTS, практика с подсказками, реалистичные тесты и полезный разбор от ИИ в одном учебном пространстве.',
+    en: 'Every IELTS lesson is free with an account. Practice, timed tests, AI feedback and Mr EZ cost {oneMonth} for 30 days, with no automatic renewal.',
+    ru: 'Все уроки IELTS бесплатны с аккаунтом. Практика, тесты на время, разбор от ИИ и Mr EZ стоят {oneMonth} за 30 дней, без автоматического продления.',
   },
   'skip': { en: 'Skip to content', ru: 'Перейти к содержанию' },
   'review.note': {
@@ -64,15 +78,20 @@ export const SALES_COPY = {
   'nav.plan': { en: 'Your plan', ru: 'Ваш план' },
   'nav.pricing': { en: 'Pricing', ru: 'Цены' },
   'nav.signIn': { en: 'Sign in', ru: 'Войти' },
-  // Short on purpose: it shares a phone's header with the logo and the menu.
-  'nav.lessons': { en: 'Browse free lessons', ru: 'Открыть бесплатные уроки' },
-  'nav.trial': { en: 'Start your free trial', ru: 'Начать бесплатно' },
+  // Every way in: the sign-up page (carrying the questionnaire's answers once chosen).
+  'nav.signUp': { en: 'Create a free account', ru: 'Создать бесплатный аккаунт' },
+  // The header's own copy of it on a phone, where it shares the width with
+  // the logo, the language switch and the menu (the full words wrap to three
+  // lines in Russian at 320 pixels, and anything longer than one short word
+  // pushes the page sideways there). Same link, same destination; the hero
+  // line just below says the account is free.
+  'nav.signUpShort': { en: 'Start for free', ru: 'Начать бесплатно' },
   'nav.menuOpen': { en: 'Open menu', ru: 'Открыть меню' },
   'nav.menuClose': { en: 'Close menu', ru: 'Закрыть меню' },
   'lang.group': { en: 'Language', ru: 'Язык' },
 
   /* Hero: the gates. */
-  'hero.label': { en: 'AI-powered IELTS practice', ru: 'Подготовка к IELTS с помощью ИИ' },
+  'hero.label': { en: 'Every IELTS lesson free with an account', ru: 'Все уроки IELTS бесплатно с аккаунтом' },
   'hero.title': {
     en: 'Open the gates<br />to <em>your future.</em>',
     ru: 'Откройте ворота<br />в <em>своё будущее.</em>',
@@ -204,17 +223,16 @@ export const SALES_COPY = {
   'journey.result.title': { en: 'Make your goal a daily habit.', ru: 'Превратите цель в ежедневную привычку.' },
   'journey.result.lead': { en: 'Four choices. One clear place to start.', ru: 'Четыре ответа. Одна понятная точка старта.' },
   'journey.routine': { en: 'How to use your daily time', ru: 'Как распределить время в день' },
-  'journey.action.title': { en: 'Put your plan into practice.', ru: 'Примените план на практике.' },
+  'journey.action.title': { en: 'Start with these lessons.', ru: 'Начните с этих уроков.' },
   'journey.action.text': {
-    en: 'Your first three days have a direction. Start your free trial with this plan as your starting point.',
-    ru: 'У ваших первых трёх дней есть направление. Начните бесплатный пробный период с этим планом.',
+    en: 'Create a free account and begin with the lessons in this plan. Every lesson is free. Steps marked practice and guidance need paid access.',
+    ru: 'Создайте бесплатный аккаунт и начните с уроков из этого плана. Все уроки бесплатны. Для шагов с пометкой «практика и сопровождение» нужен платный доступ.',
   },
-  'journey.action.cta': { en: 'Start my free trial', ru: 'Начать пробный период' },
   'journey.copy.summary': { en: 'Keep a copy of my plan', ru: 'Сохранить копию плана' },
   'journey.copy.label': { en: 'Select the plan and copy it to your notes.', ru: 'Выделите план и скопируйте его в заметки.' },
   'journey.disclaimer': {
-    en: 'A suggested routine, not a level assessment or guaranteed band. Starting your trial from here takes your answers with you as a suggestion you can change.',
-    ru: 'Это предложенный распорядок, а не оценка уровня и не гарантия балла. Если начать пробный период отсюда, ваши ответы перейдут с вами как подсказка, которую можно изменить.',
+    en: 'A suggested routine, not a level assessment or guaranteed band. Create your account from here and your answers go with you as a suggestion you can change.',
+    ru: 'Это предложенный распорядок, а не оценка уровня и не гарантия балла. Если создать аккаунт отсюда, ваши ответы перейдут с вами как подсказка, которую можно изменить.',
   },
   'journey.placeholder': {
     en: 'Choose your goal, your hardest section and your daily pace. Your short practice plan will appear here.',
@@ -237,12 +255,16 @@ export const SALES_COPY = {
   'journey.plan.focus.confidence': { en: 'More confident practice', ru: 'Более уверенная практика' },
   'journey.plan.day': { en: 'Day {day} / {minutes} minutes', ru: 'День {day} / {minutes} минут' },
   'journey.plan.outcome': { en: 'Take away: {outcome}', ru: 'Итог: {outcome}' },
+  /* Which steps a free account can do (journeyDays in src/lib/journey-plan.ts
+     says which day is which). */
+  'journey.plan.free': { en: 'Free lesson', ru: 'Бесплатный урок' },
+  'journey.plan.paid': { en: 'Practice and guidance', ru: 'Практика и сопровождение' },
   'journey.copy.heading': { en: 'IELTS is EZ: suggested three-day plan', ru: 'IELTS is EZ: предложенный план на три дня' },
   'journey.copy.target': {
     en: 'Target Band {band}, {skill}, {time} minutes daily',
     ru: 'Целевой балл {band}, {skill}, {time} минут в день',
   },
-  'journey.copy.day': { en: 'Day {day}: {title} ({minutes} min)', ru: 'День {day}: {title} ({minutes} мин)' },
+  'journey.copy.day': { en: 'Day {day}: {title} ({minutes} min, {access})', ru: 'День {day}: {title} ({minutes} мин, {access})' },
   'journey.copy.guide': { en: 'Daily time guide', ru: 'Как распределить время в день' },
 
   /* Mr EZ. */
@@ -276,8 +298,8 @@ export const SALES_COPY = {
     ru: 'Это пример, а не живой чат. Mr EZ объясняет результаты, отвечает на вопросы по учёбе и предлагает подходящую практику.',
   },
   'ez.access': {
-    en: 'Your personal tutor is available after sign-in. Usage limits apply.',
-    ru: 'Личный репетитор доступен после входа в аккаунт. Действуют лимиты использования.',
+    en: 'Mr EZ comes with practice and guidance. Daily usage limits apply.',
+    ru: 'Mr EZ входит в практику и сопровождение. Действуют дневные лимиты использования.',
   },
 
   /* Inside the platform: the four skills. */
@@ -382,90 +404,107 @@ export const SALES_COPY = {
     ru: 'Наш ИИ опирается на эти опубликованные критерии при оценке. IELTS не одобряет эту платформу и не выдаёт наши учебные оценки.',
   },
 
-  /* Trial and prices (TrialPricing.astro). Alex, 29 September 2026: paid
-     access is a fixed one or three months that simply ends, with no
-     automatic renewal; no refunds after purchase (the free trial is the
-     chance to try); paying students get unlimited normal study with fair
-     daily safety limits. Buying stays switched off until a provider is
-     chosen. */
-  'price.title': { en: 'Your first 3 days.<br /><span>On us.</span>', ru: 'Первые 3 дня<br /><span>за наш счёт.</span>' },
+  /* Free and paid (PricingPlans.astro). Alex, 1 October 2026: every lesson
+     is free with an account; practice and guidance are one price for 30
+     days, which simply end (no automatic renewal), with no refunds after
+     purchase. Buying is possible only where the build has a payments
+     Worker; elsewhere the button stays unavailable and the page says so. */
+  'price.title': {
+    en: 'Every lesson, free.<br /><span>Guidance when you want it.</span>',
+    ru: 'Все уроки бесплатно.<br /><span>Сопровождение, когда оно нужно.</span>',
+  },
   'price.lead': {
-    en: 'Get to know your study space before you pay.<br />Sign up to start. No payment card required.',
-    ru: 'Познакомьтесь с учебным пространством до оплаты.<br />Чтобы начать, зарегистрируйтесь. Банковская карта не нужна.',
+    en: 'Create a free account to read every lesson.<br />Add practice and guidance for 30 days whenever you are ready.',
+    ru: 'Создайте бесплатный аккаунт, чтобы читать все уроки.<br />Добавьте практику и сопровождение на 30 дней, когда будете готовы.',
   },
-  'price.includes.title': { en: 'One place to prepare.', ru: 'Всё для подготовки в одном месте.' },
-  'price.includes.lead': {
-    en: 'Three days to explore lessons, Reading and Listening, and one AI assessment of your choice.',
-    ru: 'Три дня для знакомства с уроками, Reading и Listening и одной проверкой ИИ на выбор.',
+  'price.compare': { en: 'What is free and what is paid', ru: 'Что бесплатно, а что платно' },
+  'price.free.label': { en: 'Free account', ru: 'Бесплатный аккаунт' },
+  'price.free.title': { en: 'Every lesson', ru: 'Все уроки' },
+  'price.free.amount': { en: 'Free <small>with an account, no payment card</small>', ru: 'Бесплатно <small>с аккаунтом, без банковской карты</small>' },
+  'price.free.1': {
+    en: 'Every lesson for Reading, Listening, Writing and Speaking',
+    ru: 'Все уроки по Reading, Listening, Writing и Speaking',
   },
-  'price.includes.full': { en: 'Full access includes', ru: 'В полный доступ входит' },
-  'price.includes.1': {
-    en: 'Your Academic IELTS study plan and saved practice progress',
-    ru: 'Ваш учебный план Academic IELTS и сохранённый прогресс практики',
+  'price.free.2': { en: 'Worked examples and each lesson’s own short quiz', ru: 'Разобранные примеры и короткий тест к каждому уроку' },
+  'price.free.3': { en: 'Vocabulary topic lists and word tables', ru: 'Тематические списки слов и таблицы лексики' },
+  'price.free.4': { en: 'The course map and your progress through the lessons', ru: 'Карта курса и ваш прогресс по урокам' },
+  'price.paid.label': { en: 'Practice and guidance', ru: 'Практика и сопровождение' },
+  'price.paid.title': { en: 'Practise, get feedback, follow your plan', ru: 'Практика, разбор и личный план' },
+  'price.paid.amount': { en: '{oneMonth} <small>for 30 days, paid once</small>', ru: '{oneMonth} <small>за 30 дней, оплата один раз</small>' },
+  'price.paid.1': {
+    en: 'Every practice exercise and timed test, with band estimates',
+    ru: 'Все упражнения и тесты на время, с примерной оценкой балла',
   },
-  'price.includes.2': { en: 'Guided exercises and timed practice tests', ru: 'Упражнения с подсказками и пробные тесты на время' },
-  'price.includes.3': { en: 'AI writing and speaking feedback', ru: 'Разбор Writing и Speaking от ИИ' },
-  'price.includes.4': { en: 'AI speaking practice with an examiner', ru: 'Практика Speaking с ИИ-экзаменатором' },
-  'price.includes.5': { en: 'Mr EZ, your personal AI study companion', ru: 'Mr EZ, ваш личный ИИ-помощник в учёбе' },
-  'price.includes.small': {
-    en: 'All lessons are free without an account. Sign in for your 72-hour trial: one Reading test, one Listening test, and one AI assessment: choose Writing or recorded Speaking (up to five minutes). Plus {tutorMessages} per section. Live interviews require paid access. Each 30-day purchase includes 12 essay assessments, 6 recorded Speaking assessments (up to 5 minutes each), and 2 live interviews with feedback (up to 15 minutes each). Unused assessments expire with that purchase. Lessons remain free for everyone. Paid access includes unlimited Reading and Listening practice. Mr EZ includes 40 chat messages and 60 lesson-help requests per day.',
-    ru: 'Все уроки бесплатны без регистрации. Войдите в аккаунт для пробного доступа на 72 часа: один тест Reading, один тест Listening и одна проверка ИИ на выбор: Writing или запись Speaking до пяти минут. Плюс {tutorMessages} на каждую часть. Устные собеседования доступны после покупки. За каждые 30 дней: 12 проверок эссе, 6 проверок записей Speaking до 5 минут и 2 устных собеседования с разбором до 15 минут. Неиспользованные проверки сгорают в конце срока. Уроки бесплатны для всех. Платный доступ включает практику Reading и Listening без ограничений. Mr EZ: 40 сообщений в чате и 60 запросов помощи в уроках в день.',
+  'price.paid.2': {
+    en: '12 essay assessments and 6 recorded Speaking assessments',
+    ru: '12 проверок эссе и 6 проверок записей Speaking',
   },
-  'price.options': { en: 'Access after your trial', ru: 'Доступ после пробного периода' },
-  'price.one.title': { en: 'One month', ru: 'Один месяц' },
-  'price.one.text': { en: 'Room to build your routine.', ru: 'Время выстроить привычку.' },
-  'price.one.amount': { en: '{oneMonth} <small>for 1 month</small>', ru: '{oneMonth} <small>за 1 месяц</small>' },
-  'price.one.cta': { en: 'Choose one month', ru: 'Выбрать один месяц' },
-  'price.three.title': { en: 'Three months', ru: 'Три месяца' },
-  'price.three.text': { en: 'More time to put it into practice.', ru: 'Больше времени применить всё на практике.' },
-  'price.three.amount': { en: '{threeMonths} <small>for 3 months, total</small>', ru: '{threeMonths} <small>за 3 месяца, всего</small>' },
-  'price.three.saving': {
-    en: 'Save {saving} compared with three monthly purchases.',
-    ru: 'Экономия {saving} по сравнению с тремя покупками по месяцу.',
+  'price.paid.3': {
+    en: '2 live interviews with the AI examiner, with feedback',
+    ru: '2 устных собеседования с ИИ-экзаменатором, с разбором',
   },
-  'price.three.cta': { en: 'Choose three months', ru: 'Выбрать три месяца' },
+  'price.paid.4': { en: '2 full mock exams and the placement test', ru: '2 полных пробных экзамена и вступительный тест' },
+  'price.paid.5': {
+    en: 'Mr EZ, your personal AI tutor, and your personal study plan',
+    ru: 'Mr EZ, ваш личный ИИ-репетитор, и ваш личный учебный план',
+  },
+  'price.paid.small': {
+    en: 'No automatic renewal: access simply ends after 30 days. No refunds after purchase. Recorded Speaking assessments last up to 5 minutes and live interviews up to 15. The placement test is once per account. Essays written in a mock exam or the placement test count towards the 12. Unused assessments expire with the 30 days. Mr EZ allows 40 chat messages and 60 lesson-help requests a day.',
+    ru: 'Без автоматического продления: доступ просто заканчивается через 30 дней. После покупки деньги не возвращаются. Запись Speaking длится до 5 минут, устное собеседование до 15 минут. Вступительный тест проходят один раз на аккаунт. Эссе в пробном экзамене и во вступительном тесте входят в 12 проверок. Неиспользованные проверки сгорают через 30 дней. Mr EZ: 40 сообщений в чате и 60 запросов помощи в уроках в день.',
+  },
+  'price.paid.cta': { en: 'Get practice and guidance', ru: 'Подключить практику и сопровождение' },
   'price.status': {
-    en: '30 days of access, no automatic renewal. Buying is not switched on yet.',
-    ru: 'Доступ на 30 дней без автоматического продления. Покупка пока недоступна.',
+    en: '30 days, no automatic renewal, no refunds after purchase. Buying is not switched on yet.',
+    ru: '30 дней, без автоматического продления, без возврата денег после покупки. Покупка пока недоступна.',
   },
   'price.status.open': {
-    en: '30 days of access, no automatic renewal. Check the included assessments before you buy.',
-    ru: 'Доступ на 30 дней без автоматического продления. Перед покупкой ознакомьтесь с количеством проверок.',
+    en: '30 days, no automatic renewal, no refunds after purchase. Check what is included before you buy.',
+    ru: '30 дней, без автоматического продления, без возврата денег после покупки. Перед покупкой проверьте, что входит в доступ.',
   },
   'price.plans': { en: 'See the plans', ru: 'Посмотреть тарифы' },
 
   /* Questions (FAQ). */
   'faq.note': { en: 'Before your first step', ru: 'Перед первым шагом' },
   'faq.title': { en: 'A few things<br />you might wonder.', ru: 'Несколько вопросов,<br />которые могут возникнуть.' },
-  'faq.trial.q': { en: 'How does the 3-day free trial work?', ru: 'Как работает бесплатный пробный период на 3 дня?' },
-  'faq.trial.a': {
-    en: 'All lessons are free without an account. Sign in for your 72-hour trial: one Reading test, one Listening test, and one AI assessment: choose Writing or recorded Speaking (up to five minutes). Plus {tutorMessages} per section. Live interviews require paid access.',
-    ru: 'Все уроки бесплатны без регистрации. Войдите в аккаунт для пробного доступа на 72 часа: один тест Reading, один тест Listening и одна проверка ИИ на выбор: Writing или запись Speaking до пяти минут. Плюс {tutorMessages} на каждую часть. Устные собеседования доступны после покупки.',
+  'faq.free.q': { en: 'What is free?', ru: 'Что бесплатно?' },
+  'faq.free.a': {
+    en: 'Every lesson, with an account: the explanations, worked examples, each lesson’s short quiz and the vocabulary lists, for all four IELTS papers. Creating the account is free and needs no payment card.',
+    ru: 'Все уроки, с аккаунтом: объяснения, разобранные примеры, короткий тест к каждому уроку и списки слов по всем четырём частям IELTS. Аккаунт создаётся бесплатно, банковская карта не нужна.',
   },
-  'faq.cost.q': { en: 'What does access cost after the trial?', ru: 'Сколько стоит доступ после пробного периода?' },
+  'faq.paid.q': { en: 'What is paid, and why?', ru: 'Что платно и почему?' },
+  'faq.paid.a': {
+    en: 'Practice and guidance: practice exercises and timed tests with band estimates, AI feedback on essays and recorded Speaking, live interviews with the AI examiner, full mock exams, the placement test, Mr EZ and the practice in your personal study plan. They are paid because every AI check and every conversation costs real money to run. That is what lets the lessons stay free.',
+    ru: 'Практика и сопровождение: упражнения и тесты на время с оценкой балла, разбор эссе и записей Speaking от ИИ, устные собеседования с ИИ-экзаменатором, полные пробные экзамены, вступительный тест, Mr EZ и практика из вашего личного учебного плана. Они платные, потому что каждая проверка ИИ и каждый разговор стоят реальных денег. Благодаря этому уроки остаются бесплатными.',
+  },
+  'faq.cost.q': { en: 'How much do practice and guidance cost?', ru: 'Сколько стоят практика и сопровождение?' },
   'faq.cost.a': {
-    en: '30 days cost {oneMonth}. No automatic renewal. Each 30-day purchase includes 12 essay assessments, 6 recorded Speaking assessments (up to 5 minutes each), and 2 live interviews with feedback (up to 15 minutes each). Unused assessments expire with that purchase. Lessons remain free for everyone. Paid access includes unlimited Reading and Listening practice. Mr EZ includes 40 chat messages and 60 lesson-help requests per day.',
-    ru: '30 дней стоят {oneMonth}. Без автоматического продления. За каждые 30 дней: 12 проверок эссе, 6 проверок записей Speaking до 5 минут и 2 устных собеседования с разбором до 15 минут. Неиспользованные проверки сгорают в конце срока. Уроки бесплатны для всех. Платный доступ включает практику Reading и Listening без ограничений. Mr EZ: 40 сообщений в чате и 60 запросов помощи в уроках в день.',
+    en: '30 days cost {oneMonth}, paid once. Your lessons stay free with your account whether or not you buy.',
+    ru: '30 дней стоят {oneMonth}, оплата один раз. Уроки остаются бесплатными с аккаунтом, даже если вы ничего не покупаете.',
+  },
+  'faq.renewal.q': { en: 'Does it renew automatically?', ru: 'Продлевается ли доступ автоматически?' },
+  'faq.renewal.a': {
+    en: 'No. Access lasts 30 days and then simply ends, so you are never charged automatically. You can buy again whenever you like. If your access is still running, the new 30 days start when it ends.',
+    ru: 'Нет. Доступ действует 30 дней и просто заканчивается, поэтому автоматических списаний не бывает. Купить снова можно в любой момент. Если доступ ещё действует, новые 30 дней начнутся, когда он закончится.',
   },
   'faq.refund.q': { en: 'Can I get a refund?', ru: 'Можно ли вернуть деньги?' },
   'faq.refund.a': {
-    en: 'No. There are no refunds after purchase. That is what the free three-day trial is for: take a full Reading test, a full Listening test and one AI assessment first, then decide.',
-    ru: 'Нет, после покупки деньги не возвращаются. Для этого и есть бесплатный пробный период на три дня: сначала пройдите полный тест Reading, полный тест Listening и одну проверку ИИ, а потом решайте.',
+    en: 'No. Payments are not refunded after purchase. Every lesson is free with an account, so you can see how the course teaches before you decide. The purchase terms have the details.',
+    ru: 'Нет. После покупки деньги не возвращаются. Все уроки бесплатны с аккаунтом, поэтому до решения вы можете посмотреть, как устроено обучение. Подробности в правилах покупки.',
   },
   'faq.unlimited.q': { en: 'Is AI practice unlimited?', ru: 'Практика с ИИ без ограничений?' },
   'faq.unlimited.a': {
-    en: 'Each 30-day purchase includes 12 essay assessments, 6 recorded Speaking assessments (up to 5 minutes each), and 2 live interviews with feedback (up to 15 minutes each). Unused assessments expire with that purchase. Lessons remain free for everyone. Paid access includes unlimited Reading and Listening practice. Mr EZ includes 40 chat messages and 60 lesson-help requests per day.',
-    ru: 'За каждые 30 дней: 12 проверок эссе, 6 проверок записей Speaking до 5 минут и 2 устных собеседования с разбором до 15 минут. Неиспользованные проверки сгорают в конце срока. Уроки бесплатны для всех. Платный доступ включает практику Reading и Listening без ограничений. Mr EZ: 40 сообщений в чате и 60 запросов помощи в уроках в день.',
+    en: 'No. Each 30 days include 12 essay assessments, 6 recorded Speaking assessments (up to 5 minutes each), 2 live interviews with feedback (up to 15 minutes each), 2 full mock exams, and the placement test once per account. Essays written in a mock exam or the placement test count towards the 12. Unused assessments expire with the 30 days. Reading and Listening practice has no limit. Mr EZ allows 40 chat messages and 60 lesson-help requests a day.',
+    ru: 'Нет. За 30 дней: 12 проверок эссе, 6 проверок записей Speaking до 5 минут, 2 устных собеседования с разбором до 15 минут, 2 полных пробных экзамена и вступительный тест, один раз на аккаунт. Эссе в пробном экзамене и во вступительном тесте входят в 12 проверок. Неиспользованные проверки сгорают через 30 дней. Практика Reading и Listening без ограничений. Mr EZ: 40 сообщений в чате и 60 запросов помощи в уроках в день.',
   },
-  'faq.start.q': { en: 'Where should I start?', ru: 'С чего начать?' },
-  'faq.start.a': {
-    en: 'All lessons are free without an account. Sign in for your 72-hour trial: one Reading test, one Listening test, and one AI assessment: choose Writing or recorded Speaking (up to five minutes). Plus {tutorMessages} per section. Live interviews require paid access.',
-    ru: 'Все уроки бесплатны без регистрации. Войдите в аккаунт для пробного доступа на 72 часа: один тест Reading, один тест Listening и одна проверка ИИ на выбор: Writing или запись Speaking до пяти минут. Плюс {tutorMessages} на каждую часть. Устные собеседования доступны после покупки.',
-  },
-  'faq.account.q': { en: 'Do I need an account?', ru: 'Нужен ли аккаунт?' },
+  'faq.account.q': { en: 'Do I need an account to read the lessons?', ru: 'Нужен ли аккаунт, чтобы читать уроки?' },
   'faq.account.a': {
-    en: 'Yes, create an account for the three-day trial and personal AI features. You can view the product demonstrations on this page without signing up.',
-    ru: 'Да, аккаунт нужен для пробного периода и личных функций ИИ. Демонстрации на этой странице можно посмотреть без регистрации.',
+    en: 'Yes. Lessons open with a free account, which also keeps your progress and shows it on your other devices. You can read this page without one.',
+    ru: 'Да. Уроки открываются с бесплатным аккаунтом, который ещё и сохраняет ваш прогресс и показывает его на других устройствах. Эту страницу можно читать без аккаунта.',
+  },
+  'faq.academic.q': { en: 'Which IELTS is it for?', ru: 'Для какого IELTS эта подготовка?' },
+  'faq.academic.a': {
+    en: 'Academic IELTS. The lessons, practice and band estimates are built around the Academic test.',
+    ru: 'Для Academic IELTS. Уроки, практика и оценка балла построены вокруг формата Academic.',
   },
   'faq.official.q': { en: 'Is the AI feedback an official IELTS score?', ru: 'Является ли разбор от ИИ официальным баллом IELTS?' },
   'faq.official.a': {
@@ -474,8 +513,8 @@ export const SALES_COPY = {
   },
   'faq.exam.q': { en: 'Can I practise under exam conditions?', ru: 'Можно ли тренироваться в условиях экзамена?' },
   'faq.exam.a': {
-    en: 'Yes. The platform includes timed reading and listening tests, plus separate writing and speaking assessment routes. Guided trainers keep teaching help nearby; test routes let you practise independently.',
-    ru: 'Да. На платформе есть тесты Reading и Listening на время, а также отдельные режимы проверки Writing и Speaking. В тренажёрах подсказки всегда рядом, а в тестах вы работаете самостоятельно.',
+    en: 'Yes, with practice and guidance: timed Reading and Listening tests, full mock exams, and separate Writing and Speaking assessments. Guided trainers keep teaching help nearby; tests let you practise independently.',
+    ru: 'Да, с практикой и сопровождением: тесты Reading и Listening на время, полные пробные экзамены и отдельные проверки Writing и Speaking. В тренажёрах подсказки всегда рядом, а в тестах вы работаете самостоятельно.',
   },
   'faq.phone.q': { en: 'Can I use it on my phone?', ru: 'Можно ли заниматься с телефона?' },
   'faq.phone.a': {
@@ -491,12 +530,12 @@ export const SALES_COPY = {
   /* Closing section and footer. */
   'close.note': { en: 'Your next chapter is yours to write.', ru: 'Следующую главу пишете вы.' },
   'close.title': {
-    en: 'Your next chapter.<br />Your first 3 days, free.',
-    ru: 'Ваша следующая глава.<br />Первые 3 дня бесплатно.',
+    en: 'Your next chapter.<br />Start with a free lesson.',
+    ru: 'Ваша следующая глава.<br />Начните с бесплатного урока.',
   },
   'close.lead': {
-    en: 'Create an account. Explore your study space.<br />No payment card required.',
-    ru: 'Создайте аккаунт. Изучите учебное пространство.<br />Банковская карта не нужна.',
+    en: 'Create a free account and read every lesson.<br />No payment card required.',
+    ru: 'Создайте бесплатный аккаунт и читайте все уроки.<br />Банковская карта не нужна.',
   },
   'close.signIn': { en: 'Already have an account? Sign in.', ru: 'Уже есть аккаунт? Войти.' },
   'foot.tagline': { en: 'A little guidance.<br />A world of possibility.', ru: 'Немного подсказки.<br />Целый мир возможностей.' },
@@ -520,24 +559,20 @@ export function isSalesKey(key: string): key is SalesKey {
   return Object.prototype.hasOwnProperty.call(SALES_COPY, key);
 }
 
-const PLURAL_RU = new Intl.PluralRules('ru');
-
 /** Tenge in each language's own style: ₸10,000 in English, 10 000 ₸ in Russian. */
 export function tenge(amount: number, locale: SalesLocale): string {
   return locale === 'ru' ? `${amount.toLocaleString('ru-RU')} ₸` : `₸${amount.toLocaleString('en-US')}`;
 }
 
-/** The values the copy's {placeholders} stand for, in one language. */
+/** The values the copy's {placeholders} stand for, in one language. The
+    prices are the plans' own (src/lib/access/plans.ts), never re-typed. */
 export function salesVars(locale: SalesLocale): Record<string, string> {
-  const { oneMonth, threeMonths } = FULL_ACCESS_PRICES_KZT;
-  const n: number = TRIAL_TUTOR_PER_SECTION;
-  const form = PLURAL_RU.select(n);
-  const messagesRu = form === 'one' ? 'сообщение' : form === 'few' ? 'сообщения' : 'сообщений';
+  const oneMonth = paidPlan('month-1')!.amount;
+  const threeMonths = paidPlan('month-3')!.amount;
   return {
     oneMonth: tenge(oneMonth, locale),
     threeMonths: tenge(threeMonths, locale),
     saving: tenge(oneMonth * 3 - threeMonths, locale),
-    tutorMessages: locale === 'ru' ? `${n} ${messagesRu} Mr EZ` : `${n} Mr EZ ${n === 1 ? 'message' : 'messages'}`,
   };
 }
 
