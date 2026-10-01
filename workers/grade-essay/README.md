@@ -125,6 +125,28 @@ older cached result, or the Gemini rollback before it sends these fields)
 still validates and is returned as-is, just without those fields, so the
 new fields never turn a missing value into a failed grade.
 
+## Commercial build (`ACCESS_MODE=trial`): the allowance
+
+Only with `ACCESS_MODE=trial`; the open build is unchanged. Every essay is
+reserved in `public.assessment_usage`
+(supabase/migrations/2026-09-30-profitable-offer.sql) before the model is
+called: 12 per 30-day purchase, or the trial's one shared Writing or recorded
+Speaking assessment. Essays inside a mock exam or the placement test count
+the same way. A grade that fails is given back; a request abandoned halfway
+(phone slept, tab closed) is released by the database after 15 minutes unless
+the model had already answered it. A refusal is HTTP 403:
+
+```json
+{ "error": "...", "code": "assessment-unavailable", "reason": "allowance-used", "kind": "writing", "purpose": "practice", "used": 12, "limit": 12 }
+```
+
+`reason` is `allowance-used`, `trial-ended`, `daily-limit` (24 counted or
+charged uses, or 60 attempts, in a rolling day; provider outages that charged
+nothing do not count) or `already-requested`. A database that does not answer
+within 8 seconds is a `503` with `code: "unavailable"`; nothing is spent.
+Provider usage metadata is recorded per call (never the essay) and that write
+waits at most 3 seconds.
+
 ## Cost (OpenAI path)
 
 A single grading run is roughly 3,000 input tokens (rubric + essay) and

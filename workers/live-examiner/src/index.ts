@@ -1,4 +1,10 @@
-import { reserveAssessment, finishAssessment, type AssessmentClaim } from '../../../src/lib/access/assessment';
+import {
+  reserveAssessment,
+  finishAssessment,
+  giveBackLiveInterview,
+  type AssessmentClaim,
+  type AssessmentPurpose,
+} from '../../../src/lib/access/assessment';
 /* Cloudflare Worker: session broker for the live AI examiner.
 
    Two providers, one Worker:
@@ -115,6 +121,7 @@ import {
   paidAccessRunning,
   readSittingId,
   refusal,
+  refusalBody,
   releaseSpeakingSession,
   serviceRpc,
   startSpeakingSession,
@@ -567,17 +574,32 @@ async function handleOpenAiCreate(deps: Deps, request: Request, env: Env, cors: 
     return json({ error: 'The live examiner service is temporarily unavailable.' }, 503, cors);
   }
 
-  /* The trial's Speaking test: a Part 1 interview of the student's own
-     begun test, counted (at most two) before anything is paid for. Given
-     back below if the voice session never opens. */
+  /* Commercial build: every live interview uses one of the purchase's
+     allowances, reserved before anything is paid for and given back below if
+     the voice session never opens. Which allowance (Alex, 1 October 2026):
+     the 2 practice interviews, the placement test's one interview per
+     account, or one of the 2 full mock exams per purchase. The browser names
+     the purpose, but it only chooses a bucket the database caps, and it must
+     match the session this Worker builds from the plan: a mock is the full
+     three-part test, a placement a single-topic Part 1 interview. The open
+     build reads no purpose and reserves nothing, exactly as before. */
   let assessmentClaim: AssessmentClaim | null = null;
   if (parseAccessMode(env.ACCESS_MODE) === 'trial') {
+    const rawPurpose = parsed.value.purpose;
+    let purpose: AssessmentPurpose = 'practice';
+    if (rawPurpose === 'placement' || rawPurpose === 'mock') purpose = rawPurpose;
+    else if (rawPurpose !== undefined && rawPurpose !== null && rawPurpose !== 'practice') {
+      return json({ error: 'purpose must be practice, placement or mock', code: 'invalid-purpose' }, 400, cors);
+    }
+    if ((purpose === 'mock' && plan.mode !== 'full') || (purpose === 'placement' && plan.mode !== 'part1')) {
+      return json({ error: 'This interview does not match the test it was started for.', code: 'purpose-plan-mismatch' }, 400, cors);
+    }
     try {
       const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL as string, env.SUPABASE_SERVICE_ROLE_KEY as string);
-      assessmentClaim = await reserveAssessment(rpc, userId, 'live');
+      assessmentClaim = await reserveAssessment(rpc, userId, 'live', undefined, purpose);
     } catch (err) {
-      if (err instanceof TrialRefusal) return json({error:err.message,code:err.code},403,cors);
-      return json({error:'Your allowance could not be checked.'},503,cors);
+      if (err instanceof TrialRefusal) return json(refusalBody(err),403,cors);
+      return json({error:'Your allowance could not be checked.',code:'unavailable'},503,cors);
     }
   }
   const giveBack = async () => { await finishAssessment(assessmentClaim, false).catch(() => undefined); };
@@ -647,18 +669,24 @@ async function handleOpenAiCreate(deps: Deps, request: Request, env: Env, cors: 
     return json({ error: 'Malformed session response' }, 502, cors);
   }
 
+  /* The voice session opened but could not be recorded: it is closed at
+     once and the interview is given back (review P1-4). If even the give-back
+     cannot be written, the database's 15-minute stale rule releases the
+     still-open reservation on its own. */
   try {
     await patchSession(deps, env, reservationId, { provider_session_id: sessionId });
   } catch {
     await deps.sideband(env, sessionId, {type:'session.close',event_id:`close_${crypto.randomUUID()}`});
     await failReservation(deps, env, reservationId);
-    return json({error:'The session could not be recorded. Please try again later.'},503,cors);
+    await giveBack();
+    return json({error:'The session could not be recorded. Nothing was used: please try again later.'},503,cors);
   }
 
   try { await finishAssessment(assessmentClaim, true, sessionId); } catch {
     await deps.sideband(env, sessionId, {type:'session.close',event_id:`close_${crypto.randomUUID()}`});
     await failReservation(deps, env, reservationId);
-    return json({error:'The session could not be recorded. Please contact support.'},503,cors);
+    await giveBack();
+    return json({error:'The session could not be recorded. Nothing was used: please try again later.'},503,cors);
   }
   return json(
     { provider: 'openai', session: { id: sessionId }, transport: { type: 'webrtc', sdp: answerSdp }, model: session.model },
@@ -782,6 +810,20 @@ async function handleEnd(deps: Deps, request: Request, env: Env, cors: Record<st
      TRIAL_UNUSED_SESSION_SECONDS of opening. The sitting named in the body
      can only be the caller's own reserved Speaking test: the database
      function checks that against the verified user. */
+  /* A paid interview (review P1-4, 1 October 2026), under the same rule:
+     this call ended it, the examiner never began, within 90 seconds of
+     opening. Only this Worker's own session record decides that, never the
+     browser; the database then checks the caller's own interview again and
+     gives back whichever allowance it used (practice, placement or mock). */
+  if (parseAccessMode(env.ACCESS_MODE) === 'trial' && row.ended_at === null && row.stage === 'created' && row.created_at) {
+    const ageMs = deps.now().getTime() - Date.parse(row.created_at);
+    if (ageMs >= 0 && ageMs <= TRIAL_UNUSED_SESSION_SECONDS * 1000) {
+      const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL as string, env.SUPABASE_SERVICE_ROLE_KEY as string);
+      const purpose = await giveBackLiveInterview(rpc, userId, sessionId).catch(() => null);
+      if (purpose) return json({ ok: true, interviewGivenBack: true, purpose }, 200, cors);
+    }
+  }
+
   let givenBack = false;
   if (parseAccessMode(env.ACCESS_MODE) === 'trial' && row.ended_at === null && row.stage === 'created' && row.created_at) {
     const ageMs = deps.now().getTime() - Date.parse(row.created_at);

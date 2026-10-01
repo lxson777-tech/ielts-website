@@ -90,6 +90,57 @@ session actually running, a second attempt).
   a resumed session, if the app supports that) or the `LIVE_SESSION_TTL_MIN`
   window elapses, whichever comes first.
 
+## Commercial build (`ACCESS_MODE=trial`): which allowance an interview uses
+
+Only when `ACCESS_MODE` is `trial`. The open build (the live site today)
+reads none of this, reserves nothing and behaves exactly as before.
+
+A 30-day purchase includes **2 live interviews** for practice. Separately,
+and never taken from those two (Alex, 1 October 2026):
+
+| Purpose (`purpose` in the `POST /` body) | Allowance | The plan it must be |
+|---|---|---|
+| absent or `"practice"` | 2 per purchase | any |
+| `"placement"` | 1 per account, ever | `part1` (one topic) |
+| `"mock"` | 2 per purchase | `full` (all three parts) |
+
+How this stays honest without trusting the browser: every interview is a
+row in `public.assessment_usage` (supabase/migrations/2026-09-30-profitable-offer.sql),
+reserved before OpenAI is called. The purpose only picks which bucket is
+used, and the database caps every bucket, so no label can buy more than
+2 + 2 interviews per purchase and 1 placement per account. This Worker also
+refuses (`400`, `code: "purpose-plan-mismatch"`) a purpose that does not
+match the session it builds itself from the plan, so a "mock" slot cannot be
+spent on a short drill and a "placement" slot cannot hold a full test. An
+unknown purpose is `400`, `code: "invalid-purpose"`. A trial includes no
+live interview of any kind (`reason: "paid-required"`).
+
+Essays written in a mock exam or the placement test are ordinary essay
+assessments and count against the 12 (or the trial's one). Feedback on a
+placement or mock interview works exactly like feedback on a practice one.
+
+Refusal, HTTP 403:
+
+```json
+{ "error": "...", "code": "assessment-unavailable", "reason": "mock-allowance-used",
+  "kind": "live", "purpose": "mock", "used": 2, "limit": 2 }
+```
+
+`reason` is one of `allowance-used` (the 2 practice interviews),
+`mock-allowance-used`, `placement-used`, `paid-required`, `daily-limit`.
+`kind`/`purpose`/`used`/`limit` come with the first three.
+
+**Given back** (review P1-4): an interview the examiner never began is not
+used. When `POST /end` is what ends the session, the begin cue was never
+delivered (the session row's stage is still `created`) and it ended within
+90 seconds of opening, the Worker asks the database to give it back
+(`assessment_live_give_back`, which checks again: the caller's own settled
+interview, at most 2 minutes old, no feedback requested). The answer is then
+`{ "ok": true, "interviewGivenBack": true, "purpose": "practice" | "placement" | "mock" }`.
+A voice session that opened but could not be recorded is closed at once and
+given back too. Anything that reserved but never finished is released by the
+database's own 15-minute stale rule.
+
 ## `/direct` and the sideband (privileged stage directions)
 
 Earlier, the browser's WebRTC data channel could send

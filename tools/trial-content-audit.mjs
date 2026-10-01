@@ -7,7 +7,22 @@
  * src/content/lesson-bodies, English and Russian), takes a few distinctive
  * phrases from each, and searches every file under a build folder for them.
  *
- *   node --import ./tests/ts-extension-loader.mjs tools/trial-content-audit.mjs [dist] [--json]
+ *   node --import ./tests/ts-extension-loader.mjs tools/trial-content-audit.mjs [dist] [--json] [--no-lesson-exclusion]
+ *
+ * --no-lesson-exclusion drops the allowance for a public lesson's own prose
+ * and its one worked example, to list what that allowance hides (a review
+ * run, not the release check).
+ *
+ * Recorded run, 1 October 2026 (review P2-8, gated build of 4ac68c3, 1,594
+ * phrases from 70 papers and 479 supporting items): with the exclusion, 0
+ * leaking files. Without it, 11 LEAK findings, all on 7 public Writing
+ * lessons (advantages, charts, discussion, maps, method, opinion, process;
+ * the rest are single shared lines): every prompt phrase found is in that
+ * lesson's own public prose or its one worked example, and each of the
+ * four Task 1 lessons carries exactly ONE chart, its own example's
+ * (charts, method: wt-132; maps: wt-130; process: wt-131). No private chart
+ * sits beside a public one. Since this change every chart in a file is
+ * checked, not only the first.
  *
  * Phrases are runs of plain words (letters, digits, spaces), so they survive
  * however a page stores text: inside HTML, inside an island's JSON props,
@@ -44,6 +59,12 @@ const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const DIST = resolve(REPO, args.find((a) => !a.startsWith('--')) ?? 'dist');
 const AS_JSON = args.includes('--json');
+/* --no-lesson-exclusion: check public lessons like every other file, with no
+   allowance for their own prose or their one worked example. A one-off
+   review run (review P2-8, 1 October 2026) to list exactly what the
+   exclusion hides; its findings are expected and are not a failure on
+   their own. */
+const NO_LESSON_EXCLUSION = args.includes('--no-lesson-exclusion');
 /* Named exceptions, each with its reason (tools/trial-content-allowed.json). */
 const ALLOWED = JSON.parse(readFileSync(resolve(REPO, 'tools/trial-content-allowed.json'), 'utf8')).allowed.map((a) => ({
   file: new RegExp(a.file),
@@ -226,16 +247,26 @@ async function main() {
   for (const path of files(DIST)) {
     const raw = readFileSync(path, 'utf8');
     const publicLesson = /^lessons\/writing\/([a-z0-9-]+)\.html$/.exec(relative(DIST, path).replace(/\\/g, '/'));
-    const example = publicLesson ? lessonExample(publicLesson[1]) : null;
+    const example = publicLesson && !NO_LESSON_EXCLUSION ? lessonExample(publicLesson[1]) : null;
     const publicExampleText = example ? decodeFile(JSON.stringify(example)) : '';
-    const chart = charts.find((c) => raw.includes(c.head));
-    if (chart && !JSON.stringify(example).includes(chart.head)) found.push({ file: relative(DIST, path).replace(/\\/g, '/'), verdict: 'LEAK', items: [`chart:${chart.file}`], phrases: [chart.file] });
+    /* EVERY chart in the file, not only the first (review P2-8): a lesson's
+       own public example chart must not hide a private one next to it. */
+    const exampleJson = example ? JSON.stringify(example) : '';
+    const leakedCharts = charts.filter((c) => raw.includes(c.head) && !exampleJson.includes(c.head));
+    if (leakedCharts.length) {
+      found.push({
+        file: relative(DIST, path).replace(/\\/g, '/'),
+        verdict: 'LEAK',
+        items: leakedCharts.map((c) => `chart:${c.file}`),
+        phrases: leakedCharts.map((c) => c.file),
+      });
+    }
     const text = decodeFile(raw);
     const rel = relative(DIST, path).replace(/\\/g, '/');
     const translated = /^lesson-bodies\/(ru)\/([a-z0-9-]+)\.html$/.exec(rel);
     const lessonPath = /^lessons\/([a-z0-9/-]+)\.html$/.exec(rel);
     const bodyFile = translated ? join(REPO, 'src/content/lesson-bodies', translated[1], `${translated[2]}.html`) : lessonPath ? join(REPO, 'src/content/lesson-bodies', `${lessonPath[1].replaceAll('/', '-')}.html`) : null;
-    const publicProse = bodyFile && existsSync(bodyFile) ? decodeFile(readFileSync(bodyFile, 'utf8')) : '';
+    const publicProse = bodyFile && existsSync(bodyFile) && !NO_LESSON_EXCLUSION ? decodeFile(readFileSync(bodyFile, 'utf8')) : '';
     // The one selected worked example is public on its own lesson only.
     // All other prompts/models and every protected paper remain checked.
     const hits = marks.filter((m) => text.includes(m.phrase) && !publicProse.includes(m.phrase) &&

@@ -391,7 +391,8 @@ $$;
 
 -- The checkout was opened with the provider.
 --   reason  not-found | not-open (already paid, failed, cancelled or
---           refunded) | ref-in-use
+--           refunded) | ref-in-use | plan-unavailable (the plan was
+--           paused after the order was made)
 create or replace function public.access_order_mark_pending(p_order uuid, p_provider text, p_ref text)
 returns jsonb
 language plpgsql
@@ -409,6 +410,9 @@ begin
   if o.status not in ('created', 'pending') then
     return jsonb_build_object('ok', false, 'reason', 'not-open', 'status', o.status);
   end if;
+  if not exists (select 1 from public.access_plans where id = o.plan_id and enabled) then
+    return jsonb_build_object('ok', false, 'reason', 'plan-unavailable');
+  end if;
   if p_ref is not null and exists (
     select 1 from public.payment_orders where provider_ref = p_ref and id <> p_order) then
     return jsonb_build_object('ok', false, 'reason', 'ref-in-use');
@@ -424,7 +428,11 @@ $$;
 -- returns the same answer and never a second grant.
 --   ok      {status: 'paid', replay, receiptNumber, grant: {startsAt, endsAt}}
 --   reason  not-found | amount-mismatch | provider-mismatch | ref-mismatch |
---           ref-in-use | refunded
+--           ref-in-use | refunded | plan-unavailable
+-- A plan that is no longer on sale is never granted (review P2-11): the
+-- confirmation is refused and changes nothing, so the payment shows in the
+-- provider's log as refused and is refunded by hand. A replay of an order
+-- that was already paid still answers paid.
 create or replace function public.access_order_paid(
   p_order uuid, p_provider text, p_ref text, p_amount int, p_currency text)
 returns jsonb
@@ -470,8 +478,12 @@ begin
   end if;
 
   -- created, pending, and also failed or cancelled: money the provider
-  -- confirms taking is honoured, even after an earlier failed attempt.
+  -- confirms taking is honoured, even after an earlier failed attempt, as
+  -- long as the plan is still on sale.
   select * into plan from public.access_plans where id = o.plan_id;
+  if not found or not plan.enabled then
+    return jsonb_build_object('ok', false, 'reason', 'plan-unavailable');
+  end if;
   select max(ends_at) into chain_end from public.access_grants
     where user_id = o.user_id and revoked_at is null;
   g_start := greatest(now(), coalesce(chain_end, now()));
@@ -618,13 +630,16 @@ grant execute on function public.access_order_failed(uuid, text) to service_role
 grant execute on function public.access_order_refunded(uuid, text) to service_role;
 grant execute on function public.access_paid_now(uuid) to service_role;
 
--- ── The plans (the prices on the site, 29 September 2026) ───────────────
+-- ── The plans (the approved offer, 30 September 2026) ───────────────────
 -- Mirrors PAID_PLANS in src/lib/access/plans.ts; a test fails if they drift.
--- Re-running this file brings an earlier draft's rows up to date. An order
--- keeps the price it was made at.
+-- 12,990 KZT for 30 days. The 90-day plan is paused for new orders and kept
+-- only so its historical orders and receipts still read correctly.
+-- Re-running this file (or 2026-09-30-profitable-offer.sql) keeps exactly
+-- these rows: it never brings back an earlier draft's price (review P1-1,
+-- 1 October 2026). An order keeps the price it was made at.
 insert into public.access_plans (id, days, amount, currency, enabled) values
-  ('month-1', 30, 10000, 'KZT', true),
-  ('month-3', 90, 25000, 'KZT', true)
+  ('month-1', 30, 12990, 'KZT', true),
+  ('month-3', 90, 25000, 'KZT', false)
 on conflict (id) do update
   set days = excluded.days, amount = excluded.amount, currency = excluded.currency, enabled = excluded.enabled;
 
