@@ -2,6 +2,8 @@
 import BaseLayout from './BaseLayout.astro';
 import LessonVocabularySearch from '../components/LessonVocabularySearch.astro';
 import Badge from '../components/Badge.astro';
+import { ACCESS_MODE } from '../lib/trial/mode';
+import LessonPracticeNotice from '../components/access/LessonPracticeNotice';
 import { withBase } from '../lib/url';
 import { getLesson, SKILLS } from '../data/lessons';
 import { WORDS } from '../data/words';
@@ -111,7 +113,8 @@ const blockIds = bodyHtml ? segmentLessonBody(bodyHtml).map((block) => block.id)
     >
       {lesson.skill === 'vocabulary' && <LessonVocabularySearch />}
       <slot />
-      <details class="lesson-optional-vocabulary">
+      {ACCESS_MODE === 'trial' && <LessonPracticeNotice client:load />}
+      {ACCESS_MODE !== 'trial' && <details class="lesson-optional-vocabulary">
         <summary data-i18n>Vocabulary quick check</summary>
       <div class="lesson-word-quiz"><span data-i18n>Vocabulary quick check</span>
         <button
@@ -134,7 +137,7 @@ const blockIds = bodyHtml ? segmentLessonBody(bodyHtml).map((block) => block.id)
           <p class="vocab-quiz-panel-prompt" data-i18n>Which definition is correct?</p>
           <div class="vocab-quiz-panel-opts"></div>
         </div>
-      </details>
+      </details>}
 
       <div class="mt-12 flex flex-col items-center gap-4 border-t border-border pt-8">
         <div class="flex flex-wrap items-center justify-center gap-3">
@@ -210,6 +213,8 @@ const blockIds = bodyHtml ? segmentLessonBody(bodyHtml).map((block) => block.id)
   import { t, onLocaleChange } from '../lib/i18n';
   import { onLessonBodySwap } from '../lib/i18n/lesson-body';
   import { withBase } from '../lib/url';
+  import { onOwnerChange } from '../lib/store-owner';
+  onOwnerChange(() => refreshLessonBlocks());
 
   ensureLearningWired();
 

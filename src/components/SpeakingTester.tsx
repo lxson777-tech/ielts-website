@@ -1,3 +1,5 @@
+import AssessmentBalance from './access/AssessmentBalance';
+import TrialBlock from './trial/TrialBlock';
 /* The speaking checker: pick a mode → read the question → record your answer
    → repeat → get a report. Three independent practice modes: "Part 1" (a
    topic's worth of short Q&A), "Part 2" (a cue-card monologue after a
@@ -7,6 +9,9 @@
    is audio-native — the actual recordings go to gradeSpeaking(), never a
    transcript — so Pronunciation can be judged from what was really said. */
 
+import { useTrialTest } from './trial/useTrialTest';
+import { refreshTrial } from '../lib/trial/client';
+import { TRIAL_RECORDED_TOPIC } from '../lib/trial/recorded-topic';
 import { useEffect, useRef, useState } from 'react';
 import type { AnsweredClip, SpeakingAttempt, SpeakingGradeResult, TopicVocab } from '../lib/speaking/schema';
 import { SPEAKING_CRITERIA } from '../lib/speaking/schema';
@@ -100,7 +105,9 @@ const SESSION_CLOSED_NOTICE = nt(
   'The account on this page changed, so the speaking session on screen was closed. Answers that had not yet been sent for grading were not kept.',
 );
 
-export default function SpeakingTester() {
+export default function SpeakingTester({ trialRecorded = false }: { trialRecorded?: boolean }) {
+  const trialTest = useTrialTest('speaking-test', !trialRecorded);
+  const trialSittingRef = useRef<string | null>(null);
   const { t, tn } = useT();
   const [mode, setMode] = useState<Mode | null>(null);
   const [promptTitle, setPromptTitle] = useState('');
@@ -194,6 +201,10 @@ export default function SpeakingTester() {
   }, [phase]);
 
   async function startMode(m: Mode, explicitId?: string) {
+    if (trialTest.active) {
+      if (m !== 'part1' || !(await trialTest.begin())) return;
+      trialSittingRef.current = trialTest.sittingId();
+    }
     if (!isSpeakingGraderConfigured()) return; // the start cards are disabled for this too; belt and braces
     setMicError(null);
     /* A new part lets go of whatever attempt was on screen, and the new one
@@ -229,13 +240,13 @@ export default function SpeakingTester() {
       // and does not consume a rotation slot; otherwise the rotation serves
       // the next one, same as clicking the card always has.
       const id = explicitId ?? nextInRotation('ielts.rotation.speaking-part1.v1', SPEAKING_PART1_TOPICS.map((t) => t.id));
-      const topic = SPEAKING_PART1_TOPICS.find((t) => t.id === id) ?? SPEAKING_PART1_TOPICS[0]!;
+      const topic = trialTest.active ? TRIAL_RECORDED_TOPIC : SPEAKING_PART1_TOPICS.find((t) => t.id === id) ?? SPEAKING_PART1_TOPICS[0]!;
       promptIdRef.current = topic.id;
       promptTitleRef.current = topic.topic;
       setPromptTitle(topic.topic);
       setVocab(topic.vocab);
       cueCardRef.current = null;
-      turns = topic.questions.map((q) => ({ question: q.text, maxMs: 45_000, ideas: q.ideas }));
+      turns = topic.questions.slice(0, 6).map((q) => ({ question: q.text, maxMs: 45_000, ideas: q.ideas }));
       expectedMinMsRef.current = turns.length * 15_000;
     } else {
       const id = explicitId ?? nextInRotation('ielts.rotation.speaking-part23.v1', SPEAKING_CUE_CARDS.map((c) => c.id));
@@ -257,7 +268,7 @@ export default function SpeakingTester() {
         ];
         expectedMinMsRef.current = 60_000;
       } else {
-        turns = cue.part3Questions.map((q) => ({ question: q.text, maxMs: 60_000, ideas: q.ideas }));
+        turns = cue.part3Questions.slice(0, 5).map((q) => ({ question: q.text, maxMs: 60_000, ideas: q.ideas }));
         expectedMinMsRef.current = turns.length * 20_000;
       }
     }
@@ -436,7 +447,9 @@ export default function SpeakingTester() {
                 monologue: monologueIdx >= 0 ? answered[monologueIdx] : undefined,
                 followUps: answered.filter((_, i) => i !== monologueIdx),
               };
-        return gradeSpeaking(attempt, clips, expectedMinMs);
+        const graded = await gradeSpeaking(attempt, clips, expectedMinMs, trialSittingRef.current ?? undefined);
+        if (trialTest.active) void refreshTrial();
+        return graded;
       },
       {
         /* Persist to the on-device history so speaking shows a band-over-time
@@ -718,6 +731,7 @@ export default function SpeakingTester() {
   }
 
   /* ── Menu screen ── */
+  if (phase === 'menu' && trialTest.active && trialTest.block) return <TrialBlock reason={trialTest.block} title="Speaking" />;
   if (phase === 'menu') {
     return (
       <div className="screen-in space-y-4">
@@ -733,6 +747,7 @@ export default function SpeakingTester() {
           {micError && (
             <p className="mx-auto mt-4 max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{micError}</p>
           )}
+          <AssessmentBalance />
           {!isSpeakingGraderConfigured() && (
             <p className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
               ⚠{' '}
@@ -741,7 +756,7 @@ export default function SpeakingTester() {
               })}
             </p>
           )}
-          <SpeakingPartCards onStart={(m) => void startMode(m)} disabled={!isSpeakingGraderConfigured()} />
+          {trialTest.active ? <><p>{t('Choose recorded Speaking (up to five minutes) for your one trial AI assessment, or choose Writing. Live interviews come with paid access.')}</p><button className="trial-btn" disabled={!!trialTest.block || trialTest.busy || !isSpeakingGraderConfigured()} onClick={() => void startMode('part1')}>{t('Start Speaking')}</button>{trialTest.error && <p role="alert">{trialTest.error}</p>}</> : <SpeakingPartCards onStart={(m) => void startMode(m)} disabled={!isSpeakingGraderConfigured()} />}
           <p className="mt-4 text-xs text-ink-muted">
             {tn(SPEAKING_PART1_TOPICS.length, { one: '{n} Part 1 topic', other: '{n} Part 1 topics' })} ·{' '}
             {tn(SPEAKING_CUE_CARDS.length, { one: '{n} cue card', other: '{n} cue cards' })}

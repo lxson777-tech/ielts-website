@@ -6,6 +6,8 @@ import EssayCheckerCta from '../../../components/EssayCheckerCta.astro';
 import LessonModelExample from '../../../components/LessonModelExample';
 import { withBase } from '../../../lib/url';
 import { WRITING_PARTS } from '../../../data/writing';
+import { lessonExample } from '../../../lib/access/lesson-examples.server';
+import { ACCESS_MODE } from '../../../lib/trial/mode';
 
 export function getStaticPaths() {
   return WRITING_PARTS.map((part, i) => ({
@@ -39,7 +41,7 @@ const overviewUrl = withBase('/lessons/writing');
 
   {/* A Band 8 answer to a real task of the type this lesson teaches, so the
       method is followed straight away by what it produces. */}
-  <LessonModelExample client:load lesson={part.slug} />
+  <LessonModelExample client:load lesson={part.slug} example={ACCESS_MODE === 'trial' ? lessonExample(part.slug) : undefined} />
 
   <EssayCheckerCta task={part.task} />
 

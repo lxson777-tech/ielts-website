@@ -21,7 +21,7 @@ const trialSubtitle =
 
 <BaseLayout
   title="Live AI Examiner · IELTS Portal"
-  trialGate={{ kind: 'speaking', title: 'Live AI Examiner' }}
+  trialGate={{ kind: 'locked', title: 'Live AI Examiner', paidContent: true }}
   description="Take a full mock IELTS Speaking test as a real-time voice conversation: an AI examiner asks questions out loud, listens, follows up on your answers, and grades you on the four official criteria."
 >
   <div class="skill-speaking mx-auto max-w-4xl px-4 py-12 sm:px-6">
@@ -29,13 +29,13 @@ const trialSubtitle =
       <div class="section-heading mb-8">
         <h1 class="text-3xl font-extrabold tracking-tight" data-i18n>Live AI Examiner</h1>
         <p class="heading-context" data-i18n>Speaking</p>
-        <p class="mt-2 max-w-xl text-ink-muted" data-access-copy="trial" data-i18n>{trialSubtitle}</p>
+        <p class="mt-2 max-w-xl text-ink-muted" data-access-copy="trial" data-i18n>{fullSubtitle}</p>
         <p class="mt-2 max-w-xl text-ink-muted" data-access-copy="full" data-i18n hidden>{fullSubtitle}</p>
       </div>
     ) : (
       <SectionHeading eyebrow="Speaking" title="Live AI Examiner" subtitle={fullSubtitle} />
     )}
-    {trial ? <PaidContent client:load shared view={{ name: 'examiner' }} /> : <LiveExaminer client:load />}
+    {trial ? <PaidContent client:load view={{ name: 'examiner' }} /> : <LiveExaminer client:load />}
 
     {!trial && (
       <a href={withBase('/speaking/cue-cards')} class="skill-resource-card">

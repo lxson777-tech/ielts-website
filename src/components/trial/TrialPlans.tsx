@@ -1,3 +1,4 @@
+import AssessmentBalance from '../access/AssessmentBalance';
 /* Full access: the approved prices, and buying them once payment is
    connected. Builder A2, audit remediation F01.
 
@@ -24,7 +25,7 @@ import { withBase } from '../../lib/url';
 import { useTrial } from '../../lib/trial/react';
 import { signInHref } from '../../lib/auth/profile';
 import { hasPaidAccess } from '../../lib/trial/status';
-import { PAID_PLANS, THREE_MONTH_SAVING, type PaidPlan } from '../../lib/access/plans';
+import { AVAILABLE_PAID_PLANS, PAID_AI_ALLOWANCE, THREE_MONTH_SAVING, type PaidPlan } from '../../lib/access/plans';
 import { extendedUntil, formatDate, formatMoney } from '../access/access-state';
 import { PURCHASE_ENABLED } from '../access/payments';
 import {
@@ -44,7 +45,7 @@ export default function TrialPlans() {
 
 function PlansNotConnected() {
   const { t, locale } = useT();
-  const [oneMonth, threeMonths] = PAID_PLANS;
+  const [oneMonth] = AVAILABLE_PAID_PLANS;
   return (
     <section className="trial-ui trial-plans" aria-labelledby="trial-plans-title">
       <h1 id="trial-plans-title">{t('Keep your momentum.')}</h1>
@@ -60,21 +61,10 @@ function PlansNotConnected() {
             {t('Payment not connected yet')}
           </button>
         </article>
-        <article>
-          <h2>{t('Three months')}</h2>
-          <p>
-            <strong>{formatMoney(threeMonths.amount, threeMonths.currency, locale)}</strong> {t('total')}
-          </p>
-          <small>
-            {t('Save {amount} compared with three monthly purchases.', { amount: formatMoney(THREE_MONTH_SAVING, 'KZT', locale) })}
-          </small>
-          <button type="button" className="trial-btn" disabled>
-            {t('Payment not connected yet')}
-          </button>
-        </article>
+
       </div>
       <p className="trial-fine">
-        {t('Buying is not open yet. Paid Mr EZ allowances and purchase terms are still being confirmed, so this page cannot take a payment and will not ask for one.')}
+        {t('Payment not connected yet')} {t(PAID_AI_ALLOWANCE)}
       </p>
       <a className="trial-btn" href={withBase('/dashboard')}>
         {t('Back to my trial')}
@@ -132,7 +122,7 @@ function PlansWithPurchase() {
       )}
 
       <div className="trial-prices">
-        {PAID_PLANS.map((plan) => (
+        {AVAILABLE_PAID_PLANS.map((plan) => (
           <PlanCard key={plan.id} plan={plan} trial={trial} checkout={checkout} />
         ))}
       </div>
@@ -140,7 +130,7 @@ function PlansWithPurchase() {
       {/* The purchase facts, the Terms and Privacy links and the way to ask a
           person, in one block (Builder E's wording, Alex's 29 September
           decisions). */}
-      <PurchaseTerms />
+      <AssessmentBalance /><PurchaseTerms />
 
       <a className="trial-btn" href={withBase('/dashboard')}>
         {paid ? t('Back to Today') : t('Back to my trial')}

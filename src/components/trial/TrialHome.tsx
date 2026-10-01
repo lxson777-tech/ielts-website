@@ -92,7 +92,7 @@ export function SectionLibrary({
       <div className="trial-row">
         <span>
           <b>{t(data.lesson.title)}</b>
-          <small>{lesson === 'included' ? t('Included in your trial') : t('Trial ended')}</small>
+          <small>{t('Free lesson, no account needed')}</small>
         </span>
         {lesson === 'included' ? (
           <a className="trial-btn" href={withBase(data.lesson.href)}>
@@ -132,24 +132,21 @@ export function SectionLibrary({
       <div className="trial-row">
         <span>
           <b>{tn(data.others.length, { one: '{n} more guided lesson', other: '{n} more guided lessons' })}</b>
-          <small>{t('Available with full access')}</small>
+          <small>{t('Free lesson, no account needed')}</small>
         </span>
-        <a className="trial-btn" href={withBase('/plans')}>
-          <LockIcon /> {t('View plans')}
+        <a className="trial-btn" href={withBase('/learn')}>
+          {t('Browse free lessons')}
         </a>
       </div>
       {data.others.length > 0 && (
         <details open={expanded}>
           <summary className="trial-fine" style={{ cursor: 'pointer', padding: '4px 0 10px' }}>
-            {t('See what full access includes in {section}', { section: data.label })}
+            {t('Browse free lessons')}
           </summary>
           <ul className="trial-locked-list">
             {data.others.map((o) => (
               <li key={o.key}>
-                <LockIcon />
-                <span>
-                  {t(o.title)} <span className="sr-only">{t('Locked')}</span>
-                </span>
+                <a href={withBase(o.href)}>{t(o.title)}</a>
               </li>
             ))}
           </ul>
@@ -379,7 +376,7 @@ export default function TrialHome({ sections }: { sections: TrialLibrarySection[
       <div className={`trial-status${ended ? ' is-ended' : ''}`} role="status" aria-live="polite">
         <div>
           <b>{ended ? t('Your trial has ended') : t('Your 3-day trial')}</b>
-          <span>{ended ? t('New lessons, tests and Mr EZ replies are locked. Your results stay saved.') : timeLeftText(remaining, i18n)}</span>
+          <span>{ended ? t('Lessons remain free. Choose paid access to continue practice and AI feedback.') : timeLeftText(remaining, i18n)}</span>
         </div>
         <a className="trial-btn" href={withBase('/plans')}>
           {t('See full access')}
@@ -479,7 +476,7 @@ export function TrialLibraryPage({ sections }: { sections: TrialLibrarySection[]
     <div className="trial-ui trial-home">
       <h1>{t('Inside your course')}</h1>
       <p className="trial-lead">
-        {t('Your trial opens one introduction and one test in each section. Everything else stays listed, so you can see what full access adds.')}
+        {t('One full Reading test, one full Listening test, and one AI assessment: choose a Writing Task 2 essay or recorded Speaking (up to five minutes).')}
       </p>
       <SectionTabs sections={sections} selected={selected} onSelect={setSelected} idPrefix="trial-library" />
       <section id="trial-library-panel" role="tabpanel" aria-labelledby={`trial-library-tab-${selected}`}>

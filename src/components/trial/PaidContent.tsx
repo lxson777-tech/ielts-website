@@ -30,6 +30,7 @@ export type PaidView =
   | { name: 'writing-trainer' }
   | { name: 'writing-checker' }
   | { name: 'speaking-trainer'; live: boolean }
+  | { name: 'recorded' }
   | { name: 'examiner' }
   | { name: 'mock-exam'; hubUrl: string }
   | { name: 'vocab-topics' }
@@ -91,6 +92,8 @@ function planFor(view: PaidView): Plan {
             ? el(() => import('../LiveExaminer'), { variant: 'drills' as const })
             : el(() => import('../SpeakingTester'), {}),
       };
+    case 'recorded':
+      return { packs: ['speaking-prompts','speaking-structure-guides','band-guides'], mount: () => el(() => import('../SpeakingTester'), {trialRecorded:true}) };
     case 'examiner':
       return {
         packs: ['speaking-prompts', 'speaking-structure-guides', 'band-guides'],

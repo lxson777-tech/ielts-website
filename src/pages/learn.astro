@@ -1,19 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LessonLibrary from '../components/LessonLibrary';
-import AccessHome from '../components/trial/AccessHome';
-import { ACCESS_MODE } from '../lib/trial/mode';
-import { trialLibrary } from '../lib/trial/library';
-import { ALL_TESTS } from '../data/tests';
-
-/* A trial build lists the whole library with only the trial's lessons open,
-   and the whole library for a paid account (AccessHome); the open site is
-   unchanged. */
-const trial = ACCESS_MODE === 'trial';
-const sections = trial ? trialLibrary((id) => ALL_TESTS.find((test) => test.id === id)?.title) : [];
+// Everyone can browse and read the lesson library without an account.
 ---
 <BaseLayout title="Lessons · IELTS is EZ" description="Browse IELTS lessons for every skill.">
-  {trial ? <AccessHome client:load page="learn" sections={sections} /> : <LessonLibrary client:load />}
+  <LessonLibrary client:load />
 </BaseLayout>
 
 <style is:global>

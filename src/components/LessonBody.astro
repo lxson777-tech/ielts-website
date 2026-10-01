@@ -22,12 +22,8 @@ interface Props {
   /** The fragment HTML, already passed through the ../pics/ rewrite. */
   html: string;
 }
-import { ACCESS_MODE } from '../lib/trial/mode';
+import { publicLessonHtml } from '../lib/access/public-lessons';
 const { slug, html } = Astro.props;
-/* A trial build carries no lesson text in the page: the wrapper is left
-   empty and src/lib/i18n/lesson-body.ts fills it from the content gate for a
-   student allowed to open the lesson (workers/content-gate). */
-const gated = ACCESS_MODE === 'trial';
 ---
 
-{gated ? <div data-lesson-body={slug} data-lesson-gated /> : <div data-lesson-body={slug} set:html={html} />}
+<div data-lesson-body={slug} set:html={publicLessonHtml(html)} />

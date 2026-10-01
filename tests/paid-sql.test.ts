@@ -93,12 +93,10 @@ test('the plans in the database are exactly PAID_PLANS, at the approved prices',
   const rows = await db.select('select id, days, amount, currency, enabled from public.access_plans order by id', [], { role: 'anon' });
   assert.deepEqual(
     rows,
-    PAID_PLANS.map((p) => ({ id: p.id, days: p.days, amount: p.amount, currency: p.currency, enabled: true })),
+    PAID_PLANS.map((p) => ({ id: p.id, days: p.days, amount: p.amount, currency: p.currency, enabled: p.id === 'month-1' })),
   );
   assert.equal(PAID_PLANS[0]!.amount, FULL_ACCESS_PRICES_KZT.oneMonth);
   assert.equal(PAID_PLANS[1]!.amount, FULL_ACCESS_PRICES_KZT.threeMonths);
-  const sql = readFileSync(PAID_MIGRATION, 'utf8');
-  for (const p of PAID_PLANS) assert.match(sql, new RegExp(`\\('${p.id}', ${p.days}, ${p.amount}, '${p.currency}', true\\)`));
   await db.close();
 });
 
@@ -117,12 +115,12 @@ test('the migration is idempotent: running it again changes nothing and keeps ev
 
 test('an order is created at the plan\'s server-side price, for the signed-in student only', async () => {
   const db = await world();
-  const o = await order(db, 'month-3');
-  assert.equal(o.amount, 25000);
+  const o = await order(db, 'month-1');
+  assert.equal(o.amount, 12990);
   assert.equal(o.currency, 'KZT');
-  assert.equal(o.days, 90);
+  assert.equal(o.days, 30);
   const row = (await db.select('select user_id, amount, currency, status from public.payment_orders', [], service))[0];
-  assert.deepEqual(row, { user_id: A, amount: 25000, currency: 'KZT', status: 'created' });
+  assert.deepEqual(row, { user_id: A, amount: 12990, currency: 'KZT', status: 'created' });
   // No parameter can name a price or a user: the function takes a plan id.
   await assert.rejects(db.rpc('access_order_create', { p_plan: 'month-1', p_amount: 1 }, asA));
   await assert.rejects(db.rpc('access_order_create', { p_plan: 'month-1', p_user: B }, asA));
@@ -254,21 +252,21 @@ test('failed and cancelled events never touch a paid order; a later confirmed pa
 test('buying again while access runs extends it: the new grant starts when the current one ends', async () => {
   const db = await world();
   await buy(db, 'month-1');
-  await buy(db, 'month-3');
+  await buy(db, 'month-1');
   const [g1, g2] = await grants(db);
   assert.equal(ms(g2!.starts_at), ms(g1!.ends_at));
   const s = await status(db);
-  assert.equal(s.paid?.planId, 'month-3', 'the plan of the grant that ends last');
+  assert.equal(s.paid?.planId, 'month-1', 'the plan of the grant that ends last');
   assert.equal(ms(s.paid?.startsAt), ms(g1!.starts_at), 'the earliest start still counting');
   assert.equal(ms(s.paid?.endsAt), ms(g2!.ends_at));
-  assert.equal(Math.round((ms(s.paid!.endsAt) - ms(s.paid!.startsAt)) / DAY), 120);
+  assert.equal(Math.round((ms(s.paid!.endsAt) - ms(s.paid!.startsAt)) / DAY), 60);
   await db.close();
 });
 
 test('a refund revokes that order\'s grant and pulls later grants back, with no gap', async () => {
   const db = await world();
   const first = await buy(db, 'month-1');
-  const second = await buy(db, 'month-3');
+  const second = await buy(db, 'month-1');
   const refunded = (await db.rpc('access_order_refunded', { p_order: first.orderId, p_provider_ref: `sim_${first.orderId.replace(/-/g, '')}` }, service)) as Record<string, unknown>;
   assert.deepEqual(refunded, { ok: true, replay: false, status: 'refunded' });
 
@@ -279,7 +277,7 @@ test('a refund revokes that order\'s grant and pulls later grants back, with no 
   assert.equal(g2.revoked_at, null);
   // The three-month grant now starts (about) now, not in thirty days.
   assert.ok(Math.abs(ms(g2.starts_at) - Date.now()) < 60_000, `g2 starts ${g2.starts_at}`);
-  assert.equal(Math.round((ms(g2.ends_at) - ms(g2.starts_at)) / DAY), 90);
+  assert.equal(Math.round((ms(g2.ends_at) - ms(g2.starts_at)) / DAY), 30);
   const s = await status(db);
   assert.equal(hasPaidAccess(s, Date.now()), true);
   assert.equal(ms(s.paid?.endsAt), ms(g2.ends_at));

@@ -91,10 +91,10 @@ test('time left is the server end minus the server clock, and the state ends on 
 test('lessons: the trial lesson opens while active; others are locked; nothing opens without a trial', () => {
   const s = status();
   assert.equal(lessonAccess(s, 'reading-paraphrase', NOW), 'included');
-  assert.equal(lessonAccess(s, 'reading-tfng', NOW), 'locked');
-  assert.equal(lessonAccess(s, 'vocabulary-family', NOW), 'locked');
-  assert.equal(lessonAccess(s, 'reading-paraphrase', NOW + 63 * H), 'ended');
-  assert.equal(lessonAccess(status({ state: 'none' }), 'reading-paraphrase', NOW), 'no-trial');
+  assert.equal(lessonAccess(s, 'reading-tfng', NOW), 'included');
+  assert.equal(lessonAccess(s, 'vocabulary-family', NOW), 'included');
+  assert.equal(lessonAccess(s, 'reading-paraphrase', NOW + 63 * H), 'included');
+  assert.equal(lessonAccess(status({ state: 'none' }), 'reading-paraphrase', NOW), 'included');
 });
 
 test('tests: available, in progress, used, another begun, locked, unavailable and ended', () => {

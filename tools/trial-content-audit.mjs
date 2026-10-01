@@ -38,6 +38,7 @@
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, resolve, dirname, relative, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { lessonExample } from '../src/lib/access/lesson-examples.server.ts';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -96,7 +97,7 @@ async function sentinels() {
       if (!file.endsWith('.html')) continue;
       const slug = file.replace(/\.html$/, '');
       for (const p of phrases(readFileSync(join(dir, file), 'utf8'), 3)) {
-        list.push({ kind: dir === bodies ? 'lesson' : 'lesson-ru', id: slug, phrase: p });
+        // Public teaching prose is not a protected-content sentinel.
       }
     }
   }
@@ -224,10 +225,21 @@ async function main() {
   const charts = chartSentinels();
   for (const path of files(DIST)) {
     const raw = readFileSync(path, 'utf8');
+    const publicLesson = /^lessons\/writing\/([a-z0-9-]+)\.html$/.exec(relative(DIST, path).replace(/\\/g, '/'));
+    const example = publicLesson ? lessonExample(publicLesson[1]) : null;
+    const publicExampleText = example ? decodeFile(JSON.stringify(example)) : '';
     const chart = charts.find((c) => raw.includes(c.head));
-    if (chart) found.push({ file: relative(DIST, path).replace(/\\/g, '/'), verdict: 'LEAK', items: [`chart:${chart.file}`], phrases: [chart.file] });
+    if (chart && !JSON.stringify(example).includes(chart.head)) found.push({ file: relative(DIST, path).replace(/\\/g, '/'), verdict: 'LEAK', items: [`chart:${chart.file}`], phrases: [chart.file] });
     const text = decodeFile(raw);
-    const hits = marks.filter((m) => text.includes(m.phrase));
+    const rel = relative(DIST, path).replace(/\\/g, '/');
+    const translated = /^lesson-bodies\/(ru)\/([a-z0-9-]+)\.html$/.exec(rel);
+    const lessonPath = /^lessons\/([a-z0-9/-]+)\.html$/.exec(rel);
+    const bodyFile = translated ? join(REPO, 'src/content/lesson-bodies', translated[1], `${translated[2]}.html`) : lessonPath ? join(REPO, 'src/content/lesson-bodies', `${lessonPath[1].replaceAll('/', '-')}.html`) : null;
+    const publicProse = bodyFile && existsSync(bodyFile) ? decodeFile(readFileSync(bodyFile, 'utf8')) : '';
+    // The one selected worked example is public on its own lesson only.
+    // All other prompts/models and every protected paper remain checked.
+    const hits = marks.filter((m) => text.includes(m.phrase) && !publicProse.includes(m.phrase) &&
+      !(example && ['model', 'prompt'].includes(m.kind) && publicExampleText.includes(m.phrase)));
     if (hits.length) {
       const perItem = new Map();
       for (const h of hits) perItem.set(`${h.kind}:${h.id}`, (perItem.get(`${h.kind}:${h.id}`) ?? 0) + 1);

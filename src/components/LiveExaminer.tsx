@@ -166,7 +166,7 @@ const PART2_AT_MS = 5.5 * 60_000; // intro + Part 1 budget
 const PREP_MS = 60_000;
 const TALK_MAX_MS = 2 * 60_000; // from end of prep
 const PART3_MAX_MS = 4.5 * 60_000; // from Part 3 start
-const HARD_STOP_MS = 18 * 60_000; // absolute safety net
+const HARD_STOP_MS = 15 * 60_000; // absolute safety net
 const FORCE_END_GRACE_MS = 12_000; // after asking the examiner to conclude
 
 /* Single-part drills run the same clock, scaled to one part. */
@@ -933,9 +933,10 @@ export default function LiveExaminer({
             transcript,
             recording,
             m === 'full'
-              ? { expectedMinMs: FULL_TEST_EXPECTED_MIN_MS }
+              ? { expectedMinMs: FULL_TEST_EXPECTED_MIN_MS, liveSessionId: link?.sessionId }
               : {
                   expectedMinMs: DRILL_EXPECTED_MIN_MS[m],
+                  liveSessionId: link?.sessionId,
                   scope: DRILL_GRADE_SCOPE[m],
                   trial:
                     trialSitting && trialToken

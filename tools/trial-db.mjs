@@ -75,7 +75,7 @@ const NAME_RE = /^[a-z_][a-z0-9_]{0,62}$/;
 /** Boots a fresh database with the migrations applied (both, in order, by
     default; `migration` alone runs just that one file). Every call is a new,
     empty world, so tests cannot leak into one another. */
-export async function createTrialDb({ migration = null, migrations = [TRIAL_MIGRATION, PAID_MIGRATION] } = {}) {
+export async function createTrialDb({ migration = null, migrations = [TRIAL_MIGRATION, PAID_MIGRATION, resolve(REPO, "supabase/migrations/2026-09-30-profitable-offer.sql")] } = {}) {
   const db = new PGlite();
   await db.exec(SUPABASE_STUB);
   for (const file of migration ? [migration] : migrations) await db.exec(readFileSync(file, 'utf8'));

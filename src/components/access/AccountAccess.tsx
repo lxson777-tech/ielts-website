@@ -7,6 +7,7 @@
    sells nothing and shows nothing here. */
 
 import { useEffect, useRef } from 'react';
+import AssessmentBalance from './AssessmentBalance';
 import { useT } from '../../lib/i18n/react';
 import { withBase } from '../../lib/url';
 import { useTrial } from '../../lib/trial/react';
@@ -62,6 +63,7 @@ function AccountAccessInner() {
         <p className="access-includes">
           <span>{t('Full access includes')}</span> {t('The full course and every practice test.')} {t(PAID_AI_ALLOWANCE)}
         </p>
+        <AssessmentBalance />
 
         {trial.phase === 'ready' && <InterruptedPurchase trial={trial} orders={orders} checkout={checkout} />}
         {checkout.problem && (

@@ -46,7 +46,7 @@ export const TRIAL_UNUSED_SESSION_SECONDS = 90;
 
 /** Full-access prices as approved, for display only. Nothing here takes a
     payment: no provider or purchase terms have been approved. */
-export const FULL_ACCESS_PRICES_KZT = { oneMonth: 10000, threeMonths: 25000 } as const;
+export const FULL_ACCESS_PRICES_KZT = { oneMonth: 12990, threeMonths: 25000 } as const;
 
 export interface TrialSectionOffer {
   /** The one introductory lesson: its course progress key and its route. */
@@ -97,7 +97,7 @@ export const TRIAL_OFFER: Record<TrialSection, TrialSectionOffer> = {
     lessonKey: 'speaking-part1',
     lessonHref: '/lessons/speaking/part1',
     testId: 'speaking-test',
-    testHref: '/speaking/examiner',
+    testHref: '/speaking/recorded',
     /* A Part 1 live interview of about five minutes (Alex, 23 September). */
     testEnabled: true,
   },
@@ -134,9 +134,9 @@ export type TrialSummaryKey = 'course' | 'days' | 'lessons' | 'tests' | 'tutor';
 export const TRIAL_SUMMARY: Record<TrialSummaryKey, string> = {
   course: nt('Academic IELTS: the lessons and tests follow the Academic papers.'),
   days: nt('Three days, with no payment card and nothing to cancel.'),
-  lessons: nt('One selected lesson in each section: Reading, Listening, Writing and Speaking.'),
+  lessons: nt('All lesson explanations and worked examples are free, without an account.'),
   tests: nt(
-    'One test in each section: a full Reading test, a full Listening test, one Writing Task 2 essay, and a Speaking Part 1 interview of about five minutes.',
+    'One full Reading test, one full Listening test, and one AI assessment: choose a Writing Task 2 essay or recorded Speaking (up to five minutes).',
   ),
   tutor: nt('Five Mr EZ messages in each section, for the whole trial.'),
 };
@@ -150,10 +150,10 @@ export const TRIAL_SECTION_INCLUDES: Record<TrialSection, string> = {
   reading: nt('Your trial includes one full Reading test. The other Reading papers come with full access.'),
   listening: nt('Your trial includes one full Listening test. The other Listening papers come with full access.'),
   writing: nt(
-    'Your trial includes one Writing Task 2 essay on a set question, with AI feedback. Task 1 and more questions come with full access.',
+    'Choose a Writing Task 2 essay for your one trial AI assessment, or choose recorded Speaking. More assessments come with paid access.',
   ),
   speaking: nt(
-    'Your trial includes a Speaking Part 1 interview of about five minutes. The full three-part interview comes with full access.',
+    'Choose recorded Speaking (up to five minutes) for your one trial AI assessment, or choose Writing. Live interviews come with paid access.',
   ),
 };
 

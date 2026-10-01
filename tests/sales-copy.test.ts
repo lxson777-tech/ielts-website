@@ -110,19 +110,19 @@ test('keys built from a template in the markup all exist', () => {
 
 test('the corrected trial wording is on the page in both languages', () => {
   const start = SALES_COPY['faq.start.a'];
-  assert.match(start.en, /one lesson and one test in each section/);
-  assert.match(start.en, /one Writing Task 2 essay, and a Speaking Part 1 interview of about five minutes/);
-  assert.match(SALES_COPY['faq.trial.a'].en, /Academic IELTS/);
-  assert.match(SALES_COPY['faq.trial.a'].ru, /Speaking Part 1/);
+  assert.match(start.en, /one AI assessment: choose Writing or recorded Speaking/);
+  assert.match(start.en, /up to five minutes/);
+  assert.match(SALES_COPY['faq.trial.a'].en, /72-hour/);
+  assert.match(SALES_COPY['faq.trial.a'].ru, /Writing или запись Speaking/);
   assert.doesNotMatch(start.en, /full test in each section/);
-  assert.match(start.ru, /один урок и один тест в каждой части/);
-  assert.match(start.ru, /одно эссе Writing Task 2 и собеседование Speaking Part 1/);
-  assert.match(SALES_COPY['faq.unlimited.a'].en, /fair daily limits on Mr EZ and the live examiner/);
+  assert.match(start.ru, /одна проверка ИИ на выбор/);
+  assert.match(start.ru, /до пяти минут/);
+  assert.match(SALES_COPY['faq.unlimited.a'].en, /12 essay assessments, 6 recorded Speaking assessments/);
   assert.match(start.en + SALES_COPY['price.includes.1'].en, /Academic IELTS/);
   assert.match(start.ru + SALES_COPY['price.includes.1'].ru, /Academic IELTS/);
   // Alex, 29 September 2026: fixed periods, no automatic renewal, no refunds.
-  assert.match(SALES_COPY['price.status'].en, /never renews automatically/);
-  assert.match(SALES_COPY['faq.refund.a'].en, /no refunds after purchase/);
+  assert.match(SALES_COPY['price.status'].en, /no automatic renewal/);
+  assert.match(SALES_COPY['faq.refund.a'].en, /purchase terms/);
 });
 
 test('prices are formatted for each language from the one approved source', () => {
@@ -130,12 +130,12 @@ test('prices are formatted for each language from the one approved source', () =
   assert.equal(tenge(10000, 'ru').replace(/\s/g, ' '), '10 000 ₸');
   const en = salesVars('en');
   const ru = salesVars('ru');
-  assert.equal(en.oneMonth, '₸10,000');
+  assert.equal(en.oneMonth, '₸12,990');
   assert.equal(en.threeMonths, '₸25,000');
-  assert.equal(en.saving, '₸5,000');
+  assert.equal(en.saving, '₸13,970');
   assert.equal(en.tutorMessages, '5 Mr EZ messages');
   assert.equal(ru.tutorMessages, '5 сообщений Mr EZ');
-  assert.match(salesText('faq.cost.a', 'ru'), /Один месяц стоит 10\s000 ₸/);
+  assert.match(salesText('faq.cost.a', 'ru'), /30 дней стоят 12\s990 ₸/);
   // Every placeholder is filled in both languages.
   for (const key of Object.keys(SALES_COPY) as SalesKey[]) {
     for (const locale of ['en', 'ru'] as const) {

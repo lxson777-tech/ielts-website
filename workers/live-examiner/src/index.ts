@@ -1,3 +1,4 @@
+import { reserveAssessment, finishAssessment, type AssessmentClaim } from '../../../src/lib/access/assessment';
 /* Cloudflare Worker: session broker for the live AI examiner.
 
    Two providers, one Worker:
@@ -569,31 +570,17 @@ async function handleOpenAiCreate(deps: Deps, request: Request, env: Env, cors: 
   /* The trial's Speaking test: a Part 1 interview of the student's own
      begun test, counted (at most two) before anything is paid for. Given
      back below if the voice session never opens. */
-  let trial: { rpc: TrialRpc; sitting: string } | null = null;
+  let assessmentClaim: AssessmentClaim | null = null;
   if (parseAccessMode(env.ACCESS_MODE) === 'trial') {
     try {
       const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL as string, env.SUPABASE_SERVICE_ROLE_KEY as string);
-      /* Paid access first (docs/paid-access/CONTRACT.md): a running grant
-         opens any interview, exactly as the open site does, under the daily
-         and concurrency limits checked above (Alex, 29 September 2026: paid
-         use is "unlimited, fair daily caps", and these are the caps).
-         Otherwise the trial's rules. */
-      if (!(await paidAccessRunning(rpc, userId))) {
-        if (!TRIAL_OFFER.speaking.testEnabled) throw refusal('trial-not-included');
-        if (plan.mode !== TRIAL_SPEAKING_MODE) throw refusal('trial-not-included');
-        const sitting = readSittingId(parsed.value.trialSitting);
-        if (!sitting) throw refusal('trial-no-test');
-        await startSpeakingSession(rpc, userId, sitting);
-        trial = { rpc, sitting };
-      }
+      assessmentClaim = await reserveAssessment(rpc, userId, 'live');
     } catch (err) {
-      if (err instanceof TrialRefusal) return json({ error: err.message, code: err.code }, 403, cors);
-      return json({ error: 'The live examiner service is temporarily unavailable.' }, 503, cors);
+      if (err instanceof TrialRefusal) return json({error:err.message,code:err.code},403,cors);
+      return json({error:'Your allowance could not be checked.'},503,cors);
     }
   }
-  const giveBack = async () => {
-    if (trial) await releaseSpeakingSession(trial.rpc, userId, trial.sitting).catch(() => undefined);
-  };
+  const giveBack = async () => { await finishAssessment(assessmentClaim, false).catch(() => undefined); };
 
   let reservationId: string;
   try {
@@ -663,12 +650,16 @@ async function handleOpenAiCreate(deps: Deps, request: Request, env: Env, cors: 
   try {
     await patchSession(deps, env, reservationId, { provider_session_id: sessionId });
   } catch {
-    // Best-effort: the session is genuinely live at OpenAI even if our own
-    // bookkeeping patch failed. Don't fail the student's session over an
-    // accounting write; log it so the day's counts can be reconciled.
-    console.error('live-examiner: failed to record provider_session_id for reservation', reservationId);
+    await deps.sideband(env, sessionId, {type:'session.close',event_id:`close_${crypto.randomUUID()}`});
+    await failReservation(deps, env, reservationId);
+    return json({error:'The session could not be recorded. Please try again later.'},503,cors);
   }
 
+  try { await finishAssessment(assessmentClaim, true, sessionId); } catch {
+    await deps.sideband(env, sessionId, {type:'session.close',event_id:`close_${crypto.randomUUID()}`});
+    await failReservation(deps, env, reservationId);
+    return json({error:'The session could not be recorded. Please contact support.'},503,cors);
+  }
   return json(
     { provider: 'openai', session: { id: sessionId }, transport: { type: 'webrtc', sdp: answerSdp }, model: session.model },
     201,
@@ -679,6 +670,7 @@ async function handleOpenAiCreate(deps: Deps, request: Request, env: Env, cors: 
 async function handleCreate(deps: Deps, request: Request, env: Env, cors: Record<string, string>): Promise<Response> {
   const provider = resolveProvider(env);
   if (!provider) return json({ error: 'LIVE_PROVIDER must be openai or gemini' }, 500, cors);
+  if (provider === 'gemini' && parseAccessMode(env.ACCESS_MODE) === 'trial') return json({error:'This live provider is unavailable for paid access.'},503,cors);
   if (provider === 'gemini') return mintGeminiToken(deps, env, cors);
   return handleOpenAiCreate(deps, request, env, cors);
 }
@@ -957,16 +949,14 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
   return { fetch: handle };
 }
 
-/* ── The trial Speaking test's five-minute cut-off ──────────────────────
-   The Worker cannot keep a timer running for a session it only brokered, so
-   a cron trigger (every minute, see wrangler.jsonc) asks this: every session
-   still open after TRIAL_SPEAKING_MINUTES is sent `session.close` over the
-   trusted server channel and marked ended. With a one-minute schedule an
-   interview runs at most about six minutes whatever the browser does. On the
-   open site (ACCESS_MODE not 'trial') it does nothing at all. */
+/* Commercial voice cutoff. The scheduled sweep starts closing after minute
+   14, leaving one minute for the next scheduled invocation. The browser also
+   stops at 15. Cron and provider-side closure must be verified and monitored
+   before launch; a delayed or failed sweep is not a guaranteed spend ceiling.
+   The legacy function name is retained for the scheduler and existing tools. */
 export async function closeOverdueTrialSessions(deps: Deps, env: Env): Promise<{ closed: number; failed: number }> {
   if (parseAccessMode(env.ACCESS_MODE) !== 'trial' || missingConfig(env).length) return { closed: 0, failed: 0 };
-  const cutoff = new Date(deps.now().getTime() - TRIAL_SPEAKING_MINUTES * 60_000).toISOString();
+  const cutoff = new Date(deps.now().getTime() - 14 * 60_000).toISOString();
   const rows = await fetchRows(
     deps,
     env,
@@ -974,20 +964,10 @@ export async function closeOverdueTrialSessions(deps: Deps, env: Env): Promise<{
   );
   let closed = 0;
   let failed = 0;
-  /* A paid account's interview is not the trial's five-minute test: it is
-     left to run, as on the open site. Asked once per student per sweep. If
-     the database cannot say, the session is treated as a trial one and
-     closed: the cut-off exists to bound spending, so it fails closed. */
-  const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL as string, env.SUPABASE_SERVICE_ROLE_KEY as string);
-  const paidUsers = new Map<string, boolean>();
-  const isPaid = async (userId: unknown): Promise<boolean> => {
-    if (typeof userId !== 'string') return false;
-    if (!paidUsers.has(userId)) paidUsers.set(userId, await paidAccessRunning(rpc, userId).catch(() => false));
-    return paidUsers.get(userId)!;
-  };
   for (const row of rows) {
     if (!isRecord(row) || typeof row.id !== 'string' || typeof row.provider_session_id !== 'string') continue;
-    if (await isPaid(row.user_id)) continue;
+    // Close every commercial session. The minute sweep starts at minute 14.
+    // Production must monitor this scheduled job; provider closure is a launch check.
     const result = await deps.sideband(env, row.provider_session_id, { type: 'session.close', event_id: `close_${crypto.randomUUID()}` });
     // A closed socket is the expected answer to a close; anything else is a
     // failure to report, and the row stays open so the next minute retries.

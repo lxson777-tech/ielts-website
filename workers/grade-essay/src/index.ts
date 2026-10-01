@@ -1,3 +1,5 @@
+import { meteredFetch } from '../../../src/lib/access/metering';
+import { reserveAssessment, finishAssessment, type AssessmentClaim } from '../../../src/lib/access/assessment';
 /* Cloudflare Worker: grades an IELTS essay against the official public IELTS
    Writing Band Descriptors. The static site POSTs { prompt, essay, mechanics }
    here; the Worker holds the provider API key(s), sends the rubric + the
@@ -945,6 +947,7 @@ export function createHandler(deps: { fetch: typeof fetch }) {
       }
       // Guard the quota: real essays are <600 words; reject giant payloads.
       if (essay.length > 20000) return json({ error: 'Essay too long' }, 413, cors);
+      if (body.prompt.promptHtml.length > 20000) return json({ error: 'Question too long' }, 413, cors);
       if (essay.split(/\s+/).length < 20) {
         return json({ error: 'Essay too short to assess — write at least a few sentences.' }, 422, cors);
       }
@@ -966,6 +969,7 @@ export function createHandler(deps: { fetch: typeof fetch }) {
          grades (the student's own question, no trial test used), plus the
          band guide steps a trial build's browser does not carry. */
       let paid = false;
+      let assessmentClaim: AssessmentClaim | null = null;
       if (parseAccessMode(env.ACCESS_MODE) === 'trial') {
         if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
           return json({ error: 'The essay grader is not configured' }, 503, cors);
@@ -975,10 +979,8 @@ export function createHandler(deps: { fetch: typeof fetch }) {
           const userId = token ? await verifyAccessToken(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, token) : null;
           if (!userId) return json({ error: 'Sign in to have your essay graded.', code: 'sign-in-required' }, 401, cors);
           const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
-          /* Paid access first (docs/paid-access/CONTRACT.md). Alex, 29
-             September 2026: paid use is "unlimited, fair daily caps" with
-             the Workers' EXISTING per-student limits. This grader has none
-             today, so a paid essay is graded as the open grader grades it. */
+          /* Both paid and trial requests reserve an assessment before
+             spending. Trial essays also need the student's own sitting. */
           paid = await paidAccessRunning(rpc, userId);
           if (!paid) {
             const sitting = readSittingId(body.trialSitting);
@@ -996,6 +998,7 @@ export function createHandler(deps: { fetch: typeof fetch }) {
             await leaseTrialTest(rpc, userId, 'writing', sitting);
             trial = { rpc, userId, sitting };
           }
+          assessmentClaim = await reserveAssessment(rpc, userId, 'writing');
         } catch (err) {
           if (err instanceof TrialRefusal) {
             return json({ error: err.message, code: err.code }, err.code === 'trial-in-flight' ? 409 : 403, cors);
@@ -1005,6 +1008,7 @@ export function createHandler(deps: { fetch: typeof fetch }) {
         }
       }
 
+      const modelFetch = meteredFetch(deps.fetch, assessmentClaim);
       const systemText = systemInstruction(task, body.prompt.variant);
       const userText = userMessage(body);
 
@@ -1019,13 +1023,14 @@ export function createHandler(deps: { fetch: typeof fetch }) {
       const samples = Math.max(1, Math.min(5, parseInt(env.GRADING_SAMPLES ?? '3', 10) || 3));
       const gradeOnce = (): Promise<GradeOnceResult> =>
         provider === 'openai'
-          ? gradeOnceOpenAi(deps.fetch, env, systemText, userText)
-          : gradeOnceGemini(deps.fetch, env, systemText, userText);
+          ? gradeOnceOpenAi(modelFetch, env, systemText, userText)
+          : gradeOnceGemini(modelFetch, env, systemText, userText);
 
       let runs: GradeOnceResult[];
       try {
         runs = await Promise.all(Array.from({ length: samples }, gradeOnce));
       } catch (err) {
+        await finishAssessment(assessmentClaim, false).catch(() => undefined);
         if (trial) await releaseUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);
         throw err;
       }
@@ -1035,6 +1040,7 @@ export function createHandler(deps: { fetch: typeof fetch }) {
         const firstFail = runs.find((r): r is { failStatus: number; failError: string } => 'failStatus' in r)!;
         /* Nothing was graded, so the trial test is still the student's to
            submit again. A release that fails expires on its own in minutes. */
+        await finishAssessment(assessmentClaim, false).catch(() => undefined);
         if (trial) await releaseUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);
         return json({ error: firstFail.failError }, firstFail.failStatus, cors);
       }
@@ -1046,6 +1052,7 @@ export function createHandler(deps: { fetch: typeof fetch }) {
       good.sort((a, b) => meanBand(a.assessment) - meanBand(b.assessment));
       const median = good[Math.floor((good.length - 1) / 2)]!.assessment;
 
+      await finishAssessment(assessmentClaim, true).catch(() => undefined);
       if (trial) {
         /* Graded: the Writing test is used. Settled here, on the server, so
            a browser that closes now does not get it back. */

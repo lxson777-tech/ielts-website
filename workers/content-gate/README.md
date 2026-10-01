@@ -1,5 +1,7 @@
 # Content gate: the trial's locked door
 
+1 October 2026 update: lesson explanations and selected worked examples are now published directly by the site without an account. See `docs/paid-access/PUBLIC-LESSONS.md`. This service continues protecting practice questions, test papers, recordings and private model packs. Its legacy authenticated lesson endpoint is retained for compatibility; it no longer controls public reading access.
+
 Alex decided on 23 September 2026 that the trial must protect the content itself,
 not only the screen. This Worker is how. **Not deployed.** Deploying it, creating the
 private bucket and uploading to it are externally visible steps that need Alex's

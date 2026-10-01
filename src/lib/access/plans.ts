@@ -46,17 +46,16 @@ export const PAID_PLANS: readonly PaidPlan[] = [
   },
 ];
 
+export const AVAILABLE_PAID_PLANS = PAID_PLANS.filter(plan => plan.id === 'month-1');
+
 /** What three single months would cost more than the three-month plan. */
 export const THREE_MONTH_SAVING = FULL_ACCESS_PRICES_KZT.oneMonth * 3 - FULL_ACCESS_PRICES_KZT.threeMonths;
 
-/** Paid AI use, DECIDED by Alex on 29 September 2026: "unlimited, fair
-    daily caps". A paying student gets unlimited normal study, and the
-    Workers' EXISTING per-student daily limits are the fair caps: Mr EZ's
-    daily turns and help requests (workers/mr-ez) and the live examiner's
-    daily and concurrent sessions (workers/live-examiner). The essay and
-    speaking graders have no per-student daily limit today, so this sentence
-    names only the two that do. No new limit is invented for paid access. */
-export const PAID_AI_ALLOWANCE = 'Unlimited study, with fair daily limits on Mr EZ and the live examiner.';
+/** Alex approved these included assessments on 30 September 2026.
+    Ordinary study stays unrestricted; billable assessments use the ledger
+    in 2026-09-30-profitable-offer.sql. Legacy plan definitions above remain
+    available for reading old receipts, not for selling the paused plan. */
+export const PAID_AI_ALLOWANCE = 'Each 30-day purchase includes 12 essay assessments, 6 recorded Speaking assessments (up to 5 minutes each), and 2 live interviews with feedback (up to 15 minutes each). Unused assessments expire with that purchase. Lessons remain free for everyone. Paid access includes unlimited Reading and Listening practice. Mr EZ includes 40 chat messages and 60 lesson-help requests per day.';
 
 /** Also decided on 29 September 2026: a purchase is a fixed period that
     simply ends. There is no automatic renewal and no refund after purchase

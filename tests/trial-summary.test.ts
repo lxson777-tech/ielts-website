@@ -40,12 +40,12 @@ test('numbers written in words match the constants the gate and database enforce
   assert.equal(TRIAL_HOURS, 72);
   assert.match(TRIAL_SUMMARY.days, new RegExp(`^${WORDS[TRIAL_HOURS / 24]} days`, 'i'));
   assert.equal(TRIAL_TESTS_PER_SECTION, 1);
-  assert.match(TRIAL_SUMMARY.tests, /^One test in each section/);
+  assert.match(TRIAL_SUMMARY.tests, /^One full Reading test, one full Listening test, and one AI assessment/);
   assert.match(TRIAL_SUMMARY.tutor, new RegExp(`^${WORDS[TRIAL_TUTOR_PER_SECTION]} Mr EZ messages in each section`, 'i'));
   assert.equal(TRIAL_SPEAKING_MODE, 'part1');
-  assert.ok(TRIAL_SUMMARY.tests.includes(`Speaking Part 1 interview of about ${WORDS[TRIAL_SPEAKING_MINUTES]} minutes`));
-  assert.ok(TRIAL_SECTION_INCLUDES.speaking.includes(`Part 1 interview of about ${WORDS[TRIAL_SPEAKING_MINUTES]} minutes`));
-  assert.ok(TRIAL_SUMMARY.tests.includes('one Writing Task 2 essay'));
+  assert.ok(TRIAL_SUMMARY.tests.includes(`recorded Speaking (up to ${WORDS[TRIAL_SPEAKING_MINUTES]} minutes)`));
+  assert.ok(TRIAL_SECTION_INCLUDES.speaking.includes('one trial AI assessment'));
+  assert.ok(TRIAL_SUMMARY.tests.includes('choose a Writing Task 2 essay or'));
   assert.ok(TRIAL_SUMMARY.days.includes('no payment card'));
 });
 
@@ -58,11 +58,11 @@ test('the course is named Academic IELTS before sign-up', () => {
 
 test('no sentence promises what the trial locks', () => {
   for (const sentence of allSentences()) {
-    assert.doesNotMatch(sentence, /rotation|a different (one|prompt) every attempt|three-part mock|\bfree\b/i, sentence);
+    assert.doesNotMatch(sentence, /rotation|a different (one|prompt) every attempt|three-part mock|unlimited AI/i, sentence);
   }
   // Task 1 and the three-part interview are named only as full access.
-  assert.match(TRIAL_SECTION_INCLUDES.writing, /Task 1 and more questions come with full access/);
-  assert.match(TRIAL_SECTION_INCLUDES.speaking, /three-part interview comes with full access/);
+  assert.match(TRIAL_SECTION_INCLUDES.writing, /More assessments come with paid access/);
+  assert.match(TRIAL_SECTION_INCLUDES.speaking, /Live interviews come with paid access/);
 });
 
 test('test lengths match the papers and the essay the trial actually uses', () => {

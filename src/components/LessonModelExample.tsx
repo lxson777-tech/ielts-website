@@ -52,7 +52,8 @@ const CRITERION_LABEL: { key: keyof ModelAnswer['criteria']; label: string }[] =
   { key: 'grammar', label: 'Grammatical Range and Accuracy' },
 ];
 
-export default function LessonModelExample({ lesson }: { lesson: string }) {
+export default function LessonModelExample({ lesson, example }: { lesson: string; example?: { prompt: EssayPrompt; model: ModelAnswer } | null }) {
+  if (example) return <ModelView prompt={example.prompt} model={example.model} links />;
   return contentIsGated() ? <TrialLessonModel lesson={lesson} /> : <OpenLessonModel lesson={lesson} />;
 }
 
@@ -145,6 +146,7 @@ function ModelView({
       <div className="px-5 py-4">
         <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{t('The task')}</p>
         <Html as="div" className="lesson-model-prompt mt-1.5 text-sm leading-relaxed" html={prompt.promptHtml} />
+        {prompt.imageUrl && <img src={prompt.imageUrl.startsWith('data:') ? prompt.imageUrl : withBase(prompt.imageUrl)} alt={t('Writing task chart')} className="mt-4 max-h-96 max-w-full object-contain" loading="lazy" />}
 
         {!open ? (
           <div className="mt-4 flex flex-wrap items-center gap-3">

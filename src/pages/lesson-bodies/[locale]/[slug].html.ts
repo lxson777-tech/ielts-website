@@ -15,7 +15,7 @@
    translated yet returns 404 and the reader simply keeps the English. */
 
 import type { APIRoute, GetStaticPaths } from 'astro';
-import { ACCESS_MODE } from '../../../lib/trial/mode';
+import { publicLessonHtml } from '../../../lib/access/public-lessons';
 import { withBase } from '../../../lib/url';
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from '../../../lib/i18n/locale';
 
@@ -36,7 +36,7 @@ export const getStaticPaths: GetStaticPaths = () => {
   /* A trial build publishes none of these: the content gate
      (workers/content-gate) hands them out to students allowed to open them,
      from the private copy tools/build-gated-content.mjs writes. */
-  if (ACCESS_MODE === 'trial') return [];
+  // Lesson explanations are public in both builds, including translations.
   const paths: { params: { locale: string; slug: string }; props: { html: string } }[] = [];
   for (const [file, html] of Object.entries(BODIES)) {
     const rel = file.slice(PREFIX.length).replace(/\.html$/, '');
@@ -55,7 +55,7 @@ export const GET: APIRoute = ({ props }) => {
   // <img src="../pics/…"> resolves against the GitHub Pages base path
   // rather than the lesson's own URL.
   const html = (props.html as string).replaceAll('../pics/', withBase('/pics/'));
-  return new Response(html, {
+  return new Response(publicLessonHtml(html), {
     headers: { 'Content-Type': 'text/html; charset=utf-8' },
   });
 };

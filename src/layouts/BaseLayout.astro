@@ -70,7 +70,8 @@ const {
   trialGate,
   noindex = false,
 } = Astro.props;
-const gated = ACCESS_MODE === 'trial' && Boolean(trialGate);
+// Lessons are public. Interactive practice and AI retain their own gates.
+const gated = ACCESS_MODE === 'trial' && Boolean(trialGate) && trialGate?.kind !== 'lesson';
 /* A page the trial does not include at all has nothing a trial student could
    ever open, so a trial build leaves its content out of the page entirely
    and shows only the gate's explanation. A page that declares

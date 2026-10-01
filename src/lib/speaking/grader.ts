@@ -35,7 +35,7 @@ class RemoteSpeakingGrader implements SpeakingGrader {
   readonly name = 'AI examiner';
   readonly live = true;
 
-  constructor(private endpoint: string) {}
+  constructor(private endpoint: string, private trialSitting?: string) {}
 
   async grade(attempt: SpeakingAttempt, mechanics: AudioMechanicsReport): Promise<SpeakingAssessment> {
     const body =
@@ -53,7 +53,7 @@ class RemoteSpeakingGrader implements SpeakingGrader {
     const resp = await fetch(this.endpoint, {
       method: 'POST',
       headers: signIn ? { 'Content-Type': 'application/json', Authorization: `Bearer ${signIn}` } : { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify({...body, trialSitting: this.trialSitting}),
       // The Worker transcribes the audio, grades the transcript and then judges
       // pronunciation from the audio, one call after another. A full 14-minute
       // test can take several minutes end to end, so wait up to ten minutes.
@@ -119,6 +119,7 @@ export async function gradeSpeaking(
   attempt: SpeakingAttempt,
   clips: { blob: Blob; durationMs: number }[],
   expectedMinMs: number,
+  trialSitting?: string,
 ): Promise<SpeakingGradeResult> {
   if (!SPEAKING_GRADER_URL) throw new Error(t('The AI examiner is not configured for this site yet.'));
   const totalDurationMs = clips.reduce((a, c) => a + c.durationMs, 0);
@@ -127,7 +128,7 @@ export async function gradeSpeaking(
   mechanics.totalDurationMs = totalDurationMs;
   mechanics.underLength = totalDurationMs < expectedMinMs;
 
-  const grader: SpeakingGrader = new RemoteSpeakingGrader(SPEAKING_GRADER_URL);
+  const grader: SpeakingGrader = new RemoteSpeakingGrader(SPEAKING_GRADER_URL, trialSitting);
   const assessment = await grader.grade(attempt, mechanics);
   return {
     ...assessment,
