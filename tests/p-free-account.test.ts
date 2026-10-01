@@ -286,7 +286,7 @@ test('no screen the gated build shows offers a trial', () => {
     assert.doesNotMatch(read(file), /href=\{withBase\('\/trial'\)\}/, `${file} links to /trial`);
   }
   assert.doesNotMatch(read('src/components/tutor/MrEzPanel.tsx'), /\/trial'/);
-  assert.match(read('src/components/trial/useTrialTest.ts'), /return INACTIVE;\n\}/, 'no paper is a trial test any more');
+  assert.match(read('src/components/trial/useTrialTest.ts'), /return INACTIVE;\r?\n\}/, 'no paper is a trial test any more');
 });
 
 test('lesson bodies and the lesson\'s worked example are not in the gated build\'s pages', () => {
