@@ -152,22 +152,41 @@ export function journeySteps(answers:JourneyAnswers, locale: JourneyLocale = 'en
   :[step(locale,time===15?2:time===30?5:10,skill.chooseTask),step(locale,time===15?10:time===30?20:40,skill.practice),step(locale,time===15?3:time===30?5:10,skill.review)];
 }
 
+/** Which kind of step a day is, under the free-account model (Alex, 1 October
+    2026): day one is the lesson, open to every free account; days two and
+    three are practice and feedback, which come with practice and guidance.
+    The sales page labels each day with it. */
+export type JourneyAccess = 'free' | 'paid';
+
 export function journeyDays(answers: JourneyAnswers, locale: JourneyLocale = 'en') {
  const skill = journeySkill(answers.skill, locale);
  const copy = DAY_COPY[locale];
  const method = answers.focus === 'method';
- return [
-  {title:copy.titles[0],text:method?skill.method:skill.warmup,outcome:method?copy.methodOutcome:copy.obstacleOutcome},
-  {title:copy.titles[1],text:`${skill.practice} ${skill.review}`,outcome:copy.practiceOutcome},
-  {title:copy.titles[2],text:skill.fresh,outcome:copy.freshOutcome},
- ].map((day,index)=>({...day,day:index+1,minutes:Number(answers.time)}));
+ const days: { title: string; text: string; outcome: string; access: JourneyAccess }[] = [
+  {title:copy.titles[0],text:method?skill.method:skill.warmup,outcome:method?copy.methodOutcome:copy.obstacleOutcome,access:'free'},
+  {title:copy.titles[1],text:`${skill.practice} ${skill.review}`,outcome:copy.practiceOutcome,access:'paid'},
+  {title:copy.titles[2],text:skill.fresh,outcome:copy.freshOutcome,access:'paid'},
+ ];
+ return days.map((day,index)=>({...day,day:index+1,minutes:Number(answers.time)}));
 }
 
-/** The query string the trial page reads back (questionnaireFromSearch in
-    src/lib/trial/offer.ts). The answers become a suggested starting point
-    for the trial, never an assessed level. tests/journey-plan.test.ts checks
-    the trial reads exactly what this writes. */
-export function trialQuery(answers: JourneyAnswers): string {
+/** The query string that carries the four answers
+    (`?journey=1&band=7&skill=writing&focus=method&time=30`), read back by
+    questionnaireFromSearch in src/lib/trial/offer.ts. The sales page puts it
+    on the address the student lands on after sign-up and the profile
+    (`/sign-up?next=/dashboard?journey=1&...`), so the answers survive the
+    whole round trip, email confirmation and Google sign-in included. The
+    answers are a suggested starting point, never an assessed level.
+    tests/journey-plan.test.ts checks the reader reads exactly what this
+    writes. */
+export function journeyQuery(answers: JourneyAnswers): string {
  const params = new URLSearchParams({ journey: '1', band: answers.band, skill: answers.skill, focus: answers.focus, time: answers.time });
  return `?${params.toString()}`;
 }
+
+/** The old name, from when the answers went to the trial page. */
+export const trialQuery = journeyQuery;
+
+/** Where the questionnaire's sign-up link sends a new student once the
+    account and profile exist: the dashboard, with the answers. */
+export const JOURNEY_LANDING = '/dashboard';

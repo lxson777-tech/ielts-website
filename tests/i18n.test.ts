@@ -74,6 +74,7 @@ import * as a3Remediation from '../src/lib/i18n/dict/ru/a3-remediation.ts';
 import * as r01Remediation from '../src/lib/i18n/dict/ru/r01-remediation.ts';
 import * as accessModel from '../src/lib/i18n/dict/ru/access-model.ts';
 import * as sOffer from '../src/lib/i18n/dict/ru/s-offer.ts';
+import * as wFree from '../src/lib/i18n/dict/ru/w-free.ts';
 
 import * as partStrategies from '../src/lib/i18n/dict/ru/parts/strategies.ts';
 import * as partStructures from '../src/lib/i18n/dict/ru/parts/structures.ts';
@@ -115,6 +116,7 @@ const BATCH_FILES: { file: string; mod: { strings: Record<string, string>; plura
   { file: 'dict/ru/r01-remediation.ts', mod: r01Remediation },
   { file: 'dict/ru/access-model.ts', mod: accessModel },
   { file: 'dict/ru/s-offer.ts', mod: sOffer },
+  { file: 'dict/ru/w-free.ts', mod: wFree },
 ];
 
 /* The extra dictionary parts (src/lib/i18n/dict/parts.ts): the big coaching
