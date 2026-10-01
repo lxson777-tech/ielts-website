@@ -80,8 +80,12 @@ export const SALES_COPY = {
   'nav.signIn': { en: 'Sign in', ru: 'Войти' },
   // Every way in: the sign-up page (carrying the questionnaire's answers once chosen).
   'nav.signUp': { en: 'Create a free account', ru: 'Создать бесплатный аккаунт' },
-  // The header's own copy of it shares a phone's width with the logo and the menu.
-  'nav.signUpShort': { en: 'Free account', ru: 'Бесплатный аккаунт' },
+  // The header's own copy of it on a phone, where it shares the width with
+  // the logo, the language switch and the menu (the full words wrap to three
+  // lines in Russian at 320 pixels, and anything longer than one short word
+  // pushes the page sideways there). Same link, same destination; the hero
+  // line just below says the account is free.
+  'nav.signUpShort': { en: 'Start for free', ru: 'Начать бесплатно' },
   'nav.menuOpen': { en: 'Open menu', ru: 'Открыть меню' },
   'nav.menuClose': { en: 'Close menu', ru: 'Закрыть меню' },
   'lang.group': { en: 'Language', ru: 'Язык' },

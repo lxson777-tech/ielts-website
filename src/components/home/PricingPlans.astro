@@ -17,7 +17,7 @@ import { PURCHASE_ENABLED } from '../access/payments';
 const freeList = ['price.free.1', 'price.free.2', 'price.free.3', 'price.free.4'] as SalesKey[];
 const paidList = ['price.paid.1', 'price.paid.2', 'price.paid.3', 'price.paid.4', 'price.paid.5'] as SalesKey[];
 ---
-<section class="trial-pricing access-pricing section-pad" id="pricing" aria-labelledby="pricing-title">
+<section class="access-pricing section-pad" id="pricing" aria-labelledby="pricing-title">
  <div class="content-wrap">
   <div class="pricing-heading"><h2 id="pricing-title" data-sales="price.title" set:html={sales('price.title')} /><p data-sales="price.lead" set:html={sales('price.lead')} /></div>
   <div class="price-compare" role="list" aria-label={sales('price.compare')} data-sales-attr="aria-label:price.compare">

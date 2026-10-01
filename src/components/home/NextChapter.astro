@@ -46,7 +46,7 @@ const k = (key: string) => key as SalesKey;
       <button type="button" lang="en" title="English" data-lang-option="en" aria-pressed="true">EN</button>
       <button type="button" lang="ru" title="Русский" data-lang-option="ru" aria-pressed="false">RU</button>
     </div>
-    <a class="workspace-link" href={signIn} data-sales="nav.signIn">{sales('nav.signIn')}</a><a class="button button-small" href={signUp} data-signup-link data-sales="nav.signUp">{sales('nav.signUp')}</a><button class="menu-toggle" aria-label={sales('nav.menuOpen')} data-sales-attr="aria-label:nav.menuOpen" aria-controls="chapter-nav" aria-expanded="false"><span></span><span></span></button></div>
+    <a class="workspace-link" href={signIn} data-sales="nav.signIn">{sales('nav.signIn')}</a><a class="button button-small" href={signUp} data-signup-link><span class="cta-long" data-sales="nav.signUp">{sales('nav.signUp')}</span><span class="cta-short" data-sales="nav.signUpShort">{sales('nav.signUpShort')}</span></a><button class="menu-toggle" aria-label={sales('nav.menuOpen')} data-sales-attr="aria-label:nav.menuOpen" aria-controls="chapter-nav" aria-expanded="false"><span></span><span></span></button></div>
 </header></div>
 <main id="main" data-next-chapter>
   <section class="campus-story" aria-labelledby="hero-title" data-campus-scene data-sc-act="flow">

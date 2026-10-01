@@ -2,7 +2,7 @@
 .sales-review-note{position:relative;padding:10px 24px;background:#fae5d1;color:#193335;font:12px/1.5 Inter,sans-serif;text-align:center}
 .sales-demo{background:#fffcf6;color:#193335}
 .sales-demo-heading,.teaching-layout{display:grid;grid-template-columns:1.1fr 1fr;gap:70px;align-items:start}
-.sales-demo h2,.sales-teaching h2,.trial-pricing h2{font-size:clamp(34px,4.2vw,58px);line-height:1.12;letter-spacing:-.035em;font-weight:500;text-wrap:balance}
+.sales-demo h2,.sales-teaching h2,.access-pricing h2{font-size:clamp(34px,4.2vw,58px);line-height:1.12;letter-spacing:-.035em;font-weight:500;text-wrap:balance}
 .sales-demo h2 span,.sales-teaching h2 span{color:#53665b}
 .sales-demo-heading p{font-size:18px;line-height:1.7;max-width:440px}
 .sales-demo-heading .text-link{display:inline-block;margin-top:20px}
@@ -21,9 +21,9 @@
 .sales-teaching{background:#efe9dd;color:#193335}
 .teaching-layout p{font-size:15px;line-height:1.8;margin-bottom:20px;color:#53665b}
 .teaching-layout .teacher-lead{font-size:25px;line-height:1.5;color:#193335;letter-spacing:-.025em}
-.trial-pricing{background:#193335;color:#fffcf6;scroll-margin-top:90px}
+.access-pricing{background:#193335;color:#fffcf6;scroll-margin-top:90px}
 .pricing-heading{display:flex;justify-content:space-between;align-items:end;gap:40px;margin-bottom:60px}
-.trial-pricing h2 span{color:#efa260}
+.access-pricing h2 span{color:#efa260}
 .pricing-heading>p{font-size:17px;line-height:1.8;color:#d7e0d5;max-width:390px}
 .pricing-layout{display:grid;grid-template-columns:.9fr 1.4fr;gap:70px}
 .trial-includes h3{font-size:25px;font-weight:500;margin-bottom:14px}
@@ -161,3 +161,10 @@
 .journey-plan .plan-access{display:inline-block;margin:0 0 0 8px;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:600;letter-spacing:.02em;vertical-align:1px}
 .journey-plan .plan-access.is-free{background:#e3eedf;color:#1d5b43}
 .journey-plan .plan-access.is-paid{background:#efa26030;color:#85441f}
+/* The header's sign-up button: the full words on a wide screen, the short
+   ones on a phone (nav.signUp / nav.signUpShort in sales-copy.ts). */
+.nav-actions .cta-short{display:none}
+/* (next-chapter.css sizes a phone button's span at 17px for an arrow glyph;
+   these spans are the label itself.) */
+.nav-actions .button-small>.cta-long,.nav-actions .button-small>.cta-short{font-size:inherit}
+@media(max-width:760px){.nav-actions .cta-long{display:none}.nav-actions .cta-short{display:inline;white-space:nowrap}}
