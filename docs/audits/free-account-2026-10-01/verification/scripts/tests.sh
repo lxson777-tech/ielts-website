@@ -1,0 +1,3 @@
+#!/bin/bash
+cd "/c/Users/Alex/Desktop/Projects/IELTS website/.claude/worktrees/musing-mcclintock-862665"
+start=$(date +%s); npm test > "/c/Users/Alex/AppData/Local/Temp/claude/C--Users-Alex-Desktop-Projects-IELTS-website--claude-worktrees-musing-mcclintock-862665/7ea06528-23bb-4dbf-be18-8c70267e53bf/scratchpad/verify-free/npm-test.log" 2>&1; echo "npm test exit=$? secs=$(($(date +%s)-start))" > "/c/Users/Alex/AppData/Local/Temp/claude/C--Users-Alex-Desktop-Projects-IELTS-website--claude-worktrees-musing-mcclintock-862665/7ea06528-23bb-4dbf-be18-8c70267e53bf/scratchpad/verify-free/npm-test.status"

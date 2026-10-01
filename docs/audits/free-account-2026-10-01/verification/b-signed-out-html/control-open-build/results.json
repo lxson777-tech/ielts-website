@@ -1,0 +1,2949 @@
+{
+ "summary": {
+  "pages": 88,
+  "lessonPages": 76,
+  "nonLessonPages": 12,
+  "phrasesChecked": 910,
+  "leakingPages": 76,
+  "bad": [
+   {
+    "route": "/lessons/listening/form-completion",
+    "slug": "listening-form-completion",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "You'll need waterproof clothing whatever the forecast says and",
+     "Spelling must be correct including names which are usually",
+     "Recording bring two forms of identification plus your own",
+     "Numbers dates and reference codes must be copied exactly",
+     "A form completion answer that is correct in substance",
+     "In the pause before the recording read every heading"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "You'll need waterproof clothing whatever the forecast says and"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/listening/map-labelling",
+    "slug": "listening-map-labelling",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Trap confusing left right with compass directions when the",
+     "first Every direction the speaker gives is relative to",
+     "though they can double back so keep listening rather",
+     "Trap losing track of your position after missing one",
+     "which usually matches the order you move around the",
+     "In the pause before the recording starts find north"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/listening/matching",
+    "slug": "listening-matching",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Trap two statements describe similar sounding situations and only",
+     "unless the instructions say a letter may be used",
+     "the items are mentioned in the recording not the",
+     "When you hear an idea that matches a statement's",
+     "Trap the box contains one or two statements that",
+     "Trap the recording uses a synonym for every key"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/listening/multiple-choice",
+    "slug": "listening-multiple-choice",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Trap the right answer is expressed using completely different",
+     "Trap the speaker mentions all three options then corrects",
+     "When the speaker corrects themselves or adds actually or",
+     "Trap two options sound almost identical apart from one",
+     "question 2 is answered after question 1 never before",
+     "first half of a sentence followed by three possible"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/listening/part1",
+    "slug": "listening-part1",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Unlike Reading a misspelled answer in Listening is marked",
+     "when you hear actually make that Thursday the corrected",
+     "Follow the questions in order Answers come in sequence",
+     "Examples booking a hotel registering at a sports club",
+     "fourteen 14 sounds like forTEEN forty 40 sounds like",
+     "names are spelled out letter by letter write as"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/listening/part2",
+    "slug": "listening-part2",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Examples a guide describing a facility a radio presenter",
+     "since the speaker will mention several only one fits",
+     "No conversation to follow but also no second voice",
+     "within a word limit The instruction line tells you",
+     "For multiple choice read the options and note how",
+     "so the location language below is the whole game"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/listening/part3",
+    "slug": "listening-part3",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Study related vocabulary pays off here Assignments sources deadlines",
+     "Examples students discussing an assignment a student and a",
+     "Opinions shift during the conversation the answer is where",
+     "Keep moving a missed question costs one mark falling",
+     "not the words The recording almost never uses the",
+     "actually I mean no wait The corrected version is"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/listening/part4",
+    "slug": "listening-part4",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Examples a lecture on climate change urban development animal",
+     "straight from the lecture so never paraphrase them yourself",
+     "Write the exact word you hear respecting the word",
+     "Read the notes in the preview and decide the",
+     "each gap needs noun verb adjective Mark it N",
+     "Now I'd like to Moving on to Turning to"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Now I'd like to Moving on to Turning to"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/listening/sentence-completion",
+    "slug": "listening-sentence-completion",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Recording modern turbines are far quieter than those built",
+     "When you hear content that matches the sentence's meaning",
+     "Spelling and word limit are both marked strictly exactly",
+     "All volunteers do safety training before they travel and",
+     "Words come directly from the recording not a paraphrase",
+     "A countable singular noun with its describing words so"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/listening/short-answer",
+    "slug": "listening-short-answer",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Trap answering the wrong question because two questions ask",
+     "Answer using words taken directly from the recording not",
+     "Recording tutors help students make sense of the reading",
+     "In the pause before the recording read every question",
+     "of an answer than on understanding the recording You",
+     "Recording the complaint we hear most is long waiting"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/listening",
+    "slug": "listening",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Listen for corrections Actually Sorry I meant The corrected",
+     "Approximate IELTS states that the exact number of marks",
+     "A misspelled answer in Listening is marked wrong Double",
+     "Follow the questions in order Answers come in sequence",
+     "Recordings increase in difficulty from Part 1 to Part",
+     "For multiple choice read all options and identify how"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/reading/diagram",
+    "slug": "reading-diagram",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Read the passage and identify the section that describes",
+     "Diagram labels often print half the phrase already and",
+     "Read the words the diagram already prints around the",
+     "The picture may suggest an obvious everyday name for",
+     "Passage the outer casing is made of moulded plastic",
+     "of an answer than on understanding the passage You"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/reading/headings",
+    "slug": "reading-headings",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Distinguish between the main idea and supporting examples or",
+     "Watch for headings that look similar Compare them carefully",
+     "Eliminate headings that only match one sentence in the",
+     "Trap headings with similar wording Look at meaning not",
+     "Read through all the headings first and note synonyms",
+     "Trap choosing a heading that matches one detail not"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/reading/matching-features",
+    "slug": "reading-matching-features",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Locate the relevant passage section and decide which category",
+     "Read the categories carefully and understand what each one",
+     "Trap relying on general knowledge instead of the passage",
+     "Some books and older material call it classification or",
+     "The options are usually people theories places dates or",
+     "You must decide which option each statement belongs to"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/reading/matching-information",
+    "slug": "reading-matching-information",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "contains that information This is about locating specific details",
+     "Read all the statements first and identify keywords and",
+     "When you find the relevant section confirm it contains",
+     "Remember a paragraph can answer more than one question",
+     "For each statement scan the passage for keywords or",
+     "Trap expecting the answers in passage order This is"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/reading/matching-sentence-endings",
+    "slug": "reading-matching-sentence-endings",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Confirm the surviving ending against the passage's actual facts",
+     "Read every beginning first and check what grammatical form",
+     "Scan the passage for the section covering each beginning's",
+     "Eliminate any ending whose grammar simply cannot follow a",
+     "Worked example the beginning Fleming noticed that a mould",
+     "You are given a numbered list of sentence beginnings"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/reading/mc",
+    "slug": "reading-mc",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Trap similar sounding options with small but crucial differences",
+     "Identify differences between the options They may be subtly",
+     "Both require the same skill locate and understand meaning",
+     "From Academic Reading Test 7 Question 38 The instruction",
+     "Scan the passage for the relevant section answers come",
+     "Trap every option may appear somewhere in the passage"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/reading/paraphrase",
+    "slug": "reading-paraphrase",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Underline the words that carry the meaning verbs quantifiers",
+     "caught off guard unprepared a roaring trade a successful",
+     "Trap a distractor reuses passage words but reverses the",
+     "Trap hedged language may some believed turned into an",
+     "Check strength is the passage certain or hedged with",
+     "and get pulled toward the wrong sentence or toward"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/reading/sentence",
+    "slug": "reading-sentence",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Read each incomplete sentence and identify keywords before searching",
+     "Trap ignoring grammar The completed sentence must make grammatical",
+     "Passage the quieter students suffered from low self confidence",
+     "Passage maps help travellers make sense of unfamiliar streets",
+     "Read carefully around that section and identify the exact",
+     "Early engineers solved the problem by fitting each tower"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/reading/short-answer",
+    "slug": "reading-short-answer",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Passage the engineers discovered rising damp in the older",
+     "You are asked direct questions about specific facts and",
+     "Before entering visitors must clean their boots at the",
+     "Trap answering with a paraphrase instead of the exact",
+     "Answer the questions below Choose NO MORE THAN THREE",
+     "By meaning it is something visitors deal with before"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/reading/summary-completion",
+    "slug": "reading-summary-completion",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "arranges the missing information into rows and columns usually",
+     "Passage sales fell as brand loyalty weakened among younger",
+     "of an answer than on understanding the passage Everything",
+     "Trap writing a paraphrase instead of the passage's exact",
+     "Trap choosing a box option that repeats passage words",
+     "Passage researchers then look for patterns in the raw"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/reading/tfng",
+    "slug": "reading-tfng",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Passage nineteenth century doctors believed the illness travelled through",
+     "Passage the tickets became cheaper Statement the tickets became",
+     "Passage 300 people attended the opening lecture Statement the",
+     "Do the following statements agree with the information given",
+     "Passage the custom survives in rural Portugal Statement the",
+     "The decision test on three statements full worked example"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Do the following statements agree with the information given"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/reading/ynng",
+    "slug": "reading-ynng",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Writer criticises one country's housing policy Statement the writer",
+     "Writer teaching is often undervalued Statement the writer believes",
+     "The writer says most universities have started charging employers",
+     "Some universities have begun small experiments along these lines",
+     "Writer economists once believed trade would even out Statement",
+     "sentence specifically and nothing else When you have finished"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/reading-task1",
+    "slug": "reading-task1",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Approximate conversion published by IELTS Exact boundaries can shift",
+     "Texts come from books journals magazines newspapers and online",
+     "Passages generally increase in difficulty from Passage 1 to",
+     "Spelling and grammar count a misspelled answer is marked",
+     "Nobody reads all three passages properly in 60 minutes",
+     "There is a lesson for every official reading question"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/speaking/part1",
+    "slug": "speaking-part1",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Good vocabulary therapeutic experimenting rewarding specific detail sounds natural",
+     "Mix tenses Use conditionals comparatives and relative clauses where",
+     "examiners can spot memorised responses Prepare ideas and vocabulary",
+     "Everyday informal language is completely normal and acceptable in",
+     "Specific vocabulary chaotic convenient door to door gives reasons",
+     "Say enjoyable fascinating rewarding instead of good Say enormous"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/speaking/part2",
+    "slug": "speaking-part2",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Expand beyond the bullet points with your personal response",
+     "Don't just list facts Include feelings and opinions too",
+     "The examiner starts listening the moment you open your",
+     "What really struck me was I was particularly impressed",
+     "past simple past continuous and a second conditional I",
+     "stopping after a few seconds leaves the examiner very"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/speaking/part3",
+    "slug": "speaking-part3",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Take theatre for instance without state funding small companies",
+     "How do attitudes towards the environment differ between older",
+     "Question How might the rise of artificial intelligence affect",
+     "I firmly believe that governments have a responsibility to",
+     "For example For instance Take country person situation as",
+     "Identify key differences and explain why they exist Use"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Take theatre for instance without state funding small companies"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/speaking",
+    "slug": "speaking",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Being effortlessly understood individual sounds word stress sentence rhythm",
+     "Variety of structures such as conditionals relative clauses and",
+     "questions about familiar topics Home work studies hobbies Warm",
+     "Speaking at length without unnatural pauses self correction or",
+     "Range and precision of vocabulary idiomatic language and the",
+     "Correcting yourself once is normal Moving on matters more"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/ageing",
+    "slug": "vocabulary-ageing",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Older employees offer experience and reliability that younger staff",
+     "Keeping older people socially involved is cheaper than treating",
+     "Older workers bring experience that cannot be trained quickly",
+     "Reduced mobility isolates older people more than illness does",
+     "Describing an ageing population purely as a burden ignores",
+     "Workers now support more dependants than a generation ago"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Older employees offer experience and reliability that younger staff",
+     "Keeping older people socially involved is cheaper than treating",
+     "Older workers bring experience that cannot be trained quickly",
+     "Reduced mobility isolates older people more than illness does"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/ai",
+    "slug": "vocabulary-ai",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Algorithmic bias in hiring software can inadvertently discriminate against",
+     "Machine learning algorithms can identify fraudulent transactions in real",
+     "Governments are funding reskilling programmes to prepare workers for",
+     "Critics argue that in recruitment software can unfairly disadvantage",
+     "Governments are investing in programmes to help displaced workers",
+     "Streaming platforms use algorithms to recommend content based on"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Algorithmic bias in hiring software can inadvertently discriminate against",
+     "Machine learning algorithms can identify fraudulent transactions in real"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/animals",
+    "slug": "vocabulary-animals",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Protecting natural habitats is more effective than breeding animals",
+     "Rewilding projects have brought beavers back to British rivers",
+     "Testing on animals remains necessary for some medical research",
+     "Animal rights groups campaign against keeping whales in tanks",
+     "Without urgent action hundreds of species face this century",
+     "Invasive species often have no natural predators in their"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Protecting natural habitats is more effective than breeding animals"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/arts",
+    "slug": "vocabulary-arts",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Free museums offer cultural enrichment to everyone whatever their",
+     "money given to support museums theatres orchestras and artists",
+     "Government funding allows museums and galleries to remain open",
+     "The commercialisation of music festivals has driven up ticket",
+     "Historically great painters relied on the of wealthy families",
+     "Traditional crafts are disappearing as young people move to"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/books",
+    "slug": "vocabulary-books",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "connected with literature especially writing of high artistic quality",
+     "Digital formats have made reading more convenient without making",
+     "The publishing industry has been reshaped by online retailers",
+     "writing about imagined events and writing about real facts",
+     "Her second novel was critically acclaimed but sold poorly",
+     "The prize is awarded for literary rather than commercial"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Digital formats have made reading more convenient without making",
+     "The publishing industry has been reshaped by online retailers"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/business",
+    "slug": "vocabulary-business",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Governments can encourage enterprise by reducing the paperwork facing",
+     "Large corporations have a responsibility that extends beyond their",
+     "Their business model depends on selling subscriptions rather than",
+     "Entrepreneurship should be encouraged at school since not every",
+     "Excessive red tape discourages people from starting a business",
+     "Outsourcing cut costs but damaged the company's reputation at"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Governments can encourage enterprise by reducing the paperwork facing",
+     "Large corporations have a responsibility that extends beyond their",
+     "Their business model depends on selling subscriptions rather than"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/childhood",
+    "slug": "vocabulary-childhood",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Those early years the shape character more than anything",
+     "Children today have far more opportunities but far less",
+     "Managing their own teaches children to save before they",
+     "the first stage of formal education for young children",
+     "Pocket money teaches children to save before they earn",
+     "The formative years matter more than any later stage"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Those early years the shape character more than anything",
+     "Children today have far more opportunities but far less",
+     "Managing their own teaches children to save before they",
+     "Pocket money teaches children to save before they earn",
+     "The formative years matter more than any later stage"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/conjunctions",
+    "slug": "vocabulary-conjunctions",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Remote working boosts productivity moreover it improves employees' work",
+     "University fees have risen sharply consequently fewer students from",
+     "Although public transport has improved many commuters still prefer",
+     "Air pollution levels have fallen sharply respiratory illness rates",
+     "Fossil fuel reserves are finite therefore governments must invest",
+     "The scheme reduces congestion Furthermore it lowers emissions in"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Remote working boosts productivity moreover it improves employees' work"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/crime",
+    "slug": "vocabulary-crime",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Judges are increasingly favouring community service over short custodial",
+     "Rising juvenile delinquency has prompted calls for earlier intervention",
+     "Without addressing the underlying socioeconomic causes crime rates are",
+     "Prisons that prioritise rehabilitation tend to have lower reoffending",
+     "Others maintain that rehabilitation is more effective than punishment",
+     "A combination of prevention punishment and rehabilitation offers the"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Judges are increasingly favouring community service over short custodial",
+     "Rising juvenile delinquency has prompted calls for earlier intervention"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/education",
+    "slug": "vocabulary-education",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Vocational training programmes produce skilled workers who are immediately",
+     "There is growing evidence that standardised testing is counterproductive",
+     "uniform assessments used to measure student performance across schools",
+     "Standardised testing has been criticised for narrowing the curriculum",
+     "studying remotely usually online without attending classes in person",
+     "Distance learning allows adults to gain qualifications while working"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Vocational training programmes produce skilled workers who are immediately",
+     "There is growing evidence that standardised testing is counterproductive"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/environment",
+    "slug": "vocabulary-environment",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "We need more sustainable approaches to agriculture and consumption",
+     "Conservation efforts have helped to stabilise tiger populations in",
+     "Extreme weather is becoming more frequent as average temperatures",
+     "Governments are urging citizens to reduce their carbon footprint",
+     "Reducing greenhouse gas emissions is critical to limiting global",
+     "Local authorities have introduced new initiatives to the effects"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "We need more sustainable approaches to agriculture and consumption",
+     "Conservation efforts have helped to stabilise tiger populations in"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/family",
+    "slug": "vocabulary-family",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "In many Western societies filial responsibility has increasingly shifted",
+     "The between grandparents and grandchildren can make communication about",
+     "Single parent households often face greater financial pressure than",
+     "Working parents often struggle to find sufficient quality time",
+     "the care and supervision of children especially while parents",
+     "Studies show that household chores are still unevenly divided"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "In many Western societies filial responsibility has increasingly shifted",
+     "The between grandparents and grandchildren can make communication about",
+     "Single parent households often face greater financial pressure than"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/fashion",
+    "slug": "vocabulary-fashion",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "cheap clothing produced quickly to follow the latest trends",
+     "School makes differences in family income far less visible",
+     "School uniform hides the differences in what families can",
+     "shops have become fashionable among people who care about",
+     "a company that pays fairly and limits environmental harm",
+     "Campaigners accuse the brand of relying on labour abroad"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "School makes differences in family income far less visible",
+     "School uniform hides the differences in what families can",
+     "shops have become fashionable among people who care about",
+     "Campaigners accuse the brand of relying on labour abroad"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/food",
+    "slug": "vocabulary-food",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "the information about ingredients and nutrition printed on packaging",
+     "fruit vegetables and other food grown without artificial chemicals",
+     "Genetically modified crops can survive drought and resist disease",
+     "Clear labelling allows consumers to make informed choices about",
+     "Supermarkets could reduce by donating unsold items to charities",
+     "Traditional cooking is part of a country's cultural identity"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Genetically modified crops can survive drought and resist disease"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/government",
+    "slug": "vocabulary-government",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Without government intervention market forces alone rarely address inequality",
+     "Government subsidies have accelerated the adoption of renewable energy",
+     "Austerity measures while reducing debt can disproportionately harm the",
+     "government policies designed to reduce public spending usually during",
+     "Persistent inflation has eroded household savings across the country",
+     "Austerity measures introduced after the recession led to significant"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Without government intervention market forces alone rarely address inequality"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/health",
+    "slug": "vocabulary-health",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Advances in medicine have dramatically increased life expectancy worldwide",
+     "Underfunded healthcare systems struggle to cope with ageing populations",
+     "The ageing population will inevitably strain promote public healthcare",
+     "the organised system of hospitals clinics and professionals providing",
+     "A increasingly sedentary preventable lifestyle means fewer people are",
+     "Mental health has historically been underfunded relative to physical"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Advances in medicine have dramatically increased life expectancy worldwide",
+     "Underfunded healthcare systems struggle to cope with ageing populations",
+     "The ageing population will inevitably strain promote public healthcare"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/housing",
+    "slug": "vocabulary-housing",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "urban planning that combines residential commercial and recreational spaces",
+     "Gentrification often improves an area economically while displacing its",
+     "The property market has cooled significantly following interest rate",
+     "the uncontrolled expansion of a city into surrounding undeveloped",
+     "the construction of tall multi storey buildings typically to",
+     "Without access to green space urban residents' wellbeing can"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Gentrification often improves an area economically while displacing its",
+     "The property market has cooled significantly following interest rate"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/language",
+    "slug": "vocabulary-language",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Linguists are recording endangered languages before their last speakers",
+     "Non verbal communication varies considerably from culture to culture",
+     "Total immersion produces faster results than classroom study alone",
+     "Switzerland is a multilingual society with four national languages",
+     "The local dialect contains words that outsiders cannot understand",
+     "difficulty communicating because people do not share a language"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Linguists are recording endangered languages before their last speakers",
+     "Non verbal communication varies considerably from culture to culture",
+     "Total immersion produces faster results than classroom study alone",
+     "Switzerland is a multilingual society with four national languages",
+     "The local dialect contains words that outsiders cannot understand"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/leisure",
+    "slug": "vocabulary-leisure",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "the businesses that provide entertainment sport hotels and tourism",
+     "Streaming services have changed the way people watch television",
+     "entertainment that helps people forget the problems of everyday",
+     "Cinemas are struggling because so many people now subscribe",
+     "an online platform for watching films and series or",
+     "music performed in front of an audience rather than"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Streaming services have changed the way people watch television",
+     "Cinemas are struggling because so many people now subscribe"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/media",
+    "slug": "vocabulary-media",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Advertising aims to influence consumer behaviour often without people",
+     "Critics argue that advertising creates artificial needs rather than",
+     "Schools should teach media literacy alongside reading and writing",
+     "Governments that practise decide what their citizens are allowed",
+     "advertisements chosen for an individual based on their personal",
+     "newspapers television radio and websites that reach very large"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Advertising aims to influence consumer behaviour often without people"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/money",
+    "slug": "vocabulary-money",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Consumer spending usually falls when people fear losing their",
+     "Teaching financial literacy at school would help young adults",
+     "Shoppers are increasingly looking for value for money rather",
+     "Credit cards make living beyond your means dangerously easy",
+     "Young professionals living with their parents tend to have",
+     "A higher rewards savers but makes borrowing more expensive"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Consumer spending usually falls when people fear losing their"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/music-film",
+    "slug": "vocabulary-music-film",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "formal European music written for orchestras and similar ensembles",
+     "Korean television has become the country's best known cultural",
+     "Younger viewers are increasingly happy to watch films with",
+     "Streaming platforms now fund more drama than the studios",
+     "Music has a universal appeal that crosses every language",
+     "Streaming has given viewers enormous choice but has made"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Korean television has become the country's best known cultural",
+     "Younger viewers are increasingly happy to watch films with",
+     "Streaming platforms now fund more drama than the studios",
+     "Music has a universal appeal that crosses every language",
+     "Streaming has given viewers enormous choice but has made"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/people",
+    "slug": "vocabulary-people",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Children are surprisingly and recover from setbacks faster than",
+     "Despite her success she has stayed completely down to",
+     "I would describe myself as fairly easy going although",
+     "She is ambitious but never at other people's expense",
+     "able to wait or deal with problems without becoming",
+     "He is a considerate neighbour who never plays music"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Children are surprisingly and recover from setbacks faster than",
+     "Despite her success she has stayed completely down to",
+     "I would describe myself as fairly easy going although",
+     "She is ambitious but never at other people's expense",
+     "He is a considerate neighbour who never plays music"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/places",
+    "slug": "vocabulary-places",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "a well known building or feature that people recognise",
+     "Investment is badly needed in the most deprived areas",
+     "Chain stores have weakened the local identity of many",
+     "Smaller cities often offer a better quality of life",
+     "We live on the outskirts about twenty minutes from",
+     "The town is steeped in history with buildings from"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Investment is badly needed in the most deprived areas",
+     "Chain stores have weakened the local identity of many",
+     "Smaller cities often offer a better quality of life",
+     "We live on the outskirts about twenty minutes from",
+     "The town is steeped in history with buildings from"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/science",
+    "slug": "vocabulary-science",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "information gathered by observation or experiment rather than theory",
+     "Universities complain that now depends on promising quick commercial",
+     "Governments rather than private companies should fund research that",
+     "Commercial spaceflight has sharply reduced the cost of launching",
+     "Scientific literacy helps citizens to judge health claims for",
+     "Space exploration has produced technologies that we now use"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Universities complain that now depends on promising quick commercial",
+     "Governments rather than private companies should fund research that",
+     "Commercial spaceflight has sharply reduced the cost of launching"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/social-media",
+    "slug": "vocabulary-social-media",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Employers increasingly check a candidate's digital footprint before making",
+     "Platforms have a responsibility to address the psychological effects",
+     "Schools are introducing new policies to tackle cyberbullying among",
+     "Rather than banning social media outright education on responsible",
+     "material that spreads rapidly across the internet through sharing",
+     "a deliberate period of abstaining from digital devices especially"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Employers increasingly check a candidate's digital footprint before making"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/society",
+    "slug": "vocabulary-society",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "the process of increased interconnection between countries economically culturally",
+     "Globalisation has brought both economic opportunity and cultural homogenisation",
+     "Rapid urbanisation in developing nations is creating severe infrastructure",
+     "Workplace discrimination remains a persistent problem in many industries",
+     "Growing income inequality is destabilising societies around the world",
+     "High levels of immigration have significantly contributed to economic"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Globalisation has brought both economic opportunity and cultural homogenisation",
+     "Rapid urbanisation in developing nations is creating severe infrastructure",
+     "Workplace discrimination remains a persistent problem in many industries"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/sport",
+    "slug": "vocabulary-sport",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Several medal winners later tested positive for performance enhancing",
+     "dangerous activities such as skydiving free climbing or snowboarding",
+     "fair and respectful behaviour towards opponents whether you win",
+     "Hosting an international sporting event can transform a city's",
+     "banned substances that athletes take to improve their results",
+     "Athletes caught using are usually banned from competition for"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Several medal winners later tested positive for performance enhancing"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/success",
+    "slug": "vocabulary-success",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Finishing the degree while working was my biggest achievement",
+     "Every project meets setbacks what matters is the response",
+     "Motivation matters more than talent over a long project",
+     "Learning a language is largely a matter of perseverance",
+     "The scholarship gave me an opportunity I would never",
+     "Success should be measured by more than income alone"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Finishing the degree while working was my biggest achievement",
+     "Every project meets setbacks what matters is the response",
+     "Motivation matters more than talent over a long project",
+     "Learning a language is largely a matter of perseverance",
+     "The scholarship gave me an opportunity I would never",
+     "Success should be measured by more than income alone"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/technology",
+    "slug": "vocabulary-technology",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Artificial intelligence is transforming the healthcare and finance industries",
+     "computer systems that perform tasks requiring human level intelligence",
+     "Stricter regulation of social media is increasingly necessary because",
+     "Labour saving devices such as washing machines transformed domestic",
+     "Social media algorithms can reinforce biased or extreme viewpoints",
+     "Critics warn that technological dependence is weakening our memory"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Artificial intelligence is transforming the healthcare and finance industries",
+     "Stricter regulation of social media is increasingly necessary because",
+     "Labour saving devices such as washing machines transformed domestic"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/traditions",
+    "slug": "vocabulary-traditions",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "The superstition about the number thirteen is surprisingly widespread",
+     "Critics complain that the festival has become too commercialised",
+     "traditions skills and stories rather than buildings or objects",
+     "Independence Day is a national holiday celebrated across the",
+     "The recipe has been passed down through four generations",
+     "the gradual weakening of a culture usually under outside"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "The superstition about the number thirteen is surprisingly widespread",
+     "Critics complain that the festival has become too commercialised",
+     "Independence Day is a national holiday celebrated across the"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/transport",
+    "slug": "vocabulary-transport",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Stricter emissions standards have forced manufacturers to build cleaner",
+     "Measures such as a congestion charge discourage unnecessary journeys",
+     "Unless alternatives are affordable drivers are unlikely to leave",
+     "Traffic congestion costs the economy billions in lost working",
+     "Investing in reliable public transport is the most effective",
+     "Remote regions struggle to attract employers because of poor"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Stricter emissions standards have forced manufacturers to build cleaner",
+     "Measures such as a congestion charge discourage unnecessary journeys"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/travel",
+    "slug": "vocabulary-travel",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "the traditions monuments and practices inherited from previous generations",
+     "Investment in infrastructure is essential to accommodate rising visitor",
+     "initiatives allow travellers to explore natural areas while minimising",
+     "Rapid growth in tourism has outpaced infrastructure development in",
+     "Travellers are increasingly conscious of the environmental cost of",
+     "Increasing numbers of travellers are seeking destinations off the"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Investment in infrastructure is essential to accommodate rising visitor"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/volunteering",
+    "slug": "vocabulary-volunteering",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Requiring students to volunteer risks turning generosity into another",
+     "Services that depend entirely on volunteers are fragile and",
+     "Volunteering benefits the volunteer almost as much as the",
+     "the people and services that help someone in difficulty",
+     "Strong communities are built by people who know their",
+     "an organisation that raises money to help people in"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Requiring students to volunteer risks turning generosity into another",
+     "Services that depend entirely on volunteers are fragile and"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/weather",
+    "slug": "vocabulary-weather",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Winters here are rather than freezing which surprises visitors",
+     "The climate encourages an outdoor lifestyle all year round",
+     "A harsh winter puts enormous pressure on energy supplies",
+     "Summers are getting noticeably hotter than when I was",
+     "Earthquakes and floods are the the region fears most",
+     "Autumn is my favourite season mainly because of the"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Winters here are rather than freezing which surprises visitors",
+     "The climate encourages an outdoor lifestyle all year round",
+     "A harsh winter puts enormous pressure on energy supplies"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary/work",
+    "slug": "vocabulary-work",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Younger generations increasingly value flexibility over long term job",
+     "A shorter working week could improve productivity without sacrificing",
+     "Employees increasingly prioritise work life balance over salary when",
+     "Thousands of workers faced redundancy after the factory's automation",
+     "Companies with strong workplace diversity often report higher levels",
+     "The unemployment rate rose sharply following the economic downturn"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Younger generations increasingly value flexibility over long term job",
+     "A shorter working week could improve productivity without sacrificing"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/vocabulary",
+    "slug": "vocabulary",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "raise awareness tackle congestion not rare words used awkwardly",
+     "Essay prompts cue cards and Part 3 discussions circle",
+     "the question rewords the text and vocabulary is what",
+     "The 36 topics below cover the vast majority of",
+     "Reuse new words the same week in a practice"
+    ],
+    "en_checked": 5,
+    "ru": [],
+    "ru_checked": 5
+   },
+   {
+    "route": "/lessons/writing/advantages",
+    "slug": "writing-advantages",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "neutral form summarises both sides evenly opinion form restates",
+     "Devoting three sentences to advantages and one to disadvantages",
+     "paraphrase the topic Neutral form preview that you'll examine",
+     "This lesson is about adapting it to advantages disadvantages",
+     "On balance Weighing these factors Despite these benefits the",
+     "Sneaking a personal opinion into a neutral form essay"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/writing/charts",
+    "slug": "writing-charts",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "The largest and smallest categories anything roughly equal anything",
+     "Every chart report uses the same four paragraphs Introduction",
+     "sometimes two combined and must summarise the information in",
+     "Listing every data point instead of selecting key features",
+     "kinds combined Either way your overview must connect them",
+     "The overall direction the highest peak and lowest point"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/writing/discussion",
+    "slug": "writing-discussion",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "While some see university as job preparation others value",
+     "This lesson is about adapting it to discussion questions",
+     "Opponents counter that Critics point out Others take the",
+     "Without these signals the examiner cannot tell whether a",
+     "Three jobs all compulsory explain view A fairly explain",
+     "your own position developed especially if it blends the"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/writing/maps",
+    "slug": "writing-maps",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Two minutes of systematic comparison gives you everything the",
+     "Describing each map separately instead of the changes between",
+     "unchanged features are worth a sentence and mentioning them",
+     "Past past past present decides your tenses past simple",
+     "Present tense for things that happened between the two",
+     "for the overview more built up more tourist oriented"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/writing/method",
+    "slug": "writing-method",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Precise data language trend verbs graded adverbs proportion phrases",
+     "Correct tense for the period comparatives passives for processes",
+     "The four paragraph shape itself logical grouping and natural",
+     "Never copy the question sentence Never skip the overview",
+     "the four paragraphs Around 13 sentences total is plenty",
+     "A clear overview all key features covered data reported"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/writing/opinion",
+    "slug": "writing-opinion",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "paraphrase the statement sentence 1 your position sentence 2",
+     "No clear position Describing both sides and never choosing",
+     "second reason same TEE shape A partial agreement essay",
+     "This lesson is about adapting it to opinion questions",
+     "position Both work but a partial position needs more",
+     "restate the position in fresh words Better to keep"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/writing/problem",
+    "slug": "writing-problem",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "governments employers schools individuals Solutions without an actor sound",
+     "One effective measure would be Governments should A practical",
+     "This essay examines the main difficulties this creates and",
+     "This has already proved successful in Although costly this",
+     "the second half of your pattern solutions effects Matched",
+     "Answering causes when the question asked problems or vice"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "One effective measure would be Governments should A practical"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/writing/process",
+    "slug": "writing-process",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Before writing spend two minutes answering these questions They",
+     "Forgetting the overview because there are no trends Count",
+     "Count them This number goes straight into your overview",
+     "Find the natural halfway point That's the break between",
+     "a natural cycle the water cycle a butterfly's life",
+     "the cycle then repeats returns to the first stage"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "the cycle then repeats returns to the first stage"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/writing/task2-method",
+    "slug": "writing-task2-method",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "A mix of simple and complex sentences conditionals relative",
+     "Read the question twice Answering the wrong question caps",
+     "The four paragraph skeleton never changes What changes is",
+     "What type of question is this opinion discussion problem",
+     "Range and precision of vocabulary for the topic accurate",
+     "Never leave the position ambiguous Never introduce a new"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/writing/twopart",
+    "slug": "writing-twopart",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Although there are undeniable downsides provided that the benefits",
+     "Merging every question into one muddled paragraph whatever the",
+     "Either five paragraphs intro one body per question conclusion",
+     "Still four paragraphs split your answer into two distinct",
+     "One question per body paragraph keeps Coherence clean and",
+     "A three question prompt squeezed into two thin paragraphs"
+    ],
+    "en_checked": 6,
+    "ru": [
+     "Although there are undeniable downsides provided that the benefits"
+    ],
+    "ru_checked": 6
+   },
+   {
+    "route": "/lessons/writing",
+    "slug": "writing",
+    "gatedMarker": false,
+    "inviteInHtml": false,
+    "en": [
+     "Logical paragraphing clear progression and natural linking Not mechanical",
+     "responding to an opinion discussion problem solution or two",
+     "Task 2 topics are general interest No specialist knowledge",
+     "scores you on exactly these criteria using the official",
+     "Variety of sentence structures and how error free they",
+     "describing a chart graph table map process or diagram"
+    ],
+    "en_checked": 6,
+    "ru": [],
+    "ru_checked": 6
+   }
+  ]
+ },
+ "rows": [
+  {
+   "route": "/lessons/listening/form-completion",
+   "slug": "listening-form-completion",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "You'll need waterproof clothing whatever the forecast says and",
+    "Spelling must be correct including names which are usually",
+    "Recording bring two forms of identification plus your own",
+    "Numbers dates and reference codes must be copied exactly",
+    "A form completion answer that is correct in substance",
+    "In the pause before the recording read every heading"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "You'll need waterproof clothing whatever the forecast says and"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/map-labelling",
+   "slug": "listening-map-labelling",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Trap confusing left right with compass directions when the",
+    "first Every direction the speaker gives is relative to",
+    "though they can double back so keep listening rather",
+    "Trap losing track of your position after missing one",
+    "which usually matches the order you move around the",
+    "In the pause before the recording starts find north"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/matching",
+   "slug": "listening-matching",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Trap two statements describe similar sounding situations and only",
+    "unless the instructions say a letter may be used",
+    "the items are mentioned in the recording not the",
+    "When you hear an idea that matches a statement's",
+    "Trap the box contains one or two statements that",
+    "Trap the recording uses a synonym for every key"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/multiple-choice",
+   "slug": "listening-multiple-choice",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Trap the right answer is expressed using completely different",
+    "Trap the speaker mentions all three options then corrects",
+    "When the speaker corrects themselves or adds actually or",
+    "Trap two options sound almost identical apart from one",
+    "question 2 is answered after question 1 never before",
+    "first half of a sentence followed by three possible"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/part1",
+   "slug": "listening-part1",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Unlike Reading a misspelled answer in Listening is marked",
+    "when you hear actually make that Thursday the corrected",
+    "Follow the questions in order Answers come in sequence",
+    "Examples booking a hotel registering at a sports club",
+    "fourteen 14 sounds like forTEEN forty 40 sounds like",
+    "names are spelled out letter by letter write as"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/part2",
+   "slug": "listening-part2",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Examples a guide describing a facility a radio presenter",
+    "since the speaker will mention several only one fits",
+    "No conversation to follow but also no second voice",
+    "within a word limit The instruction line tells you",
+    "For multiple choice read the options and note how",
+    "so the location language below is the whole game"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/part3",
+   "slug": "listening-part3",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Study related vocabulary pays off here Assignments sources deadlines",
+    "Examples students discussing an assignment a student and a",
+    "Opinions shift during the conversation the answer is where",
+    "Keep moving a missed question costs one mark falling",
+    "not the words The recording almost never uses the",
+    "actually I mean no wait The corrected version is"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/part4",
+   "slug": "listening-part4",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Examples a lecture on climate change urban development animal",
+    "straight from the lecture so never paraphrase them yourself",
+    "Write the exact word you hear respecting the word",
+    "Read the notes in the preview and decide the",
+    "each gap needs noun verb adjective Mark it N",
+    "Now I'd like to Moving on to Turning to"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Now I'd like to Moving on to Turning to"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/section1",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/listening/section2",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/listening/section3",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/listening/section4",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/listening/sentence-completion",
+   "slug": "listening-sentence-completion",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Recording modern turbines are far quieter than those built",
+    "When you hear content that matches the sentence's meaning",
+    "Spelling and word limit are both marked strictly exactly",
+    "All volunteers do safety training before they travel and",
+    "Words come directly from the recording not a paraphrase",
+    "A countable singular noun with its describing words so"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/short-answer",
+   "slug": "listening-short-answer",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Trap answering the wrong question because two questions ask",
+    "Answer using words taken directly from the recording not",
+    "Recording tutors help students make sense of the reading",
+    "In the pause before the recording read every question",
+    "of an answer than on understanding the recording You",
+    "Recording the complaint we hear most is long waiting"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening",
+   "slug": "listening",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Listen for corrections Actually Sorry I meant The corrected",
+    "Approximate IELTS states that the exact number of marks",
+    "A misspelled answer in Listening is marked wrong Double",
+    "Follow the questions in order Answers come in sequence",
+    "Recordings increase in difficulty from Part 1 to Part",
+    "For multiple choice read all options and identify how"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/cat",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/reading/diagram",
+   "slug": "reading-diagram",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Read the passage and identify the section that describes",
+    "Diagram labels often print half the phrase already and",
+    "Read the words the diagram already prints around the",
+    "The picture may suggest an obvious everyday name for",
+    "Passage the outer casing is made of moulded plastic",
+    "of an answer than on understanding the passage You"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/headings",
+   "slug": "reading-headings",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Distinguish between the main idea and supporting examples or",
+    "Watch for headings that look similar Compare them carefully",
+    "Eliminate headings that only match one sentence in the",
+    "Trap headings with similar wording Look at meaning not",
+    "Read through all the headings first and note synonyms",
+    "Trap choosing a heading that matches one detail not"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/matching-features",
+   "slug": "reading-matching-features",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Locate the relevant passage section and decide which category",
+    "Read the categories carefully and understand what each one",
+    "Trap relying on general knowledge instead of the passage",
+    "Some books and older material call it classification or",
+    "The options are usually people theories places dates or",
+    "You must decide which option each statement belongs to"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/matching-information",
+   "slug": "reading-matching-information",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "contains that information This is about locating specific details",
+    "Read all the statements first and identify keywords and",
+    "When you find the relevant section confirm it contains",
+    "Remember a paragraph can answer more than one question",
+    "For each statement scan the passage for keywords or",
+    "Trap expecting the answers in passage order This is"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/matching-sentence-endings",
+   "slug": "reading-matching-sentence-endings",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Confirm the surviving ending against the passage's actual facts",
+    "Read every beginning first and check what grammatical form",
+    "Scan the passage for the section covering each beginning's",
+    "Eliminate any ending whose grammar simply cannot follow a",
+    "Worked example the beginning Fleming noticed that a mould",
+    "You are given a numbered list of sentence beginnings"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/mc",
+   "slug": "reading-mc",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Trap similar sounding options with small but crucial differences",
+    "Identify differences between the options They may be subtly",
+    "Both require the same skill locate and understand meaning",
+    "From Academic Reading Test 7 Question 38 The instruction",
+    "Scan the passage for the relevant section answers come",
+    "Trap every option may appear somewhere in the passage"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/para",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/reading/paraphrase",
+   "slug": "reading-paraphrase",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Underline the words that carry the meaning verbs quantifiers",
+    "caught off guard unprepared a roaring trade a successful",
+    "Trap a distractor reuses passage words but reverses the",
+    "Trap hedged language may some believed turned into an",
+    "Check strength is the passage certain or hedged with",
+    "and get pulled toward the wrong sentence or toward"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/sentence",
+   "slug": "reading-sentence",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Read each incomplete sentence and identify keywords before searching",
+    "Trap ignoring grammar The completed sentence must make grammatical",
+    "Passage the quieter students suffered from low self confidence",
+    "Passage maps help travellers make sense of unfamiliar streets",
+    "Read carefully around that section and identify the exact",
+    "Early engineers solved the problem by fitting each tower"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/short-answer",
+   "slug": "reading-short-answer",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Passage the engineers discovered rising damp in the older",
+    "You are asked direct questions about specific facts and",
+    "Before entering visitors must clean their boots at the",
+    "Trap answering with a paraphrase instead of the exact",
+    "Answer the questions below Choose NO MORE THAN THREE",
+    "By meaning it is something visitors deal with before"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/summary-completion",
+   "slug": "reading-summary-completion",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "arranges the missing information into rows and columns usually",
+    "Passage sales fell as brand loyalty weakened among younger",
+    "of an answer than on understanding the passage Everything",
+    "Trap writing a paraphrase instead of the passage's exact",
+    "Trap choosing a box option that repeats passage words",
+    "Passage researchers then look for patterns in the raw"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/tfng",
+   "slug": "reading-tfng",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Passage nineteenth century doctors believed the illness travelled through",
+    "Passage the tickets became cheaper Statement the tickets became",
+    "Passage 300 people attended the opening lecture Statement the",
+    "Do the following statements agree with the information given",
+    "Passage the custom survives in rural Portugal Statement the",
+    "The decision test on three statements full worked example"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Do the following statements agree with the information given"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/ynng",
+   "slug": "reading-ynng",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Writer criticises one country's housing policy Statement the writer",
+    "Writer teaching is often undervalued Statement the writer believes",
+    "The writer says most universities have started charging employers",
+    "Some universities have begun small experiments along these lines",
+    "Writer economists once believed trade would even out Statement",
+    "sentence specifically and nothing else When you have finished"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading-task1",
+   "slug": "reading-task1",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Approximate conversion published by IELTS Exact boundaries can shift",
+    "Texts come from books journals magazines newspapers and online",
+    "Passages generally increase in difficulty from Passage 1 to",
+    "Spelling and grammar count a misspelled answer is marked",
+    "Nobody reads all three passages properly in 60 minutes",
+    "There is a lesson for every official reading question"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading-test",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/speaking/part1",
+   "slug": "speaking-part1",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Good vocabulary therapeutic experimenting rewarding specific detail sounds natural",
+    "Mix tenses Use conditionals comparatives and relative clauses where",
+    "examiners can spot memorised responses Prepare ideas and vocabulary",
+    "Everyday informal language is completely normal and acceptable in",
+    "Specific vocabulary chaotic convenient door to door gives reasons",
+    "Say enjoyable fascinating rewarding instead of good Say enormous"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/speaking/part2",
+   "slug": "speaking-part2",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Expand beyond the bullet points with your personal response",
+    "Don't just list facts Include feelings and opinions too",
+    "The examiner starts listening the moment you open your",
+    "What really struck me was I was particularly impressed",
+    "past simple past continuous and a second conditional I",
+    "stopping after a few seconds leaves the examiner very"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/speaking/part3",
+   "slug": "speaking-part3",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Take theatre for instance without state funding small companies",
+    "How do attitudes towards the environment differ between older",
+    "Question How might the rise of artificial intelligence affect",
+    "I firmly believe that governments have a responsibility to",
+    "For example For instance Take country person situation as",
+    "Identify key differences and explain why they exist Use"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Take theatre for instance without state funding small companies"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/speaking-part1",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/speaking-part2",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/speaking-part3",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/speaking",
+   "slug": "speaking",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Being effortlessly understood individual sounds word stress sentence rhythm",
+    "Variety of structures such as conditionals relative clauses and",
+    "questions about familiar topics Home work studies hobbies Warm",
+    "Speaking at length without unnatural pauses self correction or",
+    "Range and precision of vocabulary idiomatic language and the",
+    "Correcting yourself once is normal Moving on matters more"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/ageing",
+   "slug": "vocabulary-ageing",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Older employees offer experience and reliability that younger staff",
+    "Keeping older people socially involved is cheaper than treating",
+    "Older workers bring experience that cannot be trained quickly",
+    "Reduced mobility isolates older people more than illness does",
+    "Describing an ageing population purely as a burden ignores",
+    "Workers now support more dependants than a generation ago"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Older employees offer experience and reliability that younger staff",
+    "Keeping older people socially involved is cheaper than treating",
+    "Older workers bring experience that cannot be trained quickly",
+    "Reduced mobility isolates older people more than illness does"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/ai",
+   "slug": "vocabulary-ai",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Algorithmic bias in hiring software can inadvertently discriminate against",
+    "Machine learning algorithms can identify fraudulent transactions in real",
+    "Governments are funding reskilling programmes to prepare workers for",
+    "Critics argue that in recruitment software can unfairly disadvantage",
+    "Governments are investing in programmes to help displaced workers",
+    "Streaming platforms use algorithms to recommend content based on"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Algorithmic bias in hiring software can inadvertently discriminate against",
+    "Machine learning algorithms can identify fraudulent transactions in real"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/animals",
+   "slug": "vocabulary-animals",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Protecting natural habitats is more effective than breeding animals",
+    "Rewilding projects have brought beavers back to British rivers",
+    "Testing on animals remains necessary for some medical research",
+    "Animal rights groups campaign against keeping whales in tanks",
+    "Without urgent action hundreds of species face this century",
+    "Invasive species often have no natural predators in their"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Protecting natural habitats is more effective than breeding animals"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/arts",
+   "slug": "vocabulary-arts",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Free museums offer cultural enrichment to everyone whatever their",
+    "money given to support museums theatres orchestras and artists",
+    "Government funding allows museums and galleries to remain open",
+    "The commercialisation of music festivals has driven up ticket",
+    "Historically great painters relied on the of wealthy families",
+    "Traditional crafts are disappearing as young people move to"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/books",
+   "slug": "vocabulary-books",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "connected with literature especially writing of high artistic quality",
+    "Digital formats have made reading more convenient without making",
+    "The publishing industry has been reshaped by online retailers",
+    "writing about imagined events and writing about real facts",
+    "Her second novel was critically acclaimed but sold poorly",
+    "The prize is awarded for literary rather than commercial"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Digital formats have made reading more convenient without making",
+    "The publishing industry has been reshaped by online retailers"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/business",
+   "slug": "vocabulary-business",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Governments can encourage enterprise by reducing the paperwork facing",
+    "Large corporations have a responsibility that extends beyond their",
+    "Their business model depends on selling subscriptions rather than",
+    "Entrepreneurship should be encouraged at school since not every",
+    "Excessive red tape discourages people from starting a business",
+    "Outsourcing cut costs but damaged the company's reputation at"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Governments can encourage enterprise by reducing the paperwork facing",
+    "Large corporations have a responsibility that extends beyond their",
+    "Their business model depends on selling subscriptions rather than"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/childhood",
+   "slug": "vocabulary-childhood",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Those early years the shape character more than anything",
+    "Children today have far more opportunities but far less",
+    "Managing their own teaches children to save before they",
+    "the first stage of formal education for young children",
+    "Pocket money teaches children to save before they earn",
+    "The formative years matter more than any later stage"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Those early years the shape character more than anything",
+    "Children today have far more opportunities but far less",
+    "Managing their own teaches children to save before they",
+    "Pocket money teaches children to save before they earn",
+    "The formative years matter more than any later stage"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/conjunctions",
+   "slug": "vocabulary-conjunctions",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Remote working boosts productivity moreover it improves employees' work",
+    "University fees have risen sharply consequently fewer students from",
+    "Although public transport has improved many commuters still prefer",
+    "Air pollution levels have fallen sharply respiratory illness rates",
+    "Fossil fuel reserves are finite therefore governments must invest",
+    "The scheme reduces congestion Furthermore it lowers emissions in"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Remote working boosts productivity moreover it improves employees' work"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/crime",
+   "slug": "vocabulary-crime",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Judges are increasingly favouring community service over short custodial",
+    "Rising juvenile delinquency has prompted calls for earlier intervention",
+    "Without addressing the underlying socioeconomic causes crime rates are",
+    "Prisons that prioritise rehabilitation tend to have lower reoffending",
+    "Others maintain that rehabilitation is more effective than punishment",
+    "A combination of prevention punishment and rehabilitation offers the"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Judges are increasingly favouring community service over short custodial",
+    "Rising juvenile delinquency has prompted calls for earlier intervention"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/education",
+   "slug": "vocabulary-education",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Vocational training programmes produce skilled workers who are immediately",
+    "There is growing evidence that standardised testing is counterproductive",
+    "uniform assessments used to measure student performance across schools",
+    "Standardised testing has been criticised for narrowing the curriculum",
+    "studying remotely usually online without attending classes in person",
+    "Distance learning allows adults to gain qualifications while working"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Vocational training programmes produce skilled workers who are immediately",
+    "There is growing evidence that standardised testing is counterproductive"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/environment",
+   "slug": "vocabulary-environment",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "We need more sustainable approaches to agriculture and consumption",
+    "Conservation efforts have helped to stabilise tiger populations in",
+    "Extreme weather is becoming more frequent as average temperatures",
+    "Governments are urging citizens to reduce their carbon footprint",
+    "Reducing greenhouse gas emissions is critical to limiting global",
+    "Local authorities have introduced new initiatives to the effects"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "We need more sustainable approaches to agriculture and consumption",
+    "Conservation efforts have helped to stabilise tiger populations in"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/family",
+   "slug": "vocabulary-family",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "In many Western societies filial responsibility has increasingly shifted",
+    "The between grandparents and grandchildren can make communication about",
+    "Single parent households often face greater financial pressure than",
+    "Working parents often struggle to find sufficient quality time",
+    "the care and supervision of children especially while parents",
+    "Studies show that household chores are still unevenly divided"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "In many Western societies filial responsibility has increasingly shifted",
+    "The between grandparents and grandchildren can make communication about",
+    "Single parent households often face greater financial pressure than"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/fashion",
+   "slug": "vocabulary-fashion",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "cheap clothing produced quickly to follow the latest trends",
+    "School makes differences in family income far less visible",
+    "School uniform hides the differences in what families can",
+    "shops have become fashionable among people who care about",
+    "a company that pays fairly and limits environmental harm",
+    "Campaigners accuse the brand of relying on labour abroad"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "School makes differences in family income far less visible",
+    "School uniform hides the differences in what families can",
+    "shops have become fashionable among people who care about",
+    "Campaigners accuse the brand of relying on labour abroad"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/food",
+   "slug": "vocabulary-food",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "the information about ingredients and nutrition printed on packaging",
+    "fruit vegetables and other food grown without artificial chemicals",
+    "Genetically modified crops can survive drought and resist disease",
+    "Clear labelling allows consumers to make informed choices about",
+    "Supermarkets could reduce by donating unsold items to charities",
+    "Traditional cooking is part of a country's cultural identity"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Genetically modified crops can survive drought and resist disease"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/government",
+   "slug": "vocabulary-government",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Without government intervention market forces alone rarely address inequality",
+    "Government subsidies have accelerated the adoption of renewable energy",
+    "Austerity measures while reducing debt can disproportionately harm the",
+    "government policies designed to reduce public spending usually during",
+    "Persistent inflation has eroded household savings across the country",
+    "Austerity measures introduced after the recession led to significant"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Without government intervention market forces alone rarely address inequality"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/health",
+   "slug": "vocabulary-health",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Advances in medicine have dramatically increased life expectancy worldwide",
+    "Underfunded healthcare systems struggle to cope with ageing populations",
+    "The ageing population will inevitably strain promote public healthcare",
+    "the organised system of hospitals clinics and professionals providing",
+    "A increasingly sedentary preventable lifestyle means fewer people are",
+    "Mental health has historically been underfunded relative to physical"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Advances in medicine have dramatically increased life expectancy worldwide",
+    "Underfunded healthcare systems struggle to cope with ageing populations",
+    "The ageing population will inevitably strain promote public healthcare"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/housing",
+   "slug": "vocabulary-housing",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "urban planning that combines residential commercial and recreational spaces",
+    "Gentrification often improves an area economically while displacing its",
+    "The property market has cooled significantly following interest rate",
+    "the uncontrolled expansion of a city into surrounding undeveloped",
+    "the construction of tall multi storey buildings typically to",
+    "Without access to green space urban residents' wellbeing can"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Gentrification often improves an area economically while displacing its",
+    "The property market has cooled significantly following interest rate"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/language",
+   "slug": "vocabulary-language",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Linguists are recording endangered languages before their last speakers",
+    "Non verbal communication varies considerably from culture to culture",
+    "Total immersion produces faster results than classroom study alone",
+    "Switzerland is a multilingual society with four national languages",
+    "The local dialect contains words that outsiders cannot understand",
+    "difficulty communicating because people do not share a language"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Linguists are recording endangered languages before their last speakers",
+    "Non verbal communication varies considerably from culture to culture",
+    "Total immersion produces faster results than classroom study alone",
+    "Switzerland is a multilingual society with four national languages",
+    "The local dialect contains words that outsiders cannot understand"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/leisure",
+   "slug": "vocabulary-leisure",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "the businesses that provide entertainment sport hotels and tourism",
+    "Streaming services have changed the way people watch television",
+    "entertainment that helps people forget the problems of everyday",
+    "Cinemas are struggling because so many people now subscribe",
+    "an online platform for watching films and series or",
+    "music performed in front of an audience rather than"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Streaming services have changed the way people watch television",
+    "Cinemas are struggling because so many people now subscribe"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/media",
+   "slug": "vocabulary-media",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Advertising aims to influence consumer behaviour often without people",
+    "Critics argue that advertising creates artificial needs rather than",
+    "Schools should teach media literacy alongside reading and writing",
+    "Governments that practise decide what their citizens are allowed",
+    "advertisements chosen for an individual based on their personal",
+    "newspapers television radio and websites that reach very large"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Advertising aims to influence consumer behaviour often without people"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/money",
+   "slug": "vocabulary-money",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Consumer spending usually falls when people fear losing their",
+    "Teaching financial literacy at school would help young adults",
+    "Shoppers are increasingly looking for value for money rather",
+    "Credit cards make living beyond your means dangerously easy",
+    "Young professionals living with their parents tend to have",
+    "A higher rewards savers but makes borrowing more expensive"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Consumer spending usually falls when people fear losing their"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/music-film",
+   "slug": "vocabulary-music-film",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "formal European music written for orchestras and similar ensembles",
+    "Korean television has become the country's best known cultural",
+    "Younger viewers are increasingly happy to watch films with",
+    "Streaming platforms now fund more drama than the studios",
+    "Music has a universal appeal that crosses every language",
+    "Streaming has given viewers enormous choice but has made"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Korean television has become the country's best known cultural",
+    "Younger viewers are increasingly happy to watch films with",
+    "Streaming platforms now fund more drama than the studios",
+    "Music has a universal appeal that crosses every language",
+    "Streaming has given viewers enormous choice but has made"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/people",
+   "slug": "vocabulary-people",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Children are surprisingly and recover from setbacks faster than",
+    "Despite her success she has stayed completely down to",
+    "I would describe myself as fairly easy going although",
+    "She is ambitious but never at other people's expense",
+    "able to wait or deal with problems without becoming",
+    "He is a considerate neighbour who never plays music"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Children are surprisingly and recover from setbacks faster than",
+    "Despite her success she has stayed completely down to",
+    "I would describe myself as fairly easy going although",
+    "She is ambitious but never at other people's expense",
+    "He is a considerate neighbour who never plays music"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/places",
+   "slug": "vocabulary-places",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "a well known building or feature that people recognise",
+    "Investment is badly needed in the most deprived areas",
+    "Chain stores have weakened the local identity of many",
+    "Smaller cities often offer a better quality of life",
+    "We live on the outskirts about twenty minutes from",
+    "The town is steeped in history with buildings from"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Investment is badly needed in the most deprived areas",
+    "Chain stores have weakened the local identity of many",
+    "Smaller cities often offer a better quality of life",
+    "We live on the outskirts about twenty minutes from",
+    "The town is steeped in history with buildings from"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/science",
+   "slug": "vocabulary-science",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "information gathered by observation or experiment rather than theory",
+    "Universities complain that now depends on promising quick commercial",
+    "Governments rather than private companies should fund research that",
+    "Commercial spaceflight has sharply reduced the cost of launching",
+    "Scientific literacy helps citizens to judge health claims for",
+    "Space exploration has produced technologies that we now use"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Universities complain that now depends on promising quick commercial",
+    "Governments rather than private companies should fund research that",
+    "Commercial spaceflight has sharply reduced the cost of launching"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/social-media",
+   "slug": "vocabulary-social-media",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Employers increasingly check a candidate's digital footprint before making",
+    "Platforms have a responsibility to address the psychological effects",
+    "Schools are introducing new policies to tackle cyberbullying among",
+    "Rather than banning social media outright education on responsible",
+    "material that spreads rapidly across the internet through sharing",
+    "a deliberate period of abstaining from digital devices especially"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Employers increasingly check a candidate's digital footprint before making"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/society",
+   "slug": "vocabulary-society",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "the process of increased interconnection between countries economically culturally",
+    "Globalisation has brought both economic opportunity and cultural homogenisation",
+    "Rapid urbanisation in developing nations is creating severe infrastructure",
+    "Workplace discrimination remains a persistent problem in many industries",
+    "Growing income inequality is destabilising societies around the world",
+    "High levels of immigration have significantly contributed to economic"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Globalisation has brought both economic opportunity and cultural homogenisation",
+    "Rapid urbanisation in developing nations is creating severe infrastructure",
+    "Workplace discrimination remains a persistent problem in many industries"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/sport",
+   "slug": "vocabulary-sport",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Several medal winners later tested positive for performance enhancing",
+    "dangerous activities such as skydiving free climbing or snowboarding",
+    "fair and respectful behaviour towards opponents whether you win",
+    "Hosting an international sporting event can transform a city's",
+    "banned substances that athletes take to improve their results",
+    "Athletes caught using are usually banned from competition for"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Several medal winners later tested positive for performance enhancing"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/success",
+   "slug": "vocabulary-success",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Finishing the degree while working was my biggest achievement",
+    "Every project meets setbacks what matters is the response",
+    "Motivation matters more than talent over a long project",
+    "Learning a language is largely a matter of perseverance",
+    "The scholarship gave me an opportunity I would never",
+    "Success should be measured by more than income alone"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Finishing the degree while working was my biggest achievement",
+    "Every project meets setbacks what matters is the response",
+    "Motivation matters more than talent over a long project",
+    "Learning a language is largely a matter of perseverance",
+    "The scholarship gave me an opportunity I would never",
+    "Success should be measured by more than income alone"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/technology",
+   "slug": "vocabulary-technology",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Artificial intelligence is transforming the healthcare and finance industries",
+    "computer systems that perform tasks requiring human level intelligence",
+    "Stricter regulation of social media is increasingly necessary because",
+    "Labour saving devices such as washing machines transformed domestic",
+    "Social media algorithms can reinforce biased or extreme viewpoints",
+    "Critics warn that technological dependence is weakening our memory"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Artificial intelligence is transforming the healthcare and finance industries",
+    "Stricter regulation of social media is increasingly necessary because",
+    "Labour saving devices such as washing machines transformed domestic"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/traditions",
+   "slug": "vocabulary-traditions",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "The superstition about the number thirteen is surprisingly widespread",
+    "Critics complain that the festival has become too commercialised",
+    "traditions skills and stories rather than buildings or objects",
+    "Independence Day is a national holiday celebrated across the",
+    "The recipe has been passed down through four generations",
+    "the gradual weakening of a culture usually under outside"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "The superstition about the number thirteen is surprisingly widespread",
+    "Critics complain that the festival has become too commercialised",
+    "Independence Day is a national holiday celebrated across the"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/transport",
+   "slug": "vocabulary-transport",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Stricter emissions standards have forced manufacturers to build cleaner",
+    "Measures such as a congestion charge discourage unnecessary journeys",
+    "Unless alternatives are affordable drivers are unlikely to leave",
+    "Traffic congestion costs the economy billions in lost working",
+    "Investing in reliable public transport is the most effective",
+    "Remote regions struggle to attract employers because of poor"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Stricter emissions standards have forced manufacturers to build cleaner",
+    "Measures such as a congestion charge discourage unnecessary journeys"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/travel",
+   "slug": "vocabulary-travel",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "the traditions monuments and practices inherited from previous generations",
+    "Investment in infrastructure is essential to accommodate rising visitor",
+    "initiatives allow travellers to explore natural areas while minimising",
+    "Rapid growth in tourism has outpaced infrastructure development in",
+    "Travellers are increasingly conscious of the environmental cost of",
+    "Increasing numbers of travellers are seeking destinations off the"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Investment in infrastructure is essential to accommodate rising visitor"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/volunteering",
+   "slug": "vocabulary-volunteering",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Requiring students to volunteer risks turning generosity into another",
+    "Services that depend entirely on volunteers are fragile and",
+    "Volunteering benefits the volunteer almost as much as the",
+    "the people and services that help someone in difficulty",
+    "Strong communities are built by people who know their",
+    "an organisation that raises money to help people in"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Requiring students to volunteer risks turning generosity into another",
+    "Services that depend entirely on volunteers are fragile and"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/weather",
+   "slug": "vocabulary-weather",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Winters here are rather than freezing which surprises visitors",
+    "The climate encourages an outdoor lifestyle all year round",
+    "A harsh winter puts enormous pressure on energy supplies",
+    "Summers are getting noticeably hotter than when I was",
+    "Earthquakes and floods are the the region fears most",
+    "Autumn is my favourite season mainly because of the"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Winters here are rather than freezing which surprises visitors",
+    "The climate encourages an outdoor lifestyle all year round",
+    "A harsh winter puts enormous pressure on energy supplies"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/work",
+   "slug": "vocabulary-work",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Younger generations increasingly value flexibility over long term job",
+    "A shorter working week could improve productivity without sacrificing",
+    "Employees increasingly prioritise work life balance over salary when",
+    "Thousands of workers faced redundancy after the factory's automation",
+    "Companies with strong workplace diversity often report higher levels",
+    "The unemployment rate rose sharply following the economic downturn"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Younger generations increasingly value flexibility over long term job",
+    "A shorter working week could improve productivity without sacrificing"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary",
+   "slug": "vocabulary",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "raise awareness tackle congestion not rare words used awkwardly",
+    "Essay prompts cue cards and Part 3 discussions circle",
+    "the question rewords the text and vocabulary is what",
+    "The 36 topics below cover the vast majority of",
+    "Reuse new words the same week in a practice"
+   ],
+   "en_checked": 5,
+   "ru": [],
+   "ru_checked": 5
+  },
+  {
+   "route": "/lessons/writing/advantages",
+   "slug": "writing-advantages",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "neutral form summarises both sides evenly opinion form restates",
+    "Devoting three sentences to advantages and one to disadvantages",
+    "paraphrase the topic Neutral form preview that you'll examine",
+    "This lesson is about adapting it to advantages disadvantages",
+    "On balance Weighing these factors Despite these benefits the",
+    "Sneaking a personal opinion into a neutral form essay"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/charts",
+   "slug": "writing-charts",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "The largest and smallest categories anything roughly equal anything",
+    "Every chart report uses the same four paragraphs Introduction",
+    "sometimes two combined and must summarise the information in",
+    "Listing every data point instead of selecting key features",
+    "kinds combined Either way your overview must connect them",
+    "The overall direction the highest peak and lowest point"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/discussion",
+   "slug": "writing-discussion",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "While some see university as job preparation others value",
+    "This lesson is about adapting it to discussion questions",
+    "Opponents counter that Critics point out Others take the",
+    "Without these signals the examiner cannot tell whether a",
+    "Three jobs all compulsory explain view A fairly explain",
+    "your own position developed especially if it blends the"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/maps",
+   "slug": "writing-maps",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Two minutes of systematic comparison gives you everything the",
+    "Describing each map separately instead of the changes between",
+    "unchanged features are worth a sentence and mentioning them",
+    "Past past past present decides your tenses past simple",
+    "Present tense for things that happened between the two",
+    "for the overview more built up more tourist oriented"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/method",
+   "slug": "writing-method",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Precise data language trend verbs graded adverbs proportion phrases",
+    "Correct tense for the period comparatives passives for processes",
+    "The four paragraph shape itself logical grouping and natural",
+    "Never copy the question sentence Never skip the overview",
+    "the four paragraphs Around 13 sentences total is plenty",
+    "A clear overview all key features covered data reported"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/opinion",
+   "slug": "writing-opinion",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "paraphrase the statement sentence 1 your position sentence 2",
+    "No clear position Describing both sides and never choosing",
+    "second reason same TEE shape A partial agreement essay",
+    "This lesson is about adapting it to opinion questions",
+    "position Both work but a partial position needs more",
+    "restate the position in fresh words Better to keep"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/problem",
+   "slug": "writing-problem",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "governments employers schools individuals Solutions without an actor sound",
+    "One effective measure would be Governments should A practical",
+    "This essay examines the main difficulties this creates and",
+    "This has already proved successful in Although costly this",
+    "the second half of your pattern solutions effects Matched",
+    "Answering causes when the question asked problems or vice"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "One effective measure would be Governments should A practical"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/process",
+   "slug": "writing-process",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Before writing spend two minutes answering these questions They",
+    "Forgetting the overview because there are no trends Count",
+    "Count them This number goes straight into your overview",
+    "Find the natural halfway point That's the break between",
+    "a natural cycle the water cycle a butterfly's life",
+    "the cycle then repeats returns to the first stage"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "the cycle then repeats returns to the first stage"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/task2-method",
+   "slug": "writing-task2-method",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "A mix of simple and complex sentences conditionals relative",
+    "Read the question twice Answering the wrong question caps",
+    "The four paragraph skeleton never changes What changes is",
+    "What type of question is this opinion discussion problem",
+    "Range and precision of vocabulary for the topic accurate",
+    "Never leave the position ambiguous Never introduce a new"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/twopart",
+   "slug": "writing-twopart",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Although there are undeniable downsides provided that the benefits",
+    "Merging every question into one muddled paragraph whatever the",
+    "Either five paragraphs intro one body per question conclusion",
+    "Still four paragraphs split your answer into two distinct",
+    "One question per body paragraph keeps Coherence clean and",
+    "A three question prompt squeezed into two thin paragraphs"
+   ],
+   "en_checked": 6,
+   "ru": [
+    "Although there are undeniable downsides provided that the benefits"
+   ],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing-task1",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/writing-task2",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/writing",
+   "slug": "writing",
+   "gatedMarker": false,
+   "inviteInHtml": false,
+   "en": [
+    "Logical paragraphing clear progression and natural linking Not mechanical",
+    "responding to an opinion discussion problem solution or two",
+    "Task 2 topics are general interest No specialist knowledge",
+    "scores you on exactly these criteria using the official",
+    "Variety of sentence structures and how error free they",
+    "describing a chart graph table map process or diagram"
+   ],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  }
+ ]
+}

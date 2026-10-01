@@ -1,0 +1,66 @@
+{
+ "passed": 12,
+ "total": 12,
+ "results": [
+  {
+   "name": "1. free account, /trainers/reading: the locked page, no drill catalogue",
+   "ok": true,
+   "detail": "locked=True visible drill links=0"
+  },
+  {
+   "name": "1. free account, /trainers/listening: the locked page, no drill catalogue",
+   "ok": true,
+   "detail": "locked=True visible drill links=0"
+  },
+  {
+   "name": "3. first device: the nudge appears after the account's first finished lesson",
+   "ok": true,
+   "detail": "first-lesson"
+  },
+  {
+   "name": "3. first device: the finished lesson was saved to the account",
+   "ok": true,
+   "detail": "201"
+  },
+  {
+   "name": "3. second device, another lesson: no nudge (once per account)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "2. RU 320 /tests (signed-out): no sideways scroll",
+   "ok": true,
+   "detail": "{'doc': 320, 'view': 320}"
+  },
+  {
+   "name": "2. RU 320: the pop-up's sign-up button, 5 times, no browser error",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "2. RU 320 /tests (free): no sideways scroll",
+   "ok": true,
+   "detail": "{'doc': 320, 'view': 320}"
+  },
+  {
+   "name": "4. admin: after Renew the Access block says when access runs until",
+   "ok": true,
+   "detail": "'30 Nov 2026\\n1 more period queued after this one' | message: 'Renewed: another 30 days, from 31 Oct 2026 until 30 Nov 2026.'"
+  },
+  {
+   "name": "5. signed-out Today (en 1440): sign-up invitation plus lesson titles",
+   "ok": true,
+   "detail": "lesson links=76"
+  },
+  {
+   "name": "5. signed-out Today (ru 390): sign-up invitation plus lesson titles",
+   "ok": true,
+   "detail": "lesson links=76"
+  },
+  {
+   "name": "no uncaught page errors in these checks",
+   "ok": true,
+   "detail": "[]"
+  }
+ ]
+}

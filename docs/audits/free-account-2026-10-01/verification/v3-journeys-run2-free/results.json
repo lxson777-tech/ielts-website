@@ -1,0 +1,1432 @@
+{
+ "checks": [
+  {
+   "section": "c-free-en-1440",
+   "check": "sign-up leads to the required profile",
+   "ok": true,
+   "detail": "http://localhost:4441/ielts-website/profile?next=%2Fdashboard%3Fjourney%3D1%26band%3D7.5%26skill%3Dwriting%26focus%3Dmethod%26time%3D30"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "Today uses the questionnaire answers (Writing first)",
+   "ok": true,
+   "detail": "writing writing"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "Today: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "Today's practice-and-guidance card opens the pop-up",
+   "ok": true,
+   "detail": "feature=plan-practice expected=plan-practice url=http://localhost:4441/ielts-website/dashboard?journey=1&band=7.5&skill=writing&focus=method&time=30"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "Mr EZ launcher opens the pop-up",
+   "ok": true,
+   "detail": "feature=tutor expected=tutor url=http://localhost:4441/ielts-website/dashboard?journey=1&band=7.5&skill=writing&focus=method&time=30"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "Mr EZ panel stays closed for a free account",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "a lesson's text arrives through the door",
+   "ok": true,
+   "detail": "{'slug': 'reading-tfng', 'locale': 'en', 'len': 7494, 'cyr': 0, 'lat': 5863, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "lesson help button (keyboard Enter) opens the pop-up",
+   "ok": true,
+   "detail": "tutor"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "pop-up keyboard from a lesson help button: focus in, Tab/Shift+Tab contained, Escape closes, focus back",
+   "ok": true,
+   "detail": "focusIn=True tabContained=True named=True escapeCloses=True focusBack=True (<button type=\"button\" class=\"help-control\" data-paid-feature=\"tutor\">Explain thi)"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "in-quiz hint button opens the pop-up",
+   "ok": true,
+   "detail": "feature=tutor expected=tutor url=http://localhost:4441/ielts-website/lessons/reading/tfng"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "first-lesson nudge appears after the first finished lesson",
+   "ok": true,
+   "detail": "first-lesson"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "no nudge when finishing another lesson (/lessons/reading/ynng)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "no nudge when finishing another lesson (/lessons/writing/opinion)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "no nudge after a reload",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "a Writing lesson's worked example shows",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "the lesson's 'check your writing' link opens the pop-up",
+   "ok": true,
+   "detail": "feature=essay expected=essay url=http://localhost:4441/ielts-website/lessons/writing/opinion"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "Tests: start button 1 of 2 opens the pop-up",
+   "ok": true,
+   "detail": "feature=test expected=test url=http://localhost:4441/ielts-website/tests"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "Tests: start button 2 of 2 opens the pop-up",
+   "ok": true,
+   "detail": "feature=test expected=test url=http://localhost:4441/ielts-website/tests"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "pop-up keyboard from a Tests start button",
+   "ok": true,
+   "detail": "focusIn=True tabContained=True named=True escapeCloses=True focusBack=True (<button type=\"button\" data-test-rotation=\"\" data-paid-feature=\"test\" data-test-i)"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/tests: paid link 'Only have 20 minutes? Try the Reading Trainer' -> /trainers/reading opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/tests"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/tests: paid link 'Start writing' -> /writing/checker opens the pop-up",
+   "ok": true,
+   "detail": "feature=essay expected=essay url=http://localhost:4441/ielts-website/tests"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/tests: paid link 'Want structures and phrases while you write? Try t' -> /trainers/writing opens the pop-up",
+   "ok": true,
+   "detail": "feature=trainer expected=trainer url=http://localhost:4441/ielts-website/tests"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/tests: paid link 'Start the interview' -> /speaking/examiner opens the pop-up",
+   "ok": true,
+   "detail": "feature=live expected=live url=http://localhost:4441/ielts-website/tests"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/tests: paid link 'Want to practice one part at a time instead?' -> /trainers/speaking opens the pop-up",
+   "ok": true,
+   "detail": "feature=trainer expected=trainer url=http://localhost:4441/ielts-website/tests"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/tests: paid link 'Mock Exam Day\n\nOne chained sitting: Listening, the' -> /tests/mock opens the pop-up",
+   "ok": true,
+   "detail": "feature=mock expected=mock url=http://localhost:4441/ielts-website/tests"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/tests: paid link '01\nAcademic Reading Test 1\n40 questions\nUnseen' -> /tests/reading-full-001 opens the pop-up",
+   "ok": true,
+   "detail": "feature=test expected=test url=http://localhost:4441/ielts-website/tests"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/tests: paid link '02\nAcademic Reading Test 2\n40 questions\nUnseen' -> /tests/reading-full-002 opens the pop-up",
+   "ok": true,
+   "detail": "feature=test expected=test url=http://localhost:4441/ielts-website/tests"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/tests: paid link '03\nAcademic Reading Test 3\n40 questions\nUnseen' -> /tests/reading-full-003 opens the pop-up",
+   "ok": true,
+   "detail": "feature=test expected=test url=http://localhost:4441/ielts-website/tests"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/tests: paid link '04\nAcademic Reading Test 4\n40 questions\nUnseen' -> /tests/reading-full-004 opens the pop-up",
+   "ok": true,
+   "detail": "feature=test expected=test url=http://localhost:4441/ielts-website/tests"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/tests: paid links found on the page",
+   "ok": true,
+   "detail": "18 visible paid links, 10 clicked"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers: paid link 'Start a drill\n↗' -> /trainers/reading opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers: paid link 'Start a drill\n↗' -> /trainers/listening opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers: paid link 'Start a part\n↗' -> /trainers/speaking opens the pop-up",
+   "ok": true,
+   "detail": "feature=trainer expected=trainer url=http://localhost:4441/ielts-website/trainers"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers: paid link 'Start writing\n↗' -> /trainers/writing opens the pop-up",
+   "ok": true,
+   "detail": "feature=trainer expected=trainer url=http://localhost:4441/ielts-website/trainers"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers: paid links found on the page",
+   "ok": true,
+   "detail": "4 visible paid links, 4 clicked"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/start: paid links found on the page",
+   "ok": true,
+   "detail": "0 visible paid links, 0 clicked"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/learn: paid links found on the page",
+   "ok": true,
+   "detail": "0 visible paid links, 0 clicked"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/dashboard: paid links found on the page",
+   "ok": true,
+   "detail": "0 visible paid links, 0 clicked"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/plan-settings: paid links found on the page",
+   "ok": true,
+   "detail": "0 visible paid links, 0 clicked"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/lessons/speaking/part2: paid links found on the page",
+   "ok": true,
+   "detail": "0 visible paid links, 0 clicked"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/lessons/writing/opinion: paid link 'Or write this one yourself first' -> /trainers/writing opens the pop-up",
+   "ok": true,
+   "detail": "feature=trainer expected=trainer url=http://localhost:4441/ielts-website/lessons/writing/opinion"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/lessons/writing/opinion: paid link '✨ AI EXAMINER · OFFICIAL BAND DESCRIPTORS\nOpen the' -> /writing/checker opens the pop-up",
+   "ok": true,
+   "detail": "feature=essay expected=essay url=http://localhost:4441/ielts-website/lessons/writing/opinion"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/lessons/writing/opinion: paid links found on the page",
+   "ok": true,
+   "detail": "2 visible paid links, 2 clicked"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/report: paid links found on the page",
+   "ok": true,
+   "detail": "0 visible paid links, 0 clicked"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/reading: paid link 'Passage 1\n\nThe problems and benefits created by th' -> /trainers/reading/reading-full-001-drill-p1 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/reading"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/reading: paid link 'Passage 2\n\nHow could multilingualism benefit India' -> /trainers/reading/reading-full-001-drill-p2 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/reading"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/reading: paid link 'Passage 3\n\nThe Globemakers: The Curious Story of a' -> /trainers/reading/reading-full-001-drill-p3 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/reading"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/reading: paid link 'Passage 1\n\nSaving the saiga\n\n13 questions · 20 min' -> /trainers/reading/reading-full-002-drill-p1 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/reading"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/reading: paid link 'Passage 2\n\nThe problems of getting around the city' -> /trainers/reading/reading-full-002-drill-p2 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/reading"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/reading: paid link 'Passage 3\n\nRethinking the Past\n\n14 questions · 20 ' -> /trainers/reading/reading-full-002-drill-p3 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/reading"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/reading: paid link 'Passage 1\n\nDo animals dream?\n\n13 questions · 20 mi' -> /trainers/reading/reading-full-003-drill-p1 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/reading"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/reading: paid link 'Passage 2\n\nMapungubwe Located in southern Africa j' -> /trainers/reading/reading-full-003-drill-p2 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/reading"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/reading: paid link 'Passage 3\n\nArtificial Intelligence\n\n14 questions ·' -> /trainers/reading/reading-full-003-drill-p3 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/reading"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/reading: paid link 'Passage 1\n\nThe Davies Sisters\n\n13 questions · 20 m' -> /trainers/reading/reading-full-004-drill-p1 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/reading"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/reading: paid links found on the page",
+   "ok": true,
+   "detail": "12 visible paid links, 10 clicked"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/listening: paid link 'Part 1\n\nSentence Completion\n\n10 questions · 8 min' -> /trainers/listening/listening-full-001-drill-p1 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/listening"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/listening: paid link 'Part 2\n\nMultiple Choice, Matching Features, Senten' -> /trainers/listening/listening-full-001-drill-p2 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/listening"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/listening: paid link 'Part 3\n\nSentence Completion\n\n10 questions · 8 min' -> /trainers/listening/listening-full-001-drill-p3 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/listening"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/listening: paid link 'Part 4\n\nMultiple Choice, Sentence Completion\n\n10 q' -> /trainers/listening/listening-full-001-drill-p4 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/listening"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/listening: paid link 'Part 1\n\nSentence Completion\n\n10 questions · 8 min' -> /trainers/listening/listening-full-002-drill-p1 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/listening"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/listening: paid link 'Part 2\n\nSentence Completion, Multiple Choice, Matc' -> /trainers/listening/listening-full-002-drill-p2 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/listening"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/listening: paid link 'Part 3\n\nMultiple Choice, Sentence Completion\n\n10 q' -> /trainers/listening/listening-full-002-drill-p3 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/listening"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/listening: paid link 'Part 4\n\nSentence Completion\n\n10 questions · 8 min' -> /trainers/listening/listening-full-002-drill-p4 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/listening"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/listening: paid link 'Part 1\n\nSentence Completion\n\n10 questions · 8 min' -> /trainers/listening/listening-full-003-drill-p1 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/listening"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/listening: paid link 'Part 2\n\nSentence Completion, Multiple Choice, Mult' -> /trainers/listening/listening-full-003-drill-p2 opens the pop-up",
+   "ok": true,
+   "detail": "feature=drill expected=drill url=http://localhost:4441/ielts-website/trainers/listening"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/trainers/listening: paid links found on the page",
+   "ok": true,
+   "detail": "12 visible paid links, 10 clicked"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "account menu: /learn/bands opens the pop-up",
+   "ok": true,
+   "detail": "feature=band-guide expected=band-guide url=http://localhost:4441/ielts-website/dashboard"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "account menu: /writing/models opens the pop-up",
+   "ok": true,
+   "detail": "feature=model-answers expected=model-answers url=http://localhost:4441/ielts-website/dashboard"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "account menu: /speaking/cue-cards opens the pop-up",
+   "ok": true,
+   "detail": "feature=cue-cards expected=cue-cards url=http://localhost:4441/ielts-website/dashboard"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "vocabulary: a topic's word list opens",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "vocabulary: 'Practise these words' opens the pop-up",
+   "ok": true,
+   "detail": "feature=vocab-review expected=vocab-review url=http://localhost:4441/ielts-website/review?topic=conjunctions"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /trainers/writing: calm locked page (trainer)",
+   "ok": true,
+   "detail": "trainer"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /trainers/writing: its button opens the pop-up",
+   "ok": true,
+   "detail": "feature=trainer expected=trainer url=http://localhost:4441/ielts-website/trainers/writing"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /trainers/speaking: calm locked page (trainer)",
+   "ok": true,
+   "detail": "trainer"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /trainers/speaking: its button opens the pop-up",
+   "ok": true,
+   "detail": "feature=trainer expected=trainer url=http://localhost:4441/ielts-website/trainers/speaking"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /trainers/reading: calm locked page (drill)",
+   "ok": false,
+   "detail": "None"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /trainers/listening: calm locked page (drill)",
+   "ok": false,
+   "detail": "None"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /tests/mock: calm locked page (mock)",
+   "ok": true,
+   "detail": "mock"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /tests/mock: its button opens the pop-up",
+   "ok": true,
+   "detail": "feature=mock expected=mock url=http://localhost:4441/ielts-website/tests/mock"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /placement: calm locked page (placement)",
+   "ok": true,
+   "detail": "placement"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /placement: its button opens the pop-up",
+   "ok": true,
+   "detail": "feature=placement expected=placement url=http://localhost:4441/ielts-website/placement"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /writing/models: calm locked page (model-answers)",
+   "ok": true,
+   "detail": "model-answers"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /writing/models: its button opens the pop-up",
+   "ok": true,
+   "detail": "feature=model-answers expected=model-answers url=http://localhost:4441/ielts-website/writing/models"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /speaking/cue-cards: calm locked page (cue-cards)",
+   "ok": true,
+   "detail": "cue-cards"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /speaking/cue-cards: its button opens the pop-up",
+   "ok": true,
+   "detail": "feature=cue-cards expected=cue-cards url=http://localhost:4441/ielts-website/speaking/cue-cards"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /learn/bands: calm locked page (band-guide)",
+   "ok": true,
+   "detail": "band-guide"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /learn/bands: its button opens the pop-up",
+   "ok": true,
+   "detail": "feature=band-guide expected=band-guide url=http://localhost:4441/ielts-website/learn/bands"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /writing/checker: calm locked page (essay)",
+   "ok": true,
+   "detail": "essay"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /writing/checker: its button opens the pop-up",
+   "ok": true,
+   "detail": "feature=essay expected=essay url=http://localhost:4441/ielts-website/writing/checker"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /speaking/examiner: calm locked page (live)",
+   "ok": true,
+   "detail": "live"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /speaking/examiner: its button opens the pop-up",
+   "ok": true,
+   "detail": "feature=live expected=live url=http://localhost:4441/ielts-website/speaking/examiner"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /speaking/recorded: calm locked page (speaking)",
+   "ok": true,
+   "detail": "speaking"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /speaking/recorded: its button opens the pop-up",
+   "ok": true,
+   "detail": "feature=speaking expected=speaking url=http://localhost:4441/ielts-website/speaking/recorded"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /tests/reading-full-001: calm locked page (test)",
+   "ok": true,
+   "detail": "test"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /tests/reading-full-001: its button opens the pop-up",
+   "ok": true,
+   "detail": "feature=test expected=test url=http://localhost:4441/ielts-website/tests/reading-full-001"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /tests/listening-full-001: calm locked page (test)",
+   "ok": true,
+   "detail": "test"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /tests/listening-full-001: its button opens the pop-up",
+   "ok": true,
+   "detail": "feature=test expected=test url=http://localhost:4441/ielts-website/tests/listening-full-001"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /trainers/focused/listening-categorisation-check-a: calm locked page (focused)",
+   "ok": true,
+   "detail": "focused"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "direct link /trainers/focused/listening-categorisation-check-a: its button opens the pop-up",
+   "ok": true,
+   "detail": "feature=focused expected=focused url=http://localhost:4441/ielts-website/trainers/focused/listening-categorisation-check-a"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/plans says Free account",
+   "ok": true,
+   "detail": "Free account"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/plans: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/account says Free account",
+   "ok": true,
+   "detail": "Free account"
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "/account: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-1440",
+   "check": "no nudge in a second browser for the same account (model: stored per account)",
+   "ok": false,
+   "detail": "the nudge appeared again: it is remembered per device"
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "Today in en",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/dashboard: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/dashboard: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/lessons/reading/tfng: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/lessons/reading/tfng: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/lessons/writing/opinion: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/lessons/writing/opinion: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/lessons/vocabulary/environment: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/lessons/vocabulary/environment: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/tests: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/tests: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/trainers: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/trainers: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/review: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/review: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/plans: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/plans: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/account: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/account: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/tests/mock: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/tests/mock: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/start: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/start: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/learn: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "/learn: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "pop-up opens from Tests",
+   "ok": true,
+   "detail": "test"
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "pop-up fits the screen width",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-en-390",
+   "check": "pop-up's primary button can be reached on screen",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "Today in ru",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/dashboard: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/dashboard: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/lessons/reading/tfng: Russian lesson body renders",
+   "ok": true,
+   "detail": "{'slug': 'reading-tfng', 'locale': 'ru', 'len': 7616, 'cyr': 4831, 'lat': 1225, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/lessons/reading/tfng: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/lessons/reading/tfng: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/lessons/writing/opinion: Russian lesson body renders",
+   "ok": true,
+   "detail": "{'slug': 'writing-opinion', 'locale': 'ru', 'len': 2287, 'cyr': 1449, 'lat': 383, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/lessons/writing/opinion: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/lessons/writing/opinion: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/lessons/vocabulary/environment: Russian lesson body renders",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-environment', 'locale': 'ru', 'len': 4144, 'cyr': 1476, 'lat': 1993, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/lessons/vocabulary/environment: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/lessons/vocabulary/environment: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/tests: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/tests: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/trainers: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/trainers: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/review: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/review: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/plans: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/plans says the free account in Russian",
+   "ok": true,
+   "detail": "Бесплатный аккаунт"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/plans: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/account: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/account says the free account in Russian",
+   "ok": true,
+   "detail": "Бесплатный аккаунт"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/account: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/tests/mock: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/tests/mock: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/start: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/start: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/learn: no sideways scroll at 390",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "/learn: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "pop-up opens from Tests",
+   "ok": true,
+   "detail": "test"
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "pop-up fits the screen width",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "pop-up's primary button can be reached on screen",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-390",
+   "check": "pop-up in Russian with the price",
+   "ok": true,
+   "detail": "12 990 ₸ за 30 дней. Без автоматического продления."
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "Today in ru",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/dashboard: no sideways scroll at 320",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/dashboard: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/lessons/reading/tfng: Russian lesson body renders",
+   "ok": true,
+   "detail": "{'slug': 'reading-tfng', 'locale': 'ru', 'len': 7616, 'cyr': 4831, 'lat': 1225, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/lessons/reading/tfng: no sideways scroll at 320",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/lessons/reading/tfng: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/lessons/writing/opinion: Russian lesson body renders",
+   "ok": true,
+   "detail": "{'slug': 'writing-opinion', 'locale': 'ru', 'len': 2287, 'cyr': 1449, 'lat': 383, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/lessons/writing/opinion: no sideways scroll at 320",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/lessons/writing/opinion: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/lessons/vocabulary/environment: Russian lesson body renders",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-environment', 'locale': 'ru', 'len': 4144, 'cyr': 1476, 'lat': 1993, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/lessons/vocabulary/environment: no sideways scroll at 320",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/lessons/vocabulary/environment: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/tests: no sideways scroll at 320",
+   "ok": false,
+   "detail": "27"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/tests: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/trainers: no sideways scroll at 320",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/trainers: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/review: no sideways scroll at 320",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/review: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/plans: no sideways scroll at 320",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/plans says the free account in Russian",
+   "ok": true,
+   "detail": "Бесплатный аккаунт"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/plans: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/account: no sideways scroll at 320",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/account says the free account in Russian",
+   "ok": true,
+   "detail": "Бесплатный аккаунт"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/account: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/tests/mock: no sideways scroll at 320",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/tests/mock: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/start: no sideways scroll at 320",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/start: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/learn: no sideways scroll at 320",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "/learn: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "pop-up opens from Tests",
+   "ok": true,
+   "detail": "test"
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "pop-up fits the screen width",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "pop-up's primary button can be reached on screen",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-320",
+   "check": "pop-up in Russian with the price",
+   "ok": true,
+   "detail": "12 990 ₸ за 30 дней. Без автоматического продления."
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "Today in ru",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/dashboard: no sideways scroll at 1440",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/dashboard: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/lessons/reading/tfng: Russian lesson body renders",
+   "ok": true,
+   "detail": "{'slug': 'reading-tfng', 'locale': 'ru', 'len': 7616, 'cyr': 4831, 'lat': 1225, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/lessons/reading/tfng: no sideways scroll at 1440",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/lessons/reading/tfng: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/lessons/writing/opinion: Russian lesson body renders",
+   "ok": true,
+   "detail": "{'slug': 'writing-opinion', 'locale': 'ru', 'len': 2287, 'cyr': 1449, 'lat': 383, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/lessons/writing/opinion: no sideways scroll at 1440",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/lessons/writing/opinion: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/lessons/vocabulary/environment: Russian lesson body renders",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-environment', 'locale': 'ru', 'len': 4144, 'cyr': 1476, 'lat': 1993, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/lessons/vocabulary/environment: no sideways scroll at 1440",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/lessons/vocabulary/environment: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/tests: no sideways scroll at 1440",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/tests: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/trainers: no sideways scroll at 1440",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/trainers: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/review: no sideways scroll at 1440",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/review: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/plans: no sideways scroll at 1440",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/plans says the free account in Russian",
+   "ok": true,
+   "detail": "Бесплатный аккаунт"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/plans: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/account: no sideways scroll at 1440",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/account says the free account in Russian",
+   "ok": true,
+   "detail": "Бесплатный аккаунт"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/account: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/tests/mock: no sideways scroll at 1440",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/tests/mock: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/start: no sideways scroll at 1440",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/start: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/learn: no sideways scroll at 1440",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "/learn: no trial wording",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "pop-up opens from Tests",
+   "ok": true,
+   "detail": "test"
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "pop-up fits the screen width",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "pop-up's primary button can be reached on screen",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "c-free-ru-1440",
+   "check": "pop-up in Russian with the price",
+   "ok": true,
+   "detail": "12 990 ₸ за 30 дней. Без автоматического продления."
+  },
+  {
+   "section": "all",
+   "check": "no trial wording on any page visited",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "section": "all",
+   "check": "zero uncaught page errors or hydration messages",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "pageErrors": [],
+ "trialSeen": [],
+ "russianProbnyUses": {
+  "Полный пробный устный экзамен из трёх частей в формате настоящего голосового разговора: экзаменатор ": "c-free-ru-390/tests",
+  "День пробного экзамена": "c-free-ru-390/tests",
+  "Начать День пробного экзамена": "c-free-ru-390/tests",
+  "12 проверок эссе, 6 проверок записей Speaking (до 5 минут каждая), 2 устных собеседования с разбором": "c-free-ru-390/plans",
+  "Эссе, написанные в пробном экзамене или во вступительном тесте, входят в 12 проверок эссе": "c-free-ru-390/plans",
+  "За каждые 30 дней: 12 проверок эссе, 6 проверок записей Speaking до 5 минут и 2 устных собеседования": "c-free-ru-390/account",
+  "Полные пробные экзамены входят в практику и сопровождение": "c-free-ru-390/tests/mock",
+  "Тексты, типы заданий и пробные тесты на время": "c-free-ru-390/start"
+ }
+}
