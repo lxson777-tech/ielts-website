@@ -45,7 +45,7 @@ import {
 } from '../../lib/store-owner';
 import { askContext } from './learning-versions';
 import { isTrialBuild } from '../../lib/trial/mode';
-import { HELP_SOURCE_NOTE, requestOwnedLessonHelp, watchMrEzHelpAvailable, type HelpResult } from './lesson-help';
+import { helpReplyNote, requestOwnedLessonHelp, watchMrEzHelpAvailable, type HelpResult } from './lesson-help';
 
 const KIND_LABEL: Readonly<Record<LessonHelpKind, string>> = {
   hint: 'Give me a hint',
@@ -243,12 +243,7 @@ export default function LessonHelpControls({
           {replies.map((reply, index) => (
             <div key={index} className={`help-reply is-${reply.source}`}>
               <p className="help-reply-text">{reply.text}</p>
-              {HELP_SOURCE_NOTE[reply.source] && (
-                <p className="help-reply-note">
-                  {t(HELP_SOURCE_NOTE[reply.source])}
-                  {reply.unavailableReason ? ` ${reply.unavailableReason}` : ''}
-                </p>
-              )}
+              {helpReplyNote(reply, t) && <p className="help-reply-note">{helpReplyNote(reply, t)}</p>}
             </div>
           ))}
         </div>

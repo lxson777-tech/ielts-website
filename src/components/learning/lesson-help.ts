@@ -164,6 +164,24 @@ export const HELP_SOURCE_NOTE: Readonly<Record<HelpSource, string>> = {
   offline: "Mr EZ could not be reached, so this is the lesson's own answer.",
 };
 
+/** The note under a reply, as one or two plain sentences. When there is a
+    specific reason Mr EZ did not answer (today's questions are used up, the
+    service is busy), that reason comes first and the generic "could not be
+    reached" is not said: it read "Mr EZ could not be reached ... That is all
+    your questions for today", two different stories at once (found by the
+    click test, 2 October 2026). `t` translates the fixed sentences; the
+    reason arrives already in the student's language. */
+export function helpReplyNote(result: Pick<HelpResult, 'source' | 'unavailableReason'>, t: (key: string) => string): string {
+  const note = HELP_SOURCE_NOTE[result.source];
+  if (!note) return '';
+  if (result.source === 'offline' && result.unavailableReason) {
+    return `${result.unavailableReason} ${t(HELP_OWN_ANSWER_NOTE)}`;
+  }
+  return result.unavailableReason ? `${t(note)} ${result.unavailableReason}` : t(note);
+}
+
+export const HELP_OWN_ANSWER_NOTE = "Here is the lesson's own answer.";
+
 export const HELP_BLOCKED_TEXT =
   'Help is switched off while a check is running. That is what makes the result mean something. It comes back the moment you finish.';
 

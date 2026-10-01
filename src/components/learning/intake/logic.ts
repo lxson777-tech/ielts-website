@@ -64,7 +64,15 @@ export function initialDailyTimeSelection(constraints: PlanConstraints): DailyTi
   if (constraints.regularDailyMinutesStatus === 'confirmed') {
     return { minutes: constraints.regularDailyMinutes, needsConfirmation: false };
   }
-  return { minutes: RECOMMENDED_DAILY_MINUTES, needsConfirmation: true };
+  /* Not confirmed yet: show the time the plan is actually pacing from (60
+     for a brand-new plan, or the time the student picked without answering
+     the "can you really give this" question), and ask again. Showing 60 here
+     regardless meant that reopening settings and pressing Save quietly reset
+     a chosen 25 or 15 back to 60 (found by the click test, 2 October 2026). */
+  const minutes = INTAKE_DAILY_MINUTES.includes(constraints.regularDailyMinutes)
+    ? constraints.regularDailyMinutes
+    : RECOMMENDED_DAILY_MINUTES;
+  return { minutes, needsConfirmation: true };
 }
 
 /** The three times the intake actually offers, recommended first. Narrower

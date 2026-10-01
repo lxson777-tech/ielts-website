@@ -50,7 +50,7 @@ import {
 import { askContext } from './learning-versions';
 import { isTrialBuild } from '../../lib/trial/mode';
 import {
-  HELP_SOURCE_NOTE,
+  helpReplyNote,
   requestOwnedLessonHelp,
   watchMrEzHelpAvailable,
   type HelpResult,
@@ -394,11 +394,11 @@ function buildReply(result: HelpResult): HTMLElement {
   text.className = 'help-reply-text';
   text.textContent = result.text;
   reply.append(text);
-  const note = HELP_SOURCE_NOTE[result.source];
+  const note = helpReplyNote(result, t);
   if (note) {
     const line = document.createElement('p');
     line.className = 'help-reply-note';
-    line.textContent = result.unavailableReason ? `${t(note)} ${result.unavailableReason}` : t(note);
+    line.textContent = note;
     reply.append(line);
   }
   return reply;

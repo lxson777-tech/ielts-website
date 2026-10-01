@@ -101,6 +101,14 @@ test('a brand-new (unconfirmed) plan preselects 60 minutes and needs confirmatio
   assert.equal(selection.needsConfirmation, true);
 });
 
+test('a time picked but not yet confirmed is what the settings page shows next time, still asking to confirm', () => {
+  // 2 October 2026: settings showed 60 again, so a later Save reset a chosen 25 back to 60.
+  const picked = { ...defaultPlanConstraints(), regularDailyMinutes: 25 as const, regularDailyMinutesStatus: 'provisional' as const };
+  const selection = initialDailyTimeSelection(picked);
+  assert.equal(selection.minutes, 25);
+  assert.equal(selection.needsConfirmation, true);
+});
+
 test('picking 60 without answering "can you really give this" leaves the constraint provisional', () => {
   const fresh = defaultPlanConstraints();
   const answers: IntakeAnswers = { dailyMinutes: 60 }; // no availabilityConfirmed
