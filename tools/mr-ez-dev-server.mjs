@@ -137,6 +137,15 @@ let trialDb = null;
 /** STAND-IN ONLY: the account that becomes an admin in the local database
     when it signs up (see the header). Synthetic, never a real address. */
 const STAND_IN_ADMIN = String(process.env.MR_EZ_STAND_IN_ADMIN || 'admin@example.test').trim().toLowerCase();
+/* The support stand-in (tools/stand-in/support.mjs) answers is_admin and
+   admin_list_users from its own local database, which is what /admin asks
+   first; it reads its admins from MR_EZ_ADMIN_EMAILS. With --trial the
+   stand-in admin is added there too, so the one account opens /admin and
+   may change complimentary access, and nobody else may. */
+if (TRIAL) {
+  const listed = String(process.env.MR_EZ_ADMIN_EMAILS ?? '').split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
+  if (!listed.includes(STAND_IN_ADMIN)) process.env.MR_EZ_ADMIN_EMAILS = [...listed, STAND_IN_ADMIN].join(',');
+}
 
 /** Copies a saved profile into the local database (the free account's
     lesson door asks access_profile_complete there). The database's own
@@ -503,15 +512,6 @@ async function handleRpc(req, res, fn) {
       ? { role: 'authenticated', userId: caller }
       : { role: 'anon' };
   try {
-    /* admin_list_users returns a table (one row per account), which
-       PostgREST answers as a JSON array; every other function here returns
-       one value. The local database's user_state is empty (this server keeps
-       study progress in memory), so the counts read zero: labelled a
-       stand-in in the panel's own data, not hidden. */
-    if (fn === 'admin_list_users') {
-      const rows = await trialDb.select('select * from public.admin_list_users()', [], opts);
-      return send(res, 200, rows);
-    }
     const result = await trialDb.rpc(fn, args, opts);
     /* PostgREST answers a function that returns SQL null with the JSON
        literal `null`, not an empty body (send() writes '' for null, which

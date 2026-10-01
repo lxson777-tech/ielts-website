@@ -19,6 +19,14 @@
  * allowance for a public lesson's own prose and its one worked example (and
  * its --no-lesson-exclusion review switch) is removed.
  *
+ * Recorded run, 1 October 2026 (Builder G, commercial build of 9aa5d6c):
+ * 2,584 phrases (954 from 152 lesson bodies, 18 lesson quizzes). As
+ * committed, 153 LEAK files, every one a lesson page or a Russian lesson
+ * fragment (the pages still render the body: Builder P's change). With the
+ * lesson pages put back behind the door (the pre-1-October pages restored in
+ * an uncommitted experiment): 0 leaking files, 8 SHARED single lines, 1
+ * named exception.
+ *
  * Earlier recorded run, 1 October 2026 (review P2-8, gated build of 4ac68c3,
  * when lessons were briefly public): with that allowance 0 leaking files;
  * without it 11 LEAK findings, all on the 7 then-public Writing lessons.
