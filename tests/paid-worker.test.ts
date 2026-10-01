@@ -114,7 +114,7 @@ test('checkout -> paid webhook -> the order reads back paid, and the account has
   const checkout = await w.call('POST', '/checkout', { token: 'token-a', body: { planId: 'month-1' } });
   assert.equal(checkout.status, 200, JSON.stringify(checkout.body));
   const orderId = String(checkout.body!.orderId);
-  assert.equal(checkout.body!.amount, 10000);
+  assert.equal(checkout.body!.amount, 12990);
   assert.equal(checkout.body!.currency, 'KZT');
   assert.equal(checkout.body!.simulated, true);
   assert.equal(
@@ -130,7 +130,7 @@ test('checkout -> paid webhook -> the order reads back paid, and the account has
   assert.equal(parsePaymentOrder(before.body)?.status, 'pending');
   assert.equal(hasPaidAccess(await w.status(), Date.now()), false);
 
-  const paid = await w.webhook({ event: 'paid', orderId, providerRef: ref(orderId), amount: 10000, currency: 'KZT' });
+  const paid = await w.webhook({ event: 'paid', orderId, providerRef: ref(orderId), amount: 12990, currency: 'KZT' });
   assert.equal(paid.status, 200, JSON.stringify(paid.body));
   assert.deepEqual(paid.body, { ok: true, event: 'paid', status: 'paid', replay: false, unchanged: false });
 
@@ -141,7 +141,7 @@ test('checkout -> paid webhook -> the order reads back paid, and the account has
   assert.equal(hasPaidAccess(await w.status(), Date.now()), true);
 
   // Replayed by the provider: harmless, still one grant.
-  const replay = await w.webhook({ event: 'paid', orderId, providerRef: ref(orderId), amount: 10000, currency: 'KZT' });
+  const replay = await w.webhook({ event: 'paid', orderId, providerRef: ref(orderId), amount: 12990, currency: 'KZT' });
   assert.equal(replay.status, 200);
   assert.equal(replay.body.replay, true);
   assert.equal((await w.db.select('select id from public.access_grants', [], { role: 'service_role' })).length, 1);
@@ -150,11 +150,11 @@ test('checkout -> paid webhook -> the order reads back paid, and the account has
 
 test('the price comes from the server: the request cannot name one, and an unknown plan is refused', async () => {
   const w = await world();
-  const cheap = await w.call('POST', '/checkout', { token: 'token-a', body: { planId: 'month-3', amount: 1, currency: 'USD', userId: B } });
+  const cheap = await w.call('POST', '/checkout', { token: 'token-a', body: { planId: 'month-1', amount: 1, currency: 'USD', userId: B } });
   assert.equal(cheap.status, 200);
-  assert.equal(cheap.body!.amount, 25000);
+  assert.equal(cheap.body!.amount, 12990);
   const row = (await w.db.select('select user_id, amount, currency from public.payment_orders', [], { role: 'service_role' }))[0];
-  assert.deepEqual(row, { user_id: A, amount: 25000, currency: 'KZT' });
+  assert.deepEqual(row, { user_id: A, amount: 12990, currency: 'KZT' });
   assert.equal((await w.call('POST', '/checkout', { token: 'token-a', body: { planId: 'month-99' } })).body!.code, 'plan-unavailable');
   assert.equal((await w.call('POST', '/checkout', { token: 'token-a', body: {} })).status, 400);
   assert.equal((await w.call('POST', '/checkout', { token: 'token-a', raw: 'not json' })).status, 400);
@@ -176,14 +176,14 @@ test('checkout and order need a real sign-in; one student cannot read another\'s
 test('a webhook with no signature, a wrong signature or a tampered body changes nothing', async () => {
   const w = await world();
   const orderId = String((await w.call('POST', '/checkout', { token: 'token-a', body: { planId: 'month-1' } })).body!.orderId);
-  const event = { event: 'paid', orderId, providerRef: ref(orderId), amount: 10000, currency: 'KZT' };
+  const event = { event: 'paid', orderId, providerRef: ref(orderId), amount: 12990, currency: 'KZT' };
   assert.equal((await w.webhook(event, null)).status, 401);
   assert.equal((await w.webhook(event, 'someone-elses-secret')).status, 401);
   // Signed, then altered on the way.
   const raw = JSON.stringify(event);
   const sig = await signSimulatedEvent(SECRET, raw);
   const tampered = await w.call('POST', '/webhook/simulated', {
-    raw: raw.replace('10000', '100'),
+    raw: raw.replace('12990', '100'),
     headers: { [SIMULATED_SIGNATURE_HEADER]: sig, Origin: '' },
   });
   assert.equal(tampered.status, 401);
@@ -196,11 +196,11 @@ test('a webhook with no signature, a wrong signature or a tampered body changes 
 
 test('a signed confirmation for the wrong amount or currency is refused and grants nothing', async () => {
   const w = await world();
-  const orderId = String((await w.call('POST', '/checkout', { token: 'token-a', body: { planId: 'month-3' } })).body!.orderId);
+  const orderId = String((await w.call('POST', '/checkout', { token: 'token-a', body: { planId: 'month-1' } })).body!.orderId);
   const low = await w.webhook({ event: 'paid', orderId, providerRef: ref(orderId), amount: 10000, currency: 'KZT' });
   assert.equal(low.status, 422);
   assert.equal(low.body.code, 'amount-mismatch');
-  const usd = await w.webhook({ event: 'paid', orderId, providerRef: ref(orderId), amount: 25000, currency: 'USD' });
+  const usd = await w.webhook({ event: 'paid', orderId, providerRef: ref(orderId), amount: 12990, currency: 'USD' });
   assert.equal(usd.body.code, 'amount-mismatch');
   assert.equal(parsePaymentOrder((await w.call('GET', `/order/${orderId}`, { token: 'token-a' })).body)?.status, 'pending');
   assert.equal(hasPaidAccess(await w.status(), Date.now()), false);
@@ -219,7 +219,7 @@ test('failed and cancelled record the outcome, never downgrade a paid order; a r
   assert.equal(parsePaymentOrder((await w.call('GET', `/order/${cancelledId}`, { token: 'token-a' })).body)?.status, 'cancelled');
 
   const paidId = String((await w.call('POST', '/checkout', { token: 'token-a', body: { planId: 'month-1' } })).body!.orderId);
-  await w.webhook({ event: 'paid', orderId: paidId, providerRef: ref(paidId), amount: 10000, currency: 'KZT' });
+  await w.webhook({ event: 'paid', orderId: paidId, providerRef: ref(paidId), amount: 12990, currency: 'KZT' });
   for (const event of ['failed', 'cancelled']) {
     const late = await w.webhook({ event, orderId: paidId, providerRef: ref(paidId) });
     assert.equal(late.status, 200);
@@ -284,7 +284,7 @@ test('an unreachable database is a refusal that changes nothing (and asks a prov
   const w = await world({ dbDown: true });
   const checkout = await w.call('POST', '/checkout', { token: 'token-a', body: { planId: 'month-1' } });
   assert.equal(checkout.status, 503);
-  const hook = await w.webhook({ event: 'paid', orderId: 'aaaaaaaa-0000-4000-8000-000000000000', providerRef: 'sim_x_0001', amount: 10000, currency: 'KZT' });
+  const hook = await w.webhook({ event: 'paid', orderId: 'aaaaaaaa-0000-4000-8000-000000000000', providerRef: 'sim_x_0001', amount: 12990, currency: 'KZT' });
   assert.equal(hook.status, 503);
   await w.db.close();
 });

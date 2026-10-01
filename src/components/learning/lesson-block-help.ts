@@ -129,6 +129,7 @@ export function mountLessonBlockHelp(options: LessonBlockHelpOptions): void {
   /* A control left behind by an earlier pass has no listeners any more. */
   root.querySelectorAll(`.${HELP_NODE_CLASS}`).forEach((node) => node.remove());
   stampBlockIds(root, options.ids);
+  if (currentOwner().kind !== 'user') return;
 
   for (const heading of headingsToStamp(root)) {
     const blockId = heading.dataset.lessonBlock;

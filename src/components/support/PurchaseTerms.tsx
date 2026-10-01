@@ -15,7 +15,7 @@ export default function PurchaseTerms({ showSupport = true }: { showSupport?: bo
   return (
     <aside className="purchase-terms" aria-label={t('Before you buy')}>
       <ul>
-        <li>{t('One month or three months of full access. It ends on its own. Nothing renews, so you are never charged automatically.')}</li>
+        <li>{t('30 days of access. It ends on its own. Nothing renews, so you are never charged automatically.')}</li>
         <li>{t('No refunds after purchase. The free three-day trial is your chance to try the course first.')}</li>
         {/* Accurate as built: Mr EZ and the live examiner have daily limits; essay
             and speaking grading do not (src/lib/access/plans.ts). */}

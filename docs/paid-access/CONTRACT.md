@@ -1,5 +1,9 @@
 # Paid access and the audit remediation: shared contract
 
+Update, 1 October 2026: [PUBLIC-LESSONS.md](PUBLIC-LESSONS.md) is the current access model. Lesson explanations and worked examples are public without an account. Practice and AI require the appropriate account access. This supersedes earlier lesson restrictions below.
+
+Update, 30 September 2026: Alex approved a new 12,990 KZT offer and defined assessment allowances. The current offer, additional migration and verification are in [PROFITABLE-OFFER.md](PROFITABLE-OFFER.md). Its price and allowance rules supersede the historical rules below. No production deployment is implied.
+
 Written 29 September 2026 for the remediation of
 `docs/audits/combined-paid-platform-2026-09-29/REPORT.md` (findings F01 to F12).
 Every builder reads this before touching code. Nothing here is deployed, pushed,

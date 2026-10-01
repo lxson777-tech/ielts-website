@@ -1,3 +1,4 @@
+const validMp3 = () => { const b=Buffer.alloc(288); b[0]=255; b[1]=243; b[2]=136; return b.toString('base64'); };
 /* The graders and the live examiner running the trial: the REAL grade-essay handler against
  * the REAL trial database functions (PGlite, tools/trial-db.mjs) and a fake
  * OpenAI. No key, no model, no money.
@@ -368,91 +369,43 @@ test('the Speaking test is on, as a Part 1 interview of five minutes, two tries 
   assert.equal(TRIAL_SPEAKING_SESSIONS, 2);
 });
 
-test('live examiner: no begun Speaking test, or a mode other than Part 1, means no paid session', async () => {
-  const w = await speakingWorld();
-  assert.equal((await w.openInterview('token-a', undefined)).body.code, 'trial-no-test');
-  assert.equal((await w.openInterview('token-a', 'sit-s-00001')).body.code, 'trial-no-test', 'not begun');
-  await w.db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-s-00001' }, { userId: A });
-  const full = await w.openInterview('token-a', 'sit-s-00001', 'full');
-  assert.ok(full.status === 400 || full.body.code === 'trial-not-included', 'the full test is not the trial test');
-  const part2 = await w.openInterview('token-a', 'sit-s-00001', 'part2');
-  assert.ok(part2.status === 400 || part2.body.code === 'trial-not-included');
-  assert.equal((await w.openInterview('token-b', 'sit-s-00001')).body.code, 'trial-no-test', "another student cannot use A's test");
-  assert.equal(w.calls.openAiLive, 0);
-  await w.db.close();
+async function buyLive(w: Awaited<ReturnType<typeof speakingWorld>>) {
+    const o=await w.db.rpc('access_order_create',{p_plan:'month-1'},{userId:A}) as any;
+    await w.db.rpc('access_order_paid',{p_order:o.orderId,p_provider:'simulated',p_ref:`sim_${o.orderId}`,p_amount:o.amount,p_currency:'KZT'},{role:'service_role'});
+}
+test('trial live requests are refused even with a begun Speaking sitting',async()=>{
+ const w=await speakingWorld();
+ assert.equal((await w.openInterview('token-a',undefined)).status,403);
+ await w.db.rpc('trial_test_begin',{p_section:'speaking',p_activity:'speaking-test',p_request:'sit-live-trial'},{userId:A});
+ assert.equal((await w.openInterview('token-a','sit-live-trial')).status,403);
+ assert.equal(w.calls.openAiLive,0);await w.db.close();
 });
-
-test('live examiner: two interviews per Speaking test, and a session that never opened is given back', async () => {
-  const w = await speakingWorld();
-  await w.db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-s-00002' }, { userId: A });
-  w.model.liveStatus = 500;
-  assert.equal((await w.openInterview('token-a', 'sit-s-00002')).status, 502);
-  assert.equal(await w.sessionsOf('sit-s-00002'), 0, 'the failed open used nothing');
-  w.model.liveStatus = 201;
-  assert.equal((await w.openInterview('token-a', 'sit-s-00002')).status, 201);
-  // The first interview ends (the browser reports it), the student retries once.
-  for (const row of w.sessions) row.ended_at = new Date().toISOString();
-  assert.equal((await w.openInterview('token-a', 'sit-s-00002')).status, 201);
-  for (const row of w.sessions) row.ended_at = new Date().toISOString();
-  assert.equal((await w.openInterview('token-a', 'sit-s-00002')).body.code, 'trial-sessions-used');
-  assert.equal(await w.sessionsOf('sit-s-00002'), 2);
-  assert.equal(w.calls.openAiLive, 3, 'one failed open and two real interviews, nothing more');
-  await w.db.close();
+test('paid live quota: failed handshake restores allowance, successful sessions use two',async()=>{
+ const w=await speakingWorld();await buyLive(w);w.model.liveStatus=500;
+ assert.equal((await w.openInterview('token-a',undefined)).status,502);
+ w.model.liveStatus=201;
+ for(let i=0;i<2;i++){
+  assert.equal((await w.openInterview('token-a',undefined)).status,201);
+  for(const row of w.sessions)row.ended_at=new Date().toISOString();
+ }
+ assert.equal((await w.openInterview('token-a',undefined)).status,403);
+ assert.equal(w.calls.openAiLive,3);await w.db.close();
 });
-
-test('live examiner: an interview the examiner never began, ended within 90 seconds, gives the attempt back, and nothing else does', async () => {
-  const w = await speakingWorld();
-  await w.db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-s-00004' }, { userId: A });
-
-  // The student's connection failed before the examiner began: given back.
-  assert.equal((await w.openInterview('token-a', 'sit-s-00004')).status, 201);
-  assert.equal(await w.sessionsOf('sit-s-00004'), 1);
-  const back = await w.post('/end', 'token-a', { sessionId: 'live_1', trialSitting: 'sit-s-00004' });
-  assert.equal(back.status, 200);
-  assert.deepEqual(back.body, { ok: true, trial: { interviewGivenBack: true } });
-  assert.equal(await w.sessionsOf('sit-s-00004'), 0, 'the unused interview is not counted');
-  // Reporting the same end again gives nothing more back.
-  await w.post('/end', 'token-a', { sessionId: 'live_1', trialSitting: 'sit-s-00004' });
-  assert.equal(await w.sessionsOf('sit-s-00004'), 0);
-
-  // The examiner began: the interview counts, however it ends.
-  assert.equal((await w.openInterview('token-a', 'sit-s-00004')).status, 201);
-  assert.equal((await w.post('/direct', 'token-a', { sessionId: 'live_2', cue: { type: 'begin' } })).status, 200);
-  assert.deepEqual((await w.post('/end', 'token-a', { sessionId: 'live_2', trialSitting: 'sit-s-00004' })).body, { ok: true });
-  assert.equal(await w.sessionsOf('sit-s-00004'), 1);
-
-  // Never began, but reported after 90 seconds: counts (no free quiet sessions).
-  assert.equal((await w.openInterview('token-a', 'sit-s-00004')).status, 201);
-  w.advance(2);
-  assert.deepEqual((await w.post('/end', 'token-a', { sessionId: 'live_3', trialSitting: 'sit-s-00004' })).body, { ok: true });
-  assert.equal(await w.sessionsOf('sit-s-00004'), 2);
-
-  // Another student cannot credit A's test with a session of their own.
-  await w.db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-s-00005' }, { userId: B });
-  assert.equal((await w.openInterview('token-b', 'sit-s-00005')).status, 201);
-  assert.deepEqual((await w.post('/end', 'token-b', { sessionId: 'live_4', trialSitting: 'sit-s-00004' })).body, { ok: true });
-  assert.equal(await w.sessionsOf('sit-s-00004'), 2, "A's count untouched");
-  assert.equal(await w.sessionsOf('sit-s-00005'), 1, "and B's own interview still counts, since B named another test");
-  await w.db.close();
+test('paid live end is owned and cannot refund quota by claiming an unused trial',async()=>{
+ const w=await speakingWorld();await buyLive(w);
+ assert.equal((await w.openInterview('token-a',undefined)).status,201);
+ assert.equal((await w.post('/end','token-b',{sessionId:'live_1'})).status,403);
+ assert.equal((await w.post('/end','token-a',{sessionId:'live_1',trialSitting:'forged-sitting'})).status,200);
+ const b=await w.db.rpc('assessment_balance',{}, {userId:A}) as any;
+ assert.equal(b.liveUsed,1);await w.db.close();
 });
-
-test('live examiner: the scheduled check hangs up interviews older than five minutes, and only those', async () => {
-  const w = await speakingWorld();
-  await w.db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-s-00003' }, { userId: A });
-  await w.openInterview('token-a', 'sit-s-00003');
-  w.advance(4);
-  assert.deepEqual(await w.close(), { closed: 0, failed: 0 }, 'four minutes in: still talking');
-  w.advance(2);
-  assert.deepEqual(await w.close(), { closed: 1, failed: 0 });
-  assert.deepEqual(w.calls.closes, ['live_1']);
-  assert.ok(w.sessions[0].ended_at, 'marked ended');
-  assert.deepEqual(await w.close(), { closed: 0, failed: 0 }, 'closed once');
-  const open = await closeOverdueTrialSessions(
-    { fetch: async () => { throw new Error('the open site must not call anything'); } } as never,
-    { ACCESS_MODE: 'open' } as never,
-  );
-  assert.deepEqual(open, { closed: 0, failed: 0 }, 'on the open site the check does nothing');
-  await w.db.close();
+test('commercial scheduled closer ends paid voice after minute 14, independently of the browser',async()=>{
+ const w=await speakingWorld();await buyLive(w);
+ await w.openInterview('token-a',undefined);w.advance(13);
+ assert.deepEqual(await w.close(),{closed:0,failed:0});w.advance(2);
+ assert.deepEqual(await w.close(),{closed:1,failed:0});
+ assert.deepEqual(w.calls.closes,['live_1']);
+ assert.deepEqual(await w.close(),{closed:0,failed:0});await w.db.close();
 });
 
 test('speaking grader: only the begun interview is graded, and a failed grade keeps the Speaking test', async () => {
@@ -491,19 +444,11 @@ test('speaking grader: only the begun interview is graded, and a failed grade ke
     );
     return { status: response.status, body: (await response.json()) as Record<string, unknown> };
   };
-  const clip = { question: 'Tell me about your work.', mimeType: 'audio/mpeg', audioBase64: 'SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA', durationMs: 60000 };
-  const interview = {
-    kind: 'interview',
-    interview: { transcript: [{ role: 'examiner', text: 'Hello.' }, { role: 'candidate', text: 'Hi there.' }], audio: clip },
-  };
-  assert.equal((await submit(null, { ...interview, trialSitting: 'sit-s-00004' })).status, 401);
-  assert.equal(
-    (await submit('token-a', { kind: 'part1', part1: { topic: 'x', answers: [clip] }, trialSitting: 'sit-s-00004' })).body.code,
-    'trial-not-included',
-    'recorded practice is not the trial test',
-  );
-  assert.equal((await submit('token-a', interview)).body.code, 'trial-no-test');
-  assert.equal(paid, 0, 'nothing paid for any of those');
+  const clip = { question: 'Tell me about your work.', mimeType: 'audio/mpeg', audioBase64: validMp3(), durationMs: 60000 };
+  const interview = {kind:'part1',part1:{topic:'Work',answers:[clip]}};
+  assert.equal((await submit(null,{...interview,trialSitting:'sit-s-00004'})).status,401);
+  assert.equal((await submit('token-a',interview)).body.code,'trial-no-test');
+  assert.equal(paid,0);
   const failed = await submit('token-a', { ...interview, trialSitting: 'sit-s-00004' });
   assert.ok(failed.status >= 500, `a failed grade (${failed.status})`);
   const status = parseTrialStatus(await w.db.rpc('trial_status', {}, { userId: A }))!;
@@ -550,14 +495,14 @@ test('speaking grader: a trial grade uses the test and returns only the band ste
     }) as typeof fetch,
     sleep: async () => undefined,
   });
-  const clip = { question: 'Tell me about your work.', mimeType: 'audio/mpeg', audioBase64: 'SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA', durationMs: 60000 };
+  const clip = { question: 'Tell me about your work.', mimeType: 'audio/mpeg', audioBase64: validMp3(), durationMs: 60000 };
   const response = await grader.fetch(
     new Request('https://speaking.test/', {
       method: 'POST',
       headers: { Origin: ORIGIN, 'Content-Type': 'application/json', Authorization: 'Bearer token-a' },
       body: JSON.stringify({
-        kind: 'interview',
-        interview: { transcript: [{ role: 'examiner', text: 'Hello.' }, { role: 'candidate', text: 'I work in a bank.' }], audio: clip },
+        kind: 'part1',
+        part1: {topic:'Work',answers:[clip]},
         trialSitting: 'sit-s-00006',
         locale: 'ru',
       }),

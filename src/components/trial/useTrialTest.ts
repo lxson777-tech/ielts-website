@@ -82,7 +82,7 @@ export function useTrialTest(testId: string, skip = false): TrialTestHook {
       } else {
         block =
           access === 'used'
-            ? 'test-used'
+            ? (section === 'writing' || section === 'speaking') && (trial.status!.assessments?.trialUsed ?? 0) >= 1 ? 'assessment-used' : 'test-used'
             : access === 'other-in-progress'
               ? 'test-other-in-progress'
               : access === 'ended'

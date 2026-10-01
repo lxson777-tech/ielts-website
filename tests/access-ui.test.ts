@@ -157,7 +157,7 @@ test('tenge is formatted for the language: ₸10,000 in English, 10 000 ₸ in R
   assert.equal(plain(formatMoney(10000, 'KZT', 'ru')), '10 000 ₸');
   assert.equal(plain(formatMoney(25000, 'KZT', 'ru')), '25 000 ₸');
   // The plans shown are the approved ones.
-  assert.deepEqual(PAID_PLANS.map((p) => [p.id, p.days, p.amount]), [['month-1', 30, 10000], ['month-3', 90, 25000]]);
+  assert.deepEqual(PAID_PLANS.map((p) => [p.id, p.days, p.amount]), [['month-1', 30, 12990], ['month-3', 90, 25000]]);
 });
 
 test('dates are long-form in each language, on the student\'s clock', () => {

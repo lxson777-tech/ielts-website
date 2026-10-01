@@ -132,6 +132,7 @@ export interface ExaminerLinkCallbacks {
 }
 
 export interface ExaminerLink {
+  sessionId?: string;
   readonly provider: LiveProvider;
   /** Sends a typed stage-direction cue. Never rejects — the exam clock must
       keep running even if the cue could not be delivered; failures surface
@@ -447,6 +448,7 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
   let closed = false;
 
   return {
+    sessionId: session.sessionId,
     provider: 'openai',
     direct(cue) {
       return sendCue(cue);

@@ -23,7 +23,7 @@
 
 import { useEffect } from 'react';
 import { useTrial } from '../../lib/trial/react';
-import { hasPaidAccess, lessonAccess, paidAccessEnded, testAccess } from '../../lib/trial/status';
+import { hasPaidAccess, paidAccessEnded, testAccess } from '../../lib/trial/status';
 import { TRIAL_OFFER } from '../../lib/trial/offer';
 import { ACCESS_MODE } from '../../lib/trial/mode';
 import TrialBlock, { accountBlock, type TrialBlockReason } from './TrialBlock';
@@ -51,7 +51,7 @@ export default function TrialGate({ spec }: { spec: TrialGateSpec }) {
   const trial = useTrial();
 
   let reason: TrialBlockReason | 'open';
-  if (ACCESS_MODE !== 'trial' || trial.phase === 'off') reason = 'open';
+  if (spec.kind === 'lesson' || ACCESS_MODE !== 'trial' || trial.phase === 'off') reason = 'open';
   else {
     const account = accountBlock(trial);
     if (account) reason = account;
@@ -60,11 +60,7 @@ export default function TrialGate({ spec }: { spec: TrialGateSpec }) {
       const access = testAccess(trial.status!, 'speaking', TRIAL_OFFER.speaking.testId, trial.now);
       reason = access === 'unavailable' ? 'speaking-unavailable' : access === 'no-trial' ? 'no-trial' : access === 'locked' ? 'locked' : 'open';
     }
-    else if (spec.kind === 'locked') reason = 'locked';
-    else {
-      const access = lessonAccess(trial.status!, spec.lessonKey, trial.now);
-      reason = access === 'included' ? 'open' : access === 'ended' ? 'ended' : access === 'locked' ? 'locked' : 'no-trial';
-    }
+    else reason = 'locked';
   }
 
   /* Paid access that has ended: the ended rules apply, and the page says

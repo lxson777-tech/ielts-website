@@ -1,3 +1,4 @@
+const validMp3 = () => { const b=Buffer.alloc(288); b[0]=255; b[1]=243; b[2]=136; return b.toString('base64'); };
 /* Paid access honoured wherever the trial is enforced: the REAL content
  * gate, Mr EZ, essay grader, speaking grader and live examiner handlers, in
  * trial mode, against the REAL trial and paid-access migrations in PGlite
@@ -317,7 +318,7 @@ test('speaking grader: a paid account may grade recorded practice (not only the 
     return Promise.resolve(new Response('{}', { status: 500 }));
   });
   const grader = createSpeaking({ fetch: fetchFn, sleep: async () => undefined } as never);
-  const clip = { question: 'Tell me about your work.', mimeType: 'audio/mpeg', audioBase64: 'SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA', durationMs: 60000 };
+  const clip = { question: 'Tell me about your work.', mimeType: 'audio/mpeg', audioBase64: validMp3(), durationMs: 60000 };
   const submit = async () => {
     const response = await grader.fetch(
       new Request('https://speaking.test/', {
@@ -329,7 +330,7 @@ test('speaking grader: a paid account may grade recorded practice (not only the 
     );
     return { status: response.status, body: (await response.json()) as Record<string, unknown> };
   };
-  assert.equal((await submit()).body.code, 'trial-not-included', 'trial: recorded practice is not the trial test');
+  assert.equal((await submit()).body.code, 'trial-no-test', 'trial: recorded practice needs a begun sitting');
   assert.equal(counts.model, 0);
   await buy(db, A);
   const paid = await submit();
@@ -413,7 +414,7 @@ test('live examiner: a paid account opens a full interview with no trial test, u
     return { status: response.status, body: (await response.json()) as Record<string, unknown> };
   };
 
-  assert.equal((await open('token-a')).body.code, 'trial-not-included', 'trial: the full test is not the trial test');
+  assert.equal((await open('token-a')).body.code, 'assessment-unavailable', 'trial: live interviews need paid access');
   assert.equal(live, 0);
   await buy(db, A);
   assert.equal((await open('token-a')).status, 201, 'paid: a full interview, no trial sitting');
@@ -433,12 +434,12 @@ test('live examiner: a paid account opens a full interview with no trial test, u
     }),
     env,
   );
-  assert.equal(bSession.status, 201);
+  assert.equal(bSession.status, 403);
 
   // Six minutes later the cut-off closes B's trial interview only.
-  now = new Date(now.getTime() + 6 * 60_000);
+  now = new Date(now.getTime() + 15 * 60_000);
   const swept = await closeOverdueTrialSessions(deps as never, env);
-  assert.deepEqual(swept, { closed: 1, failed: 0 });
-  assert.deepEqual(closes, ['live_3']);
+  assert.deepEqual(swept, { closed: 2, failed: 0 });
+  assert.deepEqual(closes, ['live_1', 'live_2']);
   await db.close();
 });

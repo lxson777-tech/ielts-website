@@ -13,7 +13,6 @@ import {
   TRIAL_SECTIONS,
   TRIAL_TUTOR_PER_SECTION,
   cleanQuestionnaire,
-  isTrialLesson,
   isTrialSection,
   lessonSection,
   type TrialQuestionnaire,
@@ -54,6 +53,7 @@ export interface PaidAccess {
 }
 
 export interface TrialStatus {
+  assessments?: { trialUsed: number; writingUsed: number; speakingUsed: number; liveUsed: number };
   /** Paid access, if any grant has ever been recorded; see hasPaidAccess. */
   paid: PaidAccess | null;
   state: TrialState;
@@ -118,6 +118,12 @@ export function parseTrialStatus(raw: unknown): TrialStatus | null {
   }
   return {
     paid: parsePaid(value.paid),
+    assessments: value.assessments && typeof value.assessments === 'object' ? {
+      trialUsed: count((value.assessments as Record<string, unknown>).trialUsed),
+      writingUsed: count((value.assessments as Record<string, unknown>).writingUsed),
+      speakingUsed: count((value.assessments as Record<string, unknown>).speakingUsed),
+      liveUsed: count((value.assessments as Record<string, unknown>).liveUsed),
+    } : undefined,
     state,
     startedAt: state === 'none' ? null : (value.startedAt as string),
     endsAt: state === 'none' ? null : (value.endsAt as string),
@@ -186,11 +192,9 @@ export type LessonAccess =
   /** No trial started on this account yet. */
   | 'no-trial';
 
-export function lessonAccess(status: TrialStatus, key: string, serverNowMs: number): LessonAccess {
-  const state = stateAt(status, serverNowMs);
-  if (state === 'none') return 'no-trial';
-  if (!isTrialLesson(key)) return 'locked';
-  return state === 'ended' ? 'ended' : 'included';
+export function lessonAccess(_status: TrialStatus, _key: string, _serverNowMs: number): LessonAccess {
+  // Public reading never expires. This does not authorize quizzes or AI.
+  return 'included';
 }
 
 /* ── One section's test ──────────────────────────────────────────────── */
@@ -214,6 +218,7 @@ export type TestAccess =
 
 /** What a student may do with `testId`, a trial activity id or paper id. */
 export function testAccess(status: TrialStatus, section: TrialSection, testId: string, serverNowMs: number): TestAccess {
+  if ((section === 'writing' || section === 'speaking') && (status.assessments?.trialUsed ?? 0) >= 1) return 'used';
   const state = stateAt(status, serverNowMs);
   if (state === 'none') return 'no-trial';
   const offer = TRIAL_OFFER[section];

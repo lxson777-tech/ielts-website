@@ -19,6 +19,7 @@ import { isTrialLesson, trialTestSection, type TrialSection } from './offer';
 
 export type TrialRefusalCode =
   /** Signed in, but no trial has been started on this account. */
+  | 'assessment-unavailable'
   | 'trial-required'
   /** The trial's 72 hours are over; nothing new starts. */
   | 'trial-ended'
@@ -54,6 +55,7 @@ export class TrialServiceError extends Error {
 }
 
 export const TRIAL_REFUSAL_TEXT: Record<TrialRefusalCode, string> = {
+  'assessment-unavailable': 'Your assessment allowance is unavailable.',
   'trial-required': 'Start your free trial to use this.',
   'trial-ended': 'Your trial has ended. New lessons, tests and Mr EZ replies are locked.',
   'trial-allowance-used': 'You have used your five Mr EZ messages for this section.',

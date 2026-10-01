@@ -143,4 +143,23 @@ export const strings: Record<string, string> = {
     'Начните с короткого задания по говорению. Отметьте момент, когда вы застряли, а затем повторите нужный метод.',
 };
 
+strings['One full Reading test, one full Listening test, and one AI assessment: choose a Writing Task 2 essay or recorded Speaking (up to five minutes).'] = 'Один полный тест Reading, один полный тест Listening и одна проверка ИИ на выбор: эссе Writing Task 2 или запись Speaking до пяти минут.';
+strings['Choose a Writing Task 2 essay for your one trial AI assessment, or choose recorded Speaking. More assessments come with paid access.'] = 'Выберите эссе Writing Task 2 для одной пробной проверки ИИ или выберите запись Speaking. Дополнительные проверки доступны после покупки.';
+strings['Choose recorded Speaking (up to five minutes) for your one trial AI assessment, or choose Writing. Live interviews come with paid access.'] = 'Выберите запись Speaking до пяти минут для одной пробной проверки ИИ или выберите Writing. Устные собеседования доступны после покупки.';
+strings['30 days of access. It ends on its own. Nothing renews, so you are never charged automatically.'] = 'Доступ на 30 дней. Он заканчивается сам. Автоматического продления и списания нет.';
+strings['Each 30-day purchase includes 12 essay assessments, 6 recorded Speaking assessments (up to 5 minutes each), and 2 live interviews with feedback (up to 15 minutes each). Unused assessments expire with that purchase. Lessons remain free for everyone. Paid access includes unlimited Reading and Listening practice. Mr EZ includes 40 chat messages and 60 lesson-help requests per day.'] = 'За каждые 30 дней: 12 проверок эссе, 6 проверок записей Speaking до 5 минут и 2 устных собеседования с разбором до 15 минут. Неиспользованные проверки сгорают в конце срока. Уроки бесплатны для всех. Платный доступ включает практику Reading и Listening без ограничений. Mr EZ: 40 сообщений в чате и 60 запросов помощи в уроках в день.';
+strings['Your trial AI assessment is used'] = 'Пробная проверка ИИ уже использована';
+strings['Writing and recorded Speaking share one trial assessment. Your result is saved. You can still use your included lessons, Reading and Listening.'] = 'Для Writing и записи Speaking доступна одна общая пробная проверка. Ваш результат сохранён. Доступные уроки, Reading и Listening остаются открытыми.';
 export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {};
+strings['Lessons remain free. Choose paid access to continue practice and AI feedback.'] = 'Уроки остаются бесплатными. Выберите платный доступ, чтобы продолжить практику и получать разбор от ИИ.';
+
+strings["All lesson explanations and worked examples are free, without an account."] = "Все объяснения и разобранные примеры в уроках бесплатны без регистрации.";
+strings["Lessons are free. Put them into practice."] = "Уроки бесплатны. Примените знания на практике.";
+strings["Read every lesson without an account. Sign in for practice and AI, with trial or paid access."] = "Читайте все уроки без регистрации. Для практики и ИИ войдите в аккаунт с пробным или платным доступом.";
+strings["Open practice"] = "Открыть практику";
+strings["Open my trial"] = "Открыть пробный доступ";
+strings["Sign in to practise"] = "Войти для практики";
+strings["Practice this skill"] = "Практика этого навыка";
+strings["Free lesson, no account needed"] = "Бесплатный урок без регистрации";
+strings["Browse free lessons"] = "Открыть бесплатные уроки";
+strings["Writing task chart"] = "Изображение к заданию Writing";

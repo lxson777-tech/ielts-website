@@ -1,3 +1,4 @@
+import AssessmentBalance from './access/AssessmentBalance';
 /* The writing tool: start → get a rotating task → write → submit → report.
    Every start serves a different prompt (localStorage rotation) until the
    whole pool has been used, then the cycle restarts. Grading goes through
@@ -580,6 +581,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
     const taskCards = trialTest.active ? allTaskCards.filter((card) => card.task === 'task2') : allTaskCards;
     return (
       <div className="writing-choice screen-in">
+        <AssessmentBalance />
         <h3>{coached ? t('Choose your writing practice') : t('Choose your writing task')}</h3>
         <p className="choice-description">
           {coached
@@ -588,7 +590,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         </p>
         {trialTest.startUsesTest && (
           <p className="choice-description">
-            {t('This is your one Writing test for the trial. It is used when your essay is graded; if grading fails, you can submit again.')}
+            {t('Choose a Writing Task 2 essay for your one trial AI assessment, or choose recorded Speaking. More assessments come with paid access.')}
           </p>
         )}
         {(trialTest.error || trialPromptError) && (

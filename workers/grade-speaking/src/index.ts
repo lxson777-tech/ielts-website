@@ -1,3 +1,6 @@
+import { meteredFetch } from '../../../src/lib/access/metering';
+import { audioDurationMs } from '../../../src/lib/access/audio-duration';
+import { reserveAssessment, finishAssessment, type AssessmentClaim } from '../../../src/lib/access/assessment';
 /* Cloudflare Worker: grades an IELTS Speaking attempt with an audio-capable
    LLM. The static site POSTs the actual recorded audio here, never a
    transcript, because Pronunciation is a real scored criterion a transcript
@@ -125,6 +128,7 @@ interface WireClip {
 }
 
 interface GradeSpeakingRequest {
+  liveSessionId?: string;
   kind: 'part1' | 'part2and3' | 'interview';
   part1?: { topic: string; answers: WireClip[] };
   part2and3?: {
@@ -1879,6 +1883,14 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
     // ~15MB of base64 audio, comfortably under both providers' inline-audio limits.
     if (totalBase64Length(body) > 15 * 1024 * 1024) return json({ error: 'Recording too long' }, 413, cors);
 
+    if (trialMode) {
+      try {
+        if (allClips(body).length > 8) return json({error:'An assessment may contain at most eight recordings.'},413,cors);
+        const duration = allClips(body).reduce((sum, clip) => sum + audioDurationMs(clip.audioBase64, clip.mimeType), 0);
+        const maximum = body.kind === 'interview' ? 15 * 60_000 : 5 * 60_000;
+        if (duration > maximum + 1000) return json({ error: body.kind === 'interview' ? 'Live recordings may be up to 15 minutes.' : 'Recorded assessments may be up to 5 minutes.' }, 413, cors);
+      } catch { return json({ error: 'The recording could not be read. Please record it again.' }, 400, cors); }
+    }
     /* The trial, before a single token is paid for: a signed-in student,
        grading the live interview of the Speaking test they began, with
        nobody else grading it right now. The recorded Part 1 / Part 2-3
@@ -1888,6 +1900,7 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
        grades (any of the three kinds, no trial test used), plus the band
        guide steps a trial build's browser does not carry. */
     let paid = false;
+    let assessmentClaim: AssessmentClaim | null = null;
     if (trialMode) {
       if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
         return json({ error: 'The speaking grader is not configured' }, 503, cors);
@@ -1897,19 +1910,18 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
         const userId = token ? await verifyAccessToken(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, token) : null;
         if (!userId) return json({ error: 'Sign in to have your speaking graded.', code: 'sign-in-required' }, 401, cors);
         const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
-        /* Paid access first (docs/paid-access/CONTRACT.md). Alex, 29
-           September 2026: paid use is "unlimited, fair daily caps" with the
-           Workers' EXISTING per-student limits. This grader has none today,
-           so a paid recording is graded as the open grader grades it. */
+        /* Paid accounts use the purchased allowance; trials share one
+           Writing or recorded Speaking assessment (30 September offer). */
         paid = await paidAccessRunning(rpc, userId);
-        if (!paid) {
+        if (!paid && body.kind !== 'interview') {
           if (!TRIAL_OFFER.speaking.testEnabled) throw refusal('trial-not-included');
-          if (body.kind !== 'interview') throw refusal('trial-not-included');
+          if (body.kind !== 'part1') throw refusal('trial-not-included');
           const sitting = readSittingId(body.trialSitting);
           if (!sitting) throw refusal('trial-no-test');
           await leaseTrialTest(rpc, userId, 'speaking', sitting);
           trial = { rpc, userId, sitting };
         }
+        assessmentClaim = await reserveAssessment(rpc, userId, body.kind === 'interview' ? 'feedback' : 'speaking', body.liveSessionId);
       } catch (err) {
         if (err instanceof TrialRefusal) {
           return json({ error: err.message, code: err.code }, err.code === 'trial-in-flight' ? 409 : 403, cors);
@@ -1920,19 +1932,21 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
     /* Nothing was graded: the Speaking test stays the student's to submit
        again. A release that fails expires on its own in minutes. */
     const keepTest = async () => {
+      await finishAssessment(assessmentClaim, false).catch(() => undefined);
       if (trial) await releaseUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);
     };
 
+    const modelDeps = {...deps, fetch: meteredFetch(deps.fetch, assessmentClaim)};
     const samples = resolveSamples(env, provider);
 
     let runs: GradeRunResult[];
     try {
     runs =
       provider === 'openai'
-        ? await runOpenAiGrading(deps, env, body, samples)
+        ? await runOpenAiGrading(modelDeps, env, body, samples)
         : await Promise.all(
             Array.from({ length: samples }, () =>
-              gradeOnceGemini(deps, env, {
+              gradeOnceGemini(modelDeps, env, {
                 system_instruction: { parts: [{ text: systemInstruction() }] },
                 contents: [{ role: 'user', parts: buildParts(body) }],
                 generationConfig: {
@@ -1961,6 +1975,7 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
       return json({ error: firstFail.failError }, firstFail.failStatus, cors);
     }
 
+    await finishAssessment(assessmentClaim, true).catch(() => undefined);
     if (trial) {
       /* Graded: the Speaking test is used, settled here on the server. */
       await settleUse(trial.rpc, trial.userId, 'test', trial.sitting).catch(() => undefined);

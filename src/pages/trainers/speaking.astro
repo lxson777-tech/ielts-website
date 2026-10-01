@@ -40,13 +40,16 @@ const historySubtitle =
 
     />
     {gated ? (
-      <PaidContent client:load view={{ name: 'speaking-trainer', live: liveConfigured }} />
+      <PaidContent client:load view={{ name: 'speaking-trainer', live: false }} />
     ) : liveConfigured ? (
       <LiveExaminer client:load variant="drills" />
     ) : (
       <SpeakingTester client:load />
     )}
 
+    <a href={withBase('/speaking/examiner')} class="skill-resource-card">
+      <span class="skill-resource-card-title" data-i18n>Live AI Examiner</span>
+    </a>
     <a href={withBase('/speaking/cue-cards')} class="skill-resource-card">
       <span class="skill-resource-card-title" data-i18n>Cue-card bank (for study, not a test)</span>
       <span class="skill-resource-card-desc" data-i18n>Read 24 Part 2 cue cards with model answers, to prepare before you speak</span>

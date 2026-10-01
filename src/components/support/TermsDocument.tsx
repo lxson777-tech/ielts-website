@@ -1,3 +1,5 @@
+import { PAID_AI_ALLOWANCE } from '../../lib/access/plans';
+import { TRIAL_SUMMARY } from '../../lib/trial/offer';
 /* /terms, in plain words (Builder E, 29 September 2026).
 
    An island rather than static Astro text because its sentences carry the
@@ -58,19 +60,14 @@ export default function TermsDocument() {
             })}
           </li>
           <li>{t('It needs an account. It does not need a payment card, and it never turns into a paid plan by itself.')}</li>
-          <li>{t('It includes a selected introduction lesson and one test in each IELTS section: Reading, Listening, Writing and Speaking.')}</li>
+          <li>{t(TRIAL_SUMMARY.tests)}</li>
           <li>
             {tn(TRIAL_TUTOR_PER_SECTION, {
               one: 'Mr EZ answers up to {n} message in each section. Only answered messages count.',
               other: 'Mr EZ answers up to {n} messages in each section. Only answered messages count.',
             })}
           </li>
-          <li>
-            {tn(TRIAL_SPEAKING_MINUTES, {
-              one: 'The Speaking test is Part 1 of the interview, about {n} minute.',
-              other: 'The Speaking test is Part 1 of the interview, about {n} minutes.',
-            })}
-          </li>
+
           <li>{t('When the trial ends, your results stay saved on your account.')}</li>
         </ul>
       </section>
@@ -79,10 +76,7 @@ export default function TermsDocument() {
         <h2 id="terms-access">{t('Full access')}</h2>
         <ul className="policy-list">
           <li>
-            {t('Full access opens the whole course for a fixed period: one month for {month}, or three months for {three}.', {
-              month: price(FULL_ACCESS_PRICES_KZT.oneMonth),
-              three: price(FULL_ACCESS_PRICES_KZT.threeMonths),
-            })}
+            {t('30 days of access. It ends on its own. Nothing renews, so you are never charged automatically.') + ' ' + price(FULL_ACCESS_PRICES_KZT.oneMonth)}
           </li>
           <li>{t('It ends automatically at the end of that period. Nothing renews, so you are never charged automatically.')}</li>
           <li>{t('Payments are not refunded after purchase. Please use the free three-day trial to decide whether the course suits you.')}</li>
@@ -92,7 +86,7 @@ export default function TermsDocument() {
       <section className="policy-section" aria-labelledby="terms-ai">
         <h2 id="terms-ai">{t('Mr EZ and AI feedback')}</h2>
         <ul className="policy-list">
-          <li>{t('With full access there is no monthly allowance for normal study with Mr EZ, essay feedback and Speaking feedback.')}</li>
+          <li>{t(PAID_AI_ALLOWANCE)}</li>
           <li>{t('Each account has a fair daily safety limit, so the service stays available for everyone. If you reach it, you can carry on the next day.')}</li>
           <li>{t('AI feedback is an estimate against the public IELTS band descriptors. It is not an official IELTS result.')}</li>
         </ul>

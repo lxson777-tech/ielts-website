@@ -34,6 +34,7 @@ export function gradingAvailable(): boolean {
 export interface InterviewGradeOptions {
   /** Minimum candidate-speech length a serious attempt of this session shape has. */
   expectedMinMs: number;
+  liveSessionId?: string;
   /** One-line description of the session shape for the grading prompt, e.g.
       "a Part 2 practice drill (cue-card talk only)". Omit for the full test.
       Older Workers ignore this field, so it degrades cleanly. */
@@ -65,6 +66,7 @@ export async function gradeInterview(
     headers,
     body: JSON.stringify({
       kind: 'interview',
+      liveSessionId: opts.liveSessionId,
       ...(opts.trial
         ? { trialSitting: opts.trial.sitting, locale: opts.trial.locale ?? 'en' }
         : signIn

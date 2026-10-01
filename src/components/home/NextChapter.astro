@@ -33,7 +33,7 @@ const k = (key: string) => key as SalesKey;
   <nav class="chapter-nav" aria-label={sales('nav.main')} data-sales-attr="aria-label:nav.main" id="chapter-nav">
     <a href="#meet-mr-ez" data-sales="nav.tutor">{sales('nav.tutor')}</a>
     <a href="#feedback" data-sales="nav.feedback">{sales('nav.feedback')}</a>
-    <a href="#your-classroom" data-sales="nav.inside">{sales('nav.inside')}</a>
+    <a href={withBase('/learn')} data-sales="nav.lessons">{sales('nav.lessons')}</a>
     <a href="#your-plan" data-sales="nav.plan">{sales('nav.plan')}</a><a href="#pricing" data-sales="nav.pricing">{sales('nav.pricing')}</a>
     <a class="menu-sign-in" href={signIn} data-sales="nav.signIn">{sales('nav.signIn')}</a>
   </nav>

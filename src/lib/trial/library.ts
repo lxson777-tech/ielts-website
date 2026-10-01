@@ -27,7 +27,7 @@ export interface TrialLibrarySection {
   /** The one lesson the trial opens. */
   lesson: TrialLibraryLesson;
   /** Every other lesson in the section, in course order, locked. */
-  others: { key: string; title: string }[];
+  others: { key: string; title: string; href: string }[];
   test: { id: string; title: string; href: string; enabled: boolean };
 }
 
@@ -54,7 +54,7 @@ export function trialLibrary(testTitle: (id: string) => string | undefined): Tri
       section,
       label: LABEL[section],
       lesson: { key: lesson.key, title: lesson.title, blurb: lesson.blurb, href: lesson.href, minutes: lesson.minutes },
-      others: lessons.filter((l) => l.key !== offer.lessonKey).map((l) => ({ key: l.key, title: l.title })),
+      others: lessons.filter((l) => l.key !== offer.lessonKey).map((l) => ({ key: l.key, title: l.title, href: l.href })),
       test: {
         id: offer.testId,
         title:

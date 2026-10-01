@@ -29,6 +29,7 @@ export type TrialBlockReason =
   | 'speaking-unavailable'
   /* The section's test only. */
   | 'test-used'
+  | 'assessment-used'
   | 'test-other-in-progress'
   | 'test-ended';
 
@@ -82,6 +83,11 @@ export default function TrialBlock({
   let body = '';
   let actions: ReactNode = null;
   switch (reason) {
+    case 'assessment-used':
+      heading = t('Your trial AI assessment is used');
+      body = t('Writing and recorded Speaking share one trial assessment. Your result is saved. You can still use your included lessons, Reading and Listening.');
+      actions = <>{plans}{home}</>;
+      break;
     case 'checking':
       return (
         <section className={`trial-ui trial-gate${variant === 'full' ? ' is-full' : ''}`} aria-busy="true" aria-live="polite">
@@ -130,7 +136,7 @@ export default function TrialBlock({
       break;
     case 'no-trial':
       heading = t('Start your free trial to open this');
-      body = t('Three days, no payment card. A selected introduction and one test in each IELTS section.');
+      body = t('One full Reading test, one full Listening test, and one AI assessment: choose a Writing Task 2 essay or recorded Speaking (up to five minutes).');
       actions = (
         <a className="trial-btn trial-primary" href={withBase('/trial')}>
           {t('Start my free trial')}
@@ -140,7 +146,7 @@ export default function TrialBlock({
     case 'ended':
     case 'test-ended':
       heading = t('Your trial has ended');
-      body = t('New lessons, tests and Mr EZ replies are locked. Choose full access to continue learning.');
+      body = t('Lessons remain free. Choose paid access to continue practice and AI feedback.');
       actions = (
         <>
           {plans}
@@ -185,7 +191,7 @@ export default function TrialBlock({
     case 'locked':
     default:
       heading = t('Available with full access');
-      body = t('Your trial includes one selected introduction and one test in each section. This page is part of the full course.');
+      body = t('One full Reading test, one full Listening test, and one AI assessment: choose a Writing Task 2 essay or recorded Speaking (up to five minutes).');
       actions = (
         <>
           {plans}
