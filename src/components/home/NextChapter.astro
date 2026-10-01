@@ -2,19 +2,22 @@
 import { withBase } from '../../lib/url';
 import QuestionJourney from './QuestionJourney.astro';
 import SalesDemo from './SalesDemo.astro';
-import TrialPricing from './TrialPricing.astro';
-import { signInHref } from '../../lib/auth/profile';
+import PricingPlans from './PricingPlans.astro';
+import { signInHref, signUpHref } from '../../lib/auth/profile';
 import { sales, type SalesKey } from '../../marketing/sales-copy';
-/* Every way in goes to the real platform: the trial page (which carries the
+/* Every way in goes to the real platform (Alex, 1 October 2026: every lesson
+   is free with an account, practice and guidance are paid, no trial):
+   "Create a free account" to the sign-up page (which carries the
    questionnaire's answers once they are chosen, see question-journey.ts),
-   the sign-in page, or the plans page. Prices come from the one approved
-   source (via src/marketing/sales-copy.ts) so this page and /plans cannot
-   disagree.
+   "Sign in", or "Get practice and guidance" to the plans page. Lesson
+   pages are not linked from here: a signed-out visitor would only meet the
+   invitation to sign up. Prices come from the one approved source (via
+   src/marketing/sales-copy.ts) so this page and /plans cannot disagree.
 
    Every sentence lives in src/marketing/sales-copy.ts, in English and
    Russian. Here the English is rendered; data-sales / data-sales-attr let
    src/marketing/sales-i18n.ts swap in the visitor's language. */
-const trialHref = withBase('/trial');
+const signUp = signUpHref();
 const signIn = signInHref();
 const asset = (name: string) => withBase(`/pics/next-chapter/${name}`);
 const skills = [
@@ -24,7 +27,7 @@ const skills = [
   { id: 'speaking', name: 'Speaking', number: '04' },
 ];
 const methodKeys = (id: string) => (['m1', 'm2', 'm3'] as const).map((m) => `skill.${id}.${m}` as SalesKey);
-const faqs = ['trial', 'cost', 'refund', 'unlimited', 'start', 'account', 'official', 'exam', 'phone', 'speed'];
+const faqs = ['free', 'paid', 'cost', 'renewal', 'refund', 'unlimited', 'account', 'academic', 'official', 'exam', 'phone', 'speed'];
 const k = (key: string) => key as SalesKey;
 ---
 <aside class="sales-review-note" data-sales="review.note">{sales('review.note')}</aside>
@@ -33,7 +36,6 @@ const k = (key: string) => key as SalesKey;
   <nav class="chapter-nav" aria-label={sales('nav.main')} data-sales-attr="aria-label:nav.main" id="chapter-nav">
     <a href="#meet-mr-ez" data-sales="nav.tutor">{sales('nav.tutor')}</a>
     <a href="#feedback" data-sales="nav.feedback">{sales('nav.feedback')}</a>
-    <a href={withBase('/learn')} data-sales="nav.lessons">{sales('nav.lessons')}</a>
     <a href="#your-plan" data-sales="nav.plan">{sales('nav.plan')}</a><a href="#pricing" data-sales="nav.pricing">{sales('nav.pricing')}</a>
     <a class="menu-sign-in" href={signIn} data-sales="nav.signIn">{sales('nav.signIn')}</a>
   </nav>
@@ -44,7 +46,7 @@ const k = (key: string) => key as SalesKey;
       <button type="button" lang="en" title="English" data-lang-option="en" aria-pressed="true">EN</button>
       <button type="button" lang="ru" title="Русский" data-lang-option="ru" aria-pressed="false">RU</button>
     </div>
-    <a class="workspace-link" href={signIn} data-sales="nav.signIn">{sales('nav.signIn')}</a><a class="button button-small" href={trialHref} data-trial-link data-sales="nav.trial">{sales('nav.trial')}</a><button class="menu-toggle" aria-label={sales('nav.menuOpen')} data-sales-attr="aria-label:nav.menuOpen" aria-controls="chapter-nav" aria-expanded="false"><span></span><span></span></button></div>
+    <a class="workspace-link" href={signIn} data-sales="nav.signIn">{sales('nav.signIn')}</a><a class="button button-small" href={signUp} data-signup-link data-sales="nav.signUp">{sales('nav.signUp')}</a><button class="menu-toggle" aria-label={sales('nav.menuOpen')} data-sales-attr="aria-label:nav.menuOpen" aria-controls="chapter-nav" aria-expanded="false"><span></span><span></span></button></div>
 </header></div>
 <main id="main" data-next-chapter>
   <section class="campus-story" aria-labelledby="hero-title" data-campus-scene data-sc-act="flow">
@@ -140,13 +142,13 @@ const k = (key: string) => key as SalesKey;
 
   </section>
 
-  <TrialPricing />
+  <PricingPlans />
 
   <section class="questions section-pad" id="questions" data-sc-act="flow"><div class="content-wrap questions-grid"><div><p class="section-note" data-sales="faq.note">{sales('faq.note')}</p><h2 data-sc-copy data-sales="faq.title" set:html={sales('faq.title')} /></div><div class="faq-list">{faqs.map((id) => <details><summary><span class="faq-q" data-sales={k(`faq.${id}.q`)}>{sales(k(`faq.${id}.q`))}</span><span aria-hidden="true">+</span></summary><p data-sales={k(`faq.${id}.a`)}>{sales(k(`faq.${id}.a`))}</p></details>)}</div></div></section>
 
   <section class="next-chapter-close" aria-labelledby="close-title" data-sc-act="flow">
     <img src={asset('university-campus.jpg')} width="1536" height="1024" loading="lazy" alt="" />
-    <div class="close-card"><p class="section-note" data-sales="close.note">{sales('close.note')}</p><h2 data-sc-copy id="close-title" data-sales="close.title" set:html={sales('close.title')} /><p data-sales="close.lead" set:html={sales('close.lead')} /><a class="button" href={trialHref} data-trial-link data-sales="nav.trial">{sales('nav.trial')}</a><a class="close-secondary" href={signIn} data-sales="close.signIn">{sales('close.signIn')}</a></div>
+    <div class="close-card"><p class="section-note" data-sales="close.note">{sales('close.note')}</p><h2 data-sc-copy id="close-title" data-sales="close.title" set:html={sales('close.title')} /><p data-sales="close.lead" set:html={sales('close.lead')} /><a class="button" href={signUp} data-signup-link data-sales="nav.signUp">{sales('nav.signUp')}</a><a class="close-secondary" href={signIn} data-sales="close.signIn">{sales('close.signIn')}</a></div>
   </section>
 </main>
 <footer class="story-footer"><div class="footer-top content-wrap"><a class="wordmark" href="#main" aria-label={sales('nav.home')} data-sales-attr="aria-label:nav.home">IELTS<span>is</span><b>EZ</b></a><p data-sales="foot.tagline" set:html={sales('foot.tagline')} /><nav aria-label={sales('foot.nav')} data-sales-attr="aria-label:foot.nav"><a href="#your-classroom" data-sales="foot.teach">{sales('foot.teach')}</a><a href="#meet-mr-ez" data-sales="foot.ez">{sales('foot.ez')}</a><a href="#pricing" data-sales="nav.pricing">{sales('nav.pricing')}</a><a href="#questions" data-sales="foot.questions">{sales('foot.questions')}</a><a href={withBase('/privacy')} data-sales="foot.privacy">{sales('foot.privacy')}</a><a href={withBase('/terms')} data-sales="foot.terms">{sales('foot.terms')}</a><a href={withBase('/support?reason=footer')} data-sales="foot.support">{sales('foot.support')}</a></nav></div><div class="footer-bottom content-wrap"><span>© {new Date().getFullYear()} IELTS is EZ</span><span data-sales="foot.independent">{sales('foot.independent')}</span><a href="#main" data-sales="foot.top">{sales('foot.top')}</a></div></footer>

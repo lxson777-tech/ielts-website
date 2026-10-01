@@ -1,0 +1,44 @@
+---
+import { withBase } from '../../lib/url';
+import { signUpHref } from '../../lib/auth/profile';
+import { sales, type SalesKey } from '../../marketing/sales-copy';
+import { PURCHASE_ENABLED } from '../access/payments';
+/* Free and paid, side by side (Alex, 1 October 2026): a free account opens
+   every lesson; practice and guidance are one price for 30 days.
+
+   The price comes from the one approved source (also used by /plans),
+   through src/marketing/sales-copy.ts, which formats it for each language.
+   Buying is only possible where the build has a payments Worker
+   (PURCHASE_ENABLED): there "Get practice and guidance" leads to /plans,
+   where the student signs in and buys; everywhere else the button stays
+   unavailable and the page says so. "Create a free account" opens sign-up
+   and carries the questionnaire's answers once they are chosen
+   (data-signup-link, src/scripts/question-journey.ts). */
+const freeList = ['price.free.1', 'price.free.2', 'price.free.3', 'price.free.4'] as SalesKey[];
+const paidList = ['price.paid.1', 'price.paid.2', 'price.paid.3', 'price.paid.4', 'price.paid.5'] as SalesKey[];
+---
+<section class="trial-pricing access-pricing section-pad" id="pricing" aria-labelledby="pricing-title">
+ <div class="content-wrap">
+  <div class="pricing-heading"><h2 id="pricing-title" data-sales="price.title" set:html={sales('price.title')} /><p data-sales="price.lead" set:html={sales('price.lead')} /></div>
+  <div class="price-compare" role="list" aria-label={sales('price.compare')} data-sales-attr="aria-label:price.compare">
+   <article class="price-option price-free" role="listitem" aria-labelledby="price-free-title">
+    <p class="price-kind" data-sales="price.free.label">{sales('price.free.label')}</p>
+    <h3 id="price-free-title" data-sales="price.free.title">{sales('price.free.title')}</h3>
+    <p class="price-amount" data-sales="price.free.amount" set:html={sales('price.free.amount')} />
+    <ul class="price-list">{freeList.map((key) => <li data-sales={key}>{sales(key)}</li>)}</ul>
+    <a class="price-choose" href={signUpHref()} data-signup-link data-sales="nav.signUp">{sales('nav.signUp')}</a>
+   </article>
+   <article class="price-option price-paid" role="listitem" aria-labelledby="price-paid-title">
+    <p class="price-kind" data-sales="price.paid.label">{sales('price.paid.label')}</p>
+    <h3 id="price-paid-title" data-sales="price.paid.title">{sales('price.paid.title')}</h3>
+    <p class="price-amount" data-sales="price.paid.amount" set:html={sales('price.paid.amount')} />
+    <ul class="price-list">{paidList.map((key) => <li data-sales={key}>{sales(key)}</li>)}</ul>
+    <small class="price-small" data-sales="price.paid.small">{sales('price.paid.small')}</small>
+    {PURCHASE_ENABLED
+      ? <a class="price-choose" href={withBase('/plans')} data-buy-link data-sales="price.paid.cta">{sales('price.paid.cta')}</a>
+      : <button type="button" disabled aria-describedby="checkout-status" data-sales="price.paid.cta">{sales('price.paid.cta')}</button>}
+   </article>
+  </div>
+  <p class="checkout-status" id="checkout-status">{PURCHASE_ENABLED ? <span data-sales="price.status.open">{sales('price.status.open')}</span> : <span data-sales="price.status">{sales('price.status')}</span>} <a href={withBase('/plans')} data-sales="price.plans">{sales('price.plans')}</a></p>
+ </div>
+</section>
