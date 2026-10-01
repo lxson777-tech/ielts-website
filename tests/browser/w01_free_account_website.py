@@ -239,8 +239,10 @@ def run() -> int:
         page.wait_for_timeout(1700)  # the questionnaire's own glide to the plan
         shot(page, "06-plan-en-1440")
         tags = [t.strip() for t in page.locator("[data-plan-access]").all_inner_texts()]
-        check("en plan: day 1 is a free lesson, days 2 and 3 need practice and guidance",
-              tags == ["Free lesson", "Practice and guidance", "Practice and guidance"], str(tags))
+        # Since 1 October 2026 the result is two free lessons from the hardest section.
+        titles = [t.strip() for t in page.locator("[data-plan-lessons] h3").all_inner_texts()]
+        check("en plan: two free Writing lessons for knowing how to answer",
+              tags == ["Free lesson", "Free lesson"] and titles == ["Writing Overview", "How to Answer Task 2"], str(tags + titles))
         action = text_of(page, ".journey-plan-action")
         check("en plan: ends in create a free account and start with these lessons",
               "Start with these lessons." in action and "Create a free account" in action, action.replace("\n", " "))

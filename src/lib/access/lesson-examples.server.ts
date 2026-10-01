@@ -14,6 +14,14 @@ export const LESSON_EXAMPLE_VARIANTS: Record<string, string[]> = {
   problem: ['problem-solution'], twopart: ['two-part'],
 };
 
+/** Whether lessonExample() would publish an example for this lesson, without
+    building it: the lesson page reads only this yes or no, so no part of the
+    example itself reaches the gated build's HTML. */
+export function hasLessonExample(lesson: string): boolean {
+  const variants = LESSON_EXAMPLE_VARIANTS[lesson] ?? [];
+  return WRITING_PROMPTS.some((source) => source.id !== TRIAL_WRITING.essayPromptId && variants.includes(source.variant) && getModelAnswers(source.id).length > 0);
+}
+
 export function lessonExample(lesson: string) {
   const variants = LESSON_EXAMPLE_VARIANTS[lesson] ?? [];
   for (const source of WRITING_PROMPTS) {

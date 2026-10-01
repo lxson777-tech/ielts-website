@@ -337,7 +337,9 @@ button.auth-link { padding: 0; border: 0; background: none; font: inherit; curso
 @media (max-width: 560px) {
   .account-head { flex-direction: column; align-items: stretch; }
   .account-tabs { display: flex; }
-  .account-tabs button { flex: 1 1 0; padding: 0 8px; font-size: 13px; }
+  .account-tabs { border-radius: 22px; }
+  /* A long name ("Сохранённое и результаты") wraps onto two lines inside its tab instead of widening the page. */
+  .account-tabs button { flex: 1 1 0; min-width: 0; height: auto; min-height: 40px; padding: 6px 8px; font-size: 13px; line-height: 1.2; white-space: normal; border-radius: 18px; }
   .account-signed-out { padding: 32px 20px; }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -302,7 +302,9 @@ test('lesson bodies and the lesson\'s worked example are not in the gated build\
   assert.match(read('src/pages/lessons/reading-task1.astro'), /\{!gated && <Fragment set:html=\{bodyAfterCards\} \/>\}/);
   assert.match(read('src/pages/lesson-bodies/[locale]/[slug].html.ts'), /if \(ACCESS_MODE === 'trial'\) return \[\];/);
   const writing = read('src/pages/lessons/writing/[part].astro');
-  assert.match(writing, /<LessonModelExample client:load lesson=\{part\.slug\} \/>/, 'no example in the page');
+  // The page passes only whether an example exists (2 October 2026), never the example.
+  assert.match(writing, /<LessonModelExample client:load lesson=\{part\.slug\} available=\{hasExample\} \/>/, 'no example in the page');
+  assert.match(writing, /const hasExample = hasLessonExample\(part\.slug\);/);
   assert.doesNotMatch(writing, /lessonExample\(/);
   assert.match(read('src/components/LessonModelExample.tsx'), /LESSON_EXAMPLE_PATH = \(lesson: string\): string => `example\/writing-\$\{lesson\}`/, 'G\'s door: example/writing-<slug>');
   assert.match(read('src/layouts/BaseLayout.astro'), /const gated = ACCESS_MODE === 'trial' && Boolean\(trialGate\);/, 'lessons sit behind the gate again');

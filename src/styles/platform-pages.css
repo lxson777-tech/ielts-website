@@ -489,3 +489,8 @@
 .ws-page:has(> .writing-trainer-page) {
   max-width: 1360px;
 }
+
+/* Practice: the study banks line under the trainers (2 October 2026). */
+.practice-banks { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; margin: 22px 0 0; font-size: 14px; color: var(--color-ink-muted); }
+.practice-banks a { font-weight: 600; color: var(--color-brand); text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 30%, transparent); text-underline-offset: 4px; transition: text-decoration-color 200ms ease; }
+.practice-banks a:hover { text-decoration-color: currentColor; }

@@ -101,6 +101,15 @@ const trainers: {
         </article>
       ))}
     </div>
+    {/* The two study banks' home since the account menu was shortened
+        (2 October 2026). For an account without practice and guidance the
+        links open the upgrade pop-up, like the tiles above. */}
+    <p class="practice-banks">
+      <span data-i18n>Study from examples:</span>
+      <a href={withBase('/writing/models')} data-i18n>Model answers</a>
+      <span aria-hidden="true">·</span>
+      <a href={withBase('/speaking/cue-cards')} data-i18n>Cue cards</a>
+    </p>
     <PracticeOrTest current="practice" />
     <p class="mt-8 text-center text-sm">
       <a href={withBase('/tests')} class="font-semibold text-brand hover:underline" data-i18n>

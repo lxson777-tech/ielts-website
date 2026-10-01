@@ -6,6 +6,7 @@ import EssayCheckerCta from '../../../components/EssayCheckerCta.astro';
 import LessonModelExample from '../../../components/LessonModelExample';
 import { withBase } from '../../../lib/url';
 import { WRITING_PARTS } from '../../../data/writing';
+import { hasLessonExample } from '../../../lib/access/lesson-examples.server';
 
 export function getStaticPaths() {
   return WRITING_PARTS.map((part, i) => ({
@@ -26,6 +27,12 @@ if (!raw) throw new Error(`Missing fragment for writing part: ${part.slug}`);
 const body = raw.replaceAll('../pics/', withBase('/pics/'));
 
 const overviewUrl = withBase('/lessons/writing');
+/* Whether this lesson has a worked example to publish at all (the same
+   choice tools/build-gated-content.mjs makes). The Problem / Solution lesson
+   has none: the question bank holds no problem-solution task yet. Without
+   this the gated page asked the content door for it on every visit and got
+   a 404 (found 2 October 2026). */
+const hasExample = hasLessonExample(part.slug);
 ---
 
 <LessonLayout
@@ -42,7 +49,7 @@ const overviewUrl = withBase('/lessons/writing');
   {/* The gated build (the free-account model) publishes no example: it
       comes through the content door for any signed-in account, with the
       lesson (LessonModelExample). */}
-  <LessonModelExample client:load lesson={part.slug} />
+  <LessonModelExample client:load lesson={part.slug} available={hasExample} />
 
   <EssayCheckerCta task={part.task} />
 

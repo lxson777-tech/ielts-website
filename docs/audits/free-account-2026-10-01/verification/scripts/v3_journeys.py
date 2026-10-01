@@ -298,17 +298,16 @@ def free_student(browser):
             note_trial(page, sec + path)
         except Exception as e:  # noqa: BLE001
             R.check(sec, f"{path}: paid link sweep finished", False, str(e)[:160])
-    # The account menu's library links (band guide, model answers, cue cards).
-    visit(page, "/dashboard")
-    menu = page.locator("button.ws-avatar:visible").first
-    for route, feat in (("/learn/bands", "band-guide"), ("/writing/models", "model-answers"), ("/speaking/cue-cards", "cue-cards")):
+    # The library links (band guide, model answers, cue cards). Since the
+    # account menu was shortened (2 October 2026) they live in their sections:
+    # the band guide on Tests, model answers and cue cards in Practice.
+    for route, feat, home in (("/learn/bands", "band-guide", "/tests"), ("/writing/models", "model-answers", "/trainers"), ("/speaking/cue-cards", "cue-cards", "/trainers")):
         try:
-            menu.click()
-            page.wait_for_selector(f"a[href$='{route}']:visible", timeout=5000)
-            opens_dialog(sec, page, f"account menu: {route} opens the pop-up", page.locator(f"a[href$='{route}']:visible"), feat)
+            visit(page, home)
+            page.wait_for_selector(f"main a[href$='{route}']", timeout=8000)
+            opens_dialog(sec, page, f"{home}: {route} link opens the pop-up", page.locator(f"main a[href$='{route}']").first, feat)
         except Exception as e:  # noqa: BLE001
-            R.check(sec, f"account menu: {route} opens the pop-up", False, str(e)[:120])
-        page.keyboard.press("Escape")
+            R.check(sec, f"{home}: {route} link opens the pop-up", False, str(e)[:120])
     # Vocabulary review practice.
     visit(page, "/review")
     page.wait_for_selector(".vocab-topic-card", timeout=30000)
@@ -331,13 +330,13 @@ def free_student(browser):
             if path == "/tests/mock":
                 R.shot(page, f"{sec}-locked-mock")
     # /plans and /account.
-    for path in ("/plans", "/account"):
+    for path in ("/plans", "/account#access"):
         visit(page, path)
         page.wait_for_selector(".access-strip b", timeout=20000)
         label = page.locator(".access-strip b").first.inner_text().strip()
         R.check(sec, f"{path} says Free account", label == "Free account", label)
         R.check(sec, f"{path}: no trial wording", not note_trial(page, sec + path))
-        R.shot(page, f"{sec}{path.replace('/', '-')}")
+        R.shot(page, f"{sec}{path.replace('/', '-').replace('#', '-')}")
     # The nudge is per account: a second browser, same account, finishing a lesson: no nudge.
     ctx2 = new_context(browser)
     p2 = ctx2.new_page()
@@ -373,7 +372,7 @@ def free_phone(browser, lang, w, h):
         page.wait_for_function("() => document.documentElement.lang === 'ru' && /[а-я]/i.test(document.querySelector('[data-free-home] h1').textContent)", timeout=15000)
     R.check(sec, f"Today in {lang}", True)
     pages = ["/dashboard", "/lessons/reading/tfng", "/lessons/writing/opinion", "/lessons/vocabulary/environment", "/tests", "/trainers", "/review",
-             "/plans", "/account", "/tests/mock", "/start", "/learn"]
+             "/plans", "/account#access", "/tests/mock", "/start", "/learn"]
     for path in pages:
         visit(page, path)
         if path.startswith("/lessons/"):
@@ -386,12 +385,12 @@ def free_phone(browser, lang, w, h):
             page.wait_for_selector("[data-paid-locked]", timeout=20000)
         ov = overflow(page)
         R.check(sec, f"{path}: no sideways scroll at {w}", ov <= 0, ov)
-        if lang == "ru" and path in ("/plans", "/account"):
+        if lang == "ru" and path in ("/plans", "/account#access"):
             page.wait_for_selector(".access-strip b", timeout=20000)
             label = page.locator(".access-strip b").first.inner_text().strip()
             R.check(sec, f"{path} says the free account in Russian", re.search(r"[а-я]", label, re.I) is not None and "есплатн" in label, label)
         R.check(sec, f"{path}: no trial wording", not note_trial(page, sec + path))
-        R.shot(page, f"{sec}{path.replace('/', '-')}")
+        R.shot(page, f"{sec}{path.replace('/', '-').replace('#', '-')}")
     visit(page, "/tests", "[data-test-rotation]")
     page.locator("[data-test-rotation]").first.click()
     feat = dialog_feature(page)
@@ -455,7 +454,7 @@ def paying_student(browser):
     page.wait_for_selector(".access-strip.is-paid b", timeout=30000)
     label = page.locator(".access-strip b").first.inner_text()
     R.check(sec, "/plans says Practice and guidance until <date>", label.startswith("Practice and guidance until"), label)
-    visit(page, "/account")
+    visit(page, "/account#access")
     page.wait_for_selector("[data-assessment-balance=paid]", timeout=30000)
     bal = page.locator("[data-assessment-balance=paid]").inner_text()
     R.check(sec, "allowances shown: Writing 12, Speaking 6, live 2, mock 2", all(x in bal for x in ("12 of 12", "6 of 6", "2 of 2")) and bal.count("2 of 2") == 2, bal.replace("\n", " | "))
@@ -568,7 +567,7 @@ def paying_student(browser):
         pass
     rows_after = page.locator("table tbody tr").count()
     R.check(sec, "after expiry saved results are still shown", rows_after >= rows_before and rows_after >= (1 if result_saved else 0), f"before={rows_before} after={rows_after}")
-    visit(page, "/account")
+    visit(page, "/account#access")
     page.wait_for_selector("text=Purchase history", timeout=20000)
     R.check(sec, "after expiry the purchase history is kept", "₸12,990" in body_text(page))
     R.shot(page, f"{sec}-account-after-expiry")
@@ -645,7 +644,7 @@ def complimentary(browser):
     R.shot(sp, f"{sec}-student-plans")
     for path in ("/tests/mock", "/writing/checker", "/trainers/writing", "/speaking/cue-cards"):
         check_open(sec, sp, path, "complimentary: ")
-    visit(sp, "/account")
+    visit(sp, "/account#access")
     try:
         sp.wait_for_selector("[data-assessment-balance=paid]", timeout=20000)
         bal = sp.locator("[data-assessment-balance=paid]").inner_text()

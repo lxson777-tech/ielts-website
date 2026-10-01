@@ -162,6 +162,18 @@ import { nt } from '../lib/i18n/translate';
 import { speakingActivityId, speakingPart3ActivityId } from '../lib/learning/catalog';
 import { parseSpeakingDeepLink } from './attempt-recording';
 
+/* What a failed start says to the student. Our own errors carry sentences
+   written for students; an error the BROWSER raised (a WebRTC
+   DOMException such as "Failed to execute 'setRemoteDescription'...", or a
+   network TypeError such as "Failed to fetch") is technical, so it becomes
+   one plain sentence (found by the click test, 2 October 2026). */
+function studentMessage(e: unknown, fallback: string, t: (key: string) => string): string {
+  if (!(e instanceof Error)) return fallback;
+  const browserRaised = (typeof DOMException !== 'undefined' && e instanceof DOMException) || e instanceof TypeError ||
+    /Failed to (execute|fetch|parse)|RTCPeerConnection|SessionDescription|NetworkError|Load failed/i.test(e.message);
+  return browserRaised ? t(nt('Could not connect to the examiner just now. Check your internet connection and press Start again.')) : e.message;
+}
+
 const TOKEN_URL: string | undefined = import.meta.env?.PUBLIC_LIVE_EXAMINER_URL;
 
 /* The exam clock (all from session start unless noted). */
@@ -514,7 +526,7 @@ export default function LiveExaminer({
         }
         startingRef.current = false;
         setPhase(mock ? 'error' : 'menu');
-        setError(e instanceof Error ? e.message : t('Could not reach the live examiner service.'));
+        setError(studentMessage(e, t('Could not reach the live examiner service.'), t));
         return;
       }
     }
@@ -674,9 +686,7 @@ export default function LiveExaminer({
           ? trialLiveRefusal(e.code, e.message, e.reason)
           : trialSitting
             ? t('The Speaking test could not start just now. Nothing was used: press Start again.')
-            : e instanceof Error
-              ? e.message
-              : t('Could not start the examiner session.'),
+            : studentMessage(e, t('Could not start the examiner session.'), t),
       );
       if (trialTest.active) void refreshTrial();
       return;

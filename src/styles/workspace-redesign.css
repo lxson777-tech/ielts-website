@@ -259,6 +259,12 @@
   .workspace-v2 .lesson-body { font-size: 15px; }
   .workspace-v2 .lesson-body .section > h2 { font-size: 24px; }
 }
+/* The narrowest phones (Russian "Войти" at 320): the word alone, so the
+   header never pushes the page sideways. */
+@media (max-width: 400px) {
+  .workspace-v2 .ws-login { gap: 0; padding: 0 14px; }
+  .workspace-v2 .ws-login svg { display: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   .workspace-v2 *, .workspace-v2 *::before, .workspace-v2 *::after { scroll-behavior: auto; animation-duration: .01ms !important; animation-delay: 0ms !important; transition-duration: .01ms !important; }
 }

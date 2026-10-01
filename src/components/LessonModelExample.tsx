@@ -59,7 +59,11 @@ const CRITERION_LABEL: { key: keyof ModelAnswer['criteria']; label: string }[] =
     with a profile, as part of the lesson. */
 export const LESSON_EXAMPLE_PATH = (lesson: string): string => `example/writing-${lesson}`;
 
-export default function LessonModelExample({ lesson }: { lesson: string }) {
+/** `available` is false when the build has no worked example for this
+    lesson (decided at build time on the lesson page), so the gated page does
+    not ask the content door for one that does not exist. */
+export default function LessonModelExample({ lesson, available = true }: { lesson: string; available?: boolean }) {
+  if (!available) return null;
   return contentIsGated() ? <GatedLessonModel lesson={lesson} /> : <OpenLessonModel lesson={lesson} />;
 }
 
