@@ -18,8 +18,14 @@
 import { isTrialLesson, trialTestSection, type TrialSection } from './offer';
 
 export type TrialRefusalCode =
-  /** Signed in, but no trial has been started on this account. */
+  /** Free-account model (docs/paid-access/FREE-ACCOUNT-MODEL.md, 1 October
+      2026): a signed-in account without paid or complimentary access asked
+      for practice or guidance. Answered with HTTP 402 BEFORE any provider
+      call, as { error, code: 'paid-required', reason: 'paid-required' }. */
+  | 'paid-required'
+  /** An allowance refusal from the database (reason says which). */
   | 'assessment-unavailable'
+  /** Signed in, but no trial has been started on this account. */
   | 'trial-required'
   /** The trial's 72 hours are over; nothing new starts. */
   | 'trial-ended'
@@ -81,7 +87,17 @@ export class TrialServiceError extends Error {
   }
 }
 
+/** The paid-required sentence, in both languages (the Russian is also in
+    src/lib/i18n/dict/ru/g-free.ts, so a screen's t(error) finds it). The
+    Workers send the English as `error`; the site normally opens its upgrade
+    pop-up from the code instead of showing either. */
+export const PAID_REQUIRED_TEXT = {
+  en: 'Practice and personal guidance come with paid access. Every lesson stays free with your account.',
+  ru: 'Практика и личное сопровождение доступны с оплатой. Все уроки остаются бесплатными в вашем аккаунте.',
+} as const;
+
 export const TRIAL_REFUSAL_TEXT: Record<TrialRefusalCode, string> = {
+  'paid-required': PAID_REQUIRED_TEXT.en,
   'assessment-unavailable': 'Your assessment allowance is unavailable.',
   'trial-required': 'Start your free trial to use this.',
   'trial-ended': 'Your trial has ended. New lessons, tests and Mr EZ replies are locked.',
@@ -163,6 +179,10 @@ function checkObject(fn: string, body: unknown): Record<string, unknown> {
 }
 
 const REASON_TO_CODE: Record<string, TrialRefusalCode> = {
+  /* The trial is retired (2026-10-01-free-account.sql): its functions
+     answer this, and nothing is spent. */
+  'trial-retired': 'paid-required',
+  'paid-required': 'paid-required',
   'trial-required': 'trial-required',
   'trial-ended': 'trial-ended',
   'allowance-used': 'trial-allowance-used',
@@ -175,10 +195,32 @@ const REASON_TO_CODE: Record<string, TrialRefusalCode> = {
 function refuseFrom(result: Record<string, unknown>): never {
   const code = REASON_TO_CODE[String(result.reason ?? '')];
   if (!code) throw new TrialServiceError(`trial: unexpected refusal ${String(result.reason)}`);
+  if (code === 'paid-required') throw paidRequired();
   throw refusal(code);
 }
 
 /* ── Paid access ──────────────────────────────────────────────────────── */
+
+/** A paid-required refusal, the same body from every Worker. */
+export function paidRequired(): TrialRefusal {
+  return new TrialRefusal('paid-required', PAID_REQUIRED_TEXT.en, 'paid-required');
+}
+
+/** The HTTP status for a refusal: 402 for paid-required, 409 for a request
+    already being answered, 403 for everything else. */
+export function refusalStatus(err: TrialRefusal): number {
+  if (err.code === 'paid-required') return 402;
+  if (err.code === 'trial-in-flight') return 409;
+  return 403;
+}
+
+/** The free-account model's one rule for the AI Workers in commercial mode:
+    paid or complimentary access running right now, or a paid-required
+    refusal, asked BEFORE anything is reserved or any provider is called.
+    Throws TrialRefusal or TrialServiceError (fail closed). */
+export async function requirePaidAccess(rpc: TrialRpc, userId: string): Promise<void> {
+  if (!(await paidAccessRunning(rpc, userId))) throw paidRequired();
+}
 
 /** Whether the account's paid access is running right now, by the
     database's clock (`access_paid_now` in
@@ -186,9 +228,9 @@ function refuseFrom(result: Record<string, unknown>): never {
     trial check: a running grant skips the trial's allowances, and the Worker
     then applies only its existing per-student daily limits (Alex, 29
     September 2026: paid use is "unlimited, fair daily caps", and the
-    existing limits are those caps). When paid access ends this
-    answers false and the trial's own rules apply again, ended trial
-    included. Throws TrialServiceError when the database cannot be asked:
+    existing limits are those caps). A complimentary grant counts exactly
+    like a paid one (2026-10-01-free-account.sql). When it ends this
+    answers false and the account is a free one again. Throws TrialServiceError when the database cannot be asked:
     the caller fails closed, it never assumes either answer. */
 export async function paidAccessRunning(rpc: TrialRpc, userId: string): Promise<boolean> {
   const result = await rpc('access_paid_now', { p_user: userId });

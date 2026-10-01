@@ -305,7 +305,12 @@ export type TutorErrorCode =
   | 'trial-required' // signed in, no trial started on this account
   | 'trial-ended' // the 72 hours are over
   | 'trial-allowance-used' // this section's five messages are used
-  | 'trial-not-included'; // about something the trial does not include
+  | 'trial-not-included' // about something the trial does not include
+  /* The free-account model (docs/paid-access/FREE-ACCOUNT-MODEL.md): a
+     signed-in account without paid or complimentary access, answered with
+     HTTP 402 { error, code: 'paid-required', reason: 'paid-required' }.
+     Only from a Worker running ACCESS_MODE=trial (the commercial build). */
+  | 'paid-required';
 
 /** How much of one section's trial allowance is used, after this reply.
     Present only on replies from a Worker running the trial. */

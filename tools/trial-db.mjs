@@ -15,10 +15,13 @@
  *   - `auth.users` and `auth.uid()`, which reads the signed-in user from the
  *     request's JWT claim exactly as Supabase's own definition does.
  *
- * Both migrations are applied, in order: the trial file and then the paid
- * access file (supabase/migrations/2026-09-30-paid-access.sql), because that
- * is what a real project would run. The trial tests therefore also prove the
- * trial still behaves the same with paid access installed.
+ * Every migration the access model needs is applied, in the order a real
+ * project runs them (ALL_MIGRATIONS): the trial, the admin and profile
+ * files, paid access, the approved offer and, last, the free-account model
+ * (supabase/migrations/2026-10-01-free-account.sql), which retires the
+ * trial. Tests that prove how the trial behaved BEFORE it was retired pass
+ * PRE_FREE_MIGRATIONS instead: that is the history of those files, kept
+ * provable, not what a project runs today.
  *
  * Used by tests/trial-*.test.ts, tests/paid-*.test.ts and
  * tools/mr-ez-dev-server.mjs. Never by the site or a Worker.
@@ -36,13 +39,32 @@ export const TRIAL_MIGRATION = resolve(REPO, 'supabase/migrations/2026-09-23-tri
 /** Paid access (docs/paid-access/CONTRACT.md). Runs after the trial file,
     whose trial_state and trial_can_open it redefines. */
 export const PAID_MIGRATION = resolve(REPO, 'supabase/migrations/2026-09-30-paid-access.sql');
+export const ADMIN_MIGRATION = resolve(REPO, 'supabase/migrations/2026-09-24-admin.sql');
+export const PROFILES_MIGRATION = resolve(REPO, 'supabase/migrations/2026-09-24-profiles.sql');
+export const OFFER_MIGRATION = resolve(REPO, 'supabase/migrations/2026-09-30-profitable-offer.sql');
+/** The free-account model (docs/paid-access/FREE-ACCOUNT-MODEL.md): every
+    lesson for a signed-in account, practice and guidance paid or
+    complimentary, the trial retired. Runs after every other file. */
+export const FREE_MIGRATION = resolve(REPO, 'supabase/migrations/2026-10-01-free-account.sql');
+/** What a project runs today, in order. */
+export const ALL_MIGRATIONS = [TRIAL_MIGRATION, ADMIN_MIGRATION, PROFILES_MIGRATION, PAID_MIGRATION, OFFER_MIGRATION, FREE_MIGRATION];
+/** The stack as it stood before the trial was retired (1 October 2026),
+    for the tests that keep the trial's own history provable. */
+export const PRE_FREE_MIGRATIONS = [TRIAL_MIGRATION, PAID_MIGRATION, OFFER_MIGRATION];
 
 const SUPABASE_STUB = `
   create role anon nologin;
   create role authenticated nologin;
   create role service_role nologin bypassrls;
   create schema auth;
-  create table auth.users (id uuid primary key, email text);
+  create table auth.users (
+    id uuid primary key,
+    email text,
+    created_at timestamptz not null default now(),
+    last_sign_in_at timestamptz,
+    email_confirmed_at timestamptz default now(),
+    raw_app_meta_data jsonb not null default '{}'::jsonb
+  );
   create function auth.uid() returns uuid language sql stable as $$
     select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid
   $$;
@@ -50,6 +72,22 @@ const SUPABASE_STUB = `
   grant usage on schema public to anon, authenticated, service_role;
   alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
   alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
+  -- The few objects of supabase/schema.sql the admin and profile migrations
+  -- name (the profile trigger's clock, and the tables the admin list reads),
+  -- reduced to the columns those files use. Stand-in only.
+  create function public.touch_user_state_updated_at() returns trigger language plpgsql as $$
+  begin
+    new.updated_at := now();
+    return new;
+  end $$;
+  create table public.user_state (
+    user_id uuid primary key references auth.users (id) on delete cascade,
+    progress jsonb not null default '{}'::jsonb,
+    study_plan jsonb,
+    updated_at timestamptz not null default now()
+  );
+  create table public.mr_ez_turns (id uuid primary key default gen_random_uuid(), user_id uuid references auth.users (id) on delete cascade);
+  create table public.live_examiner_sessions (id uuid primary key default gen_random_uuid(), user_id uuid references auth.users (id) on delete cascade);
 `;
 
 export class TrialDbError extends Error {
@@ -75,7 +113,7 @@ const NAME_RE = /^[a-z_][a-z0-9_]{0,62}$/;
 /** Boots a fresh database with the migrations applied (both, in order, by
     default; `migration` alone runs just that one file). Every call is a new,
     empty world, so tests cannot leak into one another. */
-export async function createTrialDb({ migration = null, migrations = [TRIAL_MIGRATION, PAID_MIGRATION, resolve(REPO, "supabase/migrations/2026-09-30-profitable-offer.sql")] } = {}) {
+export async function createTrialDb({ migration = null, migrations = ALL_MIGRATIONS } = {}) {
   const db = new PGlite();
   await db.exec(SUPABASE_STUB);
   for (const file of migration ? [migration] : migrations) await db.exec(readFileSync(file, 'utf8'));
@@ -171,6 +209,25 @@ export async function createTrialDb({ migration = null, migrations = [TRIAL_MIGR
          where user_id = $1`,
         [userId, minutes],
       );
+    },
+
+    /** A completed student profile (supabase/migrations/2026-09-24-
+        profiles.sql), as the profile form saves one: an adult in Almaty.
+        The free account's lessons need it. */
+    async addProfile(userId, firstName = 'Test') {
+      await db.query(
+        `insert into public.student_profiles
+           (user_id, first_name, last_name, date_of_birth, phone, city, occupation, source)
+         values ($1, $2, 'Student', date '2000-01-01', '+77001234567', 'Almaty', 'University', 'other')
+         on conflict (user_id) do nothing`,
+        [userId, firstName],
+      );
+    },
+
+    /** Test and stand-in only: makes an account an admin (public.admins),
+        as Alex's own row is made. */
+    async makeAdmin(userId, note = 'stand-in admin') {
+      await db.query('insert into public.admins (user_id, note) values ($1, $2) on conflict (user_id) do nothing', [userId, note]);
     },
 
     async close() {

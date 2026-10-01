@@ -1,14 +1,17 @@
 const validMp3 = () => { const b=Buffer.alloc(288); b[0]=255; b[1]=243; b[2]=136; return b.toString('base64'); };
-/* Paid access honoured wherever the trial is enforced: the REAL content
- * gate, Mr EZ, essay grader, speaking grader and live examiner handlers, in
- * trial mode, against the REAL trial and paid-access migrations in PGlite
- * (tools/trial-db.mjs), with fake model calls. No key, no model, no money.
+/* Paid access honoured at every door: the REAL content gate, Mr EZ, essay
+ * grader, speaking grader and live examiner handlers, in the commercial
+ * build (ACCESS_MODE=trial, the name stays), against the REAL migrations in
+ * PGlite (tools/trial-db.mjs, ending with 2026-10-01-free-account.sql), with
+ * fake model calls. No key, no model, no money.
  *
- * The rule (docs/paid-access/CONTRACT.md; Alex, 29 September 2026): a
- * running paid grant opens everything the trial locks and skips the trial's
- * allowances; paid AI use is "unlimited, fair daily caps", so each Worker's
- * EXISTING per-student daily limit still applies; when paid access ends, the
- * ended trial's rules apply again and saved results stay.
+ * The rules (docs/paid-access/CONTRACT.md; Alex, 29 September 2026, and the
+ * free-account model of 1 October 2026, docs/paid-access/FREE-ACCOUNT-
+ * MODEL.md): a free account opens every lesson and nothing else; a running
+ * paid grant opens everything; paid AI use keeps each Worker's EXISTING
+ * per-student daily limit; when paid access ends the account is a free one
+ * again (402 paid-required for practice and guidance), and saved results
+ * stay.
  */
 
 import test from 'node:test';
@@ -20,7 +23,6 @@ import { createHandler as createSpeaking } from '../workers/grade-speaking/src/i
 import { createHandler as createLive, closeOverdueTrialSessions } from '../workers/live-examiner/src/index.ts';
 import { createTrialDb } from '../tools/trial-db.mjs';
 import { SPEAKING_CUE_CARDS, SPEAKING_PART1_TOPICS } from '../src/data/speaking-prompts.ts';
-import { parseTrialStatus } from '../src/lib/trial/status.ts';
 import { GOOD_TOKEN, USER_A, baseEnv, emptyProgress, makeDeps, makeState, post, type Recorder } from './mr-ez-harness.ts';
 
 const ORIGIN = 'https://lxson777-tech.github.io';
@@ -89,6 +91,8 @@ async function gateWorld() {
   const db = await createTrialDb();
   await db.addUser(A, 'gate-a@example.test');
   await db.addUser(B, 'gate-b@example.test');
+  await db.addProfile(A);
+  await db.addProfile(B);
   const { fetchFn } = supabaseFetch(db);
   const store = {
     get: async (key: string) =>
@@ -116,19 +120,22 @@ async function gateWorld() {
   return { db, get };
 }
 
-const LOCKED = ['/lesson/reading-tfng', '/test/reading-full-029', '/practice/practice-reading-tfng', '/model/pte-wt-121-task2', '/pack/writing-models'];
+/** What a free account opens: the lessons, with their own quizzes. */
+const LESSONS = ['/lesson/reading-tfng', '/practice/practice-reading-tfng'];
+/** What only paid or complimentary access opens. */
+const PAID = ['/test/reading-full-029', '/model/pte-wt-121-task2', '/pack/writing-models'];
 
-test('content gate: a paid account opens locked lessons, tests, practice, models and packs; trial, ended and expired-paid accounts do not', async () => {
+test('content gate: a free account opens the lessons only; a paid account opens everything; paid-ended is free again', async () => {
   const w = await gateWorld();
-  // No trial, no payment.
-  for (const path of LOCKED) assert.equal((await w.get(path)).status, 403, path);
-  // A running trial: still locked.
-  await w.db.rpc('trial_start', {}, { userId: A });
-  for (const path of LOCKED) assert.equal((await w.get(path)).status, 403, `trial ${path}`);
-  assert.equal((await w.get('/pack/writing-models')).code, 'not-included');
+  // Free: every lesson, nothing paid.
+  for (const path of LESSONS) assert.equal((await w.get(path)).status, 200, path);
+  for (const path of PAID) assert.deepEqual([(await w.get(path)).status, (await w.get(path)).code], [402, 'paid-required'], path);
+  // An old trial changes nothing (trial_start is refused anyway).
+  assert.equal(((await w.db.rpc('trial_start', {}, { userId: A })) as { code: string }).code, 'trial-retired');
+  assert.equal((await w.get('/pack/writing-models')).code, 'paid-required');
 
   await buy(w.db, A);
-  for (const path of LOCKED) {
+  for (const path of [...LESSONS, ...PAID]) {
     const opened = await w.get(path);
     assert.equal(opened.status, 200, path);
     assert.equal(opened.headers.get('Cache-Control'), 'private, no-store');
@@ -139,8 +146,8 @@ test('content gate: a paid account opens locked lessons, tests, practice, models
   // A pack that does not exist is not found, not an error.
   assert.equal((await w.get('/pack/not-built-yet')).status, 404);
   assert.equal((await w.get('/pack/..%2Fsecret')).status, 404);
-  // Paid is per account: B (no trial, no payment) is still refused.
-  for (const path of LOCKED) assert.equal((await w.get(path, 'token-b')).status, 403, `B ${path}`);
+  // Paid is per account: B (free) is still refused the paid items.
+  for (const path of PAID) assert.equal((await w.get(path, 'token-b')).status, 402, `B ${path}`);
   // Without a sign-in nothing opens, paid or not.
   const anon = await createGate({ fetch: (async () => new Response('{}', { status: 401 })) as typeof fetch, store: { get: async () => null } }).fetch(
     new Request('https://gate.test/pack/writing-models', { headers: { Origin: ORIGIN } }),
@@ -148,22 +155,20 @@ test('content gate: a paid account opens locked lessons, tests, practice, models
   );
   assert.equal(anon.status, 401);
 
-  // Paid access ends while the trial has also ended: the ended trial's rules.
+  // Paid access ends: a free account again, every lesson still open.
   await w.db.expirePaid(A);
-  await w.db.rewind(A, 72 * 60 + 1);
-  for (const path of LOCKED) assert.equal((await w.get(path)).status, 403, `expired ${path}`);
-  assert.equal((await w.get('/lesson/reading-paraphrase')).code, 'trial-ended');
-  assert.equal((await w.get('/pack/writing-models')).code, 'not-included');
+  for (const path of LESSONS) assert.equal((await w.get(path)).status, 200, `ended ${path}`);
+  for (const path of PAID) assert.equal((await w.get(path)).code, 'paid-required', `ended ${path}`);
   await w.db.close();
 });
 
-test('content gate: a refund closes the door again at once', async () => {
+test('content gate: a refund closes the paid door again at once; the lessons stay open', async () => {
   const w = await gateWorld();
   const orderId = await buy(w.db, A);
-  assert.equal((await w.get('/lesson/reading-tfng')).status, 200);
+  assert.equal((await w.get('/pack/writing-models')).status, 200);
   await w.db.rpc('access_order_refunded', { p_order: orderId, p_provider_ref: null }, service);
-  assert.equal((await w.get('/lesson/reading-tfng')).status, 403);
-  assert.equal((await w.get('/pack/writing-models')).status, 403);
+  assert.equal((await w.get('/pack/writing-models')).status, 402);
+  assert.equal((await w.get('/lesson/reading-tfng')).status, 200);
   await w.db.close();
 });
 
@@ -172,7 +177,7 @@ test('content gate: a refund closes the door again at once', async () => {
 async function tutorWorld() {
   const db = await createTrialDb();
   await db.addUser(USER_A);
-  await db.rpc('trial_start', {}, { userId: USER_A });
+  await db.addProfile(USER_A);
   const state = makeState({ trialDb: db });
   state.userState[USER_A] = { progress: emptyProgress(), study_plan: null };
   const run = async (body: Record<string, unknown>, env: Record<string, unknown> = {}) => {
@@ -186,10 +191,12 @@ async function tutorWorld() {
 let key = 0;
 const chat = (place?: Record<string, unknown>) => ({ task: 'chat', message: 'Can you explain this?', idempotencyKey: `paid-key-${String(++key).padStart(4, '0')}`, ...(place ? { place } : {}) });
 
-test('Mr EZ: a paid account skips the trial allowance and scope, and the daily limit still applies', async () => {
+test('Mr EZ: a paid account is answered for any task, and the daily limit still applies', async () => {
   const w = await tutorWorld();
-  // Trial only: general chat is outside the trial.
-  assert.equal((await w.run(chat())).payload.code, 'trial-not-included');
+  // Free: refused before the model, for any task.
+  const free = await w.run(chat());
+  assert.deepEqual([free.response.status, free.payload.code], [402, 'paid-required']);
+  assert.equal(free.recorder.openAiCalls.length, 0);
 
   await buy(w.db, USER_A);
   // General chat and a locked lesson now answer, with no trial reservation.
@@ -200,10 +207,8 @@ test('Mr EZ: a paid account skips the trial allowance and scope, and the daily l
     assert.equal(recorder.openAiCalls.length, 1);
     assert.equal(recorder.urls.some((u) => u.includes('/rpc/trial_tutor_reserve')), false, 'no trial reservation');
   }
-  // More than the trial's five in one section: all answered.
+  // More than the old trial's five in one section: all answered.
   for (let i = 0; i < 6; i++) assert.equal((await w.run(chat({ lessonKey: 'reading-paraphrase' }))).response.status, 200);
-  const status = parseTrialStatus(await w.db.rpc('trial_status', {}, { userId: USER_A }))!;
-  assert.equal(status.sections.reading.tutorUsed, 0, 'the trial allowance was not touched');
 
   // The Worker's existing per-student daily limit still applies.
   const capped = await w.run(chat(), { TUTOR_MAX_TURNS_PER_USER_PER_DAY: String(w.state.turns.length) });
@@ -213,15 +218,13 @@ test('Mr EZ: a paid account skips the trial allowance and scope, and the daily l
   await w.db.close();
 });
 
-test('Mr EZ: when paid access ends, the trial rules apply again', async () => {
+test('Mr EZ: when paid access ends, he is refused again (402), lesson help included', async () => {
   const w = await tutorWorld();
   await buy(w.db, USER_A);
   assert.equal((await w.run(chat())).response.status, 200);
   await w.db.expirePaid(USER_A);
-  assert.equal((await w.run(chat())).payload.code, 'trial-not-included');
-  await w.db.rewind(USER_A, 72 * 60 + 1);
   const ended = await w.run(chat({ lessonKey: 'reading-paraphrase' }));
-  assert.equal(ended.payload.code, 'trial-ended');
+  assert.deepEqual([ended.response.status, ended.payload.code], [402, 'paid-required']);
   assert.equal(ended.recorder.openAiCalls.length, 0);
   await w.db.close();
 });
@@ -256,7 +259,8 @@ async function essayWorld() {
   const db = await createTrialDb();
   await db.addUser(A);
   await db.addUser(B);
-  await db.rpc('trial_start', {}, { userId: A });
+  await db.addProfile(A);
+  await db.addProfile(B);
   const prompts: string[] = [];
   const { fetchFn, counts } = supabaseFetch(db, (url, init) => {
     if (!url.startsWith('https://api.openai.com/')) return null;
@@ -279,10 +283,10 @@ async function essayWorld() {
   return { db, counts, prompts, submit };
 }
 
-test('essay grader: a paid account is graded on its own question with no trial test used; a trial account is not', async () => {
+test('essay grader: a paid account is graded on its own question; a free or paid-ended account is refused 402', async () => {
   const w = await essayWorld();
-  // Trial account, no begun Writing test: refused before any spend.
-  assert.equal((await w.submit('token-a')).body.code, 'trial-no-test');
+  // Free account: refused before any spend.
+  assert.equal((await w.submit('token-a')).body.code, 'paid-required');
   assert.equal(w.counts.model, 0);
 
   await buy(w.db, A);
@@ -295,23 +299,22 @@ test('essay grader: a paid account is graded on its own question with no trial t
   assert.equal(w.counts.model, 3, 'as many grades as submitted: this grader has no per-student daily limit');
   assert.ok(w.prompts.every((p) => p.includes('STUDENT-CHOSEN-QUESTION')), 'graded on the student\'s own question');
   assert.equal(w.counts.rpc.includes('trial_test_lease'), false, 'no trial test leased');
-  assert.equal(parseTrialStatus(await w.db.rpc('trial_status', {}, { userId: A }))!.sections.writing.test, null);
 
-  // B has no payment: still the trial's rules.
-  assert.equal((await w.submit('token-b')).body.code, 'trial-no-test');
-  // A's paid access ends: the trial's rules again.
+  // B has no payment: refused.
+  assert.equal((await w.submit('token-b')).body.code, 'paid-required');
+  // A's paid access ends: refused again.
   await w.db.expirePaid(A);
-  assert.equal((await w.submit('token-a')).body.code, 'trial-no-test');
+  assert.equal((await w.submit('token-a')).body.code, 'paid-required');
   assert.equal(w.counts.model, 3);
   await w.db.close();
 });
 
 /* ── The speaking grader and the live examiner ────────────────────────── */
 
-test('speaking grader: a paid account may grade recorded practice (not only the trial interview)', async () => {
+test('speaking grader: a paid account may grade recorded practice; a free one is refused 402', async () => {
   const db = await createTrialDb();
   await db.addUser(A);
-  await db.rpc('trial_start', {}, { userId: A });
+  await db.addProfile(A);
   const { fetchFn, counts } = supabaseFetch(db, (url) => {
     if (!url.startsWith('https://api.openai.com/')) return null;
     counts.model += 1;
@@ -330,7 +333,7 @@ test('speaking grader: a paid account may grade recorded practice (not only the 
     );
     return { status: response.status, body: (await response.json()) as Record<string, unknown> };
   };
-  assert.equal((await submit()).body.code, 'trial-no-test', 'trial: recorded practice needs a begun sitting');
+  assert.equal((await submit()).body.code, 'paid-required', 'free: recorded practice needs paid access');
   assert.equal(counts.model, 0);
   await buy(db, A);
   const paid = await submit();
@@ -340,12 +343,12 @@ test('speaking grader: a paid account may grade recorded practice (not only the 
   await db.close();
 });
 
-test('live examiner: a paid account opens a full interview with no trial test, under the daily limit, and the five-minute cut-off skips it', async () => {
+test('live examiner: a paid account opens a full interview under the daily limit; a free one is refused 402; the closer ends paid voice', async () => {
   const db = await createTrialDb();
   await db.addUser(A);
   await db.addUser(B);
-  await db.rpc('trial_start', {}, { userId: A });
-  await db.rpc('trial_start', {}, { userId: B });
+  await db.addProfile(A);
+  await db.addProfile(B);
   const sessions: Record<string, unknown>[] = [];
   let live = 0;
   let now = new Date();
@@ -414,7 +417,8 @@ test('live examiner: a paid account opens a full interview with no trial test, u
     return { status: response.status, body: (await response.json()) as Record<string, unknown> };
   };
 
-  assert.equal((await open('token-a')).body.code, 'assessment-unavailable', 'trial: live interviews need paid access');
+  const free = await open('token-a');
+  assert.deepEqual([free.status, free.body.code], [402, 'paid-required'], 'free: live interviews need paid access');
   assert.equal(live, 0);
   await buy(db, A);
   assert.equal((await open('token-a')).status, 201, 'paid: a full interview, no trial sitting');
@@ -422,10 +426,8 @@ test('live examiner: a paid account opens a full interview with no trial test, u
   const third = await open('token-a');
   assert.equal(third.status, 429, 'the existing daily limit still applies');
   assert.equal(live, 2);
-  assert.equal(parseTrialStatus(await db.rpc('trial_status', {}, { userId: A }))!.sections.speaking.test, null, 'no trial test used');
 
-  // B, trial only, opens their Part 1 trial interview.
-  await db.rpc('trial_test_begin', { p_section: 'speaking', p_activity: 'speaking-test', p_request: 'sit-s-paid-b1' }, { userId: B });
+  // B, free, with an old trial sitting: refused, nothing opened.
   const bSession = await handler.fetch(
     new Request('https://live.test/', {
       method: 'POST',
@@ -434,9 +436,9 @@ test('live examiner: a paid account opens a full interview with no trial test, u
     }),
     env,
   );
-  assert.equal(bSession.status, 403);
+  assert.equal(bSession.status, 402);
 
-  // Six minutes later the cut-off closes B's trial interview only.
+  // Fifteen minutes later the commercial cut-off closes A's paid interviews.
   now = new Date(now.getTime() + 15 * 60_000);
   const swept = await closeOverdueTrialSessions(deps as never, env);
   assert.deepEqual(swept, { closed: 2, failed: 0 });
