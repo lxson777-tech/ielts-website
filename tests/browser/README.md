@@ -48,6 +48,20 @@ Two suites live here.
   4356) and its own Vite dependency cache (`astro.config.f21.mjs`): two dev
   servers sharing one cache invalidate each other's modules, which shows up as
   "504 Outdated Optimize Dep" and a test player that never hydrates.
+- **`f24_help_signed_in_only.py`** is the same kind of one-off, for the
+  30 September 2026 change that makes Mr EZ's help buttons ("Give me a hint",
+  "Explain this differently", "Show me an example") exist only for a
+  signed-in student. Signed out, in English and in Russian, the lesson page,
+  the guided exercise and the guided written task show no button and no note;
+  a student signing in from a second tab gets the buttons on the still-open
+  lesson page without a reload (a press gets the stand-in's reply, labelled
+  simulated), and signing out in a second tab takes them away again. It
+  reuses `f20_account_journey.py`'s page actions in its in-place sign-in
+  mode, runs against the stand-in on 8835 and the site on 4388
+  (`astro.config.f22.mjs`), and writes
+  `docs/personal-learning/evidence/final/results-help-signed-in-only.md`,
+  screenshots prefixed `helpgate-`. Because nobody can sign in on the frozen
+  snapshot, `f08`, `f13` and `f15` now expect no help button anywhere on it.
 - **`s1_*.py` to `s9_*.py` plus `run_all.py` and `helpers.py`** are the older
   stage-2 suite, described below. `final_helpers.py` reuses `helpers.py` and
   only redirects the evidence folder and the base URL, so the stage-2 evidence

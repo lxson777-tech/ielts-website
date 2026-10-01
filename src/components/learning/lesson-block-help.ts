@@ -27,17 +27,60 @@
  * hands, every control lets go of the replies it is holding, and the next
  * student's first press never sends them along as hints already given.
  * Nothing here is recorded as evidence, so there is nothing to keep.
+ *
+ * ONLY FOR A SIGNED-IN STUDENT (30 September 2026)
+ * The ids are stamped for everybody (a deep link and the quick check's help
+ * context both need them), but the controls exist only while
+ * mrEzHelpAvailable in ./lesson-help.ts says yes: once the account has
+ * answered and a student is signed in. A sign-in on this open page adds
+ * them without a reload, a sign-out takes them away (and lets go of any
+ * request still on its way), and nothing is put in their place.
  */
 
 import { t } from '../../lib/i18n/translate';
 import { getLocale } from '../../lib/i18n/locale';
 import type { LessonHelpKind } from '../../lib/learning/contracts/ai';
-import { bindToCurrentOwner, currentOwner, onOwnerChange, ownerNamespace } from '../../lib/store-owner';
+import {
+  bindToCurrentOwner,
+  currentOwner,
+  onOwnerChange,
+  ownerNamespace,
+  type OwnerBinding,
+} from '../../lib/store-owner';
 import { askContext } from './learning-versions';
-import { HELP_SOURCE_NOTE, requestOwnedLessonHelp, type HelpResult } from './lesson-help';
+import {
+  HELP_SOURCE_NOTE,
+  requestOwnedLessonHelp,
+  watchMrEzHelpAvailable,
+  type HelpResult,
+} from './lesson-help';
 
 /** Marks a control this module made, so the next pass can clear it. */
 const HELP_NODE_CLASS = 'lesson-block-help';
+
+/* Who may see the controls, followed once for the page however many times
+   they are rebuilt, and the lesson body they were last asked for. The
+   watcher hears the account's first answer at once and every sign-in and
+   sign-out after it; each answer adds the controls to that body or takes
+   them away. */
+let helpOn = false;
+let following = false;
+let target: { root: ParentNode; options: LessonBlockHelpOptions } | null = null;
+
+/* A press still on its way, per control, so taking the control away lets go
+   of it: its reply is shown to nobody. */
+const inFlight = new WeakMap<Element, OwnerBinding>();
+
+function followHelpAvailability(): void {
+  if (following) return;
+  following = true;
+  watchMrEzHelpAvailable((available) => {
+    helpOn = available;
+    if (!target) return;
+    if (available) addControls(target.root, target.options);
+    else removeControls(target.root);
+  });
+}
 
 /* The replies under a block belong to the student who asked for them. One
    listener for the page, however many times the controls are rebuilt: when
@@ -119,18 +162,49 @@ export interface LessonBlockHelpOptions {
   root?: ParentNode | null;
 }
 
-/** Stamp the ids and add the help controls. Safe to call again after a
-    language swap or a client side navigation. */
+/** Stamp the ids, and add the help controls while a student is signed in.
+    Safe to call again after a language swap or a client side navigation. */
 export function mountLessonBlockHelp(options: LessonBlockHelpOptions): void {
   const root = options.root ?? document.querySelector('[data-lesson-body]');
   if (!root || options.ids.length === 0) return;
   letGoOnOwnerChange();
 
   /* A control left behind by an earlier pass has no listeners any more. */
-  root.querySelectorAll(`.${HELP_NODE_CLASS}`).forEach((node) => node.remove());
+  removeControls(root);
   stampBlockIds(root, options.ids);
   if (currentOwner().kind !== 'user') return;
 
+  /* The controls themselves only for a signed-in student. The first time,
+     the watcher answers at once and adds them if one is; after that the
+     answer it last gave is used, and it adds or removes them itself when
+     somebody signs in or out. */
+  target = { root, options };
+  if (following) {
+    if (helpOn) addControls(root, options);
+  } else {
+    followHelpAvailability();
+  }
+
+  scrollToHashBlock(root);
+}
+
+/** Take every control this module made out of `root`, letting go of any
+    press still on its way. */
+function removeControls(root: ParentNode): void {
+  root.querySelectorAll(`.${HELP_NODE_CLASS}`).forEach((node) => {
+    inFlight.get(node)?.cancel();
+    inFlight.delete(node);
+    node.remove();
+  });
+}
+
+/** One help control at the end of every stamped block. Only ever called
+    while mrEzHelpAvailable says yes (see mountLessonBlockHelp and
+    followHelpAvailability), and clears what is there first, so it is one
+    set of controls however often it runs. */
+function addControls(root: ParentNode, options: LessonBlockHelpOptions): void {
+  if (!helpOn) return;
+  removeControls(root);
   for (const heading of headingsToStamp(root)) {
     const blockId = heading.dataset.lessonBlock;
     if (!blockId) continue;
@@ -146,8 +220,6 @@ export function mountLessonBlockHelp(options: LessonBlockHelpOptions): void {
     const end = endOfBlock(heading);
     end.after(control);
   }
-
-  scrollToHashBlock(root);
 }
 
 /** The last element of this block, which is what the control goes after. */
@@ -254,6 +326,8 @@ function buildControl(input: {
     /* Bound to the student on the page NOW. Replies this control still holds
        for anybody else go first, and are not sent along as their hints. */
     const binding = bindToCurrentOwner();
+    /* Taking this control away (a sign-out) lets go of the press. */
+    inFlight.set(wrap, binding);
     const mine = ownerNamespace(binding.owner);
     if (wrap.dataset.helpOwner !== mine) {
       given.length = 0;
@@ -297,6 +371,7 @@ function buildControl(input: {
       );
     } finally {
       binding.cancel();
+      if (inFlight.get(wrap) === binding) inFlight.delete(wrap);
       buttons.forEach((entry) => {
         entry.disabled = false;
       });
