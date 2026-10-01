@@ -92,6 +92,19 @@ function phrases(text, count = 3) {
   return out;
 }
 
+/** How many phrases each lesson body is sampled for (see sentinels). */
+const LESSON_TRIES = 12;
+
+/** A lesson is LEAKED by a file holding at least three of its phrases (or
+    all of them, for a lesson with only two). One or two shared sentences
+    are what a strategy tip or a word list quotes from a lesson by design,
+    and stay visible as SHARED rather than failing the build. Everything
+    else (papers, answers, models, quizzes, coaches) keeps the old rule:
+    any phrase of a paper, or two of the same item. */
+function lessonLeakThreshold(total) {
+  return Math.max(2, Math.min(3, total));
+}
+
 async function sentinels() {
   const list = [];
   const { ALL_TESTS } = await import('../src/data/tests/index.ts');
@@ -110,12 +123,14 @@ async function sentinels() {
     for (const file of readdirSync(dir)) {
       if (!file.endsWith('.html')) continue;
       const slug = file.replace(/\.html$/, '');
-      /* Eight tries per lesson (the papers take two per part): teaching prose
-         is broken by headings, lists and examples, so fewer tries leave some
-         lessons with a single phrase, and one phrase alone is only SHARED.
-         Free-account model, 1 October 2026: a lesson body in a signed-out
-         page must be caught, not merely noticed. */
-      for (const p of phrases(readFileSync(join(dir, file), 'utf8'), 8)) {
+      /* Twelve tries per lesson (the papers take two per part). Teaching
+         prose is broken by headings, lists and examples, so the old three
+         tries left 46 of 152 lesson bodies with one phrase or none: a whole
+         lesson in a public page would have been SHARED or missed. With
+         twelve, all but one have at least two (measured 1 October 2026).
+         Free-account model: a lesson body in a signed-out page must be
+         caught, not merely noticed. */
+      for (const p of phrases(readFileSync(join(dir, file), 'utf8'), LESSON_TRIES)) {
         list.push({ kind: dir === bodies ? 'lesson' : 'lesson-ru', id: slug, phrase: p });
       }
     }
@@ -227,6 +242,8 @@ async function main() {
     process.exit(2);
   }
   const marks = await sentinels();
+  const lessonTotals = new Map();
+  for (const m of marks) if (m.kind.startsWith('lesson')) lessonTotals.set(`${m.kind}:${m.id}`, (lessonTotals.get(`${m.kind}:${m.id}`) ?? 0) + 1);
   const found = [];
   /* Files a trial build must not publish at all: the listening recordings
      (served by the content gate through signed links) and the Task 1 chart
@@ -272,7 +289,9 @@ async function main() {
     if (hits.length) {
       const perItem = new Map();
       for (const h of hits) perItem.set(`${h.kind}:${h.id}`, (perItem.get(`${h.kind}:${h.id}`) ?? 0) + 1);
-      const leak = hits.some((h) => h.kind === 'test' || h.kind === 'answers') || [...perItem.values()].some((n) => n >= 2);
+      const leak =
+        hits.some((h) => h.kind === 'test' || h.kind === 'answers') ||
+        [...perItem.entries()].some(([key, n]) => (key.startsWith('lesson') ? n >= lessonLeakThreshold(lessonTotals.get(key) ?? 0) : n >= 2));
       const file = relative(DIST, path).replace(/\\/g, '/');
       const allowed = ALLOWED.find((a) => a.file.test(file) && [...perItem.keys()].every((k) => a.items.test(k)));
       found.push({
@@ -280,6 +299,7 @@ async function main() {
         verdict: leak ? (allowed ? 'ALLOWED' : 'LEAK') : 'SHARED',
         ...(allowed ? { reason: allowed.reason } : {}),
         items: [...perItem.keys()],
+        counts: Object.fromEntries(perItem),
         phrases: [...new Set(hits.map((h) => h.phrase))].slice(0, 5),
       });
     }

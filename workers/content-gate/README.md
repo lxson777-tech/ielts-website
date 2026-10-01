@@ -1,65 +1,83 @@
-# Content gate: the trial's locked door
+# Content gate: the commercial build's locked door
 
-1 October 2026 update: lesson explanations and selected worked examples are now published directly by the site without an account. See `docs/paid-access/PUBLIC-LESSONS.md`. This service continues protecting practice questions, test papers, recordings and private model packs. Its legacy authenticated lesson endpoint is retained for compatibility; it no longer controls public reading access.
+**Free-account model (Alex, 1 October 2026, `docs/paid-access/FREE-ACCOUNT-MODEL.md`).**
+Lessons are behind the door again: every lesson is free with an account, and a
+signed-out page carries no lesson body, worked example or lesson quiz. Practice, tests,
+packs and the model-answer bank are paid. The trial is retired. This replaces the
+public-lessons model of the same morning (`docs/paid-access/PUBLIC-LESSONS.md`).
 
-Alex decided on 23 September 2026 that the trial must protect the content itself,
-not only the screen. This Worker is how. **Not deployed.** Deploying it, creating the
-private bucket and uploading to it are externally visible steps that need Alex's
-approval, together with the trial build of the site.
+Alex decided on 23 September 2026 that the content itself must be protected, not only
+the screen. This Worker is how. **Not deployed.** Deploying it, creating the private
+bucket and uploading to it are externally visible steps that need Alex's approval,
+together with the commercial build of the site.
 
 ## What it does
 
-In a trial build (`PUBLIC_ACCESS_MODE=trial`) the public site carries no lesson body,
-no practice paper, no lesson practice quiz and no answer notes. The pages are shells.
-They ask this Worker for their content with the signed-in student's token, and the
-Worker asks the database one question before it answers: may this student open this
-item right now (`trial_can_open` in `supabase/migrations/2026-09-23-trial.sql`)?
+In the commercial build (`PUBLIC_ACCESS_MODE=trial`, the name stays) the public site
+carries no lesson body, no practice paper, no lesson practice quiz and no answer notes.
+The pages are shells. They ask this Worker for their content with the signed-in
+student's token, and the Worker asks the database one question before it answers: may
+this student open this item right now (`trial_can_open`, which since
+`supabase/migrations/2026-10-01-free-account.sql` asks `access_can_open`)?
 
-| Route | Content | Who may have it |
+| Route | Content | Item | Who may have it |
+|---|---|---|---|
+| `GET /lesson/<key>?locale=en\|ru` | a lesson body | `lesson:<key>` | any signed-in account with a completed profile |
+| `GET /practice/practice-<skill>-<slug>` | a lesson's own short quiz | `lesson:<skill>-<slug>` | as its lesson |
+| `GET /explanations/<locale>/practice-<skill>-<slug>` | that quiz's translated notes | `lesson:<skill>-<slug>` | as its lesson |
+| `GET /example/writing-<slug>` | a Writing lesson's one worked example, `{prompt, model}` | `lesson:writing-<slug>` | as its lesson |
+| `GET /test/<id>` | a practice paper or drill, whole | `test:<id>` | paid or complimentary access |
+| `GET /explanations/<locale>/<test id>` | a paper's translated answer notes | `test:<id>` | paid or complimentary access |
+| `GET /prompt/<prompt id>` | a Writing question | `writing-prompt:<id>` | paid or complimentary access |
+| `GET /model/<prompt id>` | a Band 8 model with its question (the bank) | `writing-model:<id>` | paid or complimentary access |
+| `GET /pack/<name>` | one module's paid material (`packs/<name>.json`) | `pack:<name>` | paid or complimentary access |
+| `GET /audio/<file>?exp=&sig=` | a listening recording, byte ranges supported | | anyone holding a link the gate signed, until it expires |
+| `GET /data/tests/<id>.json`, `GET /data/lesson-blocks/<key>.json` | Mr EZ's data | | the Mr EZ Worker only, with `CONTENT_SERVICE_KEY` |
+
+Refusals, each `{ error, code, reason }` (code and reason are the same word; the
+English sentences have Russian in `src/lib/i18n/dict/ru/g-free.ts`):
+
+| Status | Code | When |
 |---|---|---|
-| `GET /lesson/<key>?locale=en\|ru` | a lesson body | the trial's own lesson, while the trial runs |
-| `GET /practice/<set id>` | a lesson's practice quiz | with its lesson |
-| `GET /test/<id>` | a practice paper or drill, whole | the section's trial test while the trial runs; a test the student began, at any time |
-| `GET /explanations/<locale>/<id>` | translated answer notes | with the paper (or, for a quiz, its lesson) |
-| `GET /prompt/<prompt id>` | a Writing question | the trial's essay question, with its Writing test |
-| `GET /model/<prompt id>` | a Band 8 model with its question | the trial's one example, with its Task 2 lesson |
-| `GET /pack/<name>` | one module's paid material (`packs/<name>.json`) | a running paid grant only |
-| `GET /audio/<file>?exp=&sig=` | a listening recording, byte ranges supported | anyone holding a link the gate signed, until it expires |
-| `GET /data/tests/<id>.json`, `GET /data/lesson-blocks/<key>.json` | Mr EZ's data | the Mr EZ Worker only, with `CONTENT_SERVICE_KEY` |
+| 401 | `sign-in-required` | no valid sign-in |
+| 403 | `profile-required` | a lesson, before the student has completed the profile |
+| 402 | `paid-required` | anything but a lesson, without paid or complimentary access |
+| 403 | `not-included` | an item the database does not recognise |
+| 404 | `not-found` | a malformed path, or an item not built into the store |
+| 503 | `unavailable` | the database could not be asked (never an open door) |
 
-**Paid access** (`supabase/migrations/2026-09-30-paid-access.sql`,
-`docs/paid-access/CONTRACT.md`): while an account holds a running paid grant,
-`trial_can_open` opens every lesson, test, practice set, Writing question, model answer
-and pack, whatever the trial includes. A grant exists only once the payments Worker
-(`workers/payments`) has recorded a confirmed payment. When it ends, or is refunded,
-the trial's own rules apply again (an ended trial stays ended), and packs are refused.
-A pack that has not been built yet is 404.
+**Paid and complimentary access** (`2026-09-30-paid-access.sql`,
+`2026-10-01-free-account.sql`): a running grant of either kind opens every item. A paid
+grant exists only once the payments Worker has recorded a confirmed payment; a
+complimentary one only once Alex has given it in /admin. When either ends, or a payment
+is refunded, the account is a free one again: every lesson stays open, the rest is
+`paid-required`. A trial started before 1 October opens nothing more than a free
+account.
 
 Who is asking comes only from the verified sign-in; the request names only what it
-wants. An unreachable database is a refusal (503), never an open door. Every reply is
-`Cache-Control: private, no-store`.
+wants. Every reply is `Cache-Control: private, no-store`.
 
 ## The private store
 
 `node --import ./tests/ts-extension-loader.mjs tools/build-gated-content.mjs` writes
-every item into `gated-content/` (git-ignored, never inside `dist/`). In production
-that folder is uploaded to a private R2 bucket, `ielts-gated-content`, bound as
-`CONTENT` (see `wrangler.jsonc`). Proposed upload, for Alex to approve: create the
+every item into `gated-content/` (git-ignored, never inside `dist/`), including
+`examples/writing-<slug>.json` for each Writing lesson that has a worked example. In
+production that folder is uploaded to a private R2 bucket, `ielts-gated-content`, bound
+as `CONTENT` (see `wrangler.jsonc`). Proposed upload, for Alex to approve: create the
 bucket in the Cloudflare dashboard (private, no public access), then upload the folder
-with `npx wrangler r2 object put` per key, or with rclone, using `gated-content/manifest.json`
-as the list. Nothing here has been run.
+with `npx wrangler r2 object put` per key, or with rclone, using
+`gated-content/manifest.json` as the list. Nothing here has been run.
 
 ## Proof
 
-- `tests/trial-content.test.ts`: the real handler against the real migration.
-- `tools/trial-content-audit.mjs dist`: after a trial build, searches every public
-  file for phrases from every paper and every lesson body. Latest result: no public
-  file leaks a paper, an answer or a lesson; six share a single line (a cue-card
-  question, a strategy tip, a useful phrase); one named exception (the word-of-the-day
-  sampler, `tools/trial-content-allowed.json`, pending Alex's decision).
-- `tests/browser/t01_trial_journey.py`: page sources carry no lesson or paper text,
-  the allowed student sees the lesson through the gate, locked items never reach the
-  browser, the old public data files are gone.
+- `tests/trial-content.test.ts`: the real handler against every real migration
+  (signed out, free, no profile, old trial, paid, complimentary, recordings, Mr EZ's
+  data, an unreachable database, the build step).
+- `tests/free-account-sql.test.ts`: the database's own rules for every tier.
+- `tools/trial-content-audit.mjs <commercial build>`: searches every public file for
+  phrases from every paper, every lesson body (English and Russian), every lesson quiz
+  and every model answer (worked examples included). Since the free-account model no
+  public lesson prose is allowed: a signed-out lesson page must carry no lesson body.
 
 ## Recordings
 
@@ -71,14 +89,13 @@ holds). The audio route checks the signature and the expiry (two hours,
 `AUDIO_LINK_MINUTES`) and serves the file from `audio/listening/<file>` in the bucket,
 with byte ranges so a student can skip. Without `AUDIO_SIGNING_KEY` nothing is signed
 and nothing is served. The recordings are uploaded from `public/audio/listening/`
-(listed under `audio` in `gated-content/manifest.json`); a trial build of the site does
-not publish them.
+(listed under `audio` in `gated-content/manifest.json`); a commercial build of the site
+does not publish them.
 
 ## The rest of the material
 
-Everything else the trial does not include (model answers, questions, cue cards, band
-guides, the writing and speaking coaches, focused exercises, and their Russian) is kept
-out of a trial build's browser by stand-ins (`src/lib/trial/light/`), a trimmed learning
-index and trimmed dictionaries; see "The rest of the material" in
-`docs/TRIAL-IMPLEMENTATION.md`. The gate serves only the two Writing pieces the trial
-shows (its essay question and its lesson example).
+Everything else that is paid (model answers, questions, cue cards, band guides, the
+writing and speaking coaches, focused exercises, and their Russian) is kept out of a
+commercial build's browser by stand-ins (`src/lib/trial/light/`), a trimmed learning
+index and trimmed dictionaries, and served here as packs to paid and complimentary
+accounts; see "The rest of the material" in `docs/TRIAL-IMPLEMENTATION.md`.
