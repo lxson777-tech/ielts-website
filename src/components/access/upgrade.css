@@ -86,7 +86,9 @@
   gap: 10px;
 }
 .upgrade-actions .trial-btn {
-  flex: 1 1 200px;
+  flex: 1 1 auto;
+  white-space: nowrap;
+  text-align: center;
 }
 .upgrade-secondary {
   border-color: transparent !important;
@@ -130,9 +132,13 @@
 
 @media (max-width: 520px) {
   .upgrade-layer { align-items: end; padding: 12px; }
-  .upgrade-panel { padding: 28px 22px 22px; border-radius: 20px; }
-  .upgrade-panel h2 { font-size: 22px; }
-  .upgrade-actions .trial-btn { flex-basis: 100%; }
+  .upgrade-panel { padding: 26px 20px 20px; border-radius: 20px; }
+  .upgrade-panel h2 { font-size: 21px; padding-right: 36px; }
+  .upgrade-panel .upgrade-lead { font-size: 14px; line-height: 1.6; margin-bottom: 18px; }
+  .upgrade-list { gap: 9px; padding-top: 16px; margin-bottom: 18px; }
+  .upgrade-list li { font-size: 13.5px; line-height: 1.5; }
+  .upgrade-price { margin-bottom: 18px; }
+  .upgrade-actions .trial-btn { flex-basis: 100%; white-space: normal; }
 }
 
 @media (prefers-reduced-motion: reduce) {

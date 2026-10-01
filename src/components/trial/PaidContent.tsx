@@ -20,7 +20,8 @@ import { useEffect, useState, type ComponentType, type ReactElement } from 'reac
 import { useTrial } from '../../lib/trial/react';
 import { useT } from '../../lib/i18n/react';
 import { withBase } from '../../lib/url';
-import { commonPacks, fetchFreePack, fetchPack, loadPacks, paidNow, type ModulePack, type PackFailure } from '../../lib/trial/packs';
+import { commonPacks, fetchPack, loadPacks, paidNow, type ModulePack, type PackFailure } from '../../lib/trial/packs';
+import { fetchGated } from '../../lib/trial/content';
 import { browserTier, readsLessons } from '../../lib/access/tier';
 import { refreshTrial } from '../../lib/trial/client';
 import { PaidFailed, PaidLoading } from './PaidStates';
@@ -214,9 +215,11 @@ function usePaidView(view: PaidView, active: boolean, attempt: number): Stage {
 }
 
 /** The vocabulary topic lists for a FREE account (the free-account model):
-    the topics come through the content door (`pack/vocabulary`, see
-    FREE_ACCOUNT_PACKS), and the page's practice round stays paid (its
-    button carries data-paid-feature, so the upgrade pop-up opens). */
+    they are the vocabulary lessons' own word tables, so they are built here
+    from those lessons, fetched through the content door like any lesson
+    (GET lesson/vocabulary-<topic>; every pack stays paid). The page's
+    practice round stays paid: its button carries data-paid-feature, so the
+    upgrade pop-up opens. */
 function useFreeVocabTopics(active: boolean, userId: string | null, attempt: number): Stage {
   const [stage, setStage] = useState<Stage>({ kind: 'idle' });
   useEffect(() => {
@@ -227,13 +230,22 @@ function useFreeVocabTopics(active: boolean, userId: string | null, attempt: num
     let live = true;
     setStage({ kind: 'loading' });
     void (async () => {
-      const pack = await fetchFreePack('vocabulary');
+      const [{ VOCABULARY_PARTS }, { buildVocabTopicData }] = await Promise.all([
+        import('../../data/vocabulary'),
+        import('../../lib/vocab-review'),
+      ]);
+      const bodies = await Promise.all(VOCABULARY_PARTS.map((part) => fetchGated(`lesson/vocabulary-${part.slug}?locale=en`)));
       if (!live) return;
-      if (!pack.ok) return setStage({ kind: 'failed', reason: pack.reason });
+      const refused = bodies.find((body) => !body.ok);
+      if (refused && !refused.ok) {
+        return setStage({ kind: 'failed', reason: refused.code === 'offline' ? 'offline' : refused.status === 401 ? 'signed-out' : 'unavailable' });
+      }
       try {
         const { default: VocabTopics } = await import('../VocabTopics');
-        const topics = (pack.value as { topics?: Parameters<typeof VocabTopics>[0]['topics'] }).topics;
-        if (!Array.isArray(topics)) throw new Error('pack: vocabulary has no topics');
+        const topics = VOCABULARY_PARTS.map((part, i) => {
+          const body = bodies[i]!;
+          return buildVocabTopicData(body.ok ? body.text : '', part.slug, part.title);
+        });
         if (live) setStage({ kind: 'ready', element: <VocabTopics topics={topics} /> });
       } catch {
         if (live) setStage({ kind: 'failed', reason: 'error' });
