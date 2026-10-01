@@ -12,20 +12,20 @@
    i18n coverage test like any other t() call; the Russian is in
    src/lib/i18n/dict/ru/s-offer.ts.
 
-   WHICH CODES. The Workers answer a refusal with `{ error, code }`. Today
-   every allowance refusal is the single code 'assessment-unavailable', its
-   reason carried only in the English sentence src/lib/access/assessment.ts
-   writes. Builder M is giving each reason its own code. Until those land,
-   and as a safety net after:
+   WHICH CODES (Builder M's server, 1 October 2026). Every allowance
+   refusal is HTTP 403
+     { error, code: 'assessment-unavailable', reason, kind?, purpose?, used?, limit? }
+   with `reason` one of ASSESSMENT_REFUSAL_REASONS ('allowance-used',
+   'mock-allowance-used', 'placement-used', 'trial-ended', 'paid-required',
+   'daily-limit', ...). An unreachable database is 503 code 'unavailable',
+   an outage. So:
      - ANY code starting 'assessment-' or 'allowance-' is a refusal, never an
-       outage (isRefusalCode);
-     - a code in ASSESSMENT_REFUSAL_CODES gets its own sentence;
-     - 'assessment-unavailable' is read through the server's sentence
-       (TODAY_SERVER_SENTENCES), so the student still gets the right words in
-       their language;
+       outage (isAssessmentRefusalCode);
+     - the reason picks the sentence (ASSESSMENT_REFUSAL_REASONS);
+     - without a reason, a code of its own (ASSESSMENT_REFUSAL_CODES), or the
+       server's English sentence read back (SERVER_SENTENCES);
      - anything else shows the server's own sentence, translated if the
-       dictionary has it.
-   ALIGN AT MERGE: map M's final codes in ASSESSMENT_REFUSAL_CODES. */
+       dictionary has it. */
 
 import type { Locale } from '../../lib/i18n/locale';
 import { nt, type Vars } from '../../lib/i18n/translate';
@@ -59,8 +59,21 @@ export type RefusalKind =
 /** What was being assessed when the refusal came. */
 export type AssessmentWhat = 'writing' | 'speaking' | 'live' | 'feedback' | 'mock' | 'placement';
 
-/** Codes with a sentence of their own. The left column is the wire code.
-    ALIGN AT MERGE with Builder M's codes; the right column must not change. */
+/** The server's `reason` on an 'assessment-unavailable' refusal
+    (src/lib/access/assessment.ts REFUSAL_MESSAGES, Builder M). */
+export const ASSESSMENT_REFUSAL_REASONS: Readonly<Record<string, RefusalKind>> = {
+  'allowance-used': 'used-up',
+  'mock-allowance-used': 'mock-used-up',
+  'placement-used': 'placement-taken',
+  'trial-ended': 'trial-ended',
+  'paid-required': 'paid-required',
+  'daily-limit': 'daily-limit',
+  'already-requested': 'already-requested',
+  'unknown-session': 'unknown-session',
+};
+
+/** Codes with a sentence of their own, for a refusal that names its reason
+    in the code itself. The right column must not change. */
 export const ASSESSMENT_REFUSAL_CODES: Readonly<Record<string, RefusalKind>> = {
   /* Essays, recordings or interviews used up for this period. */
   'assessment-used-up': 'used-up',
@@ -83,13 +96,15 @@ export const ASSESSMENT_REFUSAL_CODES: Readonly<Record<string, RefusalKind>> = {
   'assessment-unknown-session': 'unknown-session',
 };
 
-/** Today's one code, whose reason is only in its sentence. */
-export const TODAY_GENERIC_CODE = 'assessment-unavailable';
+/** The one code every allowance refusal arrives with. */
+export const ALLOWANCE_REFUSAL_CODE = 'assessment-unavailable';
 
-/** The sentences src/lib/access/assessment.ts sends with TODAY_GENERIC_CODE
-    (31 to 37 at commit b83deb5), read back into a reason. Exact match. */
-export const TODAY_SERVER_SENTENCES: Readonly<Record<string, RefusalKind>> = {
+/** The English sentences src/lib/access/assessment.ts sends, read back into
+    a reason when a reply carries no `reason` (an older Worker). Exact match. */
+export const SERVER_SENTENCES: Readonly<Record<string, RefusalKind>> = {
   'Your assessment allowance is used. Your lessons, practice and saved results are still available.': 'used-up',
+  'You have used the two full mock exams of this purchase. Your lessons, practice and saved results are still available.': 'mock-used-up',
+  'The placement test can be taken once per account, and yours is already taken.': 'placement-taken',
   "Today's assessment safety limit is reached. Please try again tomorrow.": 'daily-limit',
   'Live interviews are included with paid access.': 'paid-required',
   'This interview already has a feedback request.': 'already-requested',
@@ -103,10 +118,12 @@ export function isAssessmentRefusalCode(code: string): boolean {
   return /^(assessment|allowance)-/.test(code) || code in ASSESSMENT_REFUSAL_CODES;
 }
 
-export function refusalKind(code: string, serverMessage = ''): RefusalKind {
+export function refusalKind(code: string, serverMessage = '', reason = ''): RefusalKind {
+  const byReason = reason ? ASSESSMENT_REFUSAL_REASONS[reason] : undefined;
+  if (byReason) return byReason;
   const known = ASSESSMENT_REFUSAL_CODES[code];
   if (known) return known;
-  if (code === TODAY_GENERIC_CODE) return TODAY_SERVER_SENTENCES[serverMessage.trim()] ?? 'other';
+  if (code === ALLOWANCE_REFUSAL_CODE) return SERVER_SENTENCES[serverMessage.trim()] ?? 'other';
   return 'other';
 }
 
@@ -204,6 +221,14 @@ export function refusalMessage(
       return join(said ? t(said) : t('This assessment cannot be started right now. Nothing was used.'), kept);
     }
   }
+}
+
+/** A live interview the examiner never began, given back by the server
+    (POST /end answered `interviewGivenBack: true`, review P1-4). */
+export function interviewGivenBackMessage(purpose: string, t: Translate): string {
+  if (purpose === 'mock') return t('The interview ended before the examiner began, so it was given back: it does not count as one of your full mock exams.');
+  if (purpose === 'placement') return t('The interview ended before the examiner began, so it was given back: your placement interview is still yours to take.');
+  return t('The interview ended before the examiner began, so it was given back: it does not count as one of your live interviews.');
 }
 
 /** A stopped grading request is not lost: the server gives an assessment

@@ -112,7 +112,7 @@ import { LiveTrialRefusal } from '../lib/speaking/live/openai-session';
 import { GraderRefusal } from '../lib/writing/grader';
 import { TRIAL_OFFER, TRIAL_SPEAKING_MINUTES } from '../lib/trial/offer';
 import { refreshTrial, serverNow, trialView } from '../lib/trial/client';
-import { isAssessmentRefusalCode, refusalKind, refusalMessage, refusalOffersPlans, type AssessmentWhat } from './access/assessment-refusal';
+import { interviewGivenBackMessage, isAssessmentRefusalCode, refusalKind, refusalMessage, refusalOffersPlans, type AssessmentWhat } from './access/assessment-refusal';
 import { withBase } from '../lib/url';
 import { useTrialTest } from './trial/useTrialTest';
 import TrialBlock from './trial/TrialBlock';
@@ -258,6 +258,9 @@ export default function LiveExaminer({
   /** The error on screen is a used-up allowance or an ended trial, so the
       Plans page is the way forward (cleared with the error). */
   const [errorPlans, setErrorPlans] = useState(false);
+  /** The server gave the last interview back (it ended before the examiner
+      began): said once, so the student knows nothing was used. */
+  const [givenBack, setGivenBack] = useState<string | null>(null);
   useEffect(() => {
     if (!error) setErrorPlans(false);
   }, [error]);
@@ -483,6 +486,7 @@ export default function LiveExaminer({
     const stillHere = () => session.live();
     setError(null);
     setNotice(null);
+    setGivenBack(null);
     setPhase('connecting');
     endedRef.current = false;
     recChunksRef.current = [];
@@ -636,6 +640,10 @@ export default function LiveExaminer({
             onError: () => {
               /* transient; onClosed decides what actually matters */
             },
+            onInterviewGivenBack: (purpose) => {
+              setGivenBack(interviewGivenBackMessage(purpose, t));
+              void refreshTrial();
+            },
           },
         }),
         closeConnection,
@@ -662,7 +670,7 @@ export default function LiveExaminer({
       setPhase(mock ? 'error' : 'menu');
       setError(
         e instanceof LiveTrialRefusal
-          ? trialLiveRefusal(e.code, e.message)
+          ? trialLiveRefusal(e.code, e.message, e.reason)
           : trialSitting
             ? t('The Speaking test could not start just now. Nothing was used: press Start again.')
             : e instanceof Error
@@ -1059,7 +1067,7 @@ export default function LiveExaminer({
          student's to see; the owner check ends the session instead. */
       if (attempt && !attempt.gradingFailed()) return;
       setPhase('error');
-      setError(e instanceof GraderRefusal ? trialGradeRefusal(e.code, e.message) : e instanceof Error ? e.message : t('Grading failed.'));
+      setError(e instanceof GraderRefusal ? trialGradeRefusal(e.code, e.message, e.reason) : e instanceof Error ? e.message : t('Grading failed.'));
     } finally {
       /* Graded (the test is used) or not (it is kept): the trial's own
          screens should say what is now true. */
@@ -1069,11 +1077,11 @@ export default function LiveExaminer({
 
   /** The live examiner's trial refusals, in the student's words. Nothing
       was paid for and the test was not used. */
-  function trialLiveRefusal(code: string, serverMessage = ''): string {
+  function trialLiveRefusal(code: string, serverMessage = '', reason = ''): string {
     if (code === 'trial-sessions-used') {
       return t('Both interviews for your trial Speaking test have been started, so a new one cannot open. Your test has not been used.');
     }
-    const allowance = allowanceRefusal(code, serverMessage, placement ? 'placement' : mock ? 'mock' : 'live');
+    const allowance = allowanceRefusal(code, serverMessage, reason, placement ? 'placement' : mock ? 'mock' : 'live');
     if (allowance) return allowance;
     return t('Your trial could not open the Speaking test just now. Nothing was used: please try again.');
   }
@@ -1081,9 +1089,9 @@ export default function LiveExaminer({
   /** A used-up allowance, an ended trial or a taken placement, in the
       student's words with what to do next (review of 1 October 2026,
       P1-2): never "could not reach the service". Null for any other code. */
-  function allowanceRefusal(code: string, serverMessage: string, what: AssessmentWhat): string | null {
+  function allowanceRefusal(code: string, serverMessage: string, reason: string, what: AssessmentWhat): string | null {
     if (!isAssessmentRefusalCode(code)) return null;
-    const kind = refusalKind(code, serverMessage);
+    const kind = refusalKind(code, serverMessage, reason);
     setErrorPlans(refusalOffersPlans(kind));
     void refreshTrial();
     return refusalMessage({ kind, what, serverMessage }, trialView().status, serverNow(), t, locale);
@@ -1091,10 +1099,10 @@ export default function LiveExaminer({
 
   /** The speaking grader's trial refusals. The interview is kept on this
       page only while it is on screen. */
-  function trialGradeRefusal(code: string, serverMessage = ''): string {
+  function trialGradeRefusal(code: string, serverMessage = '', reason = ''): string {
     if (code === 'trial-test-used') return t('Your trial Speaking test has already been graded.');
     if (code === 'sign-in-required') return t('Sign in again to have your Speaking test graded. Your test has not been used.');
-    const allowance = allowanceRefusal(code, serverMessage, 'feedback');
+    const allowance = allowanceRefusal(code, serverMessage, reason, 'feedback');
     if (allowance) return allowance;
     return t('Your trial could not accept this interview for grading. Your test has not been used.');
   }
@@ -1453,6 +1461,7 @@ export default function LiveExaminer({
         {trialTest.error && <p className="mx-auto mt-4 max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{trialTest.error}</p>}
         {error && <p className="mx-auto mt-4 max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{error}</p>}
         {error && errorPlans && <PlansLink />}
+        {givenBack && <GivenBackNote text={givenBack} />}
         {!TOKEN_URL && (
           <p className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
             {t('The live examiner is not configured on this site yet ({envVar}).', { envVar: 'PUBLIC_LIVE_EXAMINER_URL' })}
@@ -1520,6 +1529,7 @@ export default function LiveExaminer({
         )}
         {error && <p className="mx-auto mt-4 max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{error}</p>}
         {error && errorPlans && <PlansLink />}
+        {givenBack && <GivenBackNote text={givenBack} />}
         {configError && (
           <p className="mx-auto mt-4 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">
             {t('The live examiner service could not be reached: {error}. You can still try to start.', {
@@ -1595,6 +1605,7 @@ export default function LiveExaminer({
       <div className="rounded-card border border-border bg-surface p-10 text-center shadow-card">
         <p className="mx-auto max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{error}</p>
         {errorPlans && <PlansLink />}
+        {givenBack && <GivenBackNote text={givenBack} />}
         <button
           type="button"
           onClick={() => (mock ? abortMock() : abandonToMenu())}
@@ -1983,6 +1994,15 @@ function PlansLink() {
       <a className="font-semibold underline" href={withBase('/plans')}>
         {t('See plans and what is included')}
       </a>
+    </p>
+  );
+}
+
+/** "This interview was given back": a fact, not an error. */
+function GivenBackNote({ text }: { text: string }) {
+  return (
+    <p className="mx-auto mt-3 max-w-md rounded-lg bg-surface-alt px-3 py-2 text-xs text-ink-muted" role="status" data-interview-given-back>
+      {text}
     </p>
   );
 }

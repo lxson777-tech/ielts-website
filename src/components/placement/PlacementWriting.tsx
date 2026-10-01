@@ -166,7 +166,7 @@ export default function PlacementWriting({
     } catch (err) {
       if (claim.binding.state() !== 'current') return;
       if (err instanceof GraderRefusal && isAssessmentRefusalCode(err.code)) {
-        const kind = refusalKind(err.code, err.message);
+        const kind = refusalKind(err.code, err.message, err.reason);
         await refreshTrial();
         setRefused({
           text: refusalMessage({ kind, what: 'placement', serverMessage: err.message }, trialView().status, serverNow(), t, locale),

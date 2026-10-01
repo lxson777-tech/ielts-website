@@ -247,6 +247,8 @@ export type AssessmentBalanceView =
       speaking: number;
       live: number;
       mock: number;
+      /** The once-per-account placement interview has been used. */
+      placementTaken: boolean;
       /** When this 30-day period ends. */
       periodEndsAt: string | null;
       /** When an already bought next period starts, with a fresh allowance.
@@ -268,6 +270,7 @@ export function assessmentBalance(status: TrialStatus | null, serverNowMs: numbe
       speaking: Math.max(0, PAID_ALLOWANCE.speaking - a.speakingUsed),
       live: Math.max(0, PAID_ALLOWANCE.live - a.liveUsed),
       mock: Math.max(0, PAID_ALLOWANCE.mock - a.mockUsed),
+      placementTaken: a.placementTaken,
       periodEndsAt,
       nextPeriodStartsAt,
     };

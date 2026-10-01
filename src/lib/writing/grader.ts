@@ -20,9 +20,14 @@ import { isGraderRefusalCode } from './refusal-code';
     shows its own words. */
 export class GraderRefusal extends Error {
   readonly code: string;
-  constructor(code: string, message: string) {
+  /** Why, when the Worker said so: an allowance refusal arrives as code
+      'assessment-unavailable' with its reason here ('allowance-used',
+      'mock-allowance-used', 'placement-used', 'trial-ended', ...). */
+  readonly reason: string;
+  constructor(code: string, message: string, reason = '') {
     super(message);
     this.code = code;
+    this.reason = reason;
     this.name = 'GraderRefusal';
   }
 }
@@ -80,14 +85,16 @@ class RemoteGrader implements EssayGrader {
       // Surface the Worker's message (e.g. daily-limit) if it sent one.
       let detail = '';
       let code = '';
+      let reason = '';
       try {
-        const body = (await resp.json()) as { error?: string; code?: string };
+        const body = (await resp.json()) as { error?: string; code?: string; reason?: string };
         detail = body.error ?? '';
         code = body.code ?? '';
+        reason = typeof body.reason === 'string' ? body.reason : '';
       } catch {
         /* non-JSON error body */
       }
-      if (isGraderRefusalCode(code)) throw new GraderRefusal(code, detail);
+      if (isGraderRefusalCode(code)) throw new GraderRefusal(code, detail, reason);
       throw new Error(detail || `Grader responded ${resp.status}`);
     }
     const a = (await resp.json()) as EssayAssessment;

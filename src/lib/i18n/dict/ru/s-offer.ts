@@ -70,6 +70,18 @@ export const strings: Record<string, string> = {
   'Feedback needs a live interview from your own account.': 'Для разбора нужно устное собеседование с вашего аккаунта.',
   'Start an active trial or buy access to request an assessment.':
     'Чтобы запросить проверку, начните пробный период или купите доступ.',
+  'You have used the two full mock exams of this purchase. Your lessons, practice and saved results are still available.':
+    'Вы использовали оба полных пробных экзамена этой покупки. Уроки, практика и сохранённые результаты по-прежнему доступны.',
+  'The placement test can be taken once per account, and yours is already taken.':
+    'Вступительный тест можно пройти один раз на аккаунт, и вы его уже прошли.',
+
+  /* A live interview given back */
+  'The interview ended before the examiner began, so it was given back: it does not count as one of your full mock exams.':
+    'Собеседование закончилось до того, как экзаменатор начал, поэтому оно возвращено: оно не засчитывается как один из ваших полных пробных экзаменов.',
+  'The interview ended before the examiner began, so it was given back: your placement interview is still yours to take.':
+    'Собеседование закончилось до того, как экзаменатор начал, поэтому оно возвращено: собеседование вступительного теста по-прежнему доступно вам.',
+  'The interview ended before the examiner began, so it was given back: it does not count as one of your live interviews.':
+    'Собеседование закончилось до того, как экзаменатор начал, поэтому оно возвращено: оно не засчитывается как одно из ваших устных собеседований.',
 
   /* Assessments left */
   'Assessments left in this 30-day period': 'Осталось проверок в этом 30-дневном периоде',

@@ -59,6 +59,11 @@ export default function AllowanceNote({ use }: { use: AllowanceUse }) {
   let empty = false;
   switch (use) {
     case 'placement':
+      if (balance.placementTaken) {
+        empty = true;
+        text = t('The placement test is taken once per account, and this account has already taken it. Your plan already uses that result.');
+        break;
+      }
       text = [
         t('The placement test is taken once per account.'),
         t('Its Speaking interview does not use your live interviews ({n} of {total} left).', live),
@@ -106,7 +111,7 @@ export default function AllowanceNote({ use }: { use: AllowanceUse }) {
   return (
     <p className={`allowance-note${empty ? ' is-empty' : ''}`} data-allowance-note={use} role="note">
       {text}
-      {empty && (
+      {empty && use !== 'placement' && (
         <>
           {' '}
           <a href={withBase('/plans')}>{t('See plans and what is included')}</a>

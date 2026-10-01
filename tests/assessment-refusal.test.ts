@@ -21,8 +21,10 @@ import { dirname, join } from 'node:path';
 
 import {
   ASSESSMENT_REFUSAL_CODES,
-  TODAY_GENERIC_CODE,
-  TODAY_SERVER_SENTENCES,
+  ASSESSMENT_REFUSAL_REASONS,
+  ALLOWANCE_REFUSAL_CODE,
+  interviewGivenBackMessage,
+  SERVER_SENTENCES,
   isAssessmentRefusalCode,
   refusalIsFinal,
   refusalKind,
@@ -81,16 +83,47 @@ test('every allowance, trial and sign-in code is a refusal for the graders and t
   assert.equal(isAssessmentRefusalCode('trial-test-used'), false, 'the trial test codes keep their own sentences');
 });
 
-test("today's one code is read through the server's sentence; an unknown one falls back to its words", () => {
-  for (const [sentence, kind] of Object.entries(TODAY_SERVER_SENTENCES)) {
-    assert.equal(refusalKind(TODAY_GENERIC_CODE, sentence), kind, sentence);
+test("the server's reason picks the sentence: Builder M's six reasons", () => {
+  const code = ALLOWANCE_REFUSAL_CODE;
+  assert.equal(refusalKind(code, '', 'allowance-used'), 'used-up');
+  assert.equal(refusalKind(code, '', 'mock-allowance-used'), 'mock-used-up');
+  assert.equal(refusalKind(code, '', 'placement-used'), 'placement-taken');
+  assert.equal(refusalKind(code, '', 'trial-ended'), 'trial-ended');
+  assert.equal(refusalKind(code, '', 'paid-required'), 'paid-required');
+  assert.equal(refusalKind(code, '', 'daily-limit'), 'daily-limit');
+  /* Every reason the server can send has a sentence here. */
+  const server = read('src/lib/access/assessment.ts');
+  const block = server.slice(server.indexOf('const REFUSAL_MESSAGES'), server.indexOf('};', server.indexOf('const REFUSAL_MESSAGES')));
+  const reasons = [...block.matchAll(/^\s*'([a-z-]+)':/gm)].map((m) => m[1]);
+  assert.ok(reasons.length >= 6, reasons.join(','));
+  for (const reason of reasons) assert.ok(reason in ASSESSMENT_REFUSAL_REASONS, `reason with no sentence: ${reason}`);
+  /* The reason wins over the generic sentence. */
+  assert.equal(refusalKind(code, 'Your assessment allowance is used. Your lessons, practice and saved results are still available.', 'mock-allowance-used'), 'mock-used-up');
+});
+
+test('a given-back interview is said as given back, per allowance, in both languages', async () => {
+  assert.match(interviewGivenBackMessage('practice', en), /does not count as one of your live interviews/);
+  assert.match(interviewGivenBackMessage('mock', en), /full mock exams/);
+  assert.match(interviewGivenBackMessage('placement', en), /placement interview is still yours/);
+  await loadDictionary('ru');
+  for (const purpose of ['practice', 'mock', 'placement']) {
+    assert.notEqual(interviewGivenBackMessage(purpose, ru), interviewGivenBackMessage(purpose, en), purpose);
+  }
+  const link = read('src/lib/speaking/live/link.ts');
+  assert.match(link, /answer\?\.interviewGivenBack === true/);
+  assert.match(read('src/components/LiveExaminer.tsx'), /onInterviewGivenBack: \(purpose\) => \{/);
+});
+
+test("a reply without a reason is read through the server's sentence; an unknown one falls back to its words", () => {
+  for (const [sentence, kind] of Object.entries(SERVER_SENTENCES)) {
+    assert.equal(refusalKind(ALLOWANCE_REFUSAL_CODE, sentence), kind, sentence);
   }
   /* The exact sentences src/lib/access/assessment.ts sends today. */
   const server = read('src/lib/access/assessment.ts');
-  for (const sentence of Object.keys(TODAY_SERVER_SENTENCES)) {
+  for (const sentence of Object.keys(SERVER_SENTENCES)) {
     assert.ok(server.includes(sentence.replace(/'/g, "\\'")), `assessment.ts still sends: ${sentence}`);
   }
-  assert.equal(refusalKind(TODAY_GENERIC_CODE, 'Something else entirely.'), 'other');
+  assert.equal(refusalKind(ALLOWANCE_REFUSAL_CODE, 'Something else entirely.'), 'other');
   assert.equal(refusalKind('assessment-used-up'), 'used-up');
   assert.equal(refusalKind('assessment-mock-used-up'), 'mock-used-up');
   assert.equal(refusalKind('assessment-placement-taken'), 'placement-taken');
@@ -168,7 +201,7 @@ test('every refusal message is in Russian, with the date in Russian (P2-12)', as
     }
   }
   /* The Workers' own English, shown through the fallback, is Russian too. */
-  for (const sentence of Object.keys(TODAY_SERVER_SENTENCES)) {
+  for (const sentence of Object.keys(SERVER_SENTENCES)) {
     assert.notEqual(ru(sentence), sentence, `Russian for the server's: ${sentence}`);
   }
 });
@@ -184,7 +217,7 @@ test('assessments left: nothing for no access or an ended trial; the server coun
     status({ paidEnds: '2026-10-31T09:00:00Z', assessments: { writingUsed: 3, speakingUsed: 1, liveUsed: 2, mockUsed: 1, endsAt: '2026-10-31T09:00:00Z' } }),
     NOW,
   );
-  assert.deepEqual(paid, { kind: 'paid', writing: 9, speaking: 5, live: 0, mock: 1, periodEndsAt: '2026-10-31T09:00:00Z', nextPeriodStartsAt: null });
+  assert.deepEqual(paid, { kind: 'paid', writing: 9, speaking: 5, live: 0, mock: 1, placementTaken: false, periodEndsAt: '2026-10-31T09:00:00Z', nextPeriodStartsAt: null });
 });
 
 test('the balance fields the client expects are read, including placement as a count or a flag', () => {

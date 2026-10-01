@@ -416,7 +416,7 @@ export default function SpeakingTester({ trialRecorded = false }: { trialRecorde
       /* A refusal is not an outage (review of 1 October 2026, P1-2): an
          allowance used or a trial over is said plainly, with what to do. */
       if (err instanceof GraderRefusal && isAssessmentRefusalCode(err.code)) {
-        const kind = refusalKind(err.code, err.message);
+        const kind = refusalKind(err.code, err.message, err.reason);
         await refreshTrial();
         setRefusal({ final: refusalIsFinal(kind), plans: refusalOffersPlans(kind) });
         setMicError(refusalMessage({ kind, what: 'speaking', serverMessage: err.message }, trialView().status, serverNow(), t, locale));

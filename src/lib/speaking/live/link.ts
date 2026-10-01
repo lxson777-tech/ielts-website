@@ -129,6 +129,10 @@ export interface ExaminerLinkCallbacks {
   onTranscript(turns: TranscriptTurn[]): void;
   onClosed(reason: string, wasClean: boolean): void;
   onError(message: string): void;
+  /** Gated build: the Worker gave this paid interview back when it was ended
+      (the examiner never began, review P1-4). `purpose` is the allowance it
+      used: 'practice', 'placement' or 'mock'. The open site never hears it. */
+  onInterviewGivenBack?(purpose: string): void;
 }
 
 export interface ExaminerLink {
@@ -369,9 +373,17 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
       /* A trial interview names its test, so an interview the examiner never
          began can be given back (the Worker decides). */
       body: JSON.stringify(opts.trialSitting ? { sessionId, trialSitting: opts.trialSitting } : { sessionId }),
-    }).catch(() => {
-      /* best effort */
-    });
+    })
+      .then((resp) => (resp.ok ? resp.json() : null))
+      .then((body: unknown) => {
+        const answer = body as { interviewGivenBack?: unknown; purpose?: unknown } | null;
+        if (answer?.interviewGivenBack === true) {
+          opts.cb.onInterviewGivenBack?.(typeof answer.purpose === 'string' ? answer.purpose : 'practice');
+        }
+      })
+      .catch(() => {
+        /* best effort */
+      });
   }
 
   /** R2E-01: lets go of everything this setup has made, at once, on a pull

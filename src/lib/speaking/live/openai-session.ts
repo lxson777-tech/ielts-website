@@ -402,9 +402,12 @@ import { isLiveRefusalCode } from '../../writing/refusal-code';
     (isLiveRefusalCode). Nothing was paid for. */
 export class LiveTrialRefusal extends Error {
   readonly code: string;
-  constructor(code: string, message: string) {
+  /** The server's reason for an allowance refusal (see GraderRefusal). */
+  readonly reason: string;
+  constructor(code: string, message: string, reason = '') {
     super(message);
     this.code = code;
+    this.reason = reason;
     this.name = 'LiveTrialRefusal';
   }
 }
@@ -593,12 +596,12 @@ export async function connectWebRtc(
         }),
       });
       if (!resp.ok) {
-        const body = (await resp.json().catch(() => null)) as { error?: string; code?: string } | null;
+        const body = (await resp.json().catch(() => null)) as { error?: string; code?: string; reason?: string } | null;
         /* The trial's and the allowance's refusals carry a code the screen
            words itself (an 'assessment-*' or 'allowance-*' code is a used-up
            allowance, never an outage: review of 1 October 2026, P1-2). */
         if (resp.status >= 400 && resp.status < 500 && typeof body?.code === 'string' && isLiveRefusalCode(body.code)) {
-          throw new LiveTrialRefusal(body.code, body.error ?? 'Your trial does not include this session.');
+          throw new LiveTrialRefusal(body.code, body.error ?? 'Your trial does not include this session.', typeof body.reason === 'string' ? body.reason : '');
         }
         // A 400 here means the Worker rejected the plan, which in practice only
         // happens when the site ships a question bank the deployed Worker does

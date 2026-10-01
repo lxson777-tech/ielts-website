@@ -93,9 +93,9 @@ export async function gradeInterview(
   });
 
   if (!resp.ok) {
-    const err = (await resp.json().catch(() => null)) as { error?: string; code?: string } | null;
+    const err = (await resp.json().catch(() => null)) as { error?: string; code?: string; reason?: string } | null;
     const code = err?.code ?? '';
-    if (isGraderRefusalCode(code)) throw new GraderRefusal(code, err?.error ?? '');
+    if (isGraderRefusalCode(code)) throw new GraderRefusal(code, err?.error ?? '', typeof err?.reason === 'string' ? err.reason : '');
     throw new Error(err?.error ?? `Grader error (${resp.status})`);
   }
 

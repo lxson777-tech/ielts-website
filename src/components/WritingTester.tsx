@@ -428,7 +428,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
            P1-2). The trial's own test codes keep their own sentences. */
         const allowance =
           err instanceof GraderRefusal && err.code !== 'trial-test-used' && isAssessmentRefusalCode(err.code)
-            ? refusalKind(err.code, err.message)
+            ? refusalKind(err.code, err.message, err.reason)
             : null;
         setGradingErrorPlans(allowance ? refusalOffersPlans(allowance) : false);
         if (allowance) await refreshTrial();
