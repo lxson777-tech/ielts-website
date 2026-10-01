@@ -346,3 +346,6 @@ button.auth-link { padding: 0; border: 0; background: none; font: inherit; curso
   [data-account-panel] { animation: none; }
   .account-login-button, .workspace-v2 .ws-login { transition: none; }
 }
+
+/* A change that worked, said in the row after its form closed. */
+.acct-row-good { color: var(--color-success, #1d5b43); font-weight: 600; }

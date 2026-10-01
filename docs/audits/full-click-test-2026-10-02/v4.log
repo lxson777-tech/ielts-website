@@ -1,0 +1,34 @@
+RUN {'lang': 'en', 'size': '1440x900', 'state': 'signed-out', 'mode': 'plain'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'en', 'size': '1440x900', 'state': 'free', 'mode': 'plain'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'en', 'size': '1440x900', 'state': 'paid', 'mode': 'plain'}: 51 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'en', 'size': '1440x900', 'state': 'complimentary', 'mode': 'plain'}: 51 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '1440x900', 'state': 'signed-out', 'mode': 'plain'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '1440x900', 'state': 'free', 'mode': 'plain'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '1440x900', 'state': 'paid', 'mode': 'plain'}: 51 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '1440x900', 'state': 'complimentary', 'mode': 'plain'}: 51 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'en', 'size': '390x844', 'state': 'signed-out', 'mode': 'plain'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'en', 'size': '390x844', 'state': 'free', 'mode': 'plain'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'en', 'size': '390x844', 'state': 'paid', 'mode': 'plain'}: 51 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'en', 'size': '390x844', 'state': 'complimentary', 'mode': 'plain'}: 51 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '390x844', 'state': 'signed-out', 'mode': 'plain'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '390x844', 'state': 'free', 'mode': 'plain'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '390x844', 'state': 'paid', 'mode': 'plain'}: 51 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '390x844', 'state': 'complimentary', 'mode': 'plain'}: 51 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'en', 'size': '1440x900', 'state': 'signed-out', 'mode': 'stress'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'en', 'size': '1440x900', 'state': 'free', 'mode': 'stress'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'en', 'size': '1440x900', 'state': 'paid', 'mode': 'stress'}: 51 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'en', 'size': '1440x900', 'state': 'complimentary', 'mode': 'stress'}: 51 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '1440x900', 'state': 'signed-out', 'mode': 'stress'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '1440x900', 'state': 'free', 'mode': 'stress'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '1440x900', 'state': 'paid', 'mode': 'stress'}: 51 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '1440x900', 'state': 'complimentary', 'mode': 'stress'}: 51 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'en', 'size': '390x844', 'state': 'signed-out', 'mode': 'stress'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'en', 'size': '390x844', 'state': 'free', 'mode': 'stress'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'en', 'size': '390x844', 'state': 'paid', 'mode': 'stress'}: 51 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'en', 'size': '390x844', 'state': 'complimentary', 'mode': 'stress'}: 51 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '390x844', 'state': 'signed-out', 'mode': 'stress'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '390x844', 'state': 'free', 'mode': 'stress'}: 52 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '390x844', 'state': 'paid', 'mode': 'stress'}: 51 visits, 0 with an error, 5 nav clicks
+RUN {'lang': 'ru', 'size': '390x844', 'state': 'complimentary', 'mode': 'stress'}: 51 visits, 0 with an error, 5 nav clicks
+
+0 of 1648 visits had an uncaught page error or hydration message

@@ -1,0 +1,478 @@
+{
+ "tier": "admin",
+ "lang": "en",
+ "size": "1440x900",
+ "email": "admin@example.test",
+ "pages": [
+  {
+   "route": "/admin",
+   "controls": [
+    {
+     "control": "IELTS is EZ workspace",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Today",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Course",
+     "kind": "link",
+     "href": "/ielts-website/start",
+     "outcome": "clicked",
+     "went": "/ielts-website/start"
+    },
+    {
+     "control": "Practice",
+     "kind": "link",
+     "href": "/ielts-website/trainers",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers"
+    },
+    {
+     "control": "Tests",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "Vocabulary",
+     "kind": "link",
+     "href": "/ielts-website/review",
+     "outcome": "clicked",
+     "went": "/ielts-website/review"
+    },
+    {
+     "control": "English",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "lang": "en"
+    },
+    {
+     "control": "Русский",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "lang": "ru"
+    },
+    {
+     "control": "Open menu",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Refresh",
+     "kind": "button",
+     "href": null,
+     "outcome": "could not click",
+     "why": "Locator.click: Timeout 6000ms exceeded."
+    },
+    {
+     "control": "Only waiting",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Refresh",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Mark as answered",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Mark as answered",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Only missing details 2",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Newest",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Recently active",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Most practice",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "R1 relaunch-1790877566@example.test No details yet Joined 2 Oct · Email Never 0 ",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student look-1790878009@example.test · Joined 2 Oct · Email Never 0",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student menu-en-1790878697@example.test · Joined 2 Oct · Email Neve",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student menu-ru-1790878697@example.test · Joined 2 Oct · Email Neve",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student links-1790878697@example.test · Joined 2 Oct · Email Never ",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 31 OCT 2026 shots-1790879117@example.test",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student YOU FREE ACCESS UNTIL 1 NOV 2026 admin@example.test · Joine",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 31 OCT 2026 shots2-1790879156@example.tes",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 31 OCT 2026 shots3-1790879194@example.tes",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "AK Aigerim Karimova FREE ACCESS UNTIL 31 OCT 2026 capture-1790879272@example.tes",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "AK Aigerim Karimova FREE ACCESS UNTIL 31 OCT 2026 capture-1790879304@example.tes",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "AK Aigerim Karimova FREE ACCESS UNTIL 31 OCT 2026 capture-1790879336@example.tes",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "AK Aigerim Karimova FREE ACCESS UNTIL 31 OCT 2026 capture-1790879360@example.tes",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "AK Aigerim Karimova FREE ACCESS UNTIL 31 OCT 2026 capture-1790879409@example.tes",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student v5-free-1790883408@example.test · Joined 2 Oct · Email Neve",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student PAID UNTIL 1 NOV 2026 v5-paid-1790883408@example.test · Joi",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SV Synthetic Visitor w01-1790883406@example.test · Joined 2 Oct · Email Never 0 ",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student v2-en-1790883415@example.test · Joined 2 Oct · Email Never ",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student v2-ru-1790883415@example.test · Joined 2 Oct · Email Never ",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student v3-free-1790883486@example.test · Joined 2 Oct · Email Neve",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 1 NOV 2026 ct-sweep-paid-en-1790883513@ex",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 1 NOV 2026 ct-sweep-paid-en-1790883542@ex",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student ct-sweep-free-en-1790883542@example.test · Joined 2 Oct · E",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student v3-phone-en-390-1790883486@example.test · Joined 2 Oct · Em",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student v3-phone-ru-390-1790883486@example.test · Joined 2 Oct · Em",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 1 NOV 2026 ct-click-paid-en-1790883592@ex",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student v3-phone-ru-320-1790883486@example.test · Joined 2 Oct · Em",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student v3-phone-ru-1440-1790883486@example.test · Joined 2 Oct · E",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student PAID ACCESS ENDED v3-paid-1790883486@example.test · Joined ",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS ENDED v3-gift-1790883486@example.test · Joined ",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student ct-click-free-en-1790883695@example.test · Joined 2 Oct · E",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student ct-wide-1790883908@example.test · Joined 2 Oct · Email Neve",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student ct-click-free-en-1790883997@example.test · Joined 2 Oct · E",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 1 NOV 2026 ct-explore-1790884447@example.",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 1 NOV 2026 ct-flows-1790884559@example.te",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 1 NOV 2026 ct-vhdr-1790884751@example.tes",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student ct-undef-1790884852@example.test · Joined 2 Oct · Email Nev",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 1 NOV 2026 ct-click-paid-en-1790885356@ex",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student ct-click-free-en-1790885356@example.test · Joined 2 Oct · E",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 1 NOV 2026 ct-click-paid-ru-1790885356@ex",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 1 NOV 2026 ct-sweep-paid-en-1790885365@ex",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 1 NOV 2026 ct-click-paid-ru-1790886006@ex",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 1 NOV 2026 ct-click-paid-en-1790886006@ex",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 1 NOV 2026 ct-flows-1790886019@example.te",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 1 NOV 2026 ct-flows-1790886132@example.te",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student FREE ACCESS UNTIL 1 NOV 2026 ct-flows-1790886149@example.te",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "GD google-demo@example.test No details yet Joined 2 Oct · Email Never 0 0 0 0 No",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student ct-plansave-1790886911@example.test · Joined 2 Oct · Email ",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student ct-plansave2-1790886931@example.test · Joined 2 Oct · Email",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student ct-plansave2-1790886974@example.test · Joined 2 Oct · Email",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "SS Synthetic Student ct-plansave2-1790887011@example.test · Joined 2 Oct · Email",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Help",
+     "kind": "link",
+     "href": "/ielts-website/help",
+     "outcome": "clicked",
+     "went": "/ielts-website/help"
+    },
+    {
+     "control": "Report a problem",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=footer",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=footer"
+    },
+    {
+     "control": "Privacy",
+     "kind": "link",
+     "href": "/ielts-website/privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/privacy"
+    },
+    {
+     "control": "Terms",
+     "kind": "link",
+     "href": "/ielts-website/terms",
+     "outcome": "clicked",
+     "went": "/ielts-website/terms"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [
+    "mailto:ct-flows-1790886019@example.test?subject=Re%3A%20your%20message%20to%20IELTS%20is%20EZ",
+    "mailto:ct-flows-1790884559@example.test?subject=Re%3A%20your%20message%20to%20IELTS%20is%20EZ"
+   ],
+   "status": 200,
+   "loadErrors": []
+  }
+ ]
+}

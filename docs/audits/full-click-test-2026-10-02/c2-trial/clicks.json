@@ -1,0 +1,794 @@
+{
+ "tier": "free",
+ "lang": "en",
+ "size": "1440x900",
+ "email": "ct-click-free-en-1790883997@example.test",
+ "pages": [
+  {
+   "route": "/lessons/reading/tfng",
+   "controls": [
+    {
+     "control": "IELTS is EZ workspace",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Today",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Course",
+     "kind": "link",
+     "href": "/ielts-website/start",
+     "outcome": "clicked",
+     "went": "/ielts-website/start"
+    },
+    {
+     "control": "Practice",
+     "kind": "link",
+     "href": "/ielts-website/trainers",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers"
+    },
+    {
+     "control": "Tests",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "Vocabulary",
+     "kind": "link",
+     "href": "/ielts-website/review",
+     "outcome": "clicked",
+     "went": "/ielts-website/review"
+    },
+    {
+     "control": "English",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "lang": "en"
+    },
+    {
+     "control": "Русский",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "lang": "ru"
+    },
+    {
+     "control": "Open menu",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Home",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Reading",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading-task1",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading-task1"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "The decision test on three statements (full worked example)",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Collapse passage ↑",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "Collapse passage ↑",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    },
+    {
+     "control": "PREVIOUS Multiple Choice",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/mc",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/mc"
+    },
+    {
+     "control": "READING All Question Types",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading-task1",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading-task1"
+    },
+    {
+     "control": "NEXT Yes / No / Not Given",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/ynng",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/ynng"
+    },
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Practice drills come with practice and guidance.  The full practice library, and timed tests with band estimate"
+    },
+    {
+     "control": "○ Mark this lesson as studied",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Save lesson",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance You finished your first lesson  Lessons stay free. When you want to practise what you have learned, with feedback on your own work, this i"
+    },
+    {
+     "control": "Back to course",
+     "kind": "link",
+     "href": "/ielts-website/start",
+     "outcome": "clicked",
+     "went": "/ielts-website/start"
+    },
+    {
+     "control": "Back to today's session",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Help",
+     "kind": "link",
+     "href": "/ielts-website/help",
+     "outcome": "clicked",
+     "went": "/ielts-website/help"
+    },
+    {
+     "control": "Report a problem",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=footer",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=footer"
+    },
+    {
+     "control": "Privacy",
+     "kind": "link",
+     "href": "/ielts-website/privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/privacy"
+    },
+    {
+     "control": "Terms",
+     "kind": "link",
+     "href": "/ielts-website/terms",
+     "outcome": "clicked",
+     "went": "/ielts-website/terms"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers",
+   "controls": [
+    {
+     "control": "Start a drill ↗",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Practice drills come with practice and guidance.  The full practice library, and timed tests with band estimate"
+    },
+    {
+     "control": "Start a drill ↗",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Practice drills come with practice and guidance.  The full practice library, and timed tests with band estimate"
+    },
+    {
+     "control": "Start a part ↗",
+     "kind": "link",
+     "href": "/ielts-website/trainers/speaking",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  The trainers come with practice and guidance.  The full practice library, and timed tests with band estimates 1"
+    },
+    {
+     "control": "Start writing ↗",
+     "kind": "link",
+     "href": "/ielts-website/trainers/writing",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  The trainers come with practice and guidance.  The full practice library, and timed tests with band estimates 1"
+    },
+    {
+     "control": "What's the difference between Practice and Tests?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "Looking for a full timed exam instead?",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  }
+ ]
+}

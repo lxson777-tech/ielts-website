@@ -1,0 +1,1314 @@
+{
+ "checks": [
+  {
+   "section": "lessons-en",
+   "check": "lesson pages found in the build",
+   "ok": true,
+   "detail": "76"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/form-completion: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'listening-form-completion', 'locale': 'en', 'len': 6231, 'cyr': 0, 'lat': 4842, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/form-completion: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 10 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/map-labelling: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'listening-map-labelling', 'locale': 'en', 'len': 2488, 'cyr': 0, 'lat': 1982, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/map-labelling: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 4 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/matching: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'listening-matching', 'locale': 'en', 'len': 2201, 'cyr': 0, 'lat': 1754, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/matching: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 6 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/multiple-choice: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'listening-multiple-choice', 'locale': 'en', 'len': 2512, 'cyr': 0, 'lat': 2002, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/multiple-choice: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 10 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/part1: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'listening-part1', 'locale': 'en', 'len': 1866, 'cyr': 0, 'lat': 1475, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/part1: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 10 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/part2: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'listening-part2', 'locale': 'en', 'len': 1766, 'cyr': 0, 'lat': 1408, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/part2: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 10 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/part3: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'listening-part3', 'locale': 'en', 'len': 1398, 'cyr': 0, 'lat': 1140, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/part3: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 10 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/part4: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'listening-part4', 'locale': 'en', 'len': 1493, 'cyr': 0, 'lat': 1198, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/part4: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 10 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/sentence-completion: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'listening-sentence-completion', 'locale': 'en', 'len': 6384, 'cyr': 0, 'lat': 5009, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/sentence-completion: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 10 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/short-answer: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'listening-short-answer', 'locale': 'en', 'len': 6229, 'cyr': 0, 'lat': 4857, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening/short-answer: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 4 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/listening: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'listening', 'locale': 'en', 'len': 3896, 'cyr': 0, 'lat': 2988, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/diagram: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'reading-diagram', 'locale': 'en', 'len': 5001, 'cyr': 0, 'lat': 3911, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/diagram: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 6 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/headings: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'reading-headings', 'locale': 'en', 'len': 1521, 'cyr': 0, 'lat': 1212, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/headings: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 6 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/matching-features: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'reading-matching-features', 'locale': 'en', 'len': 1807, 'cyr': 0, 'lat': 1448, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/matching-features: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "1 / 7 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/matching-information: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'reading-matching-information', 'locale': 'en', 'len': 1667, 'cyr': 0, 'lat': 1344, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/matching-information: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 7 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/matching-sentence-endings: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'reading-matching-sentence-endings', 'locale': 'en', 'len': 2687, 'cyr': 0, 'lat': 2171, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/matching-sentence-endings: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 5 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/mc: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'reading-mc', 'locale': 'en', 'len': 2424, 'cyr': 0, 'lat': 1913, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/mc: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "1 / 5 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/paraphrase: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'reading-paraphrase', 'locale': 'en', 'len': 2470, 'cyr': 0, 'lat': 1929, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/paraphrase: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "1 / 8 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/sentence: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'reading-sentence', 'locale': 'en', 'len': 4962, 'cyr': 0, 'lat': 3872, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/sentence: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 5 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/short-answer: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'reading-short-answer', 'locale': 'en', 'len': 6022, 'cyr': 0, 'lat': 4700, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/short-answer: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 5 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/summary-completion: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'reading-summary-completion', 'locale': 'en', 'len': 5946, 'cyr': 0, 'lat': 4653, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/summary-completion: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 10 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/tfng: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'reading-tfng', 'locale': 'en', 'len': 7494, 'cyr': 0, 'lat': 5863, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/tfng: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "1 / 8 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/ynng: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'reading-ynng', 'locale': 'en', 'len': 8655, 'cyr': 0, 'lat': 6809, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading/ynng: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 7 correct"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/reading-task1: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'reading-task1', 'locale': 'en', 'len': 10461, 'cyr': 0, 'lat': 8112, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/speaking/part1: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'speaking-part1', 'locale': 'en', 'len': 17844, 'cyr': 0, 'lat': 13726, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/speaking/part2: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'speaking-part2', 'locale': 'en', 'len': 15884, 'cyr': 0, 'lat': 12282, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/speaking/part3: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'speaking-part3', 'locale': 'en', 'len': 7385, 'cyr': 0, 'lat': 5774, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/speaking: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'speaking', 'locale': 'en', 'len': 2389, 'cyr': 0, 'lat': 1899, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/ageing: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-ageing', 'locale': 'en', 'len': 3457, 'cyr': 0, 'lat': 2830, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/ai: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-ai', 'locale': 'en', 'len': 4223, 'cyr': 0, 'lat': 3478, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/animals: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-animals', 'locale': 'en', 'len': 3640, 'cyr': 0, 'lat': 2979, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/arts: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-arts', 'locale': 'en', 'len': 3690, 'cyr': 0, 'lat': 3020, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/books: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-books', 'locale': 'en', 'len': 3439, 'cyr': 0, 'lat': 2779, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/business: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-business', 'locale': 'en', 'len': 3844, 'cyr': 0, 'lat': 3150, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/childhood: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-childhood', 'locale': 'en', 'len': 3043, 'cyr': 0, 'lat': 2446, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/conjunctions: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-conjunctions', 'locale': 'en', 'len': 4981, 'cyr': 0, 'lat': 4003, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/crime: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-crime', 'locale': 'en', 'len': 4060, 'cyr': 0, 'lat': 3353, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/education: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-education', 'locale': 'en', 'len': 4244, 'cyr': 0, 'lat': 3534, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/environment: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-environment', 'locale': 'en', 'len': 4034, 'cyr': 0, 'lat': 3331, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/family: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-family', 'locale': 'en', 'len': 4185, 'cyr': 0, 'lat': 3427, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/fashion: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-fashion', 'locale': 'en', 'len': 3094, 'cyr': 0, 'lat': 2498, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/food: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-food', 'locale': 'en', 'len': 3790, 'cyr': 0, 'lat': 3074, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/government: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-government', 'locale': 'en', 'len': 4194, 'cyr': 0, 'lat': 3457, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/health: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-health', 'locale': 'en', 'len': 3994, 'cyr': 0, 'lat': 3296, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/housing: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-housing', 'locale': 'en', 'len': 4131, 'cyr': 0, 'lat': 3378, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/language: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-language', 'locale': 'en', 'len': 3716, 'cyr': 0, 'lat': 3065, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/leisure: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-leisure', 'locale': 'en', 'len': 3204, 'cyr': 0, 'lat': 2555, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/media: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-media', 'locale': 'en', 'len': 3921, 'cyr': 0, 'lat': 3242, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/money: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-money', 'locale': 'en', 'len': 3759, 'cyr': 0, 'lat': 3064, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/music-film: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-music-film', 'locale': 'en', 'len': 3280, 'cyr': 0, 'lat': 2650, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/people: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-people', 'locale': 'en', 'len': 3112, 'cyr': 0, 'lat': 2486, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/places: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-places', 'locale': 'en', 'len': 3102, 'cyr': 0, 'lat': 2475, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/science: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-science', 'locale': 'en', 'len': 3694, 'cyr': 0, 'lat': 3042, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/social-media: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-social-media', 'locale': 'en', 'len': 4292, 'cyr': 0, 'lat': 3541, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/society: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-society', 'locale': 'en', 'len': 4381, 'cyr': 0, 'lat': 3640, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/sport: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-sport', 'locale': 'en', 'len': 3692, 'cyr': 0, 'lat': 3002, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/success: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-success', 'locale': 'en', 'len': 3139, 'cyr': 0, 'lat': 2527, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/technology: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-technology', 'locale': 'en', 'len': 4029, 'cyr': 0, 'lat': 3351, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/traditions: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-traditions', 'locale': 'en', 'len': 3678, 'cyr': 0, 'lat': 2985, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/transport: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-transport', 'locale': 'en', 'len': 3816, 'cyr': 0, 'lat': 3089, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/travel: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-travel', 'locale': 'en', 'len': 4168, 'cyr': 0, 'lat': 3447, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/volunteering: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-volunteering', 'locale': 'en', 'len': 3314, 'cyr': 0, 'lat': 2689, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/weather: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-weather', 'locale': 'en', 'len': 3055, 'cyr': 0, 'lat': 2440, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary/work: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-work', 'locale': 'en', 'len': 4126, 'cyr': 0, 'lat': 3404, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/vocabulary: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary', 'locale': 'en', 'len': 1415, 'cyr': 0, 'lat': 1141, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/advantages: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'writing-advantages', 'locale': 'en', 'len': 2855, 'cyr': 0, 'lat': 2288, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/advantages: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/charts: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'writing-charts', 'locale': 'en', 'len': 4073, 'cyr': 0, 'lat': 3149, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/charts: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/discussion: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'writing-discussion', 'locale': 'en', 'len': 2577, 'cyr': 0, 'lat': 2045, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/discussion: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/maps: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'writing-maps', 'locale': 'en', 'len': 2529, 'cyr': 0, 'lat': 2012, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/maps: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/method: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'writing-method', 'locale': 'en', 'len': 4155, 'cyr': 0, 'lat': 3242, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/method: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/opinion: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'writing-opinion', 'locale': 'en', 'len': 2220, 'cyr': 0, 'lat': 1750, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/opinion: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/problem: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'writing-problem', 'locale': 'en', 'len': 3462, 'cyr': 0, 'lat': 2738, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/problem: no worked example, same as the open build (it has none either)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/process: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'writing-process', 'locale': 'en', 'len': 2539, 'cyr': 0, 'lat': 2018, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/process: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/task2-method: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'writing-task2-method', 'locale': 'en', 'len': 4864, 'cyr': 0, 'lat': 3852, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/task2-method: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/twopart: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'writing-twopart', 'locale': 'en', 'len': 3285, 'cyr': 0, 'lat': 2634, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing/twopart: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-en",
+   "check": "/lessons/writing: lesson body opens in en",
+   "ok": true,
+   "detail": "{'slug': 'writing', 'locale': 'en', 'len': 2531, 'cyr': 0, 'lat': 1971, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "lesson quizzes found and exercised",
+   "ok": true,
+   "detail": "22"
+  },
+  {
+   "section": "lessons-en",
+   "check": "Writing worked examples found (as many as the open build shows)",
+   "ok": true,
+   "detail": "9 vs open {'/lessons/writing/method': True, '/lessons/writing/charts': True, '/lessons/writing/process': True, '/lessons/writing/maps': True, '/lessons/writing/task2-method': True, '/lessons/writing/opinion': True, '/lessons/writing/discussion': True, '/lessons/writing/advantages': True, '/lessons/writing/problem': False, '/lessons/writing/twopart': True}"
+  },
+  {
+   "section": "lessons-en",
+   "check": "vocabulary: all 12 topic lists open with their words",
+   "ok": true,
+   "detail": "12 topics (open build 12); thin/empty: []"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "lesson pages found in the build",
+   "ok": true,
+   "detail": "76"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/listening/form-completion: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'listening-form-completion', 'locale': 'ru', 'len': 6331, 'cyr': 3855, 'lat': 1198, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/listening/map-labelling: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'listening-map-labelling', 'locale': 'ru', 'len': 2573, 'cyr': 1901, 'lat': 206, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/listening/matching: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'listening-matching', 'locale': 'ru', 'len': 2386, 'cyr': 1830, 'lat': 143, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/listening/multiple-choice: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'listening-multiple-choice', 'locale': 'ru', 'len': 2549, 'cyr': 1947, 'lat': 134, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/listening/part1: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'listening-part1', 'locale': 'ru', 'len': 1939, 'cyr': 1378, 'lat': 198, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/listening/part2: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'listening-part2', 'locale': 'ru', 'len': 1821, 'cyr': 1195, 'lat': 294, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/listening/part3: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'listening-part3', 'locale': 'ru', 'len': 1438, 'cyr': 1057, 'lat': 134, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/listening/part4: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'listening-part4', 'locale': 'ru', 'len': 1627, 'cyr': 1193, 'lat': 148, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/listening/sentence-completion: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'listening-sentence-completion', 'locale': 'ru', 'len': 6745, 'cyr': 4207, 'lat': 1243, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/listening/short-answer: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'listening-short-answer', 'locale': 'ru', 'len': 6257, 'cyr': 3581, 'lat': 1404, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/listening: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'listening', 'locale': 'ru', 'len': 4027, 'cyr': 2894, 'lat': 290, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/diagram: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'reading-diagram', 'locale': 'ru', 'len': 5286, 'cyr': 3472, 'lat': 801, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/diagram: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 6 верно"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/headings: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'reading-headings', 'locale': 'ru', 'len': 1588, 'cyr': 1259, 'lat': 44, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/headings: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 6 верно"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/matching-features: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'reading-matching-features', 'locale': 'ru', 'len': 1940, 'cyr': 1383, 'lat': 211, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/matching-features: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "1 / 7 верно"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/matching-information: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'reading-matching-information', 'locale': 'ru', 'len': 1673, 'cyr': 1237, 'lat': 138, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/matching-information: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 7 верно"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/matching-sentence-endings: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'reading-matching-sentence-endings', 'locale': 'ru', 'len': 2882, 'cyr': 2153, 'lat': 243, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/matching-sentence-endings: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 5 верно"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/mc: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'reading-mc', 'locale': 'ru', 'len': 2424, 'cyr': 1563, 'lat': 388, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/mc: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "1 / 5 верно"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/paraphrase: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'reading-paraphrase', 'locale': 'ru', 'len': 2755, 'cyr': 1912, 'lat': 307, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/paraphrase: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "1 / 8 верно"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/sentence: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'reading-sentence', 'locale': 'ru', 'len': 5293, 'cyr': 3294, 'lat': 970, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/sentence: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 5 верно"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/short-answer: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'reading-short-answer', 'locale': 'ru', 'len': 6200, 'cyr': 3709, 'lat': 1242, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/short-answer: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 5 верно"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/summary-completion: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'reading-summary-completion', 'locale': 'ru', 'len': 6204, 'cyr': 3913, 'lat': 1088, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/summary-completion: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 10 верно"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/tfng: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'reading-tfng', 'locale': 'ru', 'len': 7616, 'cyr': 4831, 'lat': 1225, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/tfng: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "1 / 8 верно"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/ynng: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'reading-ynng', 'locale': 'ru', 'len': 8901, 'cyr': 5619, 'lat': 1524, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading/ynng: lesson quiz loads and checks an answer",
+   "ok": true,
+   "detail": "0 / 7 верно"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/reading-task1: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'reading-task1', 'locale': 'ru', 'len': 10977, 'cyr': 7861, 'lat': 852, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/speaking/part1: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'speaking-part1', 'locale': 'ru', 'len': 18299, 'cyr': 9418, 'lat': 4936, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/speaking/part2: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'speaking-part2', 'locale': 'ru', 'len': 16546, 'cyr': 9597, 'lat': 3547, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/speaking/part3: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'speaking-part3', 'locale': 'ru', 'len': 7376, 'cyr': 3521, 'lat': 2333, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/speaking: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'speaking', 'locale': 'ru', 'len': 2538, 'cyr': 1970, 'lat': 105, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/ageing: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-ageing', 'locale': 'ru', 'len': 3533, 'cyr': 1218, 'lat': 1714, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/ai: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-ai', 'locale': 'ru', 'len': 4353, 'cyr': 1614, 'lat': 2018, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/animals: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-animals', 'locale': 'ru', 'len': 3655, 'cyr': 1408, 'lat': 1626, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/arts: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-arts', 'locale': 'ru', 'len': 3817, 'cyr': 1530, 'lat': 1637, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/books: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-books', 'locale': 'ru', 'len': 3518, 'cyr': 1257, 'lat': 1629, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/business: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-business', 'locale': 'ru', 'len': 4011, 'cyr': 1546, 'lat': 1780, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/childhood: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-childhood', 'locale': 'ru', 'len': 3013, 'cyr': 1077, 'lat': 1368, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/conjunctions: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-conjunctions', 'locale': 'ru', 'len': 4979, 'cyr': 2067, 'lat': 2000, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/crime: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-crime', 'locale': 'ru', 'len': 4200, 'cyr': 1534, 'lat': 1996, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/education: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-education', 'locale': 'ru', 'len': 4296, 'cyr': 1479, 'lat': 2114, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/environment: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-environment', 'locale': 'ru', 'len': 4144, 'cyr': 1476, 'lat': 1993, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/family: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-family', 'locale': 'ru', 'len': 4182, 'cyr': 1484, 'lat': 1963, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/fashion: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-fashion', 'locale': 'ru', 'len': 3164, 'cyr': 1162, 'lat': 1417, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/food: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-food', 'locale': 'ru', 'len': 3856, 'cyr': 1462, 'lat': 1695, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/government: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-government', 'locale': 'ru', 'len': 4256, 'cyr': 1624, 'lat': 1933, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/health: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-health', 'locale': 'ru', 'len': 3991, 'cyr': 1361, 'lat': 1973, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/housing: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-housing', 'locale': 'ru', 'len': 4159, 'cyr': 1525, 'lat': 1924, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/language: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-language', 'locale': 'ru', 'len': 3623, 'cyr': 1208, 'lat': 1790, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/leisure: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-leisure', 'locale': 'ru', 'len': 3210, 'cyr': 1276, 'lat': 1331, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/media: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-media', 'locale': 'ru', 'len': 3898, 'cyr': 1410, 'lat': 1847, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/money: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-money', 'locale': 'ru', 'len': 3762, 'cyr': 1352, 'lat': 1741, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/music-film: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-music-film', 'locale': 'ru', 'len': 3272, 'cyr': 1161, 'lat': 1517, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/people: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-people', 'locale': 'ru', 'len': 3176, 'cyr': 1129, 'lat': 1439, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/places: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-places', 'locale': 'ru', 'len': 3117, 'cyr': 1081, 'lat': 1441, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/science: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-science', 'locale': 'ru', 'len': 3732, 'cyr': 1388, 'lat': 1714, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/social-media: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-social-media', 'locale': 'ru', 'len': 4411, 'cyr': 1648, 'lat': 2028, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/society: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-society', 'locale': 'ru', 'len': 4424, 'cyr': 1607, 'lat': 2118, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/sport: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-sport', 'locale': 'ru', 'len': 3786, 'cyr': 1513, 'lat': 1622, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/success: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-success', 'locale': 'ru', 'len': 3134, 'cyr': 1073, 'lat': 1467, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/technology: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-technology', 'locale': 'ru', 'len': 4087, 'cyr': 1440, 'lat': 1986, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/traditions: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-traditions', 'locale': 'ru', 'len': 3611, 'cyr': 1297, 'lat': 1668, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/transport: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-transport', 'locale': 'ru', 'len': 4071, 'cyr': 1593, 'lat': 1769, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/travel: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-travel', 'locale': 'ru', 'len': 4235, 'cyr': 1544, 'lat': 1994, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/volunteering: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-volunteering', 'locale': 'ru', 'len': 3435, 'cyr': 1268, 'lat': 1546, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/weather: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-weather', 'locale': 'ru', 'len': 3077, 'cyr': 1126, 'lat': 1384, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary/work: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary-work', 'locale': 'ru', 'len': 4135, 'cyr': 1509, 'lat': 1936, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/vocabulary: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'vocabulary', 'locale': 'ru', 'len': 1536, 'cyr': 1068, 'lat': 196, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/advantages: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'writing-advantages', 'locale': 'ru', 'len': 2980, 'cyr': 1916, 'lat': 503, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/advantages: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/charts: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'writing-charts', 'locale': 'ru', 'len': 4447, 'cyr': 2770, 'lat': 751, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/charts: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/discussion: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'writing-discussion', 'locale': 'ru', 'len': 2866, 'cyr': 1893, 'lat': 436, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/discussion: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/maps: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'writing-maps', 'locale': 'ru', 'len': 2613, 'cyr': 1677, 'lat': 449, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/maps: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/method: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'writing-method', 'locale': 'ru', 'len': 4455, 'cyr': 3318, 'lat': 263, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/method: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/opinion: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'writing-opinion', 'locale': 'ru', 'len': 2287, 'cyr': 1449, 'lat': 383, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/opinion: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/problem: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'writing-problem', 'locale': 'ru', 'len': 3619, 'cyr': 2287, 'lat': 602, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/problem: no worked example, same as the open build (it has none either)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/process: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'writing-process', 'locale': 'ru', 'len': 2652, 'cyr': 1697, 'lat': 465, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/process: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/task2-method: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'writing-task2-method', 'locale': 'ru', 'len': 5201, 'cyr': 4017, 'lat': 201, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/task2-method: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/twopart: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'writing-twopart', 'locale': 'ru', 'len': 3379, 'cyr': 2093, 'lat': 639, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing/twopart: worked example shows (task and Band 8 answer)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "lessons-ru",
+   "check": "/lessons/writing: lesson body opens in ru",
+   "ok": true,
+   "detail": "{'slug': 'writing', 'locale': 'ru', 'len': 2618, 'cyr': 1886, 'lat': 189, 'gated': True, 'invite': False}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "lesson quizzes found and exercised",
+   "ok": true,
+   "detail": "12"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "Writing worked examples found (as many as the open build shows)",
+   "ok": true,
+   "detail": "9 vs open {'/lessons/writing/method': True, '/lessons/writing/charts': True, '/lessons/writing/process': True, '/lessons/writing/maps': True, '/lessons/writing/task2-method': True, '/lessons/writing/opinion': True, '/lessons/writing/discussion': True, '/lessons/writing/advantages': True, '/lessons/writing/problem': False, '/lessons/writing/twopart': True}"
+  },
+  {
+   "section": "lessons-ru",
+   "check": "vocabulary: all 12 topic lists open with their words",
+   "ok": true,
+   "detail": "12 topics (open build 12); thin/empty: []"
+  },
+  {
+   "section": "nudge",
+   "check": "en account: first-lesson nudge appeared at most once across the whole sweep (only partial quizzes are checked here)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "section": "nudge",
+   "check": "ru account: first-lesson nudge appeared at most once across the whole sweep (only partial quizzes are checked here)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "section": "nudge",
+   "check": "no other pop-up opened by itself during the sweep",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "section": "errors",
+   "check": "zero uncaught page errors or hydration messages",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "pageErrors": [],
+ "nudges": []
+}

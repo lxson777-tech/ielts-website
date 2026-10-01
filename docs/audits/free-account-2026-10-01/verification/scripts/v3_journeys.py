@@ -656,7 +656,11 @@ def complimentary(browser):
     gr = [g for g in get_json(STANDIN + "/__trial/state")["grants"] if g.get("email") == email and g.get("kind") == "complimentary"]
     latest = max((g["ends_at"] for g in gr), default="")
     R.check(sec, "admin: Renew adds another 30 days (message, and a second grant in the database)", "is-done" in (cls or "") and len(gr) >= 2 and "until" in msg, f"{msg} | grants={[(g['starts_at'][:10], g['ends_at'][:10]) for g in gr]}")
-    R.check(sec, "admin panel's Access block shows the renewed end date", ends1 != ends2, f"panel 'Ends' before={ends1!r} after={ends2!r}; latest grant ends {latest[:10]}")
+    # Since 1 October 2026 the renewed date is on its own line, "Access runs
+    # until", with the queued period counted; "Ends" stays the running grant's.
+    runs = ap.locator(".admin-kv div:has(dt:text-is('Access runs until')) dd")
+    runs_text = runs.first.inner_text() if runs.count() else ""
+    R.check(sec, "admin panel's Access block shows the renewed end date", runs.count() == 1 and "queued" in runs_text, f"'Access runs until'={runs_text!r}; 'Ends' before={ends1!r} after={ends2!r}; latest grant ends {latest[:10]}")
     visit(sp, "/plans")
     sp.wait_for_selector(".access-strip.is-paid b", timeout=30000)
     label2 = sp.locator(".access-strip b").first.inner_text()

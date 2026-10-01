@@ -1,0 +1,12 @@
+[
+ {
+  "flow": "Vocabulary: a topic opens its practice",
+  "ok": true,
+  "detail": "/review?topic=environment"
+ },
+ {
+  "flow": "Vocabulary: practice cards respond to answers",
+  "ok": true,
+  "detail": "steps=6"
+ }
+]

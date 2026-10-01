@@ -36,6 +36,7 @@ export default function AccountSettings() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<StudentProfile | null | undefined>(undefined);
   const [open, setOpen] = useState<Open>(null);
+  const [passwordChanged, setPasswordChanged] = useState(false);
 
   useEffect(() => onAccountChange((state) => setUser(state.user)), []);
 
@@ -126,11 +127,18 @@ export default function AccountSettings() {
         <div className="acct-row">
           <p className="acct-row-label">{t('Password')}</p>
           <p className="acct-row-value">
-            <span className="is-muted">
-              {usesGoogleOnly
-                ? t('You sign in with Google. You can add a password as well.')
-                : t('At least 8 characters, with a letter and a number.')}
-            </span>
+            {/* Once the form has closed itself, the row keeps saying it worked
+                (2 October 2026: the confirmation used to vanish with the form
+                after 2.5 seconds, too quick to be sure of). */}
+            {passwordChanged && open !== 'password' ? (
+              <span className="acct-row-good" role="status">{t('Password changed.')}</span>
+            ) : (
+              <span className="is-muted">
+                {usesGoogleOnly
+                  ? t('You sign in with Google. You can add a password as well.')
+                  : t('At least 8 characters, with a letter and a number.')}
+              </span>
+            )}
           </p>
           <button
             type="button"
@@ -140,7 +148,7 @@ export default function AccountSettings() {
           >
             {open === 'password' ? t('Cancel') : usesGoogleOnly ? t('Add a password') : t('Change password')}
           </button>
-          {open === 'password' && <ChangePassword onDone={() => setOpen(null)} />}
+          {open === 'password' && <ChangePassword onChanged={() => setPasswordChanged(true)} onDone={() => setOpen(null)} />}
         </div>
 
         {/* ── Devices ── */}
@@ -232,7 +240,7 @@ function ChangeEmail({ current, onDone }: { current: string; onDone: () => void 
   );
 }
 
-function ChangePassword({ onDone }: { onDone: () => void }) {
+function ChangePassword({ onChanged, onDone }: { onChanged: () => void; onDone: () => void }) {
   const { t } = useT();
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -263,6 +271,7 @@ function ChangePassword({ onDone }: { onDone: () => void }) {
     setBusy(false);
     if (result.error) return setError(friendlyAuthError(t, result.error));
     setDone(true);
+    onChanged();
     window.setTimeout(onDone, 2500);
   }
 

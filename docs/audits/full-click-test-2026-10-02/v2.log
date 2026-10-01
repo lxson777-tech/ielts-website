@@ -1,0 +1,221 @@
+open baseline {'/lessons/writing/method': True, '/lessons/writing/charts': True, '/lessons/writing/process': True, '/lessons/writing/maps': True, '/lessons/writing/task2-method': True, '/lessons/writing/opinion': True, '/lessons/writing/discussion': True, '/lessons/writing/advantages': True, '/lessons/writing/problem': False, '/lessons/writing/twopart': True} [12]
+PASS [lessons-en] lesson pages found in the build
+PASS [lessons-en] /lessons/listening/form-completion: lesson body opens in en
+PASS [lessons-en] /lessons/listening/form-completion: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/listening/map-labelling: lesson body opens in en
+PASS [lessons-en] /lessons/listening/map-labelling: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/listening/matching: lesson body opens in en
+PASS [lessons-en] /lessons/listening/matching: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/listening/multiple-choice: lesson body opens in en
+PASS [lessons-en] /lessons/listening/multiple-choice: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/listening/part1: lesson body opens in en
+PASS [lessons-en] /lessons/listening/part1: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/listening/part2: lesson body opens in en
+PASS [lessons-en] /lessons/listening/part2: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/listening/part3: lesson body opens in en
+PASS [lessons-en] /lessons/listening/part3: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/listening/part4: lesson body opens in en
+PASS [lessons-en] /lessons/listening/part4: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/listening/sentence-completion: lesson body opens in en
+PASS [lessons-en] /lessons/listening/sentence-completion: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/listening/short-answer: lesson body opens in en
+PASS [lessons-en] /lessons/listening/short-answer: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/listening: lesson body opens in en
+PASS [lessons-en] /lessons/reading/diagram: lesson body opens in en
+PASS [lessons-en] /lessons/reading/diagram: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/reading/headings: lesson body opens in en
+PASS [lessons-en] /lessons/reading/headings: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/reading/matching-features: lesson body opens in en
+PASS [lessons-en] /lessons/reading/matching-features: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/reading/matching-information: lesson body opens in en
+PASS [lessons-en] /lessons/reading/matching-information: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/reading/matching-sentence-endings: lesson body opens in en
+PASS [lessons-en] /lessons/reading/matching-sentence-endings: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/reading/mc: lesson body opens in en
+PASS [lessons-en] /lessons/reading/mc: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/reading/paraphrase: lesson body opens in en
+PASS [lessons-en] /lessons/reading/paraphrase: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/reading/sentence: lesson body opens in en
+PASS [lessons-en] /lessons/reading/sentence: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/reading/short-answer: lesson body opens in en
+PASS [lessons-en] /lessons/reading/short-answer: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/reading/summary-completion: lesson body opens in en
+PASS [lessons-en] /lessons/reading/summary-completion: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/reading/tfng: lesson body opens in en
+PASS [lessons-en] /lessons/reading/tfng: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/reading/ynng: lesson body opens in en
+PASS [lessons-en] /lessons/reading/ynng: lesson quiz loads and checks an answer
+PASS [lessons-en] /lessons/reading-task1: lesson body opens in en
+PASS [lessons-en] /lessons/speaking/part1: lesson body opens in en
+PASS [lessons-en] /lessons/speaking/part2: lesson body opens in en
+PASS [lessons-en] /lessons/speaking/part3: lesson body opens in en
+PASS [lessons-en] /lessons/speaking: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/ageing: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/ai: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/animals: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/arts: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/books: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/business: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/childhood: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/conjunctions: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/crime: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/education: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/environment: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/family: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/fashion: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/food: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/government: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/health: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/housing: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/language: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/leisure: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/media: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/money: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/music-film: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/people: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/places: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/science: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/social-media: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/society: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/sport: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/success: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/technology: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/traditions: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/transport: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/travel: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/volunteering: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/weather: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary/work: lesson body opens in en
+PASS [lessons-en] /lessons/vocabulary: lesson body opens in en
+PASS [lessons-en] /lessons/writing/advantages: lesson body opens in en
+PASS [lessons-en] /lessons/writing/advantages: worked example shows (task and Band 8 answer)
+PASS [lessons-en] /lessons/writing/charts: lesson body opens in en
+PASS [lessons-en] /lessons/writing/charts: worked example shows (task and Band 8 answer)
+PASS [lessons-en] /lessons/writing/discussion: lesson body opens in en
+PASS [lessons-en] /lessons/writing/discussion: worked example shows (task and Band 8 answer)
+PASS [lessons-en] /lessons/writing/maps: lesson body opens in en
+PASS [lessons-en] /lessons/writing/maps: worked example shows (task and Band 8 answer)
+PASS [lessons-en] /lessons/writing/method: lesson body opens in en
+PASS [lessons-en] /lessons/writing/method: worked example shows (task and Band 8 answer)
+PASS [lessons-en] /lessons/writing/opinion: lesson body opens in en
+PASS [lessons-en] /lessons/writing/opinion: worked example shows (task and Band 8 answer)
+PASS [lessons-en] /lessons/writing/problem: lesson body opens in en
+PASS [lessons-en] /lessons/writing/problem: no worked example, same as the open build (it has none either)
+PASS [lessons-en] /lessons/writing/process: lesson body opens in en
+PASS [lessons-en] /lessons/writing/process: worked example shows (task and Band 8 answer)
+PASS [lessons-en] /lessons/writing/task2-method: lesson body opens in en
+PASS [lessons-en] /lessons/writing/task2-method: worked example shows (task and Band 8 answer)
+PASS [lessons-en] /lessons/writing/twopart: lesson body opens in en
+PASS [lessons-en] /lessons/writing/twopart: worked example shows (task and Band 8 answer)
+PASS [lessons-en] /lessons/writing: lesson body opens in en
+PASS [lessons-en] lesson quizzes found and exercised
+PASS [lessons-en] Writing worked examples found (as many as the open build shows)
+PASS [lessons-en] vocabulary: all 12 topic lists open with their words
+PASS [lessons-ru] lesson pages found in the build
+PASS [lessons-ru] /lessons/listening/form-completion: lesson body opens in ru
+PASS [lessons-ru] /lessons/listening/map-labelling: lesson body opens in ru
+PASS [lessons-ru] /lessons/listening/matching: lesson body opens in ru
+PASS [lessons-ru] /lessons/listening/multiple-choice: lesson body opens in ru
+PASS [lessons-ru] /lessons/listening/part1: lesson body opens in ru
+PASS [lessons-ru] /lessons/listening/part2: lesson body opens in ru
+PASS [lessons-ru] /lessons/listening/part3: lesson body opens in ru
+PASS [lessons-ru] /lessons/listening/part4: lesson body opens in ru
+PASS [lessons-ru] /lessons/listening/sentence-completion: lesson body opens in ru
+PASS [lessons-ru] /lessons/listening/short-answer: lesson body opens in ru
+PASS [lessons-ru] /lessons/listening: lesson body opens in ru
+PASS [lessons-ru] /lessons/reading/diagram: lesson body opens in ru
+PASS [lessons-ru] /lessons/reading/diagram: lesson quiz loads and checks an answer
+PASS [lessons-ru] /lessons/reading/headings: lesson body opens in ru
+PASS [lessons-ru] /lessons/reading/headings: lesson quiz loads and checks an answer
+PASS [lessons-ru] /lessons/reading/matching-features: lesson body opens in ru
+PASS [lessons-ru] /lessons/reading/matching-features: lesson quiz loads and checks an answer
+PASS [lessons-ru] /lessons/reading/matching-information: lesson body opens in ru
+PASS [lessons-ru] /lessons/reading/matching-information: lesson quiz loads and checks an answer
+PASS [lessons-ru] /lessons/reading/matching-sentence-endings: lesson body opens in ru
+PASS [lessons-ru] /lessons/reading/matching-sentence-endings: lesson quiz loads and checks an answer
+PASS [lessons-ru] /lessons/reading/mc: lesson body opens in ru
+PASS [lessons-ru] /lessons/reading/mc: lesson quiz loads and checks an answer
+PASS [lessons-ru] /lessons/reading/paraphrase: lesson body opens in ru
+PASS [lessons-ru] /lessons/reading/paraphrase: lesson quiz loads and checks an answer
+PASS [lessons-ru] /lessons/reading/sentence: lesson body opens in ru
+PASS [lessons-ru] /lessons/reading/sentence: lesson quiz loads and checks an answer
+PASS [lessons-ru] /lessons/reading/short-answer: lesson body opens in ru
+PASS [lessons-ru] /lessons/reading/short-answer: lesson quiz loads and checks an answer
+PASS [lessons-ru] /lessons/reading/summary-completion: lesson body opens in ru
+PASS [lessons-ru] /lessons/reading/summary-completion: lesson quiz loads and checks an answer
+PASS [lessons-ru] /lessons/reading/tfng: lesson body opens in ru
+PASS [lessons-ru] /lessons/reading/tfng: lesson quiz loads and checks an answer
+PASS [lessons-ru] /lessons/reading/ynng: lesson body opens in ru
+PASS [lessons-ru] /lessons/reading/ynng: lesson quiz loads and checks an answer
+PASS [lessons-ru] /lessons/reading-task1: lesson body opens in ru
+PASS [lessons-ru] /lessons/speaking/part1: lesson body opens in ru
+PASS [lessons-ru] /lessons/speaking/part2: lesson body opens in ru
+PASS [lessons-ru] /lessons/speaking/part3: lesson body opens in ru
+PASS [lessons-ru] /lessons/speaking: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/ageing: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/ai: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/animals: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/arts: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/books: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/business: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/childhood: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/conjunctions: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/crime: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/education: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/environment: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/family: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/fashion: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/food: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/government: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/health: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/housing: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/language: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/leisure: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/media: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/money: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/music-film: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/people: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/places: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/science: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/social-media: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/society: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/sport: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/success: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/technology: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/traditions: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/transport: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/travel: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/volunteering: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/weather: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary/work: lesson body opens in ru
+PASS [lessons-ru] /lessons/vocabulary: lesson body opens in ru
+PASS [lessons-ru] /lessons/writing/advantages: lesson body opens in ru
+PASS [lessons-ru] /lessons/writing/advantages: worked example shows (task and Band 8 answer)
+PASS [lessons-ru] /lessons/writing/charts: lesson body opens in ru
+PASS [lessons-ru] /lessons/writing/charts: worked example shows (task and Band 8 answer)
+PASS [lessons-ru] /lessons/writing/discussion: lesson body opens in ru
+PASS [lessons-ru] /lessons/writing/discussion: worked example shows (task and Band 8 answer)
+PASS [lessons-ru] /lessons/writing/maps: lesson body opens in ru
+PASS [lessons-ru] /lessons/writing/maps: worked example shows (task and Band 8 answer)
+PASS [lessons-ru] /lessons/writing/method: lesson body opens in ru
+PASS [lessons-ru] /lessons/writing/method: worked example shows (task and Band 8 answer)
+PASS [lessons-ru] /lessons/writing/opinion: lesson body opens in ru
+PASS [lessons-ru] /lessons/writing/opinion: worked example shows (task and Band 8 answer)
+PASS [lessons-ru] /lessons/writing/problem: lesson body opens in ru
+PASS [lessons-ru] /lessons/writing/problem: no worked example, same as the open build (it has none either)
+PASS [lessons-ru] /lessons/writing/process: lesson body opens in ru
+PASS [lessons-ru] /lessons/writing/process: worked example shows (task and Band 8 answer)
+PASS [lessons-ru] /lessons/writing/task2-method: lesson body opens in ru
+PASS [lessons-ru] /lessons/writing/task2-method: worked example shows (task and Band 8 answer)
+PASS [lessons-ru] /lessons/writing/twopart: lesson body opens in ru
+PASS [lessons-ru] /lessons/writing/twopart: worked example shows (task and Band 8 answer)
+PASS [lessons-ru] /lessons/writing: lesson body opens in ru
+PASS [lessons-ru] lesson quizzes found and exercised
+PASS [lessons-ru] Writing worked examples found (as many as the open build shows)
+PASS [lessons-ru] vocabulary: all 12 topic lists open with their words
+PASS [nudge] en account: first-lesson nudge appeared at most once across the whole sweep (only partial quizzes are checked here)
+PASS [nudge] ru account: first-lesson nudge appeared at most once across the whole sweep (only partial quizzes are checked here)
+PASS [nudge] no other pop-up opened by itself during the sweep
+PASS [errors] zero uncaught page errors or hydration messages
+
+218 / 218 passed; 0 page errors

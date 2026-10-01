@@ -1,0 +1,245 @@
+{
+ "checks": [
+  {
+   "section": "content-gate",
+   "check": "signed-out: GET /content/lesson/reading-tfng?locale=en -> 401 sign-in-required",
+   "ok": true,
+   "detail": "401 sign-in-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "signed-out: GET /content/lesson/reading-tfng?locale=ru -> 401 sign-in-required",
+   "ok": true,
+   "detail": "401 sign-in-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "signed-out: GET /content/practice/practice-reading-tfng -> 401 sign-in-required",
+   "ok": true,
+   "detail": "401 sign-in-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "signed-out: GET /content/example/writing-opinion -> 401 sign-in-required",
+   "ok": true,
+   "detail": "401 sign-in-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "signed-out: GET /content/test/reading-full-001 -> 401 sign-in-required",
+   "ok": true,
+   "detail": "401 sign-in-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "signed-out: GET /content/test/listening-full-001 -> 401 sign-in-required",
+   "ok": true,
+   "detail": "401 sign-in-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "signed-out: GET /content/prompt/pte-wt-103-task2 -> 401 sign-in-required",
+   "ok": true,
+   "detail": "401 sign-in-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "signed-out: GET /content/model/pte-wt-103-task2 -> 401 sign-in-required",
+   "ok": true,
+   "detail": "401 sign-in-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "signed-out: GET /content/pack/cue-cards -> 401 sign-in-required",
+   "ok": true,
+   "detail": "401 sign-in-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "signed-out: GET /content/pack/band-guides -> 401 sign-in-required",
+   "ok": true,
+   "detail": "401 sign-in-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "signed-out: GET /content/pack/focused-exercises -> 401 sign-in-required",
+   "ok": true,
+   "detail": "401 sign-in-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "free: GET /content/lesson/reading-tfng?locale=en -> 200",
+   "ok": true,
+   "detail": "200 <div class=\"section\" id=\"tfng\">\r\n  <div class=\"section-header\">\r\n    <div class=\"section-title-block\">\r\n      <div class=\"tag\">True / False / Not Given</div>\r\n      <h2>True, False, Not Given</h2>\r\n  "
+  },
+  {
+   "section": "content-gate",
+   "check": "free: GET /content/lesson/reading-tfng?locale=ru -> 200",
+   "ok": true,
+   "detail": "200 <!-- i18n-source-sha256: b59debfd9f7a0583a88db179f279051ebd5b1e76d49a6662d004e5472c779434 -->\r\n<div class=\"section\" id=\"tfng\">\r\n  <div class=\"section-header\">\r\n    <div class=\"section-title-block\">\r\n "
+  },
+  {
+   "section": "content-gate",
+   "check": "free: GET /content/practice/practice-reading-tfng -> 200",
+   "ok": true,
+   "detail": "200 {\"title\":\"Exercise. Decide: True, False, or Not Given (real test questions)\",\"units\":[{\"passages\":[{\"label\":\"Academic Reading Test 3, Passage 1, Questions 6 to 13\",\"title\":\"Do animals dream?\",\"paragra"
+  },
+  {
+   "section": "content-gate",
+   "check": "free: GET /content/example/writing-opinion -> 200",
+   "ok": true,
+   "detail": "200 {\"prompt\":{\"id\":\"pte-wt-129-task2\",\"task\":\"task2\",\"variant\":\"opinion\",\"title\":\"The best way to provide enough homes\",\"promptHtml\":\"The best way to provide enough homes in large cities is to build tall"
+  },
+  {
+   "section": "content-gate",
+   "check": "free: GET /content/test/reading-full-001 -> 402 paid-required",
+   "ok": true,
+   "detail": "402 paid-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "free: GET /content/test/listening-full-001 -> 402 paid-required",
+   "ok": true,
+   "detail": "402 paid-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "free: GET /content/prompt/pte-wt-103-task2 -> 402 paid-required",
+   "ok": true,
+   "detail": "402 paid-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "free: GET /content/model/pte-wt-103-task2 -> 402 paid-required",
+   "ok": true,
+   "detail": "402 paid-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "free: GET /content/pack/cue-cards -> 402 paid-required",
+   "ok": true,
+   "detail": "402 paid-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "free: GET /content/pack/band-guides -> 402 paid-required",
+   "ok": true,
+   "detail": "402 paid-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "free: GET /content/pack/focused-exercises -> 402 paid-required",
+   "ok": true,
+   "detail": "402 paid-required"
+  },
+  {
+   "section": "content-gate",
+   "check": "paid: GET /content/lesson/reading-tfng?locale=en -> 200",
+   "ok": true,
+   "detail": "200 <div class=\"section\" id=\"tfng\">\r\n  <div class=\"section-header\">\r\n    <div class=\"section-title-block\">\r\n      <div class=\"tag\">True / False / Not Given</div>\r\n      <h2>True, False, Not Given</h2>\r\n  "
+  },
+  {
+   "section": "content-gate",
+   "check": "paid: GET /content/lesson/reading-tfng?locale=ru -> 200",
+   "ok": true,
+   "detail": "200 <!-- i18n-source-sha256: b59debfd9f7a0583a88db179f279051ebd5b1e76d49a6662d004e5472c779434 -->\r\n<div class=\"section\" id=\"tfng\">\r\n  <div class=\"section-header\">\r\n    <div class=\"section-title-block\">\r\n "
+  },
+  {
+   "section": "content-gate",
+   "check": "paid: GET /content/practice/practice-reading-tfng -> 200",
+   "ok": true,
+   "detail": "200 {\"title\":\"Exercise. Decide: True, False, or Not Given (real test questions)\",\"units\":[{\"passages\":[{\"label\":\"Academic Reading Test 3, Passage 1, Questions 6 to 13\",\"title\":\"Do animals dream?\",\"paragra"
+  },
+  {
+   "section": "content-gate",
+   "check": "paid: GET /content/example/writing-opinion -> 200",
+   "ok": true,
+   "detail": "200 {\"prompt\":{\"id\":\"pte-wt-129-task2\",\"task\":\"task2\",\"variant\":\"opinion\",\"title\":\"The best way to provide enough homes\",\"promptHtml\":\"The best way to provide enough homes in large cities is to build tall"
+  },
+  {
+   "section": "content-gate",
+   "check": "paid: GET /content/test/reading-full-001 -> 200",
+   "ok": true,
+   "detail": "200 {\"id\":\"reading-full-001\",\"skill\":\"reading\",\"title\":\"Academic Reading Test 1\",\"description\":\"A complete three-passage Academic Reading practice test with 40 questions.\",\"durationMinutes\":60,\"source\":{\""
+  },
+  {
+   "section": "content-gate",
+   "check": "paid: GET /content/test/listening-full-001 -> 200",
+   "ok": true,
+   "detail": "200 {\"id\":\"listening-full-001\",\"skill\":\"listening\",\"title\":\"IELTS Listening Test 1\",\"description\":\"A full IELTS Listening practice test shared with permission by PracticePTEOnline.\",\"durationMinutes\":40,\""
+  },
+  {
+   "section": "content-gate",
+   "check": "paid: GET /content/prompt/pte-wt-103-task2 -> 200",
+   "ok": true,
+   "detail": "200 {\"id\":\"pte-wt-103-task2\",\"task\":\"task2\",\"variant\":\"opinion\",\"title\":\"Music is a good way of bringing people\",\"promptHtml\":\"Some people say that music is a good way of bringing people of different cult"
+  },
+  {
+   "section": "content-gate",
+   "check": "paid: GET /content/model/pte-wt-103-task2 -> 200",
+   "ok": true,
+   "detail": "200 {\"prompt\":{\"id\":\"pte-wt-103-task2\",\"task\":\"task2\",\"variant\":\"opinion\",\"title\":\"Music is a good way of bringing people\",\"promptHtml\":\"Some people say that music is a good way of bringing people of diff"
+  },
+  {
+   "section": "content-gate",
+   "check": "paid: GET /content/pack/cue-cards -> 200",
+   "ok": true,
+   "detail": "200 {\"CUE_CARD_FAMILIES\":[{\"id\":\"person\",\"label\":\"A person\"},{\"id\":\"place\",\"label\":\"A place\"},{\"id\":\"object\",\"label\":\"An object\"},{\"id\":\"event\",\"label\":\"An event\"},{\"id\":\"activity\",\"label\":\"An activity\"},"
+  },
+  {
+   "section": "content-gate",
+   "check": "paid: GET /content/pack/band-guides -> 200",
+   "ok": true,
+   "detail": "200 {\"WRITING_BAND_GUIDES\":{\"taskResponse\":[{\"from\":4,\"to\":5,\"whatChanges\":\"At band 4 the essay format can be wrong and your position can be unclear. At band 5 the descriptors ask you to at least use the "
+  },
+  {
+   "section": "content-gate",
+   "check": "paid: GET /content/pack/focused-exercises -> 200",
+   "ok": true,
+   "detail": "200 {\"FOCUSED_EXERCISES\":[{\"id\":\"reading-matching-headings-guided\",\"subskill\":\"matching-headings\",\"paper\":\"reading\",\"role\":\"guided-practice\",\"title\":\"Matching Headings: guided practice\",\"objective\":\"Match"
+  },
+  {
+   "section": "ai-workers",
+   "check": "signed-out: essay grader -> 401 (SIMULATED grade)",
+   "ok": true,
+   "detail": "401 {'error': 'Sign in to have your essay graded.', 'code': 'sign-in-required'}"
+  },
+  {
+   "section": "ai-workers",
+   "check": "free: essay grader -> 402 paid-required (SIMULATED grade)",
+   "ok": true,
+   "detail": "402 {'error': 'Practice and personal guidance come with paid access. Every lesson stays free with your account.', 'code': 'paid-required', 'reason': 'paid-required'"
+  },
+  {
+   "section": "ai-workers",
+   "check": "paid: essay grader -> 200 (SIMULATED grade)",
+   "ok": true,
+   "detail": "200 {'criteria': {'taskResponse': {'band': 6, 'comment': 'SIMULATED: no AI examiner was called. This local stand-in is not a grade.', 'tip': 'SIMULATED: no AI exami"
+  },
+  {
+   "section": "ai-workers",
+   "check": "free: POST /grade-speaking refused with 402 paid-required",
+   "ok": true,
+   "detail": "402 {'error': 'Practice and personal guidance come with paid access. Every lesson stays free with your account.', 'code': 'paid-required', 'reason': 'paid-required'}"
+  },
+  {
+   "section": "ai-workers",
+   "check": "free: POST /live refused with 402 paid-required",
+   "ok": true,
+   "detail": "402 {'error': 'Practice and personal guidance come with paid access. Every lesson stays free with your account.', 'code': 'paid-required', 'reason': 'paid-required'}"
+  },
+  {
+   "section": "ai-workers",
+   "check": "free: POST /tutor refused with 402 paid-required",
+   "ok": true,
+   "detail": "402 {'error': 'Practice and personal guidance come with paid access. Every lesson stays free with your account.', 'code': 'paid-required', 'reason': 'paid-required'}"
+  },
+  {
+   "section": "trial-retired",
+   "check": "free: trial_start is refused (trial retired)",
+   "ok": true,
+   "detail": "200 {'ok': False, 'code': 'trial-retired', 'reason': 'trial-retired', 'status': {'paid': None, 'state': 'none', 'access': {'tier': 'free', 'profileComplete': True}, 'limits': {'hours': 72, 'testsPerSectio"
+  }
+ ],
+ "pageErrors": []
+}

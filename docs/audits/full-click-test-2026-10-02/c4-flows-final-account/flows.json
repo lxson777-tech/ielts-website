@@ -1,0 +1,27 @@
+[
+ {
+  "flow": "Account: Edit details saves (the city now reads Astana)",
+  "ok": true,
+  "detail": "/account"
+ },
+ {
+  "flow": "Account: Change password confirms",
+  "ok": true,
+  "detail": "t Change email Password At least 8 characters, with a letter and a number. Cancel Password changed. Devices Lost a phone or used a shared computer? Sign out everywhere at once. Sign out on all devices"
+ },
+ {
+  "flow": "Account menu: Sign out signs out (the header shows Log in)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "flow": "Sign in with the new password lands back on Account",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "flow": "Forgot password: asking for a reset link confirms",
+  "ok": true,
+  "detail": "Check your email We sent a password-reset link to ct-flows-1790889442@example.test. Open it on this device to set a new password. If there is no account with this email, no link is sent. Back to sign "
+ }
+]

@@ -1,0 +1,457 @@
+| Section | PASS | FAIL |
+|---|---|---|
+| b-signed-out-en-1440 | 20 | 0 |
+| b-signed-out-ru-390 | 20 | 0 |
+| b-signed-out-ru-320 | 20 | 0 |
+| b-signed-out-en-390 | 20 | 0 |
+| c-free-en-1440 | 88 | 0 |
+| c-free-en-390 | 28 | 0 |
+| c-free-ru-390 | 34 | 0 |
+| c-free-ru-320 | 34 | 0 |
+| c-free-ru-1440 | 34 | 0 |
+| d-paid | 40 | 0 |
+| e-complimentary | 18 | 1 |
+| open-build | 56 | 0 |
+| f-returning | 6 | 0 |
+| all | 2 | 0 |
+
+Page errors / hydration messages: 0
+
+
+PASS [b-signed-out-en-1440] /lessons/reading/tfng: only the title and the sign-up invitation
+PASS [b-signed-out-en-1440] /lessons/reading/tfng: no sideways scroll
+PASS [b-signed-out-en-1440] /lessons/writing/opinion: only the title and the sign-up invitation
+PASS [b-signed-out-en-1440] /lessons/writing/opinion: no sideways scroll
+PASS [b-signed-out-en-1440] /lessons/vocabulary/environment: only the title and the sign-up invitation
+PASS [b-signed-out-en-1440] /lessons/vocabulary/environment: no sideways scroll
+PASS [b-signed-out-en-1440] /lessons/listening/part1: only the title and the sign-up invitation
+PASS [b-signed-out-en-1440] /lessons/listening/part1: no sideways scroll
+PASS [b-signed-out-en-1440] /lessons/speaking/part2: only the title and the sign-up invitation
+PASS [b-signed-out-en-1440] /lessons/speaking/part2: no sideways scroll
+PASS [b-signed-out-en-1440] invitation's sign-up returns to the lesson
+PASS [b-signed-out-en-1440] /dashboard: shows lesson titles to a visitor
+PASS [b-signed-out-en-1440] /start: shows lesson titles to a visitor
+PASS [b-signed-out-en-1440] /learn: shows lesson titles to a visitor
+PASS [b-signed-out-en-1440] Tests start button opens the pop-up for a visitor
+PASS [b-signed-out-en-1440] pop-up primary goes to sign-up, then /plans
+PASS [b-signed-out-en-1440] pop-up states the price and no renewal
+PASS [b-signed-out-en-1440] pressing the pop-up's primary lands on sign-up
+PASS [b-signed-out-en-1440] direct link to a paid page shows a calm locked page, no practice content
+PASS [b-signed-out-en-1440] /trial redirects to sign-up keeping the answers
+PASS [b-signed-out-ru-390] /lessons/reading/tfng: only the title and the sign-up invitation
+PASS [b-signed-out-ru-390] /lessons/reading/tfng: no sideways scroll
+PASS [b-signed-out-ru-390] /lessons/writing/opinion: only the title and the sign-up invitation
+PASS [b-signed-out-ru-390] /lessons/writing/opinion: no sideways scroll
+PASS [b-signed-out-ru-390] /lessons/vocabulary/environment: only the title and the sign-up invitation
+PASS [b-signed-out-ru-390] /lessons/vocabulary/environment: no sideways scroll
+PASS [b-signed-out-ru-390] /lessons/listening/part1: only the title and the sign-up invitation
+PASS [b-signed-out-ru-390] /lessons/listening/part1: no sideways scroll
+PASS [b-signed-out-ru-390] /lessons/speaking/part2: only the title and the sign-up invitation
+PASS [b-signed-out-ru-390] /lessons/speaking/part2: no sideways scroll
+PASS [b-signed-out-ru-390] invitation's sign-up returns to the lesson
+PASS [b-signed-out-ru-390] /dashboard: shows lesson titles to a visitor
+PASS [b-signed-out-ru-390] /start: shows lesson titles to a visitor
+PASS [b-signed-out-ru-390] /learn: shows lesson titles to a visitor
+PASS [b-signed-out-ru-390] Tests start button opens the pop-up for a visitor
+PASS [b-signed-out-ru-390] pop-up primary goes to sign-up, then /plans
+PASS [b-signed-out-ru-390] pop-up states the price and no renewal
+PASS [b-signed-out-ru-390] pressing the pop-up's primary lands on sign-up
+PASS [b-signed-out-ru-390] direct link to a paid page shows a calm locked page, no practice content
+PASS [b-signed-out-ru-390] /trial redirects to sign-up keeping the answers
+PASS [b-signed-out-ru-320] /lessons/reading/tfng: only the title and the sign-up invitation
+PASS [b-signed-out-ru-320] /lessons/reading/tfng: no sideways scroll
+PASS [b-signed-out-ru-320] /lessons/writing/opinion: only the title and the sign-up invitation
+PASS [b-signed-out-ru-320] /lessons/writing/opinion: no sideways scroll
+PASS [b-signed-out-ru-320] /lessons/vocabulary/environment: only the title and the sign-up invitation
+PASS [b-signed-out-ru-320] /lessons/vocabulary/environment: no sideways scroll
+PASS [b-signed-out-ru-320] /lessons/listening/part1: only the title and the sign-up invitation
+PASS [b-signed-out-ru-320] /lessons/listening/part1: no sideways scroll
+PASS [b-signed-out-ru-320] /lessons/speaking/part2: only the title and the sign-up invitation
+PASS [b-signed-out-ru-320] /lessons/speaking/part2: no sideways scroll
+PASS [b-signed-out-ru-320] invitation's sign-up returns to the lesson
+PASS [b-signed-out-ru-320] /dashboard: shows lesson titles to a visitor
+PASS [b-signed-out-ru-320] /start: shows lesson titles to a visitor
+PASS [b-signed-out-ru-320] /learn: shows lesson titles to a visitor
+PASS [b-signed-out-ru-320] Tests start button opens the pop-up for a visitor
+PASS [b-signed-out-ru-320] pop-up primary goes to sign-up, then /plans
+PASS [b-signed-out-ru-320] pop-up states the price and no renewal
+PASS [b-signed-out-ru-320] pressing the pop-up's primary lands on sign-up
+PASS [b-signed-out-ru-320] direct link to a paid page shows a calm locked page, no practice content
+PASS [b-signed-out-ru-320] /trial redirects to sign-up keeping the answers
+PASS [b-signed-out-en-390] /lessons/reading/tfng: only the title and the sign-up invitation
+PASS [b-signed-out-en-390] /lessons/reading/tfng: no sideways scroll
+PASS [b-signed-out-en-390] /lessons/writing/opinion: only the title and the sign-up invitation
+PASS [b-signed-out-en-390] /lessons/writing/opinion: no sideways scroll
+PASS [b-signed-out-en-390] /lessons/vocabulary/environment: only the title and the sign-up invitation
+PASS [b-signed-out-en-390] /lessons/vocabulary/environment: no sideways scroll
+PASS [b-signed-out-en-390] /lessons/listening/part1: only the title and the sign-up invitation
+PASS [b-signed-out-en-390] /lessons/listening/part1: no sideways scroll
+PASS [b-signed-out-en-390] /lessons/speaking/part2: only the title and the sign-up invitation
+PASS [b-signed-out-en-390] /lessons/speaking/part2: no sideways scroll
+PASS [b-signed-out-en-390] invitation's sign-up returns to the lesson
+PASS [b-signed-out-en-390] /dashboard: shows lesson titles to a visitor
+PASS [b-signed-out-en-390] /start: shows lesson titles to a visitor
+PASS [b-signed-out-en-390] /learn: shows lesson titles to a visitor
+PASS [b-signed-out-en-390] Tests start button opens the pop-up for a visitor
+PASS [b-signed-out-en-390] pop-up primary goes to sign-up, then /plans
+PASS [b-signed-out-en-390] pop-up states the price and no renewal
+PASS [b-signed-out-en-390] pressing the pop-up's primary lands on sign-up
+PASS [b-signed-out-en-390] direct link to a paid page shows a calm locked page, no practice content
+PASS [b-signed-out-en-390] /trial redirects to sign-up keeping the answers
+PASS [c-free-en-1440] sign-up leads to the required profile
+PASS [c-free-en-1440] Today uses the questionnaire answers (Writing first)
+PASS [c-free-en-1440] Today: no trial wording
+PASS [c-free-en-1440] Today's practice-and-guidance card opens the pop-up
+PASS [c-free-en-1440] Mr EZ launcher opens the pop-up
+PASS [c-free-en-1440] Mr EZ panel stays closed for a free account
+PASS [c-free-en-1440] a lesson's text arrives through the door
+PASS [c-free-en-1440] lesson help button (keyboard Enter) opens the pop-up
+PASS [c-free-en-1440] pop-up keyboard from a lesson help button: focus in, Tab/Shift+Tab contained, Escape closes, focus back
+PASS [c-free-en-1440] in-quiz hint button opens the pop-up
+PASS [c-free-en-1440] first-lesson nudge appears after the first finished lesson
+PASS [c-free-en-1440] no nudge when finishing another lesson (/lessons/reading/ynng)
+PASS [c-free-en-1440] no nudge when finishing another lesson (/lessons/writing/opinion)
+PASS [c-free-en-1440] no nudge after a reload
+PASS [c-free-en-1440] a Writing lesson's worked example shows
+PASS [c-free-en-1440] the lesson's 'check your writing' link opens the pop-up
+PASS [c-free-en-1440] Tests: start button 1 of 2 opens the pop-up
+PASS [c-free-en-1440] Tests: start button 2 of 2 opens the pop-up
+PASS [c-free-en-1440] pop-up keyboard from a Tests start button
+PASS [c-free-en-1440] /tests: paid link 'What each band needs' -> /learn/bands opens the pop-up
+PASS [c-free-en-1440] /tests: paid link 'Only have 20 minutes? Try the Reading Trainer' -> /trainers/reading opens the pop-up
+PASS [c-free-en-1440] /tests: paid link 'Start writing' -> /writing/checker opens the pop-up
+PASS [c-free-en-1440] /tests: paid link 'Want structures and phrases while you write? Try t' -> /trainers/writing opens the pop-up
+PASS [c-free-en-1440] /tests: paid link 'Start the interview' -> /speaking/examiner opens the pop-up
+PASS [c-free-en-1440] /tests: paid link 'Want to practice one part at a time instead?' -> /trainers/speaking opens the pop-up
+PASS [c-free-en-1440] /tests: paid link 'Mock Exam Day
+
+One chained sitting: Listening, the' -> /tests/mock opens the pop-up
+PASS [c-free-en-1440] /tests: paid link '01
+Academic Reading Test 1
+40 questions
+Unseen' -> /tests/reading-full-001 opens the pop-up
+PASS [c-free-en-1440] /tests: paid link '02
+Academic Reading Test 2
+40 questions
+Unseen' -> /tests/reading-full-002 opens the pop-up
+PASS [c-free-en-1440] /tests: paid link '03
+Academic Reading Test 3
+40 questions
+Unseen' -> /tests/reading-full-003 opens the pop-up
+PASS [c-free-en-1440] /tests: paid links found on the page
+PASS [c-free-en-1440] /trainers: paid link 'Start a drill
+↗' -> /trainers/reading opens the pop-up
+PASS [c-free-en-1440] /trainers: paid link 'Start a drill
+↗' -> /trainers/listening opens the pop-up
+PASS [c-free-en-1440] /trainers: paid link 'Start a part
+↗' -> /trainers/speaking opens the pop-up
+PASS [c-free-en-1440] /trainers: paid link 'Start writing
+↗' -> /trainers/writing opens the pop-up
+PASS [c-free-en-1440] /trainers: paid link 'Model answers' -> /writing/models opens the pop-up
+PASS [c-free-en-1440] /trainers: paid link 'Cue cards' -> /speaking/cue-cards opens the pop-up
+PASS [c-free-en-1440] /trainers: paid links found on the page
+PASS [c-free-en-1440] /start: paid links found on the page
+PASS [c-free-en-1440] /learn: paid links found on the page
+PASS [c-free-en-1440] /dashboard: paid links found on the page
+PASS [c-free-en-1440] /plan-settings: paid links found on the page
+PASS [c-free-en-1440] /lessons/speaking/part2: paid links found on the page
+PASS [c-free-en-1440] /lessons/writing/opinion: paid link 'Or write this one yourself first' -> /trainers/writing opens the pop-up
+PASS [c-free-en-1440] /lessons/writing/opinion: paid link '✨ AI EXAMINER · OFFICIAL BAND DESCRIPTORS
+Open the' -> /writing/checker opens the pop-up
+PASS [c-free-en-1440] /lessons/writing/opinion: paid links found on the page
+PASS [c-free-en-1440] /report: paid links found on the page
+PASS [c-free-en-1440] /trainers/reading: paid links found on the page
+PASS [c-free-en-1440] /trainers/listening: paid links found on the page
+PASS [c-free-en-1440] /tests: /learn/bands link opens the pop-up
+PASS [c-free-en-1440] /trainers: /writing/models link opens the pop-up
+PASS [c-free-en-1440] /trainers: /speaking/cue-cards link opens the pop-up
+PASS [c-free-en-1440] vocabulary: a topic's word list opens
+PASS [c-free-en-1440] vocabulary: 'Practise these words' opens the pop-up
+PASS [c-free-en-1440] direct link /trainers/writing: calm locked page (trainer)
+PASS [c-free-en-1440] direct link /trainers/writing: its button opens the pop-up
+PASS [c-free-en-1440] direct link /trainers/speaking: calm locked page (trainer)
+PASS [c-free-en-1440] direct link /trainers/speaking: its button opens the pop-up
+PASS [c-free-en-1440] direct link /trainers/reading: calm locked page (drill)
+PASS [c-free-en-1440] direct link /trainers/reading: its button opens the pop-up
+PASS [c-free-en-1440] direct link /trainers/listening: calm locked page (drill)
+PASS [c-free-en-1440] direct link /trainers/listening: its button opens the pop-up
+PASS [c-free-en-1440] direct link /tests/mock: calm locked page (mock)
+PASS [c-free-en-1440] direct link /tests/mock: its button opens the pop-up
+PASS [c-free-en-1440] direct link /placement: calm locked page (placement)
+PASS [c-free-en-1440] direct link /placement: its button opens the pop-up
+PASS [c-free-en-1440] direct link /writing/models: calm locked page (model-answers)
+PASS [c-free-en-1440] direct link /writing/models: its button opens the pop-up
+PASS [c-free-en-1440] direct link /speaking/cue-cards: calm locked page (cue-cards)
+PASS [c-free-en-1440] direct link /speaking/cue-cards: its button opens the pop-up
+PASS [c-free-en-1440] direct link /learn/bands: calm locked page (band-guide)
+PASS [c-free-en-1440] direct link /learn/bands: its button opens the pop-up
+PASS [c-free-en-1440] direct link /writing/checker: calm locked page (essay)
+PASS [c-free-en-1440] direct link /writing/checker: its button opens the pop-up
+PASS [c-free-en-1440] direct link /speaking/examiner: calm locked page (live)
+PASS [c-free-en-1440] direct link /speaking/examiner: its button opens the pop-up
+PASS [c-free-en-1440] direct link /speaking/recorded: calm locked page (speaking)
+PASS [c-free-en-1440] direct link /speaking/recorded: its button opens the pop-up
+PASS [c-free-en-1440] direct link /tests/reading-full-001: calm locked page (test)
+PASS [c-free-en-1440] direct link /tests/reading-full-001: its button opens the pop-up
+PASS [c-free-en-1440] direct link /tests/listening-full-001: calm locked page (test)
+PASS [c-free-en-1440] direct link /tests/listening-full-001: its button opens the pop-up
+PASS [c-free-en-1440] direct link /trainers/focused/listening-categorisation-check-a: calm locked page (focused)
+PASS [c-free-en-1440] direct link /trainers/focused/listening-categorisation-check-a: its button opens the pop-up
+PASS [c-free-en-1440] /plans says Free account
+PASS [c-free-en-1440] /plans: no trial wording
+PASS [c-free-en-1440] /account#access says Free account
+PASS [c-free-en-1440] /account#access: no trial wording
+PASS [c-free-en-1440] no nudge in a second browser for the same account (model: stored per account)
+PASS [c-free-en-390] Today in en
+PASS [c-free-en-390] /dashboard: no sideways scroll at 390
+PASS [c-free-en-390] /dashboard: no trial wording
+PASS [c-free-en-390] /lessons/reading/tfng: no sideways scroll at 390
+PASS [c-free-en-390] /lessons/reading/tfng: no trial wording
+PASS [c-free-en-390] /lessons/writing/opinion: no sideways scroll at 390
+PASS [c-free-en-390] /lessons/writing/opinion: no trial wording
+PASS [c-free-en-390] /lessons/vocabulary/environment: no sideways scroll at 390
+PASS [c-free-en-390] /lessons/vocabulary/environment: no trial wording
+PASS [c-free-en-390] /tests: no sideways scroll at 390
+PASS [c-free-en-390] /tests: no trial wording
+PASS [c-free-en-390] /trainers: no sideways scroll at 390
+PASS [c-free-en-390] /trainers: no trial wording
+PASS [c-free-en-390] /review: no sideways scroll at 390
+PASS [c-free-en-390] /review: no trial wording
+PASS [c-free-en-390] /plans: no sideways scroll at 390
+PASS [c-free-en-390] /plans: no trial wording
+PASS [c-free-en-390] /account#access: no sideways scroll at 390
+PASS [c-free-en-390] /account#access: no trial wording
+PASS [c-free-en-390] /tests/mock: no sideways scroll at 390
+PASS [c-free-en-390] /tests/mock: no trial wording
+PASS [c-free-en-390] /start: no sideways scroll at 390
+PASS [c-free-en-390] /start: no trial wording
+PASS [c-free-en-390] /learn: no sideways scroll at 390
+PASS [c-free-en-390] /learn: no trial wording
+PASS [c-free-en-390] pop-up opens from Tests
+PASS [c-free-en-390] pop-up fits the screen width
+PASS [c-free-en-390] pop-up's primary button can be reached on screen
+PASS [c-free-ru-390] Today in ru
+PASS [c-free-ru-390] /dashboard: no sideways scroll at 390
+PASS [c-free-ru-390] /dashboard: no trial wording
+PASS [c-free-ru-390] /lessons/reading/tfng: Russian lesson body renders
+PASS [c-free-ru-390] /lessons/reading/tfng: no sideways scroll at 390
+PASS [c-free-ru-390] /lessons/reading/tfng: no trial wording
+PASS [c-free-ru-390] /lessons/writing/opinion: Russian lesson body renders
+PASS [c-free-ru-390] /lessons/writing/opinion: no sideways scroll at 390
+PASS [c-free-ru-390] /lessons/writing/opinion: no trial wording
+PASS [c-free-ru-390] /lessons/vocabulary/environment: Russian lesson body renders
+PASS [c-free-ru-390] /lessons/vocabulary/environment: no sideways scroll at 390
+PASS [c-free-ru-390] /lessons/vocabulary/environment: no trial wording
+PASS [c-free-ru-390] /tests: no sideways scroll at 390
+PASS [c-free-ru-390] /tests: no trial wording
+PASS [c-free-ru-390] /trainers: no sideways scroll at 390
+PASS [c-free-ru-390] /trainers: no trial wording
+PASS [c-free-ru-390] /review: no sideways scroll at 390
+PASS [c-free-ru-390] /review: no trial wording
+PASS [c-free-ru-390] /plans: no sideways scroll at 390
+PASS [c-free-ru-390] /plans says the free account in Russian
+PASS [c-free-ru-390] /plans: no trial wording
+PASS [c-free-ru-390] /account#access: no sideways scroll at 390
+PASS [c-free-ru-390] /account#access says the free account in Russian
+PASS [c-free-ru-390] /account#access: no trial wording
+PASS [c-free-ru-390] /tests/mock: no sideways scroll at 390
+PASS [c-free-ru-390] /tests/mock: no trial wording
+PASS [c-free-ru-390] /start: no sideways scroll at 390
+PASS [c-free-ru-390] /start: no trial wording
+PASS [c-free-ru-390] /learn: no sideways scroll at 390
+PASS [c-free-ru-390] /learn: no trial wording
+PASS [c-free-ru-390] pop-up opens from Tests
+PASS [c-free-ru-390] pop-up fits the screen width
+PASS [c-free-ru-390] pop-up's primary button can be reached on screen
+PASS [c-free-ru-390] pop-up in Russian with the price
+PASS [c-free-ru-320] Today in ru
+PASS [c-free-ru-320] /dashboard: no sideways scroll at 320
+PASS [c-free-ru-320] /dashboard: no trial wording
+PASS [c-free-ru-320] /lessons/reading/tfng: Russian lesson body renders
+PASS [c-free-ru-320] /lessons/reading/tfng: no sideways scroll at 320
+PASS [c-free-ru-320] /lessons/reading/tfng: no trial wording
+PASS [c-free-ru-320] /lessons/writing/opinion: Russian lesson body renders
+PASS [c-free-ru-320] /lessons/writing/opinion: no sideways scroll at 320
+PASS [c-free-ru-320] /lessons/writing/opinion: no trial wording
+PASS [c-free-ru-320] /lessons/vocabulary/environment: Russian lesson body renders
+PASS [c-free-ru-320] /lessons/vocabulary/environment: no sideways scroll at 320
+PASS [c-free-ru-320] /lessons/vocabulary/environment: no trial wording
+PASS [c-free-ru-320] /tests: no sideways scroll at 320
+PASS [c-free-ru-320] /tests: no trial wording
+PASS [c-free-ru-320] /trainers: no sideways scroll at 320
+PASS [c-free-ru-320] /trainers: no trial wording
+PASS [c-free-ru-320] /review: no sideways scroll at 320
+PASS [c-free-ru-320] /review: no trial wording
+PASS [c-free-ru-320] /plans: no sideways scroll at 320
+PASS [c-free-ru-320] /plans says the free account in Russian
+PASS [c-free-ru-320] /plans: no trial wording
+PASS [c-free-ru-320] /account#access: no sideways scroll at 320
+PASS [c-free-ru-320] /account#access says the free account in Russian
+PASS [c-free-ru-320] /account#access: no trial wording
+PASS [c-free-ru-320] /tests/mock: no sideways scroll at 320
+PASS [c-free-ru-320] /tests/mock: no trial wording
+PASS [c-free-ru-320] /start: no sideways scroll at 320
+PASS [c-free-ru-320] /start: no trial wording
+PASS [c-free-ru-320] /learn: no sideways scroll at 320
+PASS [c-free-ru-320] /learn: no trial wording
+PASS [c-free-ru-320] pop-up opens from Tests
+PASS [c-free-ru-320] pop-up fits the screen width
+PASS [c-free-ru-320] pop-up's primary button can be reached on screen
+PASS [c-free-ru-320] pop-up in Russian with the price
+PASS [c-free-ru-1440] Today in ru
+PASS [c-free-ru-1440] /dashboard: no sideways scroll at 1440
+PASS [c-free-ru-1440] /dashboard: no trial wording
+PASS [c-free-ru-1440] /lessons/reading/tfng: Russian lesson body renders
+PASS [c-free-ru-1440] /lessons/reading/tfng: no sideways scroll at 1440
+PASS [c-free-ru-1440] /lessons/reading/tfng: no trial wording
+PASS [c-free-ru-1440] /lessons/writing/opinion: Russian lesson body renders
+PASS [c-free-ru-1440] /lessons/writing/opinion: no sideways scroll at 1440
+PASS [c-free-ru-1440] /lessons/writing/opinion: no trial wording
+PASS [c-free-ru-1440] /lessons/vocabulary/environment: Russian lesson body renders
+PASS [c-free-ru-1440] /lessons/vocabulary/environment: no sideways scroll at 1440
+PASS [c-free-ru-1440] /lessons/vocabulary/environment: no trial wording
+PASS [c-free-ru-1440] /tests: no sideways scroll at 1440
+PASS [c-free-ru-1440] /tests: no trial wording
+PASS [c-free-ru-1440] /trainers: no sideways scroll at 1440
+PASS [c-free-ru-1440] /trainers: no trial wording
+PASS [c-free-ru-1440] /review: no sideways scroll at 1440
+PASS [c-free-ru-1440] /review: no trial wording
+PASS [c-free-ru-1440] /plans: no sideways scroll at 1440
+PASS [c-free-ru-1440] /plans says the free account in Russian
+PASS [c-free-ru-1440] /plans: no trial wording
+PASS [c-free-ru-1440] /account#access: no sideways scroll at 1440
+PASS [c-free-ru-1440] /account#access says the free account in Russian
+PASS [c-free-ru-1440] /account#access: no trial wording
+PASS [c-free-ru-1440] /tests/mock: no sideways scroll at 1440
+PASS [c-free-ru-1440] /tests/mock: no trial wording
+PASS [c-free-ru-1440] /start: no sideways scroll at 1440
+PASS [c-free-ru-1440] /start: no trial wording
+PASS [c-free-ru-1440] /learn: no sideways scroll at 1440
+PASS [c-free-ru-1440] /learn: no trial wording
+PASS [c-free-ru-1440] pop-up opens from Tests
+PASS [c-free-ru-1440] pop-up fits the screen width
+PASS [c-free-ru-1440] pop-up's primary button can be reached on screen
+PASS [c-free-ru-1440] pop-up in Russian with the price
+PASS [d-paid] /plans: Buy one month is offered at 12,990
+PASS [d-paid] Buy leads to the SIMULATED provider page
+PASS [d-paid] return page confirms the payment
+PASS [d-paid] /plans says Practice and guidance until <date>
+PASS [d-paid] allowances shown: Writing 12, Speaking 6, live 2, mock 2
+PASS [d-paid] /trainers/writing opens (no locked page, no pop-up)
+PASS [d-paid] /trainers/speaking opens (no locked page, no pop-up)
+PASS [d-paid] /trainers/reading opens (no locked page, no pop-up)
+PASS [d-paid] /trainers/listening opens (no locked page, no pop-up)
+PASS [d-paid] /tests/mock opens (no locked page, no pop-up)
+PASS [d-paid] /placement opens (no locked page, no pop-up)
+PASS [d-paid] /writing/models opens (no locked page, no pop-up)
+PASS [d-paid] /speaking/cue-cards opens (no locked page, no pop-up)
+PASS [d-paid] /learn/bands opens (no locked page, no pop-up)
+PASS [d-paid] /writing/checker opens (no locked page, no pop-up)
+PASS [d-paid] /speaking/examiner opens (no locked page, no pop-up)
+PASS [d-paid] /speaking/recorded opens (no locked page, no pop-up)
+PASS [d-paid] /tests/reading-full-001 opens (no locked page, no pop-up)
+PASS [d-paid] /tests/listening-full-001 opens (no locked page, no pop-up)
+PASS [d-paid] /trainers/focused/listening-categorisation-check-a opens (no locked page, no pop-up)
+PASS [d-paid] Tests start button goes straight to a paper
+PASS [d-paid] a Reading paper can be started and submitted
+PASS [d-paid] the result appears in the score history
+PASS [d-paid] Mr EZ launcher opens the panel, no pop-up
+PASS [d-paid] lesson help button works with no pop-up (SIMULATED AI reply)
+PASS [d-paid] vocabulary practice opens, no pop-up
+PASS [d-paid] /tests: a paid link navigates, no pop-up
+PASS [d-paid] /trainers: a paid link navigates, no pop-up
+PASS [d-paid] /start: a paid link navigates, no pop-up
+PASS [d-paid] paid Today is the personal Today
+PASS [d-paid] second fresh browser: /plans shows the paid access
+PASS [d-paid] second browser: /tests/mock opens (no locked page, no pop-up)
+PASS [d-paid] SIMULATED expiry accepted by the stand-in
+PASS [d-paid] after expiry /plans no longer shows paid access
+PASS [d-paid] after expiry paid pages are locked again
+PASS [d-paid] after expiry /lessons/reading/tfng is still readable
+PASS [d-paid] after expiry /lessons/writing/opinion is still readable
+PASS [d-paid] after expiry /lessons/vocabulary/environment is still readable
+PASS [d-paid] after expiry saved results are still shown
+PASS [d-paid] after expiry the purchase history is kept
+PASS [e-complimentary] admin@example.test reaches /admin
+PASS [e-complimentary] admin panel shows the student as Free account
+PASS [e-complimentary] admin: 'Give free access (30 days)' succeeds
+PASS [e-complimentary] student /plans: Free access from your teacher until <date>
+PASS [e-complimentary] complimentary: /tests/mock opens (no locked page, no pop-up)
+PASS [e-complimentary] complimentary: /writing/checker opens (no locked page, no pop-up)
+PASS [e-complimentary] complimentary: /trainers/writing opens (no locked page, no pop-up)
+PASS [e-complimentary] complimentary: /speaking/cue-cards opens (no locked page, no pop-up)
+PASS [e-complimentary] complimentary allowances are the paid ones (12/6/2/2)
+PASS [e-complimentary] admin: Renew adds another 30 days (message, and a second grant in the database)
+FAIL [e-complimentary] admin panel's Access block shows the renewed end date  (panel 'Ends' before='1 Nov 2026\nFrom 2 Oct 2026' after='1 Nov 2026\nFrom 2 Oct 2026'; latest grant ends 2026-11-30)
+PASS [e-complimentary] student /plans shows the later date after Renew
+PASS [e-complimentary] admin: Stop (with confirmation) succeeds
+PASS [e-complimentary] after Stop the student's paid features are locked
+PASS [e-complimentary] after Stop lessons stay readable
+PASS [e-complimentary] after Stop /plans shows no running access (free account or 'ended')
+PASS [e-complimentary] a normal student sees no admin panel at /admin
+PASS [e-complimentary] a normal student calling the admin function directly is refused
+PASS [e-complimentary] ... and still has no paid access afterwards
+PASS [open-build] en: / redirects to the dashboard
+PASS [open-build] en /dashboard: no free-account, price or upgrade prompt
+PASS [open-build] en /dashboard: no trial prompt
+PASS [open-build] en /lessons/reading/tfng: lesson text open without an account, no invitation
+PASS [open-build] en /lessons/reading/tfng: no free-account, price or upgrade prompt
+PASS [open-build] en /lessons/reading/tfng: no trial prompt
+PASS [open-build] en /lessons/writing/opinion: lesson text open without an account, no invitation
+PASS [open-build] en /lessons/writing/opinion: no free-account, price or upgrade prompt
+PASS [open-build] en /lessons/writing/opinion: no trial prompt
+PASS [open-build] en /tests: no free-account, price or upgrade prompt
+PASS [open-build] en /tests: no trial prompt
+PASS [open-build] en /trainers: no free-account, price or upgrade prompt
+PASS [open-build] en /trainers: no trial prompt
+PASS [open-build] en /start: no free-account, price or upgrade prompt
+PASS [open-build] en /start: no trial prompt
+PASS [open-build] en /learn: no free-account, price or upgrade prompt
+PASS [open-build] en /learn: no trial prompt
+PASS [open-build] en /review: no free-account, price or upgrade prompt
+PASS [open-build] en /review: no trial prompt
+PASS [open-build] en /trainers/writing: no free-account, price or upgrade prompt
+PASS [open-build] en /trainers/writing: no trial prompt
+PASS [open-build] en /tests/mock: no free-account, price or upgrade prompt
+PASS [open-build] en /tests/mock: no trial prompt
+PASS [open-build] en /writing/models: no free-account, price or upgrade prompt
+PASS [open-build] en /writing/models: no trial prompt
+PASS [open-build] en: Tests start button opens a paper directly, no pop-up
+PASS [open-build] en: finishing a lesson shows no nudge or pop-up
+PASS [open-build] en: Writing trainer page opens with no lock
+PASS [open-build] ru: / redirects to the dashboard
+PASS [open-build] ru /dashboard: no free-account, price or upgrade prompt
+PASS [open-build] ru /dashboard: no trial prompt
+PASS [open-build] ru /lessons/reading/tfng: lesson text open without an account, no invitation
+PASS [open-build] ru /lessons/reading/tfng: no free-account, price or upgrade prompt
+PASS [open-build] ru /lessons/reading/tfng: no trial prompt
+PASS [open-build] ru /lessons/writing/opinion: lesson text open without an account, no invitation
+PASS [open-build] ru /lessons/writing/opinion: no free-account, price or upgrade prompt
+PASS [open-build] ru /lessons/writing/opinion: no trial prompt
+PASS [open-build] ru /tests: no free-account, price or upgrade prompt
+PASS [open-build] ru /tests: no trial prompt
+PASS [open-build] ru /trainers: no free-account, price or upgrade prompt
+PASS [open-build] ru /trainers: no trial prompt
+PASS [open-build] ru /start: no free-account, price or upgrade prompt
+PASS [open-build] ru /start: no trial prompt
+PASS [open-build] ru /learn: no free-account, price or upgrade prompt
+PASS [open-build] ru /learn: no trial prompt
+PASS [open-build] ru /review: no free-account, price or upgrade prompt
+PASS [open-build] ru /review: no trial prompt
+PASS [open-build] ru /trainers/writing: no free-account, price or upgrade prompt
+PASS [open-build] ru /trainers/writing: no trial prompt
+PASS [open-build] ru /tests/mock: no free-account, price or upgrade prompt
+PASS [open-build] ru /tests/mock: no trial prompt
+PASS [open-build] ru /writing/models: no free-account, price or upgrade prompt
+PASS [open-build] ru /writing/models: no trial prompt
+PASS [open-build] ru: Tests start button opens a paper directly, no pop-up
+PASS [open-build] ru: finishing a lesson shows no nudge or pop-up
+PASS [open-build] ru: Writing trainer page opens with no lock
+PASS [f-returning] lesson invitation has a Sign in link that returns to the lesson
+PASS [f-returning] signing in from a lesson lands back on that lesson, text open
+PASS [f-returning] forgot-password screen opens from sign-in (en)
+PASS [f-returning] forgot-password: 'check your email' confirmation (en, stand-in sends no mail)
+PASS [f-returning] forgot-password screen opens from sign-in (ru)
+PASS [f-returning] forgot-password: 'check your email' confirmation (ru, stand-in sends no mail)
+PASS [all] no trial wording on any page visited
+PASS [all] zero uncaught page errors or hydration messages

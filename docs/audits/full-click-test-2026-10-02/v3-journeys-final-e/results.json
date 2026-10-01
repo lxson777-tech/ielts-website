@@ -1,0 +1,133 @@
+{
+ "checks": [
+  {
+   "section": "e-complimentary",
+   "check": "admin@example.test reaches /admin",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "e-complimentary",
+   "check": "admin panel shows the student as Free account",
+   "ok": true,
+   "detail": "Free account"
+  },
+  {
+   "section": "e-complimentary",
+   "check": "admin: 'Give free access (30 days)' succeeds",
+   "ok": true,
+   "detail": "Free access given until 1 Nov 2026."
+  },
+  {
+   "section": "e-complimentary",
+   "check": "student /plans: Free access from your teacher until <date>",
+   "ok": true,
+   "detail": "Free access from your teacher until 1 November 2026"
+  },
+  {
+   "section": "e-complimentary",
+   "check": "complimentary: /tests/mock opens (no locked page, no pop-up)",
+   "ok": true,
+   "detail": "locked=0 dialog=0 mainText=1836"
+  },
+  {
+   "section": "e-complimentary",
+   "check": "complimentary: /writing/checker opens (no locked page, no pop-up)",
+   "ok": true,
+   "detail": "locked=0 dialog=0 mainText=1053"
+  },
+  {
+   "section": "e-complimentary",
+   "check": "complimentary: /trainers/writing opens (no locked page, no pop-up)",
+   "ok": true,
+   "detail": "locked=0 dialog=0 mainText=1129"
+  },
+  {
+   "section": "e-complimentary",
+   "check": "complimentary: /speaking/cue-cards opens (no locked page, no pop-up)",
+   "ok": true,
+   "detail": "locked=0 dialog=0 mainText=1005"
+  },
+  {
+   "section": "e-complimentary",
+   "check": "complimentary allowances are the paid ones (12/6/2/2)",
+   "ok": true,
+   "detail": "Assessments left in this 30-day period | Writing | 12 of 12 | Recorded Speaking | 6 of 6 | Live interviews | 2 of 2 | Full mock exams | 2 of 2 |  | This period ends on 1 November 2026. Unused assessments do not carry over."
+  },
+  {
+   "section": "e-complimentary",
+   "check": "admin: Renew adds another 30 days (message, and a second grant in the database)",
+   "ok": true,
+   "detail": "Renewed: another 30 days, from 1 Nov 2026 until 1 Dec 2026. | grants=[('2026-10-01', '2026-10-31'), ('2026-10-31', '2026-11-30')]"
+  },
+  {
+   "section": "e-complimentary",
+   "check": "admin panel's Access block shows the renewed end date",
+   "ok": true,
+   "detail": "'Access runs until'='1 Dec 2026\\n1 more period queued after this one'; 'Ends' before='1 Nov 2026\\nFrom 2 Oct 2026' after='1 Nov 2026\\nFrom 2 Oct 2026'; latest grant ends 2026-11-30"
+  },
+  {
+   "section": "e-complimentary",
+   "check": "student /plans shows the later date after Renew",
+   "ok": true,
+   "detail": "Free access from your teacher until 1 November 2026 -> Free access from your teacher until 1 December 2026"
+  },
+  {
+   "section": "e-complimentary",
+   "check": "admin: Stop (with confirmation) succeeds",
+   "ok": true,
+   "detail": "Free access stopped. The student is back to lessons only."
+  },
+  {
+   "section": "e-complimentary",
+   "check": "after Stop the student's paid features are locked",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "e-complimentary",
+   "check": "after Stop lessons stay readable",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "e-complimentary",
+   "check": "after Stop /plans shows no running access (free account or 'ended')",
+   "ok": true,
+   "detail": "Practice and guidance ended on 2 October 2026"
+  },
+  {
+   "section": "e-complimentary",
+   "check": "a normal student sees no admin panel at /admin",
+   "ok": true,
+   "detail": "IELTS is EZ Today Course Practice Tests Vocabulary EN RU SS Skip to content This page isn’t available  Your account doesn’t have access to it.  Back to Today IELTS is EZ Help Report a problem Privacy "
+  },
+  {
+   "section": "e-complimentary",
+   "check": "a normal student calling the admin function directly is refused",
+   "ok": true,
+   "detail": "403 {'message': 'admin only', 'code': '42501'}"
+  },
+  {
+   "section": "e-complimentary",
+   "check": "... and still has no paid access afterwards",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "all",
+   "check": "no trial wording on any page visited",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "section": "all",
+   "check": "zero uncaught page errors or hydration messages",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "pageErrors": [],
+ "trialSeen": [],
+ "russianProbnyUses": {}
+}

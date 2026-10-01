@@ -1,0 +1,112 @@
+[
+ {
+  "flow": "Reading test: sat start to finish, the result shows a score and a band",
+  "ok": true,
+  "detail": "Estimated Band: below 2.5"
+ },
+ {
+  "flow": "Reading test: the result is in Account > Saved and results > Reading history",
+  "ok": true,
+  "detail": "rows=1"
+ },
+ {
+  "flow": "Listening test: the recording loads (it has a length and no error)",
+  "ok": true,
+  "detail": "{'src': 'p=1790895134&sig=3b824TpKPP3eIvasRzSjIImmVTEx9kJzc1QTChPQBBc', 'duration': 1672.05325, 'error': None}"
+ },
+ {
+  "flow": "Listening test: submitted, the result shows a band",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "flow": "Essay checker: a 280-word essay gets feedback on the official criteria with a band",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "flow": "Essay checker: the feedback is labelled simulated (no AI was paid for)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "flow": "Mr EZ: a question gets a reply in the panel (simulated)",
+  "ok": true,
+  "detail": "s not yet hold enough work to say anything about strengths or weaknesses.  With a real model configured, Mr EZ would answer the question itself here, using the same record.  Your message to Mr EZ Send"
+ },
+ {
+  "flow": "Support form: a message is sent and confirmed",
+  "ok": true,
+  "detail": "Thank you, your message is on its way"
+ },
+ {
+  "flow": "Support form: the server accepted the message",
+  "ok": true,
+  "detail": "200 http://127.0.0.1:8841/rest/v1/rpc/support_request_create"
+ },
+ {
+  "flow": "Vocabulary: a topic opens its practice",
+  "ok": true,
+  "detail": "/review?topic=environment"
+ },
+ {
+  "flow": "Vocabulary: practice cards respond to answers",
+  "ok": true,
+  "detail": "steps=6"
+ },
+ {
+  "flow": "Mock exam: starting it opens the first paper (Listening)",
+  "ok": true,
+  "detail": "/tests/mock"
+ },
+ {
+  "flow": "Placement test: starting it shows the first question",
+  "ok": true,
+  "detail": "IELTS is EZ Back to Today 1. Listening 8 min Now 2. Reading 14 min Next 3. Writing 13 min Next 4. Speaking 5 min Next  PART 1 OF 4  Listening  One part of a rea"
+ },
+ {
+  "flow": "Live examiner: pressing start begins a session or says plainly why not",
+  "ok": true,
+  "detail": "IELTS is EZ Today Course Practice Tests Vocabulary EN RU SS Skip to content Live AI Examiner Speaking A full three-part mock speaking test as a real conversation: the examiner speaks, listens, and asks follow-up questions based on what you actually say. SPEAKING · LIVE Live Mock Test with an AI Exam"
+ },
+ {
+  "flow": "Recorded Speaking: record with the microphone, stop, and get feedback (simulated)",
+  "ok": true,
+  "detail": "Start answering > Stop answering > Start answering > Stop answering > Start answering > Stop answering > Start answering > Stop answering"
+ },
+ {
+  "flow": "Study plan settings opens with its settings",
+  "ok": true,
+  "detail": "IELTS is EZ Today Course Practice Tests Vocabulary EN RU SS Skip to content Your study plan  Set your target, exam date and study time. Your completed lessons s"
+ },
+ {
+  "flow": "Progress report opens and shows the Reading result",
+  "ok": true,
+  "detail": "IELTS is EZ Today Course Practice Tests Vocabulary EN RU SS Skip to content  PROGRESS REPORT  Your progress, one page.  Everything from your account page laid o"
+ },
+ {
+  "flow": "Account: Edit details saves (the city now reads Astana)",
+  "ok": true,
+  "detail": "/account"
+ },
+ {
+  "flow": "Account: Change password confirms",
+  "ok": false,
+  "detail": "ample.test Change email Password At least 8 characters, with a letter and a number. Change password Devices Lost a phone or used a shared computer? Sign out everywhere at once. Sign out on all devices"
+ },
+ {
+  "flow": "Account menu: Sign out signs out (the header shows Log in)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "flow": "Sign in with the new password lands back on Account",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "flow": "Forgot password: asking for a reset link confirms",
+  "ok": true,
+  "detail": "Check your email We sent a password-reset link to ct-flows-1790887923@example.test. Open it on this device to set a new password. If there is no account with this email, no link is sent. Back to sign "
+ }
+]

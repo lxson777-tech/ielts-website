@@ -1,0 +1,844 @@
+{
+ "summary": {
+  "pages": 88,
+  "lessonPages": 76,
+  "nonLessonPages": 12,
+  "phrasesChecked": 910,
+  "leakingPages": 0,
+  "bad": []
+ },
+ "rows": [
+  {
+   "route": "/lessons/listening/form-completion",
+   "slug": "listening-form-completion",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/map-labelling",
+   "slug": "listening-map-labelling",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/matching",
+   "slug": "listening-matching",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/multiple-choice",
+   "slug": "listening-multiple-choice",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/part1",
+   "slug": "listening-part1",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/part2",
+   "slug": "listening-part2",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/part3",
+   "slug": "listening-part3",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/part4",
+   "slug": "listening-part4",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/section1",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/listening/section2",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/listening/section3",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/listening/section4",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/listening/sentence-completion",
+   "slug": "listening-sentence-completion",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening/short-answer",
+   "slug": "listening-short-answer",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/listening",
+   "slug": "listening",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/cat",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/reading/diagram",
+   "slug": "reading-diagram",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/headings",
+   "slug": "reading-headings",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/matching-features",
+   "slug": "reading-matching-features",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/matching-information",
+   "slug": "reading-matching-information",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/matching-sentence-endings",
+   "slug": "reading-matching-sentence-endings",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/mc",
+   "slug": "reading-mc",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/para",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/reading/paraphrase",
+   "slug": "reading-paraphrase",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/sentence",
+   "slug": "reading-sentence",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/short-answer",
+   "slug": "reading-short-answer",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/summary-completion",
+   "slug": "reading-summary-completion",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/tfng",
+   "slug": "reading-tfng",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading/ynng",
+   "slug": "reading-ynng",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading-task1",
+   "slug": "reading-task1",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/reading-test",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/speaking/part1",
+   "slug": "speaking-part1",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/speaking/part2",
+   "slug": "speaking-part2",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/speaking/part3",
+   "slug": "speaking-part3",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/speaking-part1",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/speaking-part2",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/speaking-part3",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/speaking",
+   "slug": "speaking",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/ageing",
+   "slug": "vocabulary-ageing",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/ai",
+   "slug": "vocabulary-ai",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/animals",
+   "slug": "vocabulary-animals",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/arts",
+   "slug": "vocabulary-arts",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/books",
+   "slug": "vocabulary-books",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/business",
+   "slug": "vocabulary-business",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/childhood",
+   "slug": "vocabulary-childhood",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/conjunctions",
+   "slug": "vocabulary-conjunctions",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/crime",
+   "slug": "vocabulary-crime",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/education",
+   "slug": "vocabulary-education",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/environment",
+   "slug": "vocabulary-environment",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/family",
+   "slug": "vocabulary-family",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/fashion",
+   "slug": "vocabulary-fashion",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/food",
+   "slug": "vocabulary-food",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/government",
+   "slug": "vocabulary-government",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/health",
+   "slug": "vocabulary-health",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/housing",
+   "slug": "vocabulary-housing",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/language",
+   "slug": "vocabulary-language",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/leisure",
+   "slug": "vocabulary-leisure",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/media",
+   "slug": "vocabulary-media",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/money",
+   "slug": "vocabulary-money",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/music-film",
+   "slug": "vocabulary-music-film",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/people",
+   "slug": "vocabulary-people",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/places",
+   "slug": "vocabulary-places",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/science",
+   "slug": "vocabulary-science",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/social-media",
+   "slug": "vocabulary-social-media",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/society",
+   "slug": "vocabulary-society",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/sport",
+   "slug": "vocabulary-sport",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/success",
+   "slug": "vocabulary-success",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/technology",
+   "slug": "vocabulary-technology",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/traditions",
+   "slug": "vocabulary-traditions",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/transport",
+   "slug": "vocabulary-transport",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/travel",
+   "slug": "vocabulary-travel",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/volunteering",
+   "slug": "vocabulary-volunteering",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/weather",
+   "slug": "vocabulary-weather",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary/work",
+   "slug": "vocabulary-work",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/vocabulary",
+   "slug": "vocabulary",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 5,
+   "ru": [],
+   "ru_checked": 5
+  },
+  {
+   "route": "/lessons/writing/advantages",
+   "slug": "writing-advantages",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/charts",
+   "slug": "writing-charts",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/discussion",
+   "slug": "writing-discussion",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/maps",
+   "slug": "writing-maps",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/method",
+   "slug": "writing-method",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/opinion",
+   "slug": "writing-opinion",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/problem",
+   "slug": "writing-problem",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/process",
+   "slug": "writing-process",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/task2-method",
+   "slug": "writing-task2-method",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing/twopart",
+   "slug": "writing-twopart",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  },
+  {
+   "route": "/lessons/writing-task1",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/writing-task2",
+   "slug": null,
+   "note": "no lesson body element (redirect or hub page)",
+   "redirect": true
+  },
+  {
+   "route": "/lessons/writing",
+   "slug": "writing",
+   "gatedMarker": true,
+   "inviteInHtml": false,
+   "en": [],
+   "en_checked": 6,
+   "ru": [],
+   "ru_checked": 6
+  }
+ ]
+}
