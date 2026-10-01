@@ -1,0 +1,19 @@
+---
+/* /speaking/recorded: the recorded Speaking assessment, the trial's and paid
+   access's (30 September offer). It exists ONLY in the gated commercial
+   build: the open site (today's live site) never had this page, and
+   publishing one there would change it (review of 1 October 2026, P2-9).
+   A dynamic route so the open build simply generates no page here. */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PaidContent from '../../components/trial/PaidContent';
+import { isTrialBuild } from '../../lib/trial/mode';
+
+export const getStaticPaths: GetStaticPaths = () => (isTrialBuild() ? [{ params: { gatedPage: 'recorded' } }] : []);
+---
+<BaseLayout title="Recorded Speaking · IELTS Portal" trialGate={{kind:'speaking',title:'Speaking'}}>
+  <div class="skill-speaking mx-auto max-w-4xl px-4 py-12 sm:px-6">
+    <h1 class="text-3xl font-extrabold" data-i18n>Speaking</h1>
+    <PaidContent client:load shared view={{name:'recorded'}} />
+  </div>
+</BaseLayout>

@@ -52,8 +52,50 @@ export interface PaidAccess {
   endsAt: string;
 }
 
+/** The account's AI assessments as the server counted them
+    (`assessment_balance` in supabase/migrations/2026-09-30-profitable-offer.sql,
+    returned inside trial_status). Every count includes reservations still
+    being graded; a reservation the server released is not counted. */
+export interface AssessmentCounts {
+  /** The trial's one shared Writing or recorded Speaking assessment. */
+  trialUsed: number;
+  /** This 30-day period's paid counts. */
+  writingUsed: number;
+  speakingUsed: number;
+  liveUsed: number;
+  /** Full mock exams in this 30-day period (Alex, 1 October 2026: 2 per
+      purchase, separate from the live interviews). Zero until the server
+      reports it. */
+  mockUsed: number;
+  /** The once-per-account placement test has been taken. */
+  placementTaken: boolean;
+  /** When the CURRENT 30-day period ends (null without one). A later
+      queued purchase starts then with a fresh allowance. */
+  periodEndsAt: string | null;
+}
+
+/** The JSON field names of `assessment_balance`. The first four exist
+    today; `mockUsed` and `placementUsed` are the names the client expects
+    for Alex's 1 October decision (Builder M's server work). ALIGN AT MERGE:
+    if the server names them differently, change only this table. */
+export const ASSESSMENT_BALANCE_FIELDS = {
+  trialUsed: 'trialUsed',
+  writingUsed: 'writingUsed',
+  speakingUsed: 'speakingUsed',
+  liveUsed: 'liveUsed',
+  mockUsed: 'mockUsed',
+  /** A count (0 or 1) or a boolean: either is read. */
+  placementUsed: 'placementUsed',
+  periodEndsAt: 'endsAt',
+} as const;
+
+/** What one 30-day purchase includes (Alex, 30 September and 1 October
+    2026), for showing only. The database's allowance is what is enforced;
+    tests/assessment-refusal.test.ts holds these to the sales copy. */
+export const PAID_ALLOWANCE = { writing: 12, speaking: 6, live: 2, mock: 2 } as const;
+
 export interface TrialStatus {
-  assessments?: { trialUsed: number; writingUsed: number; speakingUsed: number; liveUsed: number };
+  assessments?: AssessmentCounts;
   /** Paid access, if any grant has ever been recorded; see hasPaidAccess. */
   paid: PaidAccess | null;
   state: TrialState;
@@ -96,6 +138,22 @@ function parsePaid(raw: unknown): PaidAccess | null {
   return { planId: value.planId, startsAt: value.startsAt, endsAt: value.endsAt };
 }
 
+function parseAssessments(raw: unknown): AssessmentCounts | undefined {
+  if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) return undefined;
+  const value = raw as Record<string, unknown>;
+  const f = ASSESSMENT_BALANCE_FIELDS;
+  const placement = value[f.placementUsed];
+  return {
+    trialUsed: count(value[f.trialUsed]),
+    writingUsed: count(value[f.writingUsed]),
+    speakingUsed: count(value[f.speakingUsed]),
+    liveUsed: count(value[f.liveUsed]),
+    mockUsed: count(value[f.mockUsed]),
+    placementTaken: placement === true || count(placement) > 0,
+    periodEndsAt: isIso(value[f.periodEndsAt]) ? (value[f.periodEndsAt] as string) : null,
+  };
+}
+
 /** Reads the server's reply. Anything malformed is null, and a caller treats
     null as "we could not check", never as "no trial" or "all allowed". */
 export function parseTrialStatus(raw: unknown): TrialStatus | null {
@@ -118,12 +176,7 @@ export function parseTrialStatus(raw: unknown): TrialStatus | null {
   }
   return {
     paid: parsePaid(value.paid),
-    assessments: value.assessments && typeof value.assessments === 'object' ? {
-      trialUsed: count((value.assessments as Record<string, unknown>).trialUsed),
-      writingUsed: count((value.assessments as Record<string, unknown>).writingUsed),
-      speakingUsed: count((value.assessments as Record<string, unknown>).speakingUsed),
-      liveUsed: count((value.assessments as Record<string, unknown>).liveUsed),
-    } : undefined,
+    assessments: parseAssessments(value.assessments),
     state,
     startedAt: state === 'none' ? null : (value.startedAt as string),
     endsAt: state === 'none' ? null : (value.endsAt as string),
@@ -178,6 +231,53 @@ export function hasPaidAccess(status: TrialStatus, serverNowMs: number): boolean
 /** Paid access that has run out (the student paid before, and it ended). */
 export function paidAccessEnded(status: TrialStatus, serverNowMs: number): boolean {
   return status.paid !== null && Date.parse(status.paid.endsAt) <= serverNowMs;
+}
+
+/* ── AI assessments left ─────────────────────────────────────────────── */
+
+export type AssessmentBalanceView =
+  /** Nothing true and useful to show: no trial, an ended trial with nothing
+      begun, ended paid access, or the server sent no counts. */
+  | { kind: 'none' }
+  /** The trial's one shared Writing or recorded Speaking assessment. */
+  | { kind: 'trial'; left: number }
+  | {
+      kind: 'paid';
+      writing: number;
+      speaking: number;
+      live: number;
+      mock: number;
+      /** When this 30-day period ends. */
+      periodEndsAt: string | null;
+      /** When an already bought next period starts, with a fresh allowance.
+          Null when nothing further was bought. */
+      nextPeriodStartsAt: string | null;
+    };
+
+/** What the "assessments left" line may honestly say right now. */
+export function assessmentBalance(status: TrialStatus | null, serverNowMs: number): AssessmentBalanceView {
+  const a = status?.assessments;
+  if (!status || !a) return { kind: 'none' };
+  if (hasPaidAccess(status, serverNowMs)) {
+    const periodEndsAt = a.periodEndsAt;
+    const nextPeriodStartsAt =
+      periodEndsAt && status.paid && Date.parse(status.paid.endsAt) > Date.parse(periodEndsAt) ? periodEndsAt : null;
+    return {
+      kind: 'paid',
+      writing: Math.max(0, PAID_ALLOWANCE.writing - a.writingUsed),
+      speaking: Math.max(0, PAID_ALLOWANCE.speaking - a.speakingUsed),
+      live: Math.max(0, PAID_ALLOWANCE.live - a.liveUsed),
+      mock: Math.max(0, PAID_ALLOWANCE.mock - a.mockUsed),
+      periodEndsAt,
+      nextPeriodStartsAt,
+    };
+  }
+  const state = stateAt(status, serverNowMs);
+  /* A Writing or Speaking test begun while the trial ran may still be
+     finished after it ends, so its assessment is still worth showing. */
+  const begun = (['writing', 'speaking'] as const).some((s) => status.sections[s].test?.status === 'reserved');
+  if (state === 'active' || (state === 'ended' && begun)) return { kind: 'trial', left: Math.max(0, 1 - a.trialUsed) };
+  return { kind: 'none' };
 }
 
 /* ── One lesson ──────────────────────────────────────────────────────── */

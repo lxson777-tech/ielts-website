@@ -214,7 +214,11 @@ const blockIds = bodyHtml ? segmentLessonBody(bodyHtml).map((block) => block.id)
   import { onLessonBodySwap } from '../lib/i18n/lesson-body';
   import { withBase } from '../lib/url';
   import { onOwnerChange } from '../lib/store-owner';
-  onOwnerChange(() => refreshLessonBlocks());
+  import { isTrialBuild } from '../lib/trial/mode';
+  /* The gated build shows lesson help to a signed-in student only, so it
+     rebuilds the controls when the account changes. The open site offers
+     help to everyone and is left exactly as it was (review P2-9). */
+  if (isTrialBuild()) onOwnerChange(() => refreshLessonBlocks());
 
   ensureLearningWired();
 

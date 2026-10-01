@@ -449,8 +449,8 @@ export const SALES_COPY = {
   },
   'faq.refund.q': { en: 'Can I get a refund?', ru: 'Можно ли вернуть деньги?' },
   'faq.refund.a': {
-    en: 'Try the free trial before buying. Read the purchase terms for the refund policy.',
-    ru: 'Перед покупкой воспользуйтесь бесплатным пробным периодом. Условия возврата указаны в правилах покупки.',
+    en: 'No. There are no refunds after purchase. That is what the free three-day trial is for: take a full Reading test, a full Listening test and one AI assessment first, then decide.',
+    ru: 'Нет, после покупки деньги не возвращаются. Для этого и есть бесплатный пробный период на три дня: сначала пройдите полный тест Reading, полный тест Listening и одну проверку ИИ, а потом решайте.',
   },
   'faq.unlimited.q': { en: 'Is AI practice unlimited?', ru: 'Практика с ИИ без ограничений?' },
   'faq.unlimited.a': {

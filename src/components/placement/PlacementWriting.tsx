@@ -17,7 +17,10 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { EssayPrompt } from '../../lib/writing/schema';
-import { gradeEssay, isGraderConfigured } from '../../lib/writing/grader';
+import { GraderRefusal, gradeEssay, isGraderConfigured } from '../../lib/writing/grader';
+import { refreshTrial, serverNow, trialView } from '../../lib/trial/client';
+import AllowanceNote from '../access/AllowanceNote';
+import { isAssessmentRefusalCode, refusalIsFinal, refusalKind, refusalMessage } from '../access/assessment-refusal';
 import { countWords } from '../../lib/writing/mechanics';
 import { deviceStorage, runOwnedGrade, type OwnerBinding } from '../../lib/store-owner';
 import { useT } from '../../lib/i18n/react';
@@ -53,11 +56,15 @@ export default function PlacementWriting({
   onChanged: () => void;
   onRefused: (refusal: ExerciseRefusal) => void;
 }) {
-  const { t } = useT();
+  const { t, locale } = useT();
   const configured = isGraderConfigured();
   const writing = state.writing;
   const [essay, setEssay] = useState(writing?.essay ?? '');
   const [phase, setPhase] = useState<'writing' | 'grading' | 'error'>('writing');
+  /** The grader refused on purpose (every essay of this period used, ...):
+      said as what it is, and "Try again" is not offered when it would only
+      be refused again (review of 1 October 2026, P1-2). */
+  const [refused, setRefused] = useState<{ text: string; final: boolean } | null>(null);
   const [gradingStartedAt, setGradingStartedAt] = useState(0);
   const [now, setNow] = useState(() => Date.now());
   const bindingRef = useRef<OwnerBinding | null>(null);
@@ -156,8 +163,19 @@ export default function PlacementWriting({
           void keepPlacementWritingGrade(deviceStorage(), owner, sittingId, submitted, graded, new Date().toISOString()),
         show: () => onChanged(),
       });
-    } catch {
-      if (claim.binding.state() === 'current') setPhase('error');
+    } catch (err) {
+      if (claim.binding.state() !== 'current') return;
+      if (err instanceof GraderRefusal && isAssessmentRefusalCode(err.code)) {
+        const kind = refusalKind(err.code, err.message);
+        await refreshTrial();
+        setRefused({
+          text: refusalMessage({ kind, what: 'placement', serverMessage: err.message }, trialView().status, serverNow(), t, locale),
+          final: refusalIsFinal(kind),
+        });
+      } else {
+        setRefused(null);
+      }
+      setPhase('error');
     } finally {
       submittingRef.current = false;
     }
@@ -189,6 +207,7 @@ export default function PlacementWriting({
         note={t('The exam gives 20 minutes for Task 1. Here you have {n}, so aim for a complete short report rather than a perfect one.', {
           n: PLACEMENT.writing.minutes,
         })}
+        extra={<AllowanceNote use="placement-writing" />}
         action={
           <button type="button" className="pl-primary" onClick={begin}>
             {t('Start Writing')}
@@ -214,21 +233,33 @@ export default function PlacementWriting({
       <PartBrief
         part="writing"
         index={2}
-        lead={t('Your writing could not be marked just now. It is kept on this device. You can try once more, or carry on and leave Writing as not yet assessed.')}
+        lead={
+          refused
+            ? `${refused.text} ${t('You can carry on and leave Writing as not yet assessed.')}`
+            : t('Your writing could not be marked just now. It is kept on this device. You can try once more, or carry on and leave Writing as not yet assessed.')
+        }
         facts={[t('{count} / {min}+ words', { count: wordCount, min: 150 })]}
         action={
-          <button
-            type="button"
-            className="pl-primary"
-            onClick={() => void submit()}
-          >
-            {t('Try again')}
-          </button>
+          refused?.final ? (
+            <button type="button" className="pl-primary" onClick={() => settle('failed')}>
+              {t('Continue without marking')}
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="pl-primary"
+              onClick={() => void submit()}
+            >
+              {t('Try again')}
+            </button>
+          )
         }
         secondary={
-          <button type="button" className="pl-secondary" onClick={() => settle('failed')}>
-            {t('Continue without marking')}
-          </button>
+          refused?.final ? undefined : (
+            <button type="button" className="pl-secondary" onClick={() => settle('failed')}>
+              {t('Continue without marking')}
+            </button>
+          )
         }
       />
     );

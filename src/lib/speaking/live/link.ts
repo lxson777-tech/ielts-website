@@ -62,7 +62,7 @@ import type { LiveMode, LiveProvider, SessionPlanRequest } from './instructions'
 import type { TranscriptTurn } from './session';
 import { ExaminerSession } from './session';
 import { ExaminerPlayback, MicCapture, RemoteAudioOutput, StreamLevelMeter } from './audio';
-import { OpenAiLiveSession, connectWebRtc } from './openai-session';
+import { OpenAiLiveSession, connectWebRtc, type LiveSessionPurpose } from './openai-session';
 import type { DirectorCue } from './cues';
 import { cueText } from './cues';
 import { watchStart, type MayContinue, type StartHandle } from './start-check';
@@ -170,6 +170,9 @@ export interface OpenExaminerLinkOptions {
   /** A trial build only: the student's begun Speaking test (see
       WebRtcConnectOptions.trialSitting). */
   trialSitting?: string;
+  /** A gated build only: the interview is the placement test's or a full
+      mock exam's (see WebRtcConnectOptions.purpose). */
+  purpose?: LiveSessionPurpose;
   cb: ExaminerLinkCallbacks;
   /** The caller's "may I continue" check, asked inside the setup right
       before the paid session request and right before the Gemini socket
@@ -405,6 +408,7 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
       plan: opts.plan,
       accessToken,
       trialSitting: opts.trialSitting,
+      purpose: opts.purpose,
       onRemoteStream: (stream) => {
         /* R2E-01: the examiner's audio arrives while the setup is still
            under way. A start that was let go plays none of it. */

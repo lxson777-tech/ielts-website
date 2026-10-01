@@ -71,6 +71,7 @@ export function PartBrief({
   lead,
   facts,
   note,
+  extra,
   action,
   secondary,
 }: {
@@ -79,6 +80,8 @@ export function PartBrief({
   lead: string;
   facts: readonly string[];
   note?: string;
+  /** A line of its own under the note, e.g. what this part uses. */
+  extra?: ReactNode;
   action: ReactNode;
   secondary?: ReactNode;
 }) {
@@ -98,6 +101,7 @@ export function PartBrief({
         ))}
       </div>
       {note && <p className="pl-note">{note}</p>}
+      {extra}
       <div className="pl-actions">
         {action}
         {secondary}

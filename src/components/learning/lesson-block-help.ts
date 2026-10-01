@@ -33,6 +33,7 @@ import { t } from '../../lib/i18n/translate';
 import { getLocale } from '../../lib/i18n/locale';
 import type { LessonHelpKind } from '../../lib/learning/contracts/ai';
 import { bindToCurrentOwner, currentOwner, onOwnerChange, ownerNamespace } from '../../lib/store-owner';
+import { isTrialBuild } from '../../lib/trial/mode';
 import { askContext } from './learning-versions';
 import { HELP_SOURCE_NOTE, requestOwnedLessonHelp, type HelpResult } from './lesson-help';
 
@@ -129,24 +130,32 @@ export function mountLessonBlockHelp(options: LessonBlockHelpOptions): void {
   /* A control left behind by an earlier pass has no listeners any more. */
   root.querySelectorAll(`.${HELP_NODE_CLASS}`).forEach((node) => node.remove());
   stampBlockIds(root, options.ids);
-  if (currentOwner().kind !== 'user') return;
 
-  for (const heading of headingsToStamp(root)) {
-    const blockId = heading.dataset.lessonBlock;
-    if (!blockId) continue;
-    const control = buildControl({
-      lessonKey: options.lessonKey,
-      lessonTitle: options.lessonTitle,
-      blockId,
-      heading,
-    });
-    /* At the END of the block, where a student has just read it, rather
-       than under the heading where it would shout before they have read a
-       word. */
-    const end = endOfBlock(heading);
-    end.after(control);
+  /* The gated commercial build offers lesson help to a signed-in student
+     only; the open site (today's live site) keeps offering it to everyone,
+     as it did at commit fe4ebdb (review of 1 October 2026, P2-9). */
+  const offerHelp = !isTrialBuild() || currentOwner().kind === 'user';
+  if (offerHelp) {
+    for (const heading of headingsToStamp(root)) {
+      const blockId = heading.dataset.lessonBlock;
+      if (!blockId) continue;
+      const control = buildControl({
+        lessonKey: options.lessonKey,
+        lessonTitle: options.lessonTitle,
+        blockId,
+        heading,
+      });
+      /* At the END of the block, where a student has just read it, rather
+         than under the heading where it would shout before they have read a
+         word. */
+      const end = endOfBlock(heading);
+      end.after(control);
+    }
   }
 
+  /* A part-of-lesson link scrolls for everyone, after the controls are in
+     place so the target does not move (P2-9: an early return used to skip
+     this for a signed-out reader). */
   scrollToHashBlock(root);
 }
 

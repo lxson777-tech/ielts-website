@@ -39,6 +39,7 @@ import * as eRemediation from './e-remediation';
 import * as a2Remediation from './a2-remediation';
 import * as a3Remediation from './a3-remediation';
 import * as r01Remediation from './r01-remediation';
+import * as sOffer from './s-offer';
 
 /** Every batch module, in merge order. The test imports this same list. */
 export const BATCHES = [
@@ -73,6 +74,7 @@ export const BATCHES = [
   a2Remediation,
   a3Remediation,
   r01Remediation,
+  sOffer,
 ];
 
 export const strings: Record<string, string> = Object.assign({}, ...BATCHES.map((b) => b.strings));

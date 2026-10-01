@@ -10,9 +10,14 @@ import { t } from '../i18n/translate';
 import { getLocale } from '../i18n/locale';
 import { gatedSignIn } from '../trial/content';
 
-/** A grading failure the Worker named with a code: a trial refusal
-    ('trial-test-used', 'trial-no-test', ...) or 'sign-in-required'. The
-    message is the Worker's English; the screen shows its own words. */
+/* Which codes are refusals: ./refusal-code.ts (shared by every grader
+   client and the live examiner). Re-exported for the screens. */
+export { isGraderRefusalCode } from './refusal-code';
+import { isGraderRefusalCode } from './refusal-code';
+
+/** A grading failure the Worker named with a refusal code (see
+    isGraderRefusalCode). The message is the Worker's English; the screen
+    shows its own words. */
 export class GraderRefusal extends Error {
   readonly code: string;
   constructor(code: string, message: string) {
@@ -82,7 +87,7 @@ class RemoteGrader implements EssayGrader {
       } catch {
         /* non-JSON error body */
       }
-      if (code === 'sign-in-required' || code.startsWith('trial-')) throw new GraderRefusal(code, detail);
+      if (isGraderRefusalCode(code)) throw new GraderRefusal(code, detail);
       throw new Error(detail || `Grader responded ${resp.status}`);
     }
     const a = (await resp.json()) as EssayAssessment;

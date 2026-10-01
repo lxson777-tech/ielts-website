@@ -47,9 +47,14 @@ const historySubtitle =
       <SpeakingTester client:load />
     )}
 
-    <a href={withBase('/speaking/examiner')} class="skill-resource-card">
-      <span class="skill-resource-card-title" data-i18n>Live AI Examiner</span>
-    </a>
+    {gated && (
+      /* The gated build's trainer is recorded Speaking, so the live examiner
+         gets its own link. The open trainer IS the live examiner already, and
+         keeps its page as it was (review of 1 October 2026, P2-9). */
+      <a href={withBase('/speaking/examiner')} class="skill-resource-card">
+        <span class="skill-resource-card-title" data-i18n>Live AI Examiner</span>
+      </a>
+    )}
     <a href={withBase('/speaking/cue-cards')} class="skill-resource-card">
       <span class="skill-resource-card-title" data-i18n>Cue-card bank (for study, not a test)</span>
       <span class="skill-resource-card-desc" data-i18n>Read 24 Part 2 cue cards with model answers, to prepare before you speak</span>
