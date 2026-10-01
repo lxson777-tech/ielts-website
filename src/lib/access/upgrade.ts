@@ -10,6 +10,22 @@ import { nt } from '../i18n/translate';
 
 export const UPGRADE_EVENT = 'ielts:upgrade';
 
+/* What the server answers an account without practice and guidance (Builder
+   G's interface, free-account model of 1 October 2026). ALIGN AT MERGE: if G
+   names them differently, change only these two lines.
+   - The AI Workers (essay, recorded Speaking, live examiner, Mr EZ) refuse
+     BEFORE any provider call with HTTP 402 { code: 'paid-required',
+     reason: 'paid-required' }.
+   - The content door answers 402 or 403 for a paid item (a paper, a pack, a
+     writing prompt or model from the bank). */
+export const PAID_REQUIRED_CODE = 'paid-required';
+export const PAID_REQUIRED_STATUS = 402;
+
+/** Whether a Worker's reply is the paid-required refusal. */
+export function isPaidRequired(status: number, code: string | null | undefined, reason?: string | null): boolean {
+  return code === PAID_REQUIRED_CODE || reason === PAID_REQUIRED_CODE || (status === PAID_REQUIRED_STATUS && !code);
+}
+
 export interface UpgradeRequest {
   feature: PaidFeature | 'first-lesson';
   /** Where the request came from, for the dialog's return link. */

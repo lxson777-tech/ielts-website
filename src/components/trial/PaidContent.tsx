@@ -9,9 +9,10 @@
    stand-ins. For everyone else it renders nothing and asks for nothing: the
    page's gate (TrialGate) already explains why the page is closed.
 
-   A few pages are part of the trial too (the Writing Checker, the live
-   examiner): there `shared` keeps today's trial behaviour for a non-paid
-   account, and a paid account gets the full tool once its material is in.
+   The free-account model (1 October 2026) retired the trial, so no page is
+   "shared" with it any more. The one exception is the vocabulary topic
+   lists, free with an account: a free account gets them, without their
+   paid practice round.
 
    The open site never renders this: its pages keep their tools as they are. */
 
@@ -19,7 +20,8 @@ import { useEffect, useState, type ComponentType, type ReactElement } from 'reac
 import { useTrial } from '../../lib/trial/react';
 import { useT } from '../../lib/i18n/react';
 import { withBase } from '../../lib/url';
-import { commonPacks, fetchPack, loadPacks, paidNow, type ModulePack, type PackFailure } from '../../lib/trial/packs';
+import { commonPacks, fetchFreePack, fetchPack, loadPacks, paidNow, type ModulePack, type PackFailure } from '../../lib/trial/packs';
+import { browserTier, readsLessons } from '../../lib/access/tier';
 import { refreshTrial } from '../../lib/trial/client';
 import { PaidFailed, PaidLoading } from './PaidStates';
 
@@ -211,53 +213,72 @@ function usePaidView(view: PaidView, active: boolean, attempt: number): Stage {
   return stage;
 }
 
+/** The vocabulary topic lists for a FREE account (the free-account model):
+    the topics come through the content door (`pack/vocabulary`, see
+    FREE_ACCOUNT_PACKS), and the page's practice round stays paid (its
+    button carries data-paid-feature, so the upgrade pop-up opens). */
+function useFreeVocabTopics(active: boolean, userId: string | null, attempt: number): Stage {
+  const [stage, setStage] = useState<Stage>({ kind: 'idle' });
+  useEffect(() => {
+    if (!active) {
+      setStage({ kind: 'idle' });
+      return;
+    }
+    let live = true;
+    setStage({ kind: 'loading' });
+    void (async () => {
+      const pack = await fetchFreePack('vocabulary');
+      if (!live) return;
+      if (!pack.ok) return setStage({ kind: 'failed', reason: pack.reason });
+      try {
+        const { default: VocabTopics } = await import('../VocabTopics');
+        const topics = (pack.value as { topics?: Parameters<typeof VocabTopics>[0]['topics'] }).topics;
+        if (!Array.isArray(topics)) throw new Error('pack: vocabulary has no topics');
+        if (live) setStage({ kind: 'ready', element: <VocabTopics topics={topics} /> });
+      } catch {
+        if (live) setStage({ kind: 'failed', reason: 'error' });
+      }
+    })();
+    return () => {
+      live = false;
+    };
+  }, [active, userId, attempt]);
+  return stage;
+}
+
 export default function PaidContent({
   view,
-  shared = false,
   full = false,
 }: {
   view: PaidView;
-  /** The trial includes this page too: a non-paid account gets today's tool
-      as it is (it applies the trial's own rules), a paid one the full tool. */
+  /** Kept for older pages: the trial is retired, so a page with no paid
+      access shows its gate (TrialGate) and nothing here. */
   shared?: boolean;
   /** A bare page (the mock exam, the placement test): fill the screen. */
   full?: boolean;
 }) {
   const trial = useTrial();
   const paid = paidNow(trial, trial.now);
+  const tier = browserTier(trial, trial.now);
   const [attempt, setAttempt] = useState(0);
   const stage = usePaidView(view, paid, attempt);
-  const [trialTool, setTrialTool] = useState<ReactElement | null>(null);
-
-  /* A shared page for a student without paid access: the tool as the trial
-     has it, with no pack and no paid material. Mounted once the account is
-     known, so a paid student never sees the trial's version first. */
-  const decided = trial.phase !== 'checking';
-  useEffect(() => {
-    if (!shared || paid || !decided || trialTool) return;
-    let live = true;
-    void planFor(view)
-      .mount(undefined)
-      .then((element) => {
-        if (live) setTrialTool(element);
-      })
-      .catch(() => undefined);
-    return () => {
-      live = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shared, paid, decided]);
+  /* The one paid page whose content a free account also opens. */
+  const freeVocab = !paid && view.name === 'vocab-topics' && readsLessons(tier);
+  const freeStage = useFreeVocabTopics(freeVocab, trial.userId, attempt);
 
   const retry = () => {
     if (stage.kind === 'failed' && stage.reason === 'not-paid') void refreshTrial();
     setAttempt((n) => n + 1);
   };
 
-  if (!paid) {
-    if (shared && decided) return trialTool ?? <PaidLoading full={full} />;
-    if (shared) return <PaidLoading full={full} />;
-    return null;
+  if (freeVocab) {
+    if (freeStage.kind === 'ready') return freeStage.element;
+    if (freeStage.kind === 'failed') return <PaidFailed reason={freeStage.reason} onRetry={retry} full={full} />;
+    return <PaidLoading full={full} />;
   }
+  /* Anyone without practice and guidance: the page's gate (TrialGate)
+     already explains, with the upgrade pop-up one press away. */
+  if (!paid) return null;
   if (stage.kind === 'ready') return stage.element;
   if (stage.kind === 'failed') return <PaidFailed reason={stage.reason} onRetry={retry} full={full} />;
   return <PaidLoading full={full} />;

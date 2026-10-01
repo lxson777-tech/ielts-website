@@ -25,6 +25,7 @@ import TrialBlock from './trial/TrialBlock';
 import { useTrialTest } from './trial/useTrialTest';
 import { refreshTrial, serverNow, trialView } from '../lib/trial/client';
 import { isAssessmentRefusalCode, refusalKind, refusalMessage, refusalOffersPlans } from './access/assessment-refusal';
+import { upgradeOnRefusal } from './access/refusal-upgrade';
 import { TRIAL_OFFER, TRIAL_WRITING } from '../lib/trial/offer';
 import { fetchGated } from '../lib/trial/content';
 import { getAccessToken } from '../lib/auth/session';
@@ -431,6 +432,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             ? refusalKind(err.code, err.message, err.reason)
             : null;
         setGradingErrorPlans(allowance ? refusalOffersPlans(allowance) : false);
+        if (allowance) upgradeOnRefusal(allowance, 'writing');
         if (allowance) await refreshTrial();
         setGradingError(
           allowance

@@ -48,6 +48,7 @@ import {
   type OwnerBinding,
 } from '../../lib/store-owner';
 import { askContext } from './learning-versions';
+import { isTrialBuild } from '../../lib/trial/mode';
 import {
   HELP_SOURCE_NOTE,
   requestOwnedLessonHelp,
@@ -313,6 +314,10 @@ function buildControl(input: {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'help-control';
+    /* The gated build: Mr EZ comes with practice and guidance, so a free
+       student's press opens the upgrade pop-up instead (the click guard,
+       src/lib/access/paid-guard.ts). A paid press goes straight through. */
+    if (isTrialBuild()) button.dataset.paidFeature = 'tutor';
     button.textContent = t(KIND_LABEL[kind]);
     button.addEventListener('click', () => {
       void ask(kind, button);

@@ -16,6 +16,7 @@
 
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { publicLessonHtml } from '../../../lib/access/public-lessons';
+import { ACCESS_MODE } from '../../../lib/trial/mode';
 import { withBase } from '../../../lib/url';
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from '../../../lib/i18n/locale';
 
@@ -36,7 +37,9 @@ export const getStaticPaths: GetStaticPaths = () => {
   /* A trial build publishes none of these: the content gate
      (workers/content-gate) hands them out to students allowed to open them,
      from the private copy tools/build-gated-content.mjs writes. */
-  // Lesson explanations are public in both builds, including translations.
+  /* The gated build publishes none of these (the free-account model): the
+     content door hands them to any signed-in account. */
+  if (ACCESS_MODE === 'trial') return [];
   const paths: { params: { locale: string; slug: string }; props: { html: string } }[] = [];
   for (const [file, html] of Object.entries(BODIES)) {
     const rel = file.slice(PREFIX.length).replace(/\.html$/, '');

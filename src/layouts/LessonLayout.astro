@@ -215,6 +215,7 @@ const blockIds = bodyHtml ? segmentLessonBody(bodyHtml).map((block) => block.id)
   import { withBase } from '../lib/url';
   import { onOwnerChange } from '../lib/store-owner';
   import { isTrialBuild } from '../lib/trial/mode';
+  import { announceLessonFinished } from '../lib/access/nudge';
   /* The gated build shows lesson help to a signed-in student only, so it
      rebuilds the controls when the account changes. The open site offers
      help to everyone and is left exactly as it was (review P2-9). */
@@ -427,6 +428,10 @@ const blockIds = bodyHtml ? segmentLessonBody(bodyHtml).map((block) => block.id)
             /* A blocked or full browser store costs the record, never the
                tick the student just pressed. */
           }
+          /* The gated build's one upgrade nudge after a free student's
+             first finished lesson listens for this (src/lib/access/nudge.ts).
+             Nothing listens on the open site. */
+          if (isTrialBuild()) announceLessonFinished(slug);
         }
         render(next);
         // Replay the icon pop and the label fade on every press, not just

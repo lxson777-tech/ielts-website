@@ -60,37 +60,8 @@ import { bindToCurrentOwner, currentOwner, onOwnerChange, sameOwner } from '../.
 import type { CacheOwner } from '../../lib/learning/contracts/sync';
 import { BOUNDARY_EXPLANATION, BOUNDARY_PLACEHOLDER, chatBlocked } from './mrez-boundary';
 import { ACCESS_MODE } from '../../lib/trial/mode';
-import { TRIAL_OFFER, isTrialLesson, isTrialSection, lessonSection, type TrialSection } from '../../lib/trial/offer';
-import { refreshTrial } from '../../lib/trial/client';
-import { useTrial } from '../../lib/trial/react';
-import { hasPaidAccess, tutorAllowance } from '../../lib/trial/status';
-
-const SECTION_LABEL: Record<TrialSection, string> = {
-  reading: 'Reading',
-  listening: 'Listening',
-  writing: 'Writing',
-  speaking: 'Speaking',
-};
-
-/** In a trial build, what a question on this page is ABOUT, as the
-    reference the Worker charges it to: the trial lesson open on the page,
-    the section chosen on the trial page (sent as that section's trial
-    lesson), or the Writing test's page. Null when the page is about none of
-    them. The Worker works the section out again from this reference and
-    refuses anything outside the trial, so nothing here is trusted. */
-function trialPlace(place: TutorPlace): { place: TutorPlace; section: TrialSection } | null {
-  if (place.lessonKey && isTrialLesson(place.lessonKey)) {
-    return { place, section: lessonSection(place.lessonKey)! };
-  }
-  const chosen = typeof document !== 'undefined' ? document.body.dataset.trialSection : undefined;
-  if (isTrialSection(chosen)) {
-    return { place: { ...place, lessonKey: TRIAL_OFFER[chosen].lessonKey }, section: chosen };
-  }
-  if (place.route?.startsWith('/writing/checker')) {
-    return { place: { ...place, testId: TRIAL_OFFER.writing.testId }, section: 'writing' };
-  }
-  return null;
-}
+import { useAccessTier } from '../../lib/access/tier';
+import { openUpgrade, PAID_REQUIRED_CODE } from '../../lib/access/upgrade';
 import { selectTutorMood } from './mrez-mood';
 
 /** Where the student is, read off the DOM the layout already labelled. */
@@ -128,10 +99,14 @@ function suggestionsFor(place: TutorPlace, t: Translator['t']): string[] {
 
 export default function MrEzPanel() {
   const { t, tn } = useT();
-  const trial = useTrial();
-  /* Paid access (docs/paid-access/CONTRACT.md): no trial allowance, no
-     per-section line; the Worker applies its ordinary per-student limits. */
-  const trialMode = ACCESS_MODE === 'trial' && !(trial.status !== null && hasPaidAccess(trial.status, trial.now));
+  /* The gated build (the free-account model, 1 October 2026): Mr EZ comes
+     with practice and guidance. The launcher carries data-paid-feature, so
+     for a free account the click guard opens the upgrade pop-up instead of
+     the panel (src/lib/access/paid-guard.ts); if the panel is open anyway
+     it says so and sends nothing. The Worker refuses for itself
+     (`paid-required`). Paid and complimentary access: no change. */
+  const tier = useAccessTier();
+  const needsUpgrade = ACCESS_MODE === 'trial' && (tier === 'free' || tier === 'paid-ended');
   const [open, setOpen] = useState(false);
   const [state, setState] = useState<ConversationState>(EMPTY_CONVERSATION);
   const [draft, setDraft] = useState('');
@@ -262,25 +237,7 @@ export default function MrEzPanel() {
       nothing must not wear a face that says he is explaining something. */
   const blocked = chatBlocked(place);
 
-  /* The trial (a trial build only): which section a question here is
-     charged to, and what is left of it. Worked out for the screen; the
-     Worker decides again, and a refusal it sends uses nothing. */
-  const trialScope = trialMode ? trialPlace(place) : null;
-  const trialAllowance =
-    trialMode && trialScope && trial.status ? tutorAllowance(trial.status, trialScope.section, trial.now) : null;
-  const trialStop: string | null = !trialMode
-    ? null
-    : trial.phase === 'signed-out' || trial.phase === 'checking'
-      ? null
-      : !trial.status || trial.status.state === 'none'
-        ? 'no-trial'
-        : trialAllowance?.state === 'ended' || (trial.status.state === 'ended' && !trialAllowance)
-          ? 'ended'
-          : !trialScope
-            ? 'no-section'
-            : trialAllowance?.state === 'exhausted'
-              ? 'exhausted'
-              : null;
+  const trialStop: string | null = needsUpgrade ? PAID_REQUIRED_CODE : null;
 
   /* One mood for the launcher AND the panel header, decided from facts
      about the tutor only (see mrez-mood.ts). It deliberately knows nothing
@@ -310,10 +267,12 @@ export default function MrEzPanel() {
       // (HELP_BLOCKED_MODES) is the real boundary and stays in place
       // independently of this check.
       if (chatBlocked(readPlace())) return;
-      /* Nothing is sent that the trial would refuse: it would use nothing,
-         but it would still be a pointless wait for the student. */
-      if (trialStop) return;
-      const scoped = trialMode ? trialPlace(readPlace()) : null;
+      /* Nothing is sent that the Worker would refuse: a free account is
+         shown what practice and guidance adds instead. */
+      if (trialStop) {
+        openUpgrade('tutor', { from: currentRoute() });
+        return;
+      }
 
       const key = idempotencyKey ?? newIdempotencyKey();
       const epoch = epochRef.current;
@@ -335,7 +294,7 @@ export default function MrEzPanel() {
           task: 'chat',
           message: trimmed,
           conversationId: state.conversationId ?? undefined,
-          place: scoped?.place ?? readPlace(),
+          place: readPlace(),
           idempotencyKey: key,
         });
         // The client only hands a reply back while the student who asked
@@ -343,7 +302,6 @@ export default function MrEzPanel() {
         // promise on its own account.
         if (epochRef.current !== epoch) return;
         pendingRef.current = null;
-        if (trialMode) void refreshTrial();
         setState((s) => ({
           conversationId: reply.conversationId || s.conversationId,
           turns: [
@@ -365,8 +323,9 @@ export default function MrEzPanel() {
         // else's now: nothing to show.
         if (epochRef.current !== epoch) return;
         const clientError = err instanceof TutorClientError ? err : null;
-        // A trial refusal means the server's count moved on elsewhere.
-        if (trialMode && clientError?.code.startsWith('trial-')) void refreshTrial();
+        /* The Worker's own refusal for an account without practice and
+           guidance: the pop-up explains, nothing was used. */
+        if (clientError?.code === PAID_REQUIRED_CODE) openUpgrade('tutor', { from: currentRoute() });
         setError({
           code: clientError?.code ?? 'unavailable',
           message: clientError?.message ?? t('Something went wrong. Try again in a moment.'),
@@ -382,7 +341,7 @@ export default function MrEzPanel() {
         if (epochRef.current === epoch) setBusy(false);
       }
     },
-    [busy, state.conversationId, t, trialStop, trialMode],
+    [busy, state.conversationId, t, trialStop],
   );
 
   const retry = useCallback(() => {
@@ -403,19 +362,14 @@ export default function MrEzPanel() {
         className="mrez-launcher"
         aria-expanded={open}
         aria-controls="mrez-panel"
+        data-paid-feature={ACCESS_MODE === 'trial' ? 'tutor' : undefined}
         onClick={() => setOpen((v) => !v)}
       >
         {/* The same mood whether the drawer is open or shut: see mrez-mood.ts. */}
         <MrEzAvatar mood={mood} size={42} />
         <span className="mrez-launcher-label">
           {open ? t('Close Mr EZ') : t('Ask Mr EZ')}
-          <small>
-            {trialScope && trialAllowance
-              ? trialAllowance.state === 'ended'
-                ? `${SECTION_LABEL[trialScope.section]} · ${t('Trial ended')}`
-                : `${SECTION_LABEL[trialScope.section]} · ${tn(trialAllowance.remaining, { one: '{n} message left', other: '{n} messages left' })}`
-              : t('Your AI tutor')}
-          </small>
+          <small>{t('Your AI tutor')}</small>
         </span>
       </button>
 
@@ -483,32 +437,14 @@ export default function MrEzPanel() {
             </div>
           )}
 
-          {/* The trial's allowance, above the conversation, so the student
-              knows what a question costs before asking it. */}
-          {configured && trialMode && !blocked && (trialStop || trialAllowance) && (
-            <div className="mrez-trial-note" role="status">
-              {trialStop === 'no-trial' ? (
-                <>
-                  {t('Start your free trial to talk to Mr EZ.')} <a href={withBase('/trial')}>{t('Start my free trial')}</a>
-                </>
-              ) : trialStop === 'ended' ? (
-                <>
-                  {t('Your trial has ended, so Mr EZ cannot reply to new questions.')} <a href={withBase('/plans')}>{t('View plans')}</a>
-                </>
-              ) : trialStop === 'no-section' ? (
-                t('During your trial, Mr EZ answers questions about one section at a time. Open a trial lesson, or choose a section on your trial page.')
-              ) : trialStop === 'exhausted' && trialScope ? (
-                <>
-                  {t('You have used your five messages for {section}. The other sections have their own.', { section: SECTION_LABEL[trialScope.section] })}{' '}
-                  <a href={withBase('/plans')}>{t('See full access')}</a>
-                </>
-              ) : trialScope && trialAllowance ? (
-                t('{section}: {left} of {limit} messages left. Only answered messages count.', {
-                  section: SECTION_LABEL[trialScope.section],
-                  left: trialAllowance.remaining,
-                  limit: trialAllowance.limit,
-                })
-              ) : null}
+          {/* A free account (the gated build): what Mr EZ comes with, and
+              the way to see it, above the conversation. */}
+          {configured && needsUpgrade && !blocked && (
+            <div className="mrez-trial-note" role="status" data-mrez-paid-note>
+              {t('Mr EZ, your personal tutor, comes with practice and guidance.')}{' '}
+              <button type="button" className="mrez-note-link" onClick={() => openUpgrade('tutor', { from: currentRoute() })}>
+                {t('See what practice and guidance adds')}
+              </button>
             </div>
           )}
 

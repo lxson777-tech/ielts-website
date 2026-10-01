@@ -74,69 +74,74 @@ function order(overrides: Partial<Record<string, unknown>> = {}): PaymentOrder {
 
 /* ── Access state ─────────────────────────────────────────────────────── */
 
-test('paid access comes first, whatever the trial says', () => {
+test('paid access comes first, whatever an old trial row says', () => {
   const s = status({ state: 'ended', startedAt: new Date(NOW - 80 * H).toISOString(), endsAt: new Date(NOW - 8 * H).toISOString(), paid: { planId: 'month-1', startsAt: new Date(NOW - H).toISOString(), endsAt: new Date(NOW + 30 * D).toISOString() } });
   assert.deepEqual(accessSummary(s, NOW), { kind: 'paid', planId: 'month-1', endsAt: new Date(NOW + 30 * D).toISOString() });
 });
 
-test('a running trial, an ended trial, no trial, and paid access that ran out', () => {
-  assert.equal(accessSummary(status(), NOW).kind, 'trial-active');
+/* The free-account model (Alex, 1 October 2026): the trial was retired, so
+   the tiers are free, paid, complimentary and ended. */
+test('a free account, complimentary access, and practice and guidance that ran out', () => {
+  // Whatever the old trial row says, no running grant is a free account.
+  assert.deepEqual(accessSummary(status(), NOW), { kind: 'free' });
   const ended = status({ state: 'ended', startedAt: new Date(NOW - 80 * H).toISOString(), endsAt: new Date(NOW - 8 * H).toISOString() });
-  assert.deepEqual(accessSummary(ended, NOW), { kind: 'trial-ended', endedAt: new Date(NOW - 8 * H).toISOString() });
-  assert.equal(accessSummary(status({ state: 'none', startedAt: null, endsAt: null }), NOW).kind, 'no-trial');
+  assert.deepEqual(accessSummary(ended, NOW), { kind: 'free' });
+  assert.deepEqual(accessSummary(status({ state: 'none', startedAt: null, endsAt: null }), NOW), { kind: 'free' });
+  const gift = status({ paid: { planId: 'complimentary', startsAt: new Date(NOW - H).toISOString(), endsAt: new Date(NOW + 30 * D).toISOString(), kind: 'complimentary' } });
+  assert.deepEqual(accessSummary(gift, NOW), { kind: 'complimentary', endsAt: new Date(NOW + 30 * D).toISOString() });
   const paidEnded = status({
-    state: 'ended',
-    startedAt: new Date(NOW - 40 * D).toISOString(),
-    endsAt: new Date(NOW - 37 * D).toISOString(),
+    state: 'none',
+    startedAt: null,
+    endsAt: null,
     paid: { planId: 'month-1', startsAt: new Date(NOW - 31 * D).toISOString(), endsAt: new Date(NOW - D).toISOString() },
   });
-  assert.deepEqual(accessSummary(paidEnded, NOW), { kind: 'paid-ended', endedAt: new Date(NOW - D).toISOString() });
-  // A student who paid is told when it ended, even with a trial still running beside it.
-  const endedBesideTrial = status({ paid: { planId: 'month-1', startsAt: new Date(NOW - 31 * D).toISOString(), endsAt: new Date(NOW - H).toISOString() } });
-  assert.equal(accessSummary(endedBesideTrial, NOW).kind, 'paid-ended');
-  // A trial still running (by the server's clock) moves to ended without asking again.
-  assert.equal(accessSummary(status(), NOW + 63 * H).kind, 'trial-ended');
+  assert.deepEqual(accessSummary(paidEnded, NOW), { kind: 'paid-ended', endedAt: new Date(NOW - D).toISOString(), complimentary: false });
+  const giftEnded = status({ paid: { planId: 'complimentary', startsAt: new Date(NOW - 31 * D).toISOString(), endsAt: new Date(NOW - H).toISOString(), kind: 'complimentary' } });
+  assert.deepEqual(accessSummary(giftEnded, NOW), { kind: 'paid-ended', endedAt: new Date(NOW - H).toISOString(), complimentary: true });
+  // Paid access moves to ended by the server's clock, without asking again.
+  const running = status({ paid: { planId: 'month-1', startsAt: new Date(NOW - H).toISOString(), endsAt: new Date(NOW + H).toISOString() } });
+  assert.equal(accessSummary(running, NOW + 2 * H).kind, 'paid-ended');
 });
 
-test('after a refund the server reports no paid access, and the screen falls back to the trial', () => {
+test('after a refund the server reports no paid access, and the screen says free account', () => {
   // access_paid_state ignores revoked grants, so a refunded only purchase is paid: null.
   const refunded = status({ state: 'ended', startedAt: new Date(NOW - 80 * H).toISOString(), endsAt: new Date(NOW - 8 * H).toISOString(), paid: null });
-  assert.equal(accessSummary(refunded, NOW).kind, 'trial-ended');
+  assert.equal(accessSummary(refunded, NOW).kind, 'free');
 });
 
 test('the access wording, in English and Russian, with dates in the student\'s language', () => {
   const paid = { kind: 'paid' as const, planId: 'month-1', endsAt: '2026-10-29T09:00:00Z' };
   assert.deepEqual(describeAccess(paid, en, 'en', TZ), {
-    title: 'Full access until 29 October 2026',
+    title: 'Practice and guidance until 29 October 2026',
     detail: 'Buying again adds more time after this date. Nothing renews by itself.',
   });
   const ruPaid = describeAccess(paid, tRu, 'ru', TZ);
-  assert.match(ruPaid.title, /^Полный доступ до 29 октября 2026/);
+  assert.match(ruPaid.title, /^Практика и сопровождение до 29 октября 2026/);
   assert.equal(ruPaid.detail, 'Новая покупка добавит время после этой даты. Ничего не продлевается само.');
 
-  const ended = describeAccess({ kind: 'paid-ended', endedAt: '2026-10-29T09:00:00Z' }, en, 'en', TZ);
-  assert.equal(ended.title, 'Your full access ended on 29 October 2026');
-  assert.match(ended.detail, /Your results are kept/);
-  assert.match(describeAccess({ kind: 'paid-ended', endedAt: '2026-10-29T09:00:00Z' }, tRu, 'ru', TZ).detail, /результаты сохранены/);
+  const gift = describeAccess({ kind: 'complimentary', endsAt: '2026-10-29T09:00:00Z' }, en, 'en', TZ);
+  assert.equal(gift.title, 'Free access from your teacher until 29 October 2026');
+  assert.match(describeAccess({ kind: 'complimentary', endsAt: '2026-10-29T09:00:00Z' }, tRu, 'ru', TZ).title, /^Бесплатный доступ от вашего преподавателя до 29 октября 2026/);
 
-  // The three-day trial ends at a time of day, shown on the student's clock.
-  assert.equal(describeAccess({ kind: 'trial-active', endsAt: '2026-10-02T09:05:00Z' }, en, 'en', TZ).title, 'Your free trial runs until 2 October, 14:05');
-  assert.equal(describeAccess({ kind: 'trial-active', endsAt: '2026-10-02T09:05:00Z' }, tRu, 'ru', TZ).title, 'Бесплатный пробный период действует до 2 октября, 14:05');
-  assert.equal(describeAccess({ kind: 'trial-ended', endedAt: '2026-10-02T09:05:00Z' }, en, 'en', TZ).title, 'Your free trial ended on 2 October 2026');
-  assert.equal(describeAccess({ kind: 'no-trial' }, en, 'en', TZ).title, 'You do not have full access yet');
+  const ended = describeAccess({ kind: 'paid-ended', endedAt: '2026-10-29T09:00:00Z', complimentary: false }, en, 'en', TZ);
+  assert.equal(ended.title, 'Practice and guidance ended on 29 October 2026');
+  assert.match(ended.detail, /Every lesson stays open, and your results are kept/);
+  assert.match(describeAccess({ kind: 'paid-ended', endedAt: '2026-10-29T09:00:00Z', complimentary: false }, tRu, 'ru', TZ).detail, /результаты сохранены/);
+
+  assert.equal(describeAccess({ kind: 'free' }, en, 'en', TZ).title, 'Free account');
+  assert.equal(describeAccess({ kind: 'free' }, tRu, 'ru', TZ).title, 'Бесплатный аккаунт');
 });
 
-test('the wording never promises a renewal or a refund', () => {
+test('the wording never promises a renewal or a refund, and never mentions a trial', () => {
   const kinds = [
     { kind: 'paid' as const, planId: 'month-1', endsAt: '2026-10-29T09:00:00Z' },
-    { kind: 'trial-active' as const, endsAt: '2026-10-02T09:05:00Z' },
-    { kind: 'paid-ended' as const, endedAt: '2026-10-29T09:00:00Z' },
-    { kind: 'trial-ended' as const, endedAt: '2026-10-02T09:05:00Z' },
-    { kind: 'no-trial' as const },
+    { kind: 'complimentary' as const, endsAt: '2026-10-29T09:00:00Z' },
+    { kind: 'paid-ended' as const, endedAt: '2026-10-29T09:00:00Z', complimentary: false },
+    { kind: 'free' as const },
   ];
   for (const k of kinds) {
     const { title, detail } = describeAccess(k, en, 'en', TZ);
-    assert.doesNotMatch(`${title} ${detail}`, /\brenews? (automatically|each)|refund/i);
+    assert.doesNotMatch(`${title} ${detail}`, /\brenews? (automatically|each)|refund|trial/i);
   }
 });
 

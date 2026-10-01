@@ -28,7 +28,7 @@ const topicsData: VocabTopicData[] = gated ? [] : VOCABULARY_PARTS.map((part) =>
   return buildVocabTopicData(raw, part.slug, part.title);
 });
 ---
-<BaseLayout trialGate={{ kind: 'locked', title: 'Vocabulary', paidContent: true }} title="Vocabulary · IELTS is EZ" description="Every IELTS topic word, grouped by topic, with meanings and examples.">
+<BaseLayout trialGate={{ kind: 'free', title: 'Vocabulary' }} title="Vocabulary · IELTS is EZ" description="Every IELTS topic word, grouped by topic, with meanings and examples.">
   {gated ? <PaidContent client:load view={{ name: 'vocab-topics' }} /> : <VocabTopics client:load topics={topicsData} />}
 </BaseLayout>
 

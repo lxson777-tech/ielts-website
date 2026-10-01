@@ -1,0 +1,146 @@
+/* The upgrade pop-up and the calm locked page (the free-account model).
+   Gated build only: imported by UpgradeDialog and PaidLocked, never by the
+   open site. Uses the platform's trial-ui tokens (src/styles/trial.css):
+   forest ink, warm paper, the orange primary, Manrope headings. */
+
+.upgrade-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+.upgrade-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(25, 59, 54, 0.42);
+  backdrop-filter: blur(3px);
+  animation: upgrade-fade 220ms ease both;
+}
+.upgrade-panel {
+  position: relative;
+  width: min(100%, 500px);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  background: var(--trial-paper);
+  border: 1px solid var(--trial-line-soft);
+  border-radius: 22px;
+  padding: 36px 34px 30px;
+  box-shadow: 0 30px 80px -30px rgba(25, 59, 54, 0.45), 0 2px 6px rgba(25, 59, 54, 0.06);
+  animation: upgrade-rise 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  outline: none;
+}
+.upgrade-panel h2 {
+  font-size: 26px;
+  line-height: 1.25;
+  margin: 8px 0 12px;
+  padding-right: 32px;
+}
+.upgrade-eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--trial-rust);
+  background: var(--trial-orange-soft);
+  border-radius: 999px;
+  padding: 4px 11px;
+}
+.upgrade-lead {
+  margin: 0 0 22px;
+  font-size: 15px;
+  color: var(--trial-muted);
+}
+.upgrade-list {
+  list-style: none;
+  margin: 0 0 22px;
+  padding: 18px 0 0;
+  border-top: 1px solid var(--trial-line-soft);
+  display: grid;
+  gap: 12px;
+}
+.upgrade-list li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.upgrade-list svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+  color: var(--trial-ink);
+}
+.upgrade-price {
+  margin: 0 0 22px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--trial-ink);
+}
+.upgrade-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.upgrade-actions .trial-btn {
+  flex: 1 1 200px;
+}
+.upgrade-secondary {
+  border-color: transparent !important;
+}
+.upgrade-fine {
+  margin: 14px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--trial-muted);
+}
+.upgrade-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--trial-muted);
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+.upgrade-close:hover {
+  background: #e8eadd;
+  color: var(--trial-ink);
+}
+.upgrade-close svg {
+  width: 16px;
+  height: 16px;
+}
+
+@keyframes upgrade-fade {
+  from { opacity: 0; }
+}
+@keyframes upgrade-rise {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+}
+
+@media (max-width: 520px) {
+  .upgrade-layer { align-items: end; padding: 12px; }
+  .upgrade-panel { padding: 28px 22px 22px; border-radius: 20px; }
+  .upgrade-panel h2 { font-size: 22px; }
+  .upgrade-actions .trial-btn { flex-basis: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .upgrade-backdrop, .upgrade-panel { animation: none; }
+}
+
+/* ── The calm locked page (PaidLocked) ─────────────────────── */
+.paid-locked .trial-card { max-width: 640px; margin: 0 auto; }
+.paid-locked h2 { margin-top: 8px; }
+.paid-locked .paid-locked-lead { color: var(--trial-muted); margin: 0 0 22px; }
+.paid-locked .trial-actions { display: flex; flex-wrap: wrap; gap: 10px; }

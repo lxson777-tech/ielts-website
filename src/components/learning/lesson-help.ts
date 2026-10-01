@@ -67,6 +67,7 @@ import {
 import type { Locale } from '../../lib/i18n/locale';
 import type { CacheOwner } from '../../lib/learning/contracts/sync';
 import { runOwnedGrade, type OwnerBinding, type OwnerBindingState } from '../../lib/store-owner';
+import { openUpgrade, PAID_REQUIRED_CODE } from '../../lib/access/upgrade';
 
 /* ── Who may see a help button ───────────────────────────────────────────── */
 
@@ -240,6 +241,10 @@ export async function requestLessonHelp(input: HelpAskInput): Promise<HelpResult
       source: reply.live ? 'live' : 'simulated',
     };
   } catch (error) {
+    /* The gated build's Worker refuses an account without practice and
+       guidance (402 paid-required): the upgrade pop-up says what Mr EZ comes
+       with, and the lesson's own answer is still given. */
+    if (error instanceof TutorClientError && error.code === PAID_REQUIRED_CODE) openUpgrade('tutor');
     const reason = error instanceof TutorClientError ? error.message : undefined;
     return offlineHelp(input, reason);
   }

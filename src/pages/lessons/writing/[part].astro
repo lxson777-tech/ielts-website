@@ -41,7 +41,10 @@ const overviewUrl = withBase('/lessons/writing');
 
   {/* A Band 8 answer to a real task of the type this lesson teaches, so the
       method is followed straight away by what it produces. */}
-  <LessonModelExample client:load lesson={part.slug} example={ACCESS_MODE === 'trial' ? lessonExample(part.slug) : undefined} />
+  {/* The gated build (the free-account model) publishes only the example's
+      id: the example itself comes through the content door for any
+      signed-in account, with the lesson. */}
+  <LessonModelExample client:load lesson={part.slug} exampleId={ACCESS_MODE === 'trial' ? lessonExample(part.slug)?.prompt.id : undefined} />
 
   <EssayCheckerCta task={part.task} />
 

@@ -305,7 +305,10 @@ export type TutorErrorCode =
   | 'trial-required' // signed in, no trial started on this account
   | 'trial-ended' // the 72 hours are over
   | 'trial-allowance-used' // this section's five messages are used
-  | 'trial-not-included'; // about something the trial does not include
+  | 'trial-not-included' // about something the trial does not include
+  /* The free-account model (1 October 2026): Mr EZ comes with practice and
+     guidance. HTTP 402 from a gated Worker for any other account. */
+  | 'paid-required';
 
 /** How much of one section's trial allowance is used, after this reply.
     Present only on replies from a Worker running the trial. */

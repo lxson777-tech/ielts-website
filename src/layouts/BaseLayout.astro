@@ -17,6 +17,7 @@ import MrEzPanel from '../components/tutor/MrEzPanel';
 import VocabQuizInit from '../components/VocabQuizInit.astro';
 import AccountLifecycle from '../components/AccountLifecycle.astro';
 import TrialGate, { type TrialGateSpec } from '../components/trial/TrialGate';
+import UpgradeDialog from '../components/access/UpgradeDialog';
 import { ACCESS_MODE } from '../lib/trial/mode';
 
 /* The default page description (search results, link previews). "Free" is
@@ -70,8 +71,13 @@ const {
   trialGate,
   noindex = false,
 } = Astro.props;
-// Lessons are public. Interactive practice and AI retain their own gates.
-const gated = ACCESS_MODE === 'trial' && Boolean(trialGate) && trialGate?.kind !== 'lesson';
+/* The free-account model (1 October 2026): a lesson is behind sign-in again
+   in the gated build (its text comes through the content door for any
+   signed-in account), and every paid page behind practice and guidance. */
+const gated = ACCESS_MODE === 'trial' && Boolean(trialGate);
+/* The upgrade pop-up and the paid-click guard: the gated build only, on every
+   page (src/components/access/UpgradeDialog.tsx). */
+const upgradeDialog = ACCESS_MODE === 'trial';
 /* A page the trial does not include at all has nothing a trial student could
    ever open, so a trial build leaves its content out of the page entirely
    and shows only the gate's explanation. A page that declares
@@ -255,6 +261,7 @@ const jsonLd = {
       </>
     )}
     {!bare && <VocabQuizInit />}
+    {upgradeDialog && <UpgradeDialog client:load />}
     <script>
       /* The runtime half of the language switch: fetch the dictionary for the
          chosen language, translate everything Astro rendered in English, and

@@ -50,7 +50,18 @@ export interface PaidAccess {
   startsAt: string;
   /** When paid access ends, by the server's clock. */
   endsAt: string;
+  /** What kind of grant is running (Builder G, free-account model of
+      1 October 2026): 'complimentary' is free access given by Alex in
+      /admin, which opens exactly what a purchase opens. Absent from an
+      older server, read as 'paid'. */
+  kind?: PaidGrantKind;
 }
+
+/** The two kinds of grant the server reports in `paid.kind`. ALIGN AT
+    MERGE with Builder G: if the server names them differently, change only
+    this list and parsePaid. */
+export type PaidGrantKind = 'paid' | 'complimentary';
+export const PAID_GRANT_KINDS: readonly PaidGrantKind[] = ['paid', 'complimentary'];
 
 /** The account's AI assessments as the server counted them
     (`assessment_balance` in supabase/migrations/2026-09-30-profitable-offer.sql,
@@ -135,7 +146,10 @@ function parsePaid(raw: unknown): PaidAccess | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const value = raw as Record<string, unknown>;
   if (typeof value.planId !== 'string' || !isIso(value.startsAt) || !isIso(value.endsAt)) return null;
-  return { planId: value.planId, startsAt: value.startsAt, endsAt: value.endsAt };
+  const kind = PAID_GRANT_KINDS.find((k) => k === value.kind);
+  return kind
+    ? { planId: value.planId, startsAt: value.startsAt, endsAt: value.endsAt, kind }
+    : { planId: value.planId, startsAt: value.startsAt, endsAt: value.endsAt };
 }
 
 function parseAssessments(raw: unknown): AssessmentCounts | undefined {

@@ -133,6 +133,45 @@ export function fetchPack(name: string): Promise<PackOutcome<unknown>> {
   return request;
 }
 
+/* ── Packs a free account opens ──────────────────────────────────────────
+   The free-account model (1 October 2026): the vocabulary topic lists are
+   free with an account, because they are the vocabulary lessons' own word
+   tables. Their pack is read (never put in place as a module: the review
+   deck inside it is practice, which stays paid) for any signed-in account.
+   ALIGN AT MERGE with Builder G: the content door must open
+   `pack:vocabulary` for any signed-in account with a profile. */
+export const FREE_ACCOUNT_PACKS: readonly string[] = ['vocabulary'];
+
+const freeCache = new Map<string, Promise<PackOutcome<unknown>>>();
+let freeCacheOwner: string | null = null;
+
+/** One free pack's data, for the account signed in now. Never throws; never
+    asks the gate without a signed-in account. */
+export function fetchFreePack(name: string): Promise<PackOutcome<unknown>> {
+  const view = deps.view();
+  if (!deps.gated || !FREE_ACCOUNT_PACKS.includes(name)) return Promise.resolve({ ok: false, reason: 'not-paid' });
+  if (view.phase !== 'ready' || !view.userId) return Promise.resolve({ ok: false, reason: 'signed-out' });
+  if (freeCacheOwner !== view.userId) {
+    freeCache.clear();
+    freeCacheOwner = view.userId;
+  }
+  const cached = freeCache.get(name);
+  if (cached) return cached;
+  const request = deps.get(`pack/${name}`).then((result): PackOutcome<unknown> => {
+    if (!result.ok) return { ok: false, reason: failureFor(result.code, result.status) };
+    try {
+      return { ok: true, value: JSON.parse(result.text) as unknown };
+    } catch {
+      return { ok: false, reason: 'unavailable' };
+    }
+  });
+  freeCache.set(name, request);
+  void request.then((outcome) => {
+    if (!outcome.ok && freeCache.get(name) === request) freeCache.delete(name);
+  });
+  return request;
+}
+
 /* ── Putting a module pack in place ──────────────────────────────────── */
 
 type IndexEntry = Record<string, unknown> & { id?: unknown };
@@ -305,6 +344,8 @@ export function setPackDepsForTest(next: Partial<PackDeps> | null): void {
 /** For tests only. */
 export function resetPacksForTest(): void {
   cache.clear();
+  freeCache.clear();
+  freeCacheOwner = null;
   cacheOwner = null;
   filledFor = null;
   applied.clear();

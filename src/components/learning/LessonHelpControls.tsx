@@ -44,6 +44,7 @@ import {
   type OwnerBinding,
 } from '../../lib/store-owner';
 import { askContext } from './learning-versions';
+import { isTrialBuild } from '../../lib/trial/mode';
 import { HELP_SOURCE_NOTE, requestOwnedLessonHelp, watchMrEzHelpAvailable, type HelpResult } from './lesson-help';
 
 const KIND_LABEL: Readonly<Record<LessonHelpKind, string>> = {
@@ -227,6 +228,10 @@ export default function LessonHelpControls({
             type="button"
             className="help-control"
             disabled={busy !== null}
+            /* The gated build: Mr EZ comes with practice and guidance, so for
+               a free account the click guard opens the upgrade pop-up
+               instead (src/lib/access/paid-guard.ts). */
+            data-paid-feature={isTrialBuild() ? 'tutor' : undefined}
             onClick={() => void ask(kind)}
           >
             {busy === kind ? t('Asking Mr EZ...') : t(KIND_LABEL[kind])}

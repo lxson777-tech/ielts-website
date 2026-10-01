@@ -1,52 +1,49 @@
-/* A practice paper page in a TRIAL build: the page carries only the paper's
-   id and title; the paper itself (passages, questions, answers) comes from
-   the content gate (workers/content-gate) for a student allowed to open it,
-   and is then handed to the ordinary TestPlayer, which applies the trial's
-   one-test-per-section rules exactly as it does on any other page.
+/* A practice paper page in the GATED build: the page carries only the
+   paper's id and title; the paper itself (passages, questions, answers)
+   comes from the content door (workers/content-gate) and is then handed to
+   the ordinary TestPlayer.
 
-   The gate's refusal is shown in the same calm words as every other locked
-   page (TrialBlock). Nothing of the paper is on the page until the gate has
-   said yes. */
+   The free-account model (1 October 2026): timed tests and drills come with
+   practice and guidance. A paid or complimentary account fetches the paper;
+   anyone else sees the paper's title and a calm explanation whose button
+   opens the upgrade pop-up (PaidLocked), and nothing is asked of the door.
+   A refusal from the door itself (403/402) reads the same way. Nothing of
+   the paper is on the page until the door has said yes. */
 
 import { useEffect, useState } from 'react';
 import { fetchGated } from '../../lib/trial/content';
 import { useTrial } from '../../lib/trial/react';
 import type { PracticeTest } from '../../lib/tests/schema';
+import { browserTier, opensEverything } from '../../lib/access/tier';
 import TestPlayer from '../TestPlayer';
+import PaidLocked from '../access/PaidLocked';
 import TrialBlock, { accountBlock, type TrialBlockReason } from './TrialBlock';
-
-const REFUSED: Record<string, TrialBlockReason> = {
-  'not-included': 'locked',
-  'trial-ended': 'test-ended',
-  'trial-required': 'no-trial',
-  'sign-in-required': 'signed-out',
-  offline: 'error-offline',
-};
 
 export default function GatedTestPlayer({
   testId,
   title,
-  section,
   hubUrl,
   attemptKind = 'full',
 }: {
   testId: string;
   title: string;
-  section: 'Reading' | 'Listening';
+  section?: 'Reading' | 'Listening';
   hubUrl: string;
   attemptKind?: 'full' | 'drill';
 }) {
   const trial = useTrial();
+  const tier = browserTier(trial, trial.now);
+  const paid = opensEverything(tier);
+  const feature = attemptKind === 'drill' ? 'drill' : 'test';
   const [paper, setPaper] = useState<PracticeTest | null>(null);
-  const [refused, setRefused] = useState<TrialBlockReason | null>(null);
-  const account = accountBlock(trial);
+  const [refused, setRefused] = useState<TrialBlockReason | 'locked-by-door' | null>(null);
 
-  /* Asked once the account is settled, and again after a refusal whenever
-     the student or their trial changes (a sign-in, a Try again). Never again
-     once the paper is here: a new copy mid-paper would hand the player a
-     different paper object while the clock is running. */
+  /* Asked once paid access is confirmed, and again after a refusal whenever
+     the student or their access changes. Never again once the paper is
+     here: a new copy mid-paper would hand the player a different paper
+     object while the clock is running. */
   useEffect(() => {
-    if (account || paper) return;
+    if (!paid || paper) return;
     let live = true;
     setRefused(null);
     void fetchGated(`test/${testId}`).then((result) => {
@@ -57,18 +54,22 @@ export default function GatedTestPlayer({
         } catch {
           setRefused('error-server');
         }
-      } else {
-        setRefused(REFUSED[result.code] ?? 'error-server');
-      }
+      } else if (result.status === 401) setRefused('signed-out');
+      else if (result.status === 402 || result.status === 403) setRefused('locked-by-door');
+      else setRefused(result.code === 'offline' ? 'error-offline' : 'error-server');
     });
     return () => {
       live = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [testId, account, trial.userId, trial.status]);
+  }, [testId, paid, trial.userId, trial.status]);
 
-  if (account) return <TrialBlock reason={account} title={title} section={section} variant="full" />;
-  if (refused) return <TrialBlock reason={refused} title={title} section={section} variant="full" />;
-  if (!paper) return <TrialBlock reason="checking" title={title} section={section} variant="full" />;
+  if (tier === 'signed-out' && trial.phase !== 'no-accounts') return <PaidLocked feature={feature} title={title} signedOut variant="full" />;
+  const account = accountBlock(trial);
+  if (account) return <TrialBlock reason={account} title={title} variant="full" />;
+  if (!paid) return <PaidLocked feature={feature} title={title} ended={tier === 'paid-ended'} variant="full" />;
+  if (refused === 'locked-by-door') return <PaidLocked feature={feature} title={title} variant="full" />;
+  if (refused) return <TrialBlock reason={refused} title={title} variant="full" />;
+  if (!paper) return <TrialBlock reason="checking" title={title} variant="full" />;
   return <TestPlayer test={paper} hubUrl={hubUrl} attemptKind={attemptKind} />;
 }

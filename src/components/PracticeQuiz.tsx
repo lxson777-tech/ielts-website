@@ -57,6 +57,10 @@ interface Props {
       the page passes the one it looked the set up by. Leave it out and
       the exercise simply reads in English. */
   setId?: string;
+  /** Called once, when every part has been checked: the gated build counts
+      that as finishing the lesson (src/lib/access/nudge.ts). The open site
+      passes nothing. */
+  onAllChecked?: () => void;
 }
 
 function fmtClock(seconds: number): string {
@@ -530,7 +534,7 @@ function UnitBlock({
    refused, recording nothing, when the session's student is no longer the
    one here, and otherwise written through recordEventsFor under that
    student. */
-export default function PracticeQuiz({ set, setId }: Props) {
+export default function PracticeQuiz({ set, setId, onAllChecked }: Props) {
   const { t, locale } = useT();
   /* 'select' questions were built for Matching Headings, where the dropdown
      picks a paragraph. Matching Sentence Endings reuses the same control to
@@ -564,6 +568,13 @@ export default function PracticeQuiz({ set, setId }: Props) {
     0,
   );
   const allDone = !withheld && units.every((s) => s.checked);
+  /* Told once per mount, the moment the last part is checked. */
+  const toldDone = useRef(false);
+  useEffect(() => {
+    if (!allDone || toldDone.current || !onAllChecked) return;
+    toldDone.current = true;
+    onAllChecked();
+  }, [allDone, onAllChecked]);
 
   /* The explanations in the student's language, fetched the moment the
      first unit is checked and not a moment before: nothing on this page

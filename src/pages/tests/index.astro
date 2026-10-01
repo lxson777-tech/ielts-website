@@ -16,14 +16,14 @@ import { WRITING_PROMPTS } from '../../data/writing-prompts';
 import { SPEAKING_CUE_CARDS } from '../../data/speaking-prompts';
 import { ACCESS_MODE } from '../../lib/trial/mode';
 import { nt } from '../../lib/i18n/translate';
-import { TRIAL_FULL_ACCESS_LABEL, TRIAL_OFFER, TRIAL_SECTION_INCLUDES, TRIAL_SUMMARY } from '../../lib/trial/offer';
 
-/* A trial build (PUBLIC_ACCESS_MODE=trial) describes what the trial really
-   includes and routes every "start" action through the student's own
-   allowance (src/lib/trial/hub.ts, audit F02 and F03). The full product's
-   wording is kept beside it for a paid account (data-access-copy="full"),
-   shown only once the server confirms paid access. The open build renders
-   exactly what it always did. */
+/* The gated build (PUBLIC_ACCESS_MODE=trial, the free-account model of
+   1 October 2026): every timed test, the Writing Checker, the live examiner
+   and the trainers come with practice and guidance. The page reads the same
+   for everyone; for an account without it, every start button and every
+   paper link opens the upgrade pop-up instead (src/lib/access/paid-guard.ts:
+   the buttons carry data-paid-feature, the links point at paid pages). The
+   open build renders exactly what it always did. */
 const trialBuild = ACCESS_MODE === 'trial';
 const historySubtitle = trialBuild
   ? nt('Your attempts are saved with your account, so you see them on any device you sign in on.')
@@ -54,10 +54,7 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
 
       <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl" data-i18n>Put your skills to the test.</h1>
       {trialBuild ? (
-        <>
-          <p class="mt-2 max-w-xl text-ink-muted" data-i18n>Full timed tests, exactly like the real exam: no hints, no coaching, just the question and the clock. You get a band estimate and a full answer review afterwards, saved with your account.</p>
-          <p class="mt-3 max-w-xl text-sm text-ink" data-access-copy="trial" data-i18n>{TRIAL_SUMMARY.tests}</p>
-        </>
+        <p class="mt-2 max-w-xl text-ink-muted" data-i18n>Full timed tests, exactly like the real exam: no hints, no coaching, just the question and the clock. You get a band estimate and a full answer review afterwards, saved with your account.</p>
       ) : (
         <p class="mt-2 max-w-xl text-ink-muted" data-i18n>Full timed tests, exactly like the real exam: no hints, no coaching, just the question and the clock. You get a band estimate and a full answer review afterwards. Results stay on this device so you can see your progress over time.</p>
       )}
@@ -79,31 +76,17 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
         <div class="relative flex flex-1 flex-col p-6">
           <Badge tone="skill">Reading</Badge>
           <h2 class="mt-3 font-display text-xl font-extrabold" data-i18n>Full Reading Test</h2>
-          {trialBuild && (
-            <p class="mt-1.5 text-sm text-ink-muted" data-access-copy="trial" data-i18n>{TRIAL_SECTION_INCLUDES.reading}</p>
-          )}
-          <Count as="p" class="mt-1.5 text-sm text-ink-muted" data-access-copy={trialBuild ? 'full' : undefined} hidden={trialBuild} phrase={ntn(readingTests.length, { one: "{n} complete exam in rotation, a different one every attempt until you've taken them all.", other: "{n} complete exams in rotation, a different one every attempt until you've taken them all." })} />
+          <Count as="p" class="mt-1.5 text-sm text-ink-muted" phrase={ntn(readingTests.length, { one: "{n} complete exam in rotation, a different one every attempt until you've taken them all.", other: "{n} complete exams in rotation, a different one every attempt until you've taken them all." })} />
           <div class="mt-4 flex flex-wrap gap-2">
             <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(readingSample.parts.length, { one: '{n} passage', other: '{n} passages' })} />
             <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(questionCount(readingSample), { one: '{n} question', other: '{n} questions' })} />
             <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(readingSample.durationMinutes, { one: '{n} min', other: '{n} min' })} />
           </div>
           <div class="mt-auto flex flex-col gap-2 pt-6">
-            {trialBuild ? (
-              <button
-                type="button"
-                data-trial-section="reading"
-                data-test-ids={JSON.stringify(readingTests.map((test) => test.id))}
-                data-rotation-key="ielts.rotation.reading-tests.v1"
-                data-full-label="Start a test"
-                class="w-full rounded-button bg-[var(--skill)] px-5 py-3 font-display text-sm font-bold text-white transition-opacity hover:opacity-90 aria-disabled:cursor-not-allowed aria-disabled:opacity-60"
-              >
-                Start your Reading test
-              </button>
-            ) : (
               <button
                 type="button"
                 data-test-rotation
+                data-paid-feature={trialBuild ? 'test' : undefined}
                 data-test-ids={JSON.stringify(readingTests.map((test) => test.id))}
                 data-rotation-key="ielts.rotation.reading-tests.v1"
                 class="w-full rounded-button bg-[var(--skill)] px-5 py-3 font-display text-sm font-bold text-white transition-opacity hover:opacity-90"
@@ -111,15 +94,8 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
               >
                 Start a test
               </button>
-            )}
-            {trialBuild && <p class="text-center text-xs leading-relaxed text-ink" data-trial-note="reading" aria-live="polite" hidden></p>}
             <p class="text-center text-xs text-ink-muted" data-i18n>Once you begin, the clock cannot be paused.</p>
-            {trialBuild && (
-              <a href={withBase(TRIAL_OFFER.reading.lessonHref)} data-access-copy="trial" class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
-                Only have 20 minutes? Open your included Reading lesson
-              </a>
-            )}
-            <a href={withBase('/trainers/reading')} data-access-copy={trialBuild ? 'full' : undefined} hidden={trialBuild} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
+            <a href={withBase('/trainers/reading')} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
               Only have 20 minutes? Try the Reading Trainer
             </a>
           </div>
@@ -140,36 +116,19 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
           <div class="relative flex flex-1 flex-col p-6">
             <Badge tone="skill">Listening</Badge>
             <h2 class="mt-3 font-display text-xl font-extrabold" data-i18n>Full Listening Test</h2>
-            {trialBuild && (
-              <p class="mt-1.5 text-sm text-ink-muted" data-access-copy="trial" data-i18n>{TRIAL_SECTION_INCLUDES.listening}</p>
-            )}
-            <p class="mt-1.5 text-sm text-ink-muted" data-access-copy={trialBuild ? 'full' : undefined} hidden={trialBuild} data-i18n>
+            <p class="mt-1.5 text-sm text-ink-muted" data-i18n>
               Hear the complete recording once, answer all four parts, then get your score and estimated band instantly.
             </p>
             <div class="mt-4 flex flex-wrap gap-2">
               <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(listeningSample.parts.length, { one: '{n} part', other: '{n} parts' })} />
               <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(questionCount(listeningSample), { one: '{n} question', other: '{n} questions' })} />
-              <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-access-copy={trialBuild ? 'full' : undefined} hidden={trialBuild} phrase={ntn(listeningTests.length, { one: '{n} test', other: '{n} tests' })} />
-              {trialBuild && (
-                <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-access-copy="trial" phrase={ntn(listeningSample.durationMinutes, { one: '{n} min', other: '{n} min' })} />
-              )}
+              <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(listeningTests.length, { one: '{n} test', other: '{n} tests' })} />
             </div>
             <div class="mt-auto flex flex-col gap-2 pt-6">
-              {trialBuild ? (
-                <button
-                  type="button"
-                  data-trial-section="listening"
-                  data-test-ids={JSON.stringify(listeningTests.map((test) => test.id))}
-                  data-rotation-key="ielts.rotation.listening-tests.v1"
-                  data-full-label="Start a listening test"
-                  class="w-full rounded-button bg-[var(--skill)] px-5 py-3 font-display text-sm font-bold text-white transition-opacity hover:opacity-90 aria-disabled:cursor-not-allowed aria-disabled:opacity-60"
-                >
-                  Start your Listening test
-                </button>
-              ) : (
                 <button
                   type="button"
                   data-test-rotation
+                data-paid-feature={trialBuild ? 'test' : undefined}
                   data-test-ids={JSON.stringify(listeningTests.map((test) => test.id))}
                   data-rotation-key="ielts.rotation.listening-tests.v1"
                   class="w-full rounded-button bg-[var(--skill)] px-5 py-3 font-display text-sm font-bold text-white transition-opacity hover:opacity-90"
@@ -177,15 +136,8 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
                 >
                   Start a listening test
                 </button>
-              )}
-              {trialBuild && <p class="text-center text-xs leading-relaxed text-ink" data-trial-note="listening" aria-live="polite" hidden></p>}
               <p class="text-center text-xs text-ink-muted" data-i18n>Use headphones. The recording cannot be replayed.</p>
-              {trialBuild && (
-                <a href={withBase(TRIAL_OFFER.listening.lessonHref)} data-access-copy="trial" class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
-                  Learn how Listening Part 1 works in your included lesson
-                </a>
-              )}
-              <a href={withBase('/lessons/listening')} data-access-copy={trialBuild ? 'full' : undefined} hidden={trialBuild} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
+              <a href={withBase('/lessons/listening')} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
                 Learn the four Listening parts first
               </a>
             </div>
@@ -209,33 +161,13 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
             <Badge tone="brand"><span data-i18n>Exam conditions</span></Badge>
           </div>
           <h2 class="mt-3 font-display text-xl font-extrabold" data-i18n>Writing Checker</h2>
-          {trialBuild && (
-            <p class="mt-1.5 text-sm text-ink-muted" data-access-copy="trial" data-i18n>{TRIAL_SECTION_INCLUDES.writing}</p>
-          )}
-          <p class="mt-1.5 text-sm text-ink-muted" data-access-copy={trialBuild ? 'full' : undefined} hidden={trialBuild} data-i18n>Write a Task 1 or Task 2 answer under exam conditions, then get AI-graded feedback plus a mechanics check on length, vocabulary, cohesion and spelling.</p>
-          {trialBuild && (
-            <div class="mt-4 flex flex-wrap gap-2" data-access-copy="trial">
-              <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-i18n>1 Task 2 essay</span>
-              <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-i18n>AI feedback</span>
-            </div>
-          )}
-          <div class="mt-4 flex flex-wrap gap-2" data-access-copy={trialBuild ? 'full' : undefined} hidden={trialBuild}>
+          <p class="mt-1.5 text-sm text-ink-muted" data-i18n>Write a Task 1 or Task 2 answer under exam conditions, then get AI-graded feedback plus a mechanics check on length, vocabulary, cohesion and spelling.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
             <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(task1Count, { one: '{n} Task 1 prompt', other: '{n} Task 1 prompts' })} />
             <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(task2Count, { one: '{n} Task 2 prompt', other: '{n} Task 2 prompts' })} />
             <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-i18n>AI feedback</span>
           </div>
           <div class="mt-auto flex flex-col gap-2 pt-6">
-            {trialBuild ? (
-              <a
-                href={withBase(TRIAL_OFFER.writing.testHref)}
-                data-trial-section="writing"
-                data-full-label="Start writing"
-                data-full-href="/writing/checker"
-                class="w-full rounded-button bg-[var(--skill)] px-5 py-3 text-center font-display text-sm font-bold text-white transition-opacity hover:opacity-90 aria-disabled:cursor-not-allowed aria-disabled:opacity-60"
-              >
-                Start your Writing test
-              </a>
-            ) : (
               <a
                 href={withBase('/writing/checker')}
                 class="w-full rounded-button bg-[var(--skill)] px-5 py-3 text-center font-display text-sm font-bold text-white transition-opacity hover:opacity-90"
@@ -243,16 +175,8 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
               >
                 Start writing
               </a>
-            )}
-            {trialBuild && <p class="text-center text-xs leading-relaxed text-ink" data-trial-note="writing" aria-live="polite" hidden></p>}
-            {trialBuild && <p class="text-center text-xs text-ink-muted" data-access-copy="trial" data-i18n>One set Task 2 question. No coaching aids.</p>}
-            <p class="text-center text-xs text-ink-muted" data-access-copy={trialBuild ? 'full' : undefined} hidden={trialBuild} data-i18n>A different prompt every attempt. No coaching aids.</p>
-            {trialBuild && (
-              <a href={withBase(TRIAL_OFFER.writing.lessonHref)} data-access-copy="trial" class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
-                New to Task 2? Read your included lesson first
-              </a>
-            )}
-            <a href={withBase('/trainers/writing')} data-access-copy={trialBuild ? 'full' : undefined} hidden={trialBuild} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
+            <p class="text-center text-xs text-ink-muted" data-i18n>A different prompt every attempt. No coaching aids.</p>
+            <a href={withBase('/trainers/writing')} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
               Want structures and phrases while you write? Try the Writing Trainer
             </a>
           </div>
@@ -275,34 +199,13 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
             <Badge tone="brand"><span data-i18n>Exam conditions</span></Badge>
           </div>
           <h2 class="mt-3 font-display text-xl font-extrabold" data-i18n>Live AI Examiner</h2>
-          {trialBuild && (
-            <p class="mt-1.5 text-sm text-ink-muted" data-access-copy="trial" data-i18n>{TRIAL_SECTION_INCLUDES.speaking}</p>
-          )}
-          <p class="mt-1.5 text-sm text-ink-muted" data-access-copy={trialBuild ? 'full' : undefined} hidden={trialBuild} data-i18n>A full three-part mock speaking test as a real voice conversation: the examiner speaks, listens, and asks follow-ups based on what you actually say.</p>
-          {trialBuild && (
-            <div class="mt-4 flex flex-wrap gap-2" data-access-copy="trial">
-              <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted">Part 1</span>
-              <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-i18n>About 5 minutes</span>
-              <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-i18n>Real-time voice</span>
-            </div>
-          )}
-          <div class="mt-4 flex flex-wrap gap-2" data-access-copy={trialBuild ? 'full' : undefined} hidden={trialBuild}>
+          <p class="mt-1.5 text-sm text-ink-muted" data-i18n>A full three-part mock speaking test as a real voice conversation: the examiner speaks, listens, and asks follow-ups based on what you actually say.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
             <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-i18n>3 parts</span>
             <Count class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" phrase={ntn(SPEAKING_CUE_CARDS.length, { one: '{n} cue card', other: '{n} cue cards' })} />
             <span class="inline-flex items-center rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-ink-muted" data-i18n>Real-time voice</span>
           </div>
           <div class="mt-auto flex flex-col gap-2 pt-6">
-            {trialBuild ? (
-              <a
-                href={withBase(TRIAL_OFFER.speaking.testHref)}
-                data-trial-section="speaking"
-                data-full-label="Start the interview"
-                data-full-href="/speaking/examiner"
-                class="w-full rounded-button bg-[var(--skill)] px-5 py-3 text-center font-display text-sm font-bold text-white transition-opacity hover:opacity-90 aria-disabled:cursor-not-allowed aria-disabled:opacity-60"
-              >
-                Start your Speaking test
-              </a>
-            ) : (
               <a
                 href={withBase('/speaking/examiner')}
                 class="w-full rounded-button bg-[var(--skill)] px-5 py-3 text-center font-display text-sm font-bold text-white transition-opacity hover:opacity-90"
@@ -310,15 +213,8 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
               >
                 Start the interview
               </a>
-            )}
-            {trialBuild && <p class="text-center text-xs leading-relaxed text-ink" data-trial-note="speaking" aria-live="polite" hidden></p>}
             <p class="text-center text-xs text-ink-muted" data-i18n>Microphone access required.</p>
-            {trialBuild && (
-              <a href={withBase(TRIAL_OFFER.speaking.lessonHref)} data-access-copy="trial" class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
-                Learn how Part 1 works in your included lesson
-              </a>
-            )}
-            <a href={withBase('/trainers/speaking')} data-access-copy={trialBuild ? 'full' : undefined} hidden={trialBuild} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
+            <a href={withBase('/trainers/speaking')} class="py-2 text-center text-xs font-semibold text-[var(--skill)] hover:underline" data-i18n>
               Want to practice one part at a time instead?
             </a>
           </div>
@@ -326,34 +222,19 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
       </div>
     </div>
 
-    {/* Its recommendations are papers from the whole bank, so a trial
-        build shows them only to paid access. */}
+    {/* Its recommendations are papers from the whole bank, so the gated
+        build shows them to practice and guidance only (src/lib/access/
+        paid-guard.ts shows [data-access-copy="paid"]). */}
     {trialBuild ? (
-      <div data-access-copy="full" hidden>
+      <div data-access-copy="paid" hidden>
         <TestsHubCheckpoints client:load />
       </div>
     ) : (
       <TestsHubCheckpoints client:load />
     )}
 
-    {trialBuild && (
-      <div data-access-copy="trial" class="mock-invite mb-8 flex flex-col items-start justify-between gap-4 rounded-card border border-border bg-surface p-6 sm:flex-row sm:items-center">
-        <div>
-          <h2 class="mt-1 font-display text-xl font-extrabold" data-i18n>Mock Exam Day</h2>
-          <p class="mt-1 max-w-xl text-sm text-ink-muted" data-i18n>
-            One chained sitting: Listening, then Reading, then Writing, then Speaking, no breaks, just like the real test day.
-          </p>
-          <p class="mt-2 text-xs font-semibold text-ink-muted" data-i18n>{TRIAL_FULL_ACCESS_LABEL}</p>
-        </div>
-        <a href={withBase('/plans')} class="shrink-0 rounded-button border border-border px-5 py-3 text-center font-display text-sm font-bold text-ink transition-colors hover:bg-surface-alt" data-i18n>
-          View plans
-        </a>
-      </div>
-    )}
     <a
       href={withBase('/tests/mock')}
-      data-access-copy={trialBuild ? 'full' : undefined}
-      hidden={trialBuild}
       class="mock-invite group mb-8 flex flex-col items-start justify-between gap-4 rounded-card border border-brand/25 bg-brand-tint/40 p-6 transition-colors duration-300 hover:bg-brand-tint/70 sm:flex-row sm:items-center"
     >
       <div>
@@ -404,7 +285,7 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
             <h3>{group.label}<Count phrase={ntn(group.tests.length, { one: '{n} exam', other: '{n} exams' })} /></h3>
             <ul>
               {group.tests.map((test, index) => (
-                <li data-discovery-item data-search={group.label}><a href={withBase(`/tests/${test.id}`)} data-checkpoint-target={test.id}><span class="test-index">{String(index + 1).padStart(2, '0')}</span><span class="test-name">{test.title}</span><span class="test-meta"><Count phrase={test.id === 'listening-full-011' ? ntn(39, { one: '{n} scored question', other: '{n} scored questions' }) : ntn(questionCount(test), { one: '{n} question', other: '{n} questions' })} />{trialBuild && (test.id === TRIAL_OFFER[group.tone as 'reading' | 'listening'].testId ? <span data-access-copy="trial"> · <span data-i18n>In your trial</span></span> : <span data-access-copy="trial"> · <span data-i18n>Full access</span></span>)}</span></a></li>
+                <li data-discovery-item data-search={group.label}><a href={withBase(`/tests/${test.id}`)} data-checkpoint-target={test.id}><span class="test-index">{String(index + 1).padStart(2, '0')}</span><span class="test-name">{test.title}</span><span class="test-meta"><Count phrase={test.id === 'listening-full-011' ? ntn(39, { one: '{n} scored question', other: '{n} scored questions' }) : ntn(questionCount(test), { one: '{n} question', other: '{n} questions' })} /></span></a></li>
               ))}
             </ul>
           </div>
@@ -452,9 +333,6 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
 
 <style is:global>
   @import '../../styles/platform-pages.css';
-  /* Trial build: "Unseen" means nothing on a paper the student cannot open
-     (src/lib/trial/hub.ts sets the attribute from the account). */
-  body[data-access-view='trial'] [data-checkpoint-badge] { display: none; }
 </style>
 
 <script>
@@ -462,7 +340,6 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
   import { nextInRotation } from '../../lib/rotation';
   import { activeSession, secondsLeft } from '../../lib/test-session';
   import { t } from '../../lib/i18n/translate';
-  import { isTrialBuild } from '../../lib/trial/mode';
 
   function initRotation() {
   document.querySelectorAll<HTMLButtonElement>('[data-test-rotation]:not([data-bound])').forEach((btn) => {
@@ -488,14 +365,10 @@ const task2Count = WRITING_PROMPTS.filter((p) => p.task === 'task2').length;
     });
   });
   }
-  /* A trial build routes every start action through the student's own
-     allowance instead (src/lib/trial/hub.ts); only paid access gets the
-     rotation back, from there. */
+  /* The gated build: a click from an account without practice and
+     guidance never reaches the rotation (the click guard opens the upgrade
+     pop-up first, src/lib/access/paid-guard.ts). */
   function init() {
-    if (isTrialBuild()) {
-      void import('../../lib/trial/hub').then((m) => m.initTrialHub());
-      return;
-    }
     initRotation();
   }
   document.addEventListener('astro:page-load', init);

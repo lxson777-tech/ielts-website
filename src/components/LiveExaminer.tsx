@@ -113,6 +113,7 @@ import { GraderRefusal } from '../lib/writing/grader';
 import { TRIAL_OFFER, TRIAL_SPEAKING_MINUTES } from '../lib/trial/offer';
 import { refreshTrial, serverNow, trialView } from '../lib/trial/client';
 import { interviewGivenBackMessage, isAssessmentRefusalCode, refusalKind, refusalMessage, refusalOffersPlans, type AssessmentWhat } from './access/assessment-refusal';
+import { upgradeOnRefusal } from './access/refusal-upgrade';
 import { withBase } from '../lib/url';
 import { useTrialTest } from './trial/useTrialTest';
 import TrialBlock from './trial/TrialBlock';
@@ -1093,6 +1094,7 @@ export default function LiveExaminer({
     if (!isAssessmentRefusalCode(code)) return null;
     const kind = refusalKind(code, serverMessage, reason);
     setErrorPlans(refusalOffersPlans(kind));
+    upgradeOnRefusal(kind, what);
     void refreshTrial();
     return refusalMessage({ kind, what, serverMessage }, trialView().status, serverNow(), t, locale);
   }

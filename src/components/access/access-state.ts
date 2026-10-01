@@ -15,7 +15,7 @@ import type { Vars } from '../../lib/i18n/translate';
 import type { Locale } from '../../lib/i18n/locale';
 import { nt } from '../../lib/i18n/translate';
 import { paidPlan, type OrderStatus, type PaymentOrder } from '../../lib/access/plans';
-import { hasPaidAccess, paidAccessEnded, stateAt, type TrialStatus } from '../../lib/trial/status';
+import { hasPaidAccess, paidAccessEnded, type TrialStatus } from '../../lib/trial/status';
 
 export type Translate = (text: string, vars?: Vars, ctx?: string) => string;
 
@@ -69,24 +69,30 @@ export function planTitle(planId: string): string {
 /* ── The student's access right now ──────────────────────────────────── */
 
 export type AccessSummary =
+  /** A running purchase. */
   | { kind: 'paid'; planId: string; endsAt: string }
-  | { kind: 'trial-active'; endsAt: string }
-  | { kind: 'paid-ended'; endedAt: string }
-  | { kind: 'trial-ended'; endedAt: string }
-  | { kind: 'no-trial' };
+  /** Free access given by Alex in /admin (paid.kind 'complimentary'): it
+      opens exactly what a purchase opens. */
+  | { kind: 'complimentary'; endsAt: string }
+  /** Practice and guidance that ran out: back to a free account. */
+  | { kind: 'paid-ended'; endedAt: string; complimentary: boolean }
+  /** A free account: every lesson, no practice and guidance. */
+  | { kind: 'free' };
 
-/** Paid first (it opens everything); then paid access that ran out (a
-    student who has paid is told when it ended, even in the unlikely case a
-    trial is still running beside it); then the trial. */
+/** The account's tier for the access strip (the free-account model, Alex,
+    1 October 2026). The trial was retired: whatever an old trial row says,
+    an account with no running grant is a free account. */
 export function accessSummary(status: TrialStatus, serverNowMs: number): AccessSummary {
-  if (status.paid && hasPaidAccess(status, serverNowMs)) {
-    return { kind: 'paid', planId: status.paid.planId, endsAt: status.paid.endsAt };
+  const paid = status.paid;
+  if (paid && hasPaidAccess(status, serverNowMs)) {
+    return paid.kind === 'complimentary'
+      ? { kind: 'complimentary', endsAt: paid.endsAt }
+      : { kind: 'paid', planId: paid.planId, endsAt: paid.endsAt };
   }
-  if (status.paid && paidAccessEnded(status, serverNowMs)) return { kind: 'paid-ended', endedAt: status.paid.endsAt };
-  const trial = stateAt(status, serverNowMs);
-  if (trial === 'active' && status.endsAt) return { kind: 'trial-active', endsAt: status.endsAt };
-  if (trial === 'ended' && status.endsAt) return { kind: 'trial-ended', endedAt: status.endsAt };
-  return { kind: 'no-trial' };
+  if (paid && paidAccessEnded(status, serverNowMs)) {
+    return { kind: 'paid-ended', endedAt: paid.endsAt, complimentary: paid.kind === 'complimentary' };
+  }
+  return { kind: 'free' };
 }
 
 export interface AccessWording {
@@ -100,29 +106,24 @@ export function describeAccess(summary: AccessSummary, t: Translate, locale: Loc
   switch (summary.kind) {
     case 'paid':
       return {
-        title: t('Full access until {date}', { date: formatDate(summary.endsAt, locale, timeZone) }),
+        title: t('Practice and guidance until {date}', { date: formatDate(summary.endsAt, locale, timeZone) }),
         detail: t('Buying again adds more time after this date. Nothing renews by itself.'),
       };
-    case 'trial-active':
+    case 'complimentary':
       return {
-        title: t('Your free trial runs until {date}', { date: formatDateTime(summary.endsAt, locale, timeZone) }),
-        detail: t('Full access starts as soon as your payment is confirmed.'),
+        title: t('Free access from your teacher until {date}', { date: formatDate(summary.endsAt, locale, timeZone) }),
+        detail: t('It opens everything practice and guidance includes. Your teacher renews or stops it.'),
       };
     case 'paid-ended':
       return {
-        title: t('Your full access ended on {date}', { date: formatDate(summary.endedAt, locale, timeZone) }),
-        detail: t('Your results are kept. Choose a plan to continue.'),
+        title: t('Practice and guidance ended on {date}', { date: formatDate(summary.endedAt, locale, timeZone) }),
+        detail: t('Every lesson stays open, and your results are kept. Choose practice and guidance again to continue.'),
       };
-    case 'trial-ended':
-      return {
-        title: t('Your free trial ended on {date}', { date: formatDate(summary.endedAt, locale, timeZone) }),
-        detail: t('Your results are kept. Choose a plan to continue.'),
-      };
-    case 'no-trial':
+    case 'free':
     default:
       return {
-        title: t('You do not have full access yet'),
-        detail: t('Full access starts as soon as your payment is confirmed.'),
+        title: t('Free account'),
+        detail: t('Every lesson is free with your account. Practice and guidance starts as soon as your payment is confirmed.'),
       };
   }
 }
