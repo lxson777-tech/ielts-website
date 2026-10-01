@@ -1,5 +1,7 @@
 import SmoothReveal from '../SmoothReveal';
 import SupportRequests from './SupportRequests'; // [E trust] support requests section
+import StudentAccess from './StudentAccess'; // [G free account] access and complimentary grants
+import { accessTag, loadAccessOverview, type AccessOverview } from './admin-access';
 /* The owner's admin panel: every account on the platform and what each
    student has done. The first (and for now only) section is Students; later
    admin tools are meant to sit beside it on the same page.
@@ -115,6 +117,14 @@ export default function AdminPanel() {
   const [sort, setSort] = useState<Sort>('newest');
   const [missingOnly, setMissingOnly] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
+  /* [G free account] Each account's access (paid, free access from Alex,
+     ended), from access_admin_overview. A failure leaves the tags off and
+     never blocks the list. */
+  const [access, setAccess] = useState<Map<string, AccessOverview>>(new Map());
+  const loadAccess = useCallback(async () => {
+    const result = await loadAccessOverview();
+    if (result.ok) setAccess(result.value);
+  }, []);
 
   // Follow the account: a sign-out while the page is open locks it again.
   // Nothing is decided until the lifecycle knows who is signed in, so a
@@ -151,7 +161,7 @@ export default function AdminPanel() {
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
-    const result = await listAllUsers();
+    const [result] = await Promise.all([listAllUsers(), loadAccess()]);
     setLoading(false);
     if (result.ok) {
       setUsers(result.users);
@@ -159,7 +169,7 @@ export default function AdminPanel() {
     } else {
       setError(result.message);
     }
-  }, []);
+  }, [loadAccess]);
 
   useEffect(() => {
     if (gate === 'allowed') void load();
@@ -341,6 +351,8 @@ export default function AdminPanel() {
                 <StudentRow
                   key={u.user_id}
                   user={u}
+                  access={access.get(u.user_id)}
+                  onAccessChanged={() => void loadAccess()}
                   isYou={u.user_id === userId}
                   open={openId === u.user_id}
                   onToggle={() => setOpenId((id) => (id === u.user_id ? null : u.user_id))}
@@ -354,8 +366,23 @@ export default function AdminPanel() {
   );
 }
 
-function StudentRow({ user: u, isYou, open, onToggle }: { user: AdminUserRow; isYou: boolean; open: boolean; onToggle: () => void }) {
+function StudentRow({
+  user: u,
+  access,
+  onAccessChanged,
+  isYou,
+  open,
+  onToggle,
+}: {
+  user: AdminUserRow;
+  access?: AccessOverview;
+  onAccessChanged: () => void;
+  isYou: boolean;
+  open: boolean;
+  onToggle: () => void;
+}) {
   const seen = lastSeen(u);
+  const tag = accessTag(access);
   const name = fullName(u);
   const panelId = `admin-student-${u.user_id}`;
   // The same numbers as the columns, as one line, for narrow screens where
@@ -383,6 +410,7 @@ function StudentRow({ user: u, isYou, open, onToggle }: { user: AdminUserRow; is
               {isYou && <span className="admin-tag">You</span>}
               {!isYou && u.is_admin && <span className="admin-tag">Admin</span>}
               {!hasProfile(u) && <span className="admin-tag is-quiet">No details yet</span>}
+              {tag && <span className={`admin-tag is-${tag.tone}`}>{tag.text}</span>}
             </span>
             <span className="admin-sub">
               {name && u.email ? `${u.email} · ` : ''}Joined {shortDate(u.joined_at)} · {u.provider === 'google' ? 'Google' : 'Email'}
@@ -413,15 +441,19 @@ function StudentRow({ user: u, isYou, open, onToggle }: { user: AdminUserRow; is
       </button>
 
       <SmoothReveal open={open} id={panelId}>
-        <div className="admin-detail"><StudentDetail user={u} /></div>
+        <div className="admin-detail">
+          {/* Mounted only while open, so its access is read fresh each time. */}
+          <StudentDetail user={u} access={open ? <StudentAccess userId={u.user_id} onChanged={onAccessChanged} /> : null} />
+        </div>
       </SmoothReveal>
     </li>
   );
 }
 
-function StudentDetail({ user: u }: { user: AdminUserRow }) {
+function StudentDetail({ user: u, access }: { user: AdminUserRow; access?: React.ReactNode }) {
   return (
     <div className="admin-detail-inner">
+      {access}
       <StudentProfile user={u} />
       <div className="admin-detail-grid">
         <section>
