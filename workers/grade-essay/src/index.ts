@@ -24,6 +24,7 @@ import { bandStepsFor, readBandStepLocale } from '../../../src/lib/trial/band-st
 import { getWritingPrompt } from '../../../src/data/writing-prompts';
 import {
   TrialRefusal,
+  refusalBody,
   bearer,
   leaseTrialTest,
   paidAccessRunning,
@@ -1001,7 +1002,7 @@ export function createHandler(deps: { fetch: typeof fetch }) {
           assessmentClaim = await reserveAssessment(rpc, userId, 'writing');
         } catch (err) {
           if (err instanceof TrialRefusal) {
-            return json({ error: err.message, code: err.code }, err.code === 'trial-in-flight' ? 409 : 403, cors);
+            return json(refusalBody(err), err.code === 'trial-in-flight' ? 409 : 403, cors);
           }
           // Fail closed: an allowance that cannot be checked is not spent.
           return json({ error: 'Your trial could not be checked just now. Try again shortly.', code: 'unavailable' }, 503, cors);

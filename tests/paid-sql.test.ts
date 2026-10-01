@@ -97,8 +97,24 @@ test('the plans in the database are exactly PAID_PLANS, at the approved prices',
   );
   assert.equal(PAID_PLANS[0]!.amount, FULL_ACCESS_PRICES_KZT.oneMonth);
   assert.equal(PAID_PLANS[1]!.amount, FULL_ACCESS_PRICES_KZT.threeMonths);
+  // The approved offer (30 September 2026), spelled out so a drift in BOTH
+  // the site and the database cannot pass unnoticed.
+  assert.deepEqual(rows.map((r) => [r.id, r.amount, r.enabled]), [['month-1', 12990, true], ['month-3', 25000, false]]);
+  // The payment file itself seeds those rows, not only the later offer file:
+  // re-applying it on its own must never bring an old price back (review
+  // P1-1, 1 October 2026).
+  const sql = readFileSync(PAID_MIGRATION, 'utf8');
+  for (const p of PAID_PLANS) {
+    assert.match(sql, new RegExp(`\\('${p.id}', ${p.days}, ${p.amount}, '${p.currency}', ${p.id === 'month-1'}\\)`));
+  }
   await db.close();
 });
+
+const PLAN_ROWS = 'select id, amount, enabled from public.access_plans order by id';
+const APPROVED = [
+  { id: 'month-1', amount: 12990, enabled: true },
+  { id: 'month-3', amount: 25000, enabled: false },
+];
 
 test('the migration is idempotent: running it again changes nothing and keeps every order', async () => {
   const db = await world();
@@ -108,6 +124,43 @@ test('the migration is idempotent: running it again changes nothing and keeps ev
   assert.deepEqual(orders, [{ id: first.orderId, status: 'paid' }]);
   assert.equal((await grants(db)).length, 1);
   assert.equal(hasPaidAccess(await status(db), Date.now()), true);
+  // Review P1-1: the re-run keeps the approved prices and the paused plan.
+  assert.deepEqual(await db.select(PLAN_ROWS, [], service), APPROVED);
+  assert.deepEqual(await db.rpc('access_order_create', { p_plan: 'month-3' }, asA), { ok: false, reason: 'plan-unavailable' });
+  assert.equal((await order(db)).amount, 12990);
+  await db.close();
+});
+
+test('every migration re-applied in order, twice, keeps the approved prices and every record', async () => {
+  const db = await world();
+  const first = await buy(db);
+  for (let i = 0; i < 2; i++) {
+    for (const file of ['2026-09-23-trial.sql', '2026-09-30-paid-access.sql', '2026-09-30-profitable-offer.sql']) {
+      await db.raw.exec(readFileSync(new URL(`../supabase/migrations/${file}`, import.meta.url), 'utf8'));
+    }
+  }
+  assert.deepEqual(await db.select(PLAN_ROWS, [], service), APPROVED);
+  assert.deepEqual(await db.select('select id, status from public.payment_orders', [], service), [{ id: first.orderId, status: 'paid' }]);
+  await db.close();
+});
+
+test('a disabled plan cannot be checked out or confirmed, even for an order made before it was paused (review P2-11)', async () => {
+  const db = await world();
+  // An order made while the plan was still on sale.
+  await db.raw.query("update public.access_plans set enabled = true where id = 'month-3'");
+  const o = await order(db, 'month-3');
+  await db.raw.query("update public.access_plans set enabled = false where id = 'month-3'");
+  assert.deepEqual(await pending(db, o.orderId), { ok: false, reason: 'plan-unavailable' });
+  assert.deepEqual(await pay(db, o), { ok: false, reason: 'plan-unavailable' });
+  assert.equal((await grants(db)).length, 0);
+  const row = (await db.select('select status from public.payment_orders where id = $1', [o.orderId], service))[0];
+  assert.equal(row?.status, 'created', 'a refused confirmation changes nothing');
+  // An order that was already paid still replays as paid: history is kept.
+  const done = await buy(db);
+  await db.raw.query("update public.access_plans set enabled = false where id = 'month-1'");
+  const replay = await pay(db, done);
+  assert.equal(replay.ok, true);
+  assert.equal(replay.replay, true);
   await db.close();
 });
 
