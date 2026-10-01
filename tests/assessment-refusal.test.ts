@@ -297,6 +297,7 @@ test('the open build keeps its 18-minute live mock, its part-of-lesson scroll an
 });
 
 test('the refund answer says no refunds after purchase, in both languages (P2-10)', () => {
-  assert.match(SALES_COPY['faq.refund.a'].en, /^No\. There are no refunds after purchase\./);
-  assert.match(SALES_COPY['faq.refund.a'].ru, /^Нет, после покупки деньги не возвращаются\./);
+  // Wording settled by the free-account website (Builder W, 1 October 2026).
+  assert.match(SALES_COPY['faq.refund.a'].en, /^No\. Payments are not refunded after purchase\./);
+  assert.match(SALES_COPY['faq.refund.a'].ru, /^Нет\. После покупки деньги не возвращаются\./);
 });
