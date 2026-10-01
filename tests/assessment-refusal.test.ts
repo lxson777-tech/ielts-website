@@ -279,11 +279,14 @@ test('no "Your result is saved" where an interrupted assessment has no result (P
 
 /* ── The open build is today's live site (P2-9) ─────────────────────── */
 
-test('the open build keeps its 18-minute live mock, its help buttons and no recorded Speaking page', () => {
+/* Lesson help buttons follow the PUBLISHED rule on main (d0491ff, 30
+   September): signed-in students only, on every build. That rule has its own
+   tests (tests/help-signed-in-only.test.ts); this one only checks that the
+   part-of-lesson scroll still runs for everyone. */
+test('the open build keeps its 18-minute live mock, its part-of-lesson scroll and no recorded Speaking page', () => {
   assert.match(read('src/components/LiveExaminer.tsx'), /const HARD_STOP_MS = \(isTrialBuild\(\) \? 15 : 18\) \* 60_000;/);
   const help = read('src/components/learning/lesson-block-help.ts');
-  assert.match(help, /const offerHelp = !isTrialBuild\(\) \|\| currentOwner\(\)\.kind === 'user';/);
-  const mount = help.slice(help.indexOf('stampBlockIds(root, options.ids);'), help.indexOf('/** The last element of this block'));
+  const mount = help.slice(help.indexOf('stampBlockIds(root, options.ids);'), help.indexOf('/** Take every control this module made out of'));
   assert.doesNotMatch(mount, /\breturn;/, 'no early return skips the part-of-lesson scroll');
   assert.match(mount, /scrollToHashBlock\(root\);\r?\n\}/, 'the scroll is the last thing, for everyone');
   assert.match(read('src/pages/speaking/[gatedPage].astro'), /isTrialBuild\(\) \? \[\{ params: \{ gatedPage: 'recorded' \} \}\] : \[\]/);
