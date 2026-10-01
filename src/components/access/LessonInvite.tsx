@@ -9,9 +9,10 @@
 import { useT } from '../../lib/i18n/react';
 import { signInHref, signUpHref } from '../../lib/auth/profile';
 import { currentRoute } from '../../lib/auth/next';
-import './upgrade.css';
+import { ensureAccessStyles } from './access-styles';
 
 export default function LessonInvite({ title, what = 'lesson' }: { title: string; what?: 'lesson' | 'page' }) {
+  ensureAccessStyles();
   const { t } = useT();
   const here = currentRoute();
   if (what === 'page') {

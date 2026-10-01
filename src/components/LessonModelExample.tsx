@@ -14,8 +14,8 @@
    The GATED build (the free-account model, Alex, 1 October 2026) carries no
    model answers in the page: each writing lesson's one worked example is
    part of the lesson, so it comes through the content door for any
-   signed-in account (GET model/<id>, the id published by the page from
-   lessonExample in src/lib/access/lesson-examples.server.ts). There is no
+   signed-in account (GET example/writing-<lesson>, Builder G's door: the
+   prompt and its Band 8 model, charts inline). There is no
    "Another example" (the model bank comes with practice and guidance), and
    the links to the trainer and the bank open the upgrade pop-up for a free
    account (src/lib/access/paid-guard.ts). */
@@ -54,13 +54,13 @@ const CRITERION_LABEL: { key: keyof ModelAnswer['criteria']; label: string }[] =
   { key: 'grammar', label: 'Grammatical Range and Accuracy' },
 ];
 
-/** Where a lesson's worked example is asked for through the content door.
-    ALIGN AT MERGE with Builder G: the door must open this for any signed-in
-    account when <id> is a writing lesson's own example (lessonExample). */
-export const LESSON_EXAMPLE_PATH = (promptId: string): string => `model/${promptId}`;
+/** Where a writing lesson's worked example is asked for through the content
+    door (Builder G, free-account model): opened for any signed-in account
+    with a profile, as part of the lesson. */
+export const LESSON_EXAMPLE_PATH = (lesson: string): string => `example/writing-${lesson}`;
 
-export default function LessonModelExample({ lesson, exampleId }: { lesson: string; exampleId?: string }) {
-  return contentIsGated() ? <GatedLessonModel exampleId={exampleId} /> : <OpenLessonModel lesson={lesson} />;
+export default function LessonModelExample({ lesson }: { lesson: string }) {
+  return contentIsGated() ? <GatedLessonModel lesson={lesson} /> : <OpenLessonModel lesson={lesson} />;
 }
 
 function OpenLessonModel({ lesson }: { lesson: string }) {
@@ -85,16 +85,16 @@ function OpenLessonModel({ lesson }: { lesson: string }) {
     signed-in account. Nothing at all for a visitor (the page shows the
     lesson's invitation) or when it cannot be fetched: the lesson itself is
     unaffected. */
-function GatedLessonModel({ exampleId }: { exampleId?: string }) {
+function GatedLessonModel({ lesson }: { lesson: string }) {
   const trial = useTrial();
   const open = readsLessons(browserTier(trial, trial.now));
   const [example, setExample] = useState<{ key: string; prompt: EssayPrompt; model: ModelAnswer } | null>(null);
-  const key = open && exampleId ? `${trial.userId}:${exampleId}` : null;
+  const key = open && LESSON_VARIANTS[lesson] ? `${trial.userId}:${lesson}` : null;
 
   useEffect(() => {
-    if (!key || !exampleId || example?.key === key) return;
+    if (!key || example?.key === key) return;
     let live = true;
-    void fetchGated(LESSON_EXAMPLE_PATH(exampleId)).then((result) => {
+    void fetchGated(LESSON_EXAMPLE_PATH(lesson)).then((result) => {
       if (!live || !result.ok) return;
       try {
         const parsed = JSON.parse(result.text) as { prompt: EssayPrompt; model: ModelAnswer };

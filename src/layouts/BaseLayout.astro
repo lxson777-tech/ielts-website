@@ -260,8 +260,7 @@ const jsonLd = {
         {!bare && <Footer />}
       </>
     )}
-    {!bare && <VocabQuizInit />}
-    {upgradeDialog && <UpgradeDialog client:load />}
+    {!bare && <VocabQuizInit />}{upgradeDialog && <UpgradeDialog client:load />}
     <script>
       /* The runtime half of the language switch: fetch the dictionary for the
          chosen language, translate everything Astro rendered in English, and

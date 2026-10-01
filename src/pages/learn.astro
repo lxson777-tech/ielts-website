@@ -9,8 +9,7 @@ import { ACCESS_MODE } from '../lib/trial/mode';
 const gated = ACCESS_MODE === 'trial';
 ---
 <BaseLayout title="Lessons · IELTS is EZ" description="Browse IELTS lessons for every skill.">
-  {gated && <SignedOutInvite client:load title="Every lesson, free with an account" />}
-  <LessonLibrary client:load />
+  {gated && <SignedOutInvite client:load title="Every lesson, free with an account" />}<LessonLibrary client:load />
 </BaseLayout>
 
 <style is:global>

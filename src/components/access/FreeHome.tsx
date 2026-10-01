@@ -19,8 +19,7 @@ import { pitchPlan, pitchPrice, PITCH_PRICE_LINE } from '../../lib/access/upgrad
 import { useTrial } from '../../lib/trial/react';
 import { deviceStorage } from '../../lib/store-owner';
 import { currentRoute } from '../../lib/auth/next';
-import './upgrade.css';
-import './free-home.css';
+import { ensureAccessStyles } from './access-styles';
 
 const LESSONS: CourseLesson[] = buildCourse().flatMap((module) => module.lessons);
 
@@ -41,6 +40,7 @@ function sessionStore(): Storage | null {
 }
 
 export default function FreeHome({ ended = false }: { ended?: boolean }) {
+  ensureAccessStyles();
   const { t, locale } = useT();
   const trial = useTrial();
   const [progress, setProgress] = useState<ProgressV1 | null>(null);

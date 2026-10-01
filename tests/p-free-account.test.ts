@@ -166,6 +166,7 @@ test('the nudge listens only for the two ends of a lesson, and the dialog never 
   assert.match(dialog, /if \(opensEverything\(tier\)\) return;/);
   assert.match(dialog, /markNudgeShown\(storage, view\.userId!/, 'marked the moment it is shown');
   assert.match(read('src/layouts/BaseLayout.astro'), /\{upgradeDialog && <UpgradeDialog client:load \/>\}/);
+  for (const f of ['UpgradeDialog', 'PaidLocked', 'LessonInvite', 'FreeHome']) assert.doesNotMatch(read(`src/components/access/${f}.tsx`), /import '\.\/[a-z-]+\.css'/, `${f}: no page-level CSS import (it would reach the open build)`);
   assert.match(read('src/layouts/BaseLayout.astro'), /const upgradeDialog = ACCESS_MODE === 'trial';/, 'gated build only');
 });
 
@@ -294,7 +295,8 @@ test('lesson bodies and the lesson\'s worked example are not in the gated build\
   assert.match(read('src/pages/lessons/reading-task1.astro'), /\{!gated && <Fragment set:html=\{bodyAfterCards\} \/>\}/);
   assert.match(read('src/pages/lesson-bodies/[locale]/[slug].html.ts'), /if \(ACCESS_MODE === 'trial'\) return \[\];/);
   const writing = read('src/pages/lessons/writing/[part].astro');
-  assert.match(writing, /exampleId=\{ACCESS_MODE === 'trial' \? lessonExample\(part\.slug\)\?\.prompt\.id : undefined\}/, 'only the id');
-  assert.doesNotMatch(writing, /example=\{ACCESS_MODE/);
+  assert.match(writing, /<LessonModelExample client:load lesson=\{part\.slug\} \/>/, 'no example in the page');
+  assert.doesNotMatch(writing, /lessonExample\(/);
+  assert.match(read('src/components/LessonModelExample.tsx'), /LESSON_EXAMPLE_PATH = \(lesson: string\): string => `example\/writing-\$\{lesson\}`/, 'G\'s door: example/writing-<slug>');
   assert.match(read('src/layouts/BaseLayout.astro'), /const gated = ACCESS_MODE === 'trial' && Boolean\(trialGate\);/, 'lessons sit behind the gate again');
 });

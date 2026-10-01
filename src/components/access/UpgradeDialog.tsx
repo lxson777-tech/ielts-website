@@ -32,7 +32,7 @@ import { deviceStorage } from '../../lib/store-owner';
 import { signUpHref } from '../../lib/auth/profile';
 import { useT } from '../../lib/i18n/react';
 import { withBase } from '../../lib/url';
-import './upgrade.css';
+import { ensureAccessStyles } from './access-styles';
 
 /** How long after "studied" (or the last quiz check) the nudge waits, so
     the tick the student just pressed is seen first. */
@@ -44,6 +44,7 @@ interface Open {
 }
 
 export default function UpgradeDialog() {
+  ensureAccessStyles();
   const { t, locale } = useT();
   const [open, setOpen] = useState<Open | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);

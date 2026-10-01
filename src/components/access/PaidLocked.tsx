@@ -16,7 +16,7 @@ import { openUpgrade } from '../../lib/access/upgrade';
 import { UPGRADE_REASON } from '../../lib/access/upgrade';
 import type { PaidFeature } from '../../lib/access/model';
 import SupportLink from '../support/SupportLink';
-import './upgrade.css';
+import { ensureAccessStyles } from './access-styles';
 
 export default function PaidLocked({
   feature,
@@ -33,6 +33,7 @@ export default function PaidLocked({
   signedOut?: boolean;
   variant?: 'page' | 'full';
 }) {
+  ensureAccessStyles();
   const { t } = useT();
   return (
     <section
