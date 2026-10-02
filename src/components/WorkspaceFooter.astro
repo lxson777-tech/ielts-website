@@ -1,4 +1,5 @@
 ---
+import { SUPPORT_ENABLED } from '../lib/support';
 /* One quiet line at the foot of every app route: Help, a way to reach a
    person, and the two policy pages (audit F04, Builder E, 29 September
    2026). The full marketing footer stays on the public pages only. The
@@ -14,7 +15,7 @@ const operator = publishedOperator();
   <span>IELTS is EZ{operator ? ` · ${operator.name}` : ''}</span>
   <nav aria-label="Site information" data-i18n-attr="aria-label">
     <a href={withBase('/help')} data-i18n>Help</a>
-    <a href={withBase('/support?reason=footer')} data-i18n>Report a problem</a>
+    {SUPPORT_ENABLED && <a href={withBase('/support?reason=footer')} data-i18n>Report a problem</a>}
     <a href={withBase('/privacy')} data-i18n>Privacy</a>
     <a href={withBase('/terms')} data-i18n>Terms</a>
   </nav>

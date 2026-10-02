@@ -59,6 +59,7 @@
    above) and lists separately what is still undecided, because silence
    would read as "kept forever, never removable". */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { SUPPORT_ENABLED } from '../lib/support';
 import { withBase } from '../lib/url';
 import { nt } from '../lib/i18n/translate';
 import { publishedOperator } from '../lib/operator';
@@ -219,11 +220,14 @@ const services: { name: string; role: string }[] = [
       <p data-i18n>Please read this page together with them.</p>
     </section>
 
+    {/* Only where the support form can send (src/lib/support.ts). */}
+    {SUPPORT_ENABLED && (
     <section class="policy-section" aria-labelledby="privacy-questions">
       <h2 id="privacy-questions" data-i18n>Questions about your information</h2>
       <p data-i18n>Ask through the support form. A person reads every message and replies by email.</p>
       <p><a class="policy-action" href={withBase('/support?reason=privacy')} data-i18n>Ask a person</a></p>
     </section>
+    )}
 
     <section class="policy-section" aria-labelledby="privacy-removal">
       <h2 id="privacy-removal" data-i18n>Removing your account</h2>

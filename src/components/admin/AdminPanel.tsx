@@ -1,6 +1,8 @@
 import SmoothReveal from '../SmoothReveal';
 import SupportRequests from './SupportRequests'; // [E trust] support requests section
 import StudentAccess from './StudentAccess'; // [G free account] access and complimentary grants
+import { ACCESS_MODE } from '../../lib/trial/mode';
+import { SUPPORT_ENABLED } from '../../lib/support';
 import { accessTag, loadAccessOverview, type AccessOverview } from './admin-access';
 /* The owner's admin panel: every account on the platform and what each
    student has done. The first (and for now only) section is Students; later
@@ -122,6 +124,8 @@ export default function AdminPanel() {
      never blocks the list. */
   const [access, setAccess] = useState<Map<string, AccessOverview>>(new Map());
   const loadAccess = useCallback(async () => {
+    // Access exists only with the paid model on (the open build's database has no access tables).
+    if (ACCESS_MODE !== 'trial') return;
     const result = await loadAccessOverview();
     if (result.ok) setAccess(result.value);
   }, []);
@@ -287,7 +291,7 @@ export default function AdminPanel() {
       )}
 
       {/* [E trust] "Ask a person" messages, newest first (audit F04). */}
-      <SupportRequests />
+      {SUPPORT_ENABLED && <SupportRequests />}
 
       {users && (
         <section className="admin-section" aria-labelledby="admin-students-title">
@@ -443,7 +447,7 @@ function StudentRow({
       <SmoothReveal open={open} id={panelId}>
         <div className="admin-detail">
           {/* Mounted only while open, so its access is read fresh each time. */}
-          <StudentDetail user={u} access={open ? <StudentAccess userId={u.user_id} onChanged={onAccessChanged} /> : null} />
+          <StudentDetail user={u} access={open && ACCESS_MODE === 'trial' ? <StudentAccess userId={u.user_id} onChanged={onAccessChanged} /> : null} />
         </div>
       </SmoothReveal>
     </li>

@@ -5,10 +5,22 @@
    supabase/migrations/2026-09-30-support.sql. */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SupportForm from '../components/support/SupportForm';
+import { SUPPORT_ENABLED } from '../lib/support';
+import { withBase } from '../lib/url';
 ---
 
 <BaseLayout title="Ask a person · IELTS is EZ" description="Report a problem or ask a question. A person reads every message and replies by email.">
-  <SupportForm client:load />
+  {SUPPORT_ENABLED ? (
+    <SupportForm client:load />
+  ) : (
+    /* No form on this build yet (src/lib/support.ts): nothing links here,
+       but an old link or a typed address gets a plain answer. */
+    <section class="auth-card" aria-labelledby="support-off-title">
+      <h1 id="support-off-title" data-i18n>Ask a person</h1>
+      <p data-i18n>The message form is not open yet. The Help page answers the most common questions.</p>
+      <p><a class="auth-button" href={withBase('/help')} data-i18n>Open Help</a></p>
+    </section>
+  )}
 </BaseLayout>
 
 <style is:global>

@@ -11,6 +11,9 @@ export const strings: Record<string, string> = {
   'Study from examples:': 'Учитесь на примерах:',
   /* Lesson help: the lesson's own answer, after the reason Mr EZ did not answer. */
   "Here is the lesson's own answer.": 'Вот ответ самого урока.',
+  /* /support on a build without the support form (src/lib/support.ts). */
+  'The message form is not open yet. The Help page answers the most common questions.': 'Форма для сообщений пока не открыта. На странице «Помощь» есть ответы на самые частые вопросы.',
+  'Open Help': 'Открыть «Помощь»',
   /* LiveExaminer: a start the browser itself could not complete. */
   'Could not connect to the examiner just now. Check your internet connection and press Start again.': 'Не удалось подключиться к экзаменатору. Проверьте подключение к интернету и нажмите «Начать интервью» ещё раз.',
 };

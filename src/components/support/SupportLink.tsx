@@ -10,7 +10,7 @@
 import { currentRoute } from '../../lib/auth/next';
 import { useT } from '../../lib/i18n/react';
 import { nt } from '../../lib/i18n/translate';
-import { supportHref, type SupportReason } from '../../lib/support';
+import { SUPPORT_ENABLED, supportHref, type SupportReason } from '../../lib/support';
 import './support.css';
 
 const LEADS = {
@@ -30,6 +30,8 @@ export default function SupportLink({
   className?: string;
 }) {
   const { t } = useT();
+  // No form on this build, so no link to it (src/lib/support.ts).
+  if (!SUPPORT_ENABLED) return null;
   return (
     <p className={`support-link${className ? ` ${className}` : ''}`}>
       {lead && <span>{t(LEADS[lead])} </span>}

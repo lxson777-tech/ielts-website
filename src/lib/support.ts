@@ -24,6 +24,7 @@
 import { getSupabase } from './auth/supabase';
 import { safeNext } from './auth/profile';
 import { withBase } from './url';
+import { ACCESS_MODE } from './trial/mode';
 import { SUPPORT_LIMITS, SUPPORT_REASONS, SUPPORT_TOPICS, isSupportEmail, type SupportReason, type SupportTopic } from './support-rules';
 
 export { SUPPORT_LIMITS, SUPPORT_REASONS, SUPPORT_TOPICS };
@@ -32,6 +33,17 @@ export type { SupportReason, SupportTopic };
 /** The support Worker (workers/support). Unset: signed-out visitors cannot
     send, and the form says so. */
 export const SUPPORT_URL: string = String(import.meta.env?.PUBLIC_SUPPORT_URL ?? '').trim().replace(/\/+$/, '');
+
+/** Whether this build offers "Ask a person" at all (2 October 2026). The
+    messages are kept by the database functions in
+    supabase/migrations/2026-09-30-support.sql, so a build pointed at a
+    database without them must not offer a form that cannot send. On in the
+    gated build (it ships with those migrations); on the open build, the live
+    site today, only once PUBLIC_SUPPORT_ENABLED=1 is set after the
+    migration is applied. Off, every link to the form is left out and the
+    page itself says how to reach the school instead. */
+export const SUPPORT_ENABLED: boolean =
+  ACCESS_MODE === 'trial' || String(import.meta.env?.PUBLIC_SUPPORT_ENABLED ?? '').trim() === '1';
 
 /** True when a signed-out visitor can send a message on this build. */
 export function visitorSupportEnabled(): boolean {

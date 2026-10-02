@@ -18,6 +18,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { withBase } from '../lib/url';
 import { nt } from '../lib/i18n/translate';
 import { publishedOperator } from '../lib/operator';
+import { SUPPORT_ENABLED } from '../lib/support';
 import { isTrialBuild } from '../lib/trial/mode';
 import { PURCHASE_ENABLED } from '../components/access/payments';
 
@@ -151,7 +152,7 @@ const sections: { id: string; question: string; answers: string[] }[] = [
           </p>
         )}
       </div>
-      <a class="policy-action" href={withBase('/support?reason=help')} data-i18n>Ask a person</a>
+      {SUPPORT_ENABLED && <a class="policy-action" href={withBase('/support?reason=help')} data-i18n>Ask a person</a>}
     </section>
 
     <div class="space-y-3">
