@@ -19,7 +19,7 @@ export type ReadingGroup = 'skill' | 'choose' | 'matching' | 'completion';
 
 export const READING_GROUPS: { id: ReadingGroup; label: string; blurb: string }[] = [
   { id: 'skill', label: nt('Core skill'), blurb: nt('The one skill every question type tests.') },
-  { id: 'choose', label: nt('Choose the right option'), blurb: nt('Pick a letter or decide True, False or Not Given.') },
+  { id: 'choose', label: nt('Choose the right option'), blurb: nt('Pick a letter, or decide True, False or Not Given (or Yes, No or Not Given).') },
   { id: 'matching', label: nt('Matching'), blurb: nt('Match statements, headings or sentence halves to the passage.') },
   { id: 'completion', label: nt('Completion'), blurb: nt('Write words from the passage into gaps.') },
 ];

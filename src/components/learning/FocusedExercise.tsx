@@ -656,7 +656,7 @@ export default function FocusedExercise({ view }: Props) {
                         {item.after}
                         {view.wordLimit != null && (
                           <span className="focused-word-limit">
-                            {t('Up to {n} words.', { n: view.wordLimit })}
+                            {t('Word limit: {n}.', { n: view.wordLimit })}
                           </span>
                         )}
                       </span>

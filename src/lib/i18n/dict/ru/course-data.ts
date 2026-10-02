@@ -106,7 +106,7 @@ export const strings: Record<string, string> = {
   'Core skill': 'Базовый навык',
   'The one skill every question type tests.': 'Навык, который проверяют все типы заданий.',
   'Choose the right option': 'Выберите правильный вариант',
-  'Pick a letter or decide True, False or Not Given.': 'Выбирайте букву или определяйте True, False или Not Given.',
+  'Pick a letter, or decide True, False or Not Given (or Yes, No or Not Given).': 'Выбирайте букву или определяйте True, False или Not Given (или Yes, No или Not Given).',
   Matching: 'Сопоставление',
   'Match statements, headings or sentence halves to the passage.': 'Сопоставляйте утверждения, заголовки или части предложений с текстом.',
   Completion: 'Заполнение',

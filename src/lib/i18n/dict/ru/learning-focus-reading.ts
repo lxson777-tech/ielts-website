@@ -30,7 +30,7 @@ export const strings: Record<string, string> = {
   /* FocusedExercise.tsx: the new per-item answer shapes (WP18a) */
   'Answer for {label}': 'Ответ для {label}',
   'Choose an option': 'Выберите вариант',
-  'Up to {n} words.': 'Лимит слов: {n}.',
+  'Word limit: {n}.': 'Лимит слов: {n}.',
   'You wrote {given}. That is not the one.': 'Вы написали {given}. Это не тот ответ.',
   'Written for this site, not a real exam question.':
     'Написано для этого сайта, а не настоящий экзаменационный вопрос.',
