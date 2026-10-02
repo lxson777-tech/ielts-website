@@ -202,6 +202,8 @@ def free_student(browser):
     page.locator("#signup-password").fill(PASSWORD)
     if page.locator("#signup-confirm").count():
         page.locator("#signup-confirm").fill(PASSWORD)
+    if page.locator("#signup-consent").count():  # required since 2 October 2026
+        page.locator("#signup-consent").check(force=True)
     page.locator("button.auth-button[type=submit]").click()
     page.wait_for_selector("#profile-firstName", timeout=40000)
     R.check(sec, "sign-up leads to the required profile", "/profile" in page.url, page.url)
@@ -584,6 +586,8 @@ def admin_sign_in(page):
     page.locator("#signup-password").fill(PASSWORD)
     if page.locator("#signup-confirm").count():
         page.locator("#signup-confirm").fill(PASSWORD)
+    if page.locator("#signup-consent").count():  # required since 2 October 2026
+        page.locator("#signup-consent").check(force=True)
     page.locator("button.auth-button[type=submit]").click()
     page.wait_for_function("() => !location.pathname.endsWith('/sign-up')", timeout=40000)
     if "/profile" in page.url:

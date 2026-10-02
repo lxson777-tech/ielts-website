@@ -109,7 +109,7 @@ def scroll_whole_page(page, label: str) -> dict:
         gate_states.append(info["gate"])
         if info["y"] + info["vh"] >= info["h"] - 2 or steps > 80:
             break
-        page.mouse.wheel(0, int(info["vh"] * 0.7))
+        page.mouse.wheel(0, int(info["vh"] * 0.4))  # small steps: the gates peak over a short stretch
         page.wait_for_function(f"window.scrollY > {info['y']} || window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2", timeout=5000)
         page.wait_for_timeout(120)  # one frame of the scroll-driven scene
         steps += 1
@@ -265,6 +265,8 @@ def run() -> int:
         page.locator("#signup-password").fill(PASSWORD)
         if page.locator("#signup-confirm").count():
             page.locator("#signup-confirm").fill(PASSWORD)
+        if page.locator("#signup-consent").count():  # required since 2 October 2026
+            page.locator("#signup-consent").check(force=True)
         page.locator("form button[type=submit]").first.click()
         page.wait_for_function("!location.pathname.endsWith('/sign-up')", timeout=20000)
         on_profile = route_of(page.url) == "/profile"
@@ -327,7 +329,7 @@ def run() -> int:
             shot(page, f"12-pricing-ru-{tag}")
             pricing = text_of(page, "#pricing")
             for phrase in ["Практика и сопровождение", "Бесплатный аккаунт", "12 990 ₸", "за 30 дней",
-                           "Без автоматического продления", "После покупки деньги не возвращаются", "Подключить практику и сопровождение"]:
+                           "Без автоматического продления", "Неиспользованную часть оплаты можно вернуть", "Подключить практику и сопровождение"]:
                 check(f"ru {tag} pricing says: {phrase}", phrase.lower() in pricing.lower())
             if tag == "320":
                 page.locator("#pricing .price-paid").scroll_into_view_if_needed()
@@ -340,7 +342,7 @@ def run() -> int:
                 shot(page, "13-faq-ru-320", full=False)
                 faq = text_of(page, "#questions")
                 for phrase in ["Что бесплатно?", "Что платно и почему?", "30 дней стоят", "Продлевается ли доступ автоматически?",
-                               "Нет. После покупки деньги не возвращаются", "Нужен ли аккаунт, чтобы читать уроки?"]:
+                               "Да. В течение 30 дней можно в любой момент попросить возврат", "Нужен ли аккаунт, чтобы читать уроки?"]:
                     check(f"ru 320 FAQ says: {phrase}", phrase in faq)
                 over = page.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth")
                 check("ru 320: no sideways scroll with the questions open", over <= 0, str(over))
@@ -354,17 +356,18 @@ def run() -> int:
         # ---------------------------------------------------------- terms, privacy, help
         expectations = {
             "en": {
-                "/terms": ["Your free account", "Every lesson is free", "Lessons open once you are signed in to a free account",
-                           "Practice and guidance cost 12,990 KZT for 30 days, paid once", "Nothing renews",
-                           "Payments are not refunded after purchase", "12 essay assessments, 6 recorded Speaking assessments",
-                           "2 full mock exams", "The placement test, once per account"],
+                # The public offer since 2 October 2026 (refund minus what was used).
+                "/terms": ["The agreement for practice and guidance", "Every lesson is free",
+                           "30 days of access for 12,990 KZT, paid once", "Nothing renews",
+                           "You can ask for a refund at any time during your 30 days", "12 essay assessments, 6 recorded Speaking assessments",
+                           "2 full mock exams"],
                 "/privacy": ["The trial is no longer offered, so no new trial records are made",
                              "How many of the included assessments you have used", "If the person who runs the site gives you free access"],
                 "/help": ["What is free, and what is paid?", "How do I get practice and guidance?"],
             },
             "ru": {
-                "/terms": ["Ваш бесплатный аккаунт", "Все уроки бесплатны", "Практика и сопровождение стоят 12 990 тенге за 30 дней",
-                           "После покупки деньги не возвращаются", "12 проверок эссе"],
+                "/terms": ["Договор на практику и сопровождение", "Все уроки бесплатны", "доступ на 30 дней за",
+                           "Попросить возврат можно в любой момент в течение ваших 30 дней", "Проверки эссе: 12"],
                 "/privacy": ["Пробный период больше не предлагается"],
                 "/help": ["Что бесплатно, а что платно?", "Как подключить практику и сопровождение?"],
             },
