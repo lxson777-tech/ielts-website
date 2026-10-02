@@ -126,6 +126,9 @@ export default function FocusedExercise({ view }: Props) {
   const { t } = useT();
   const locale = getLocale();
   const isCheck = view.role === 'independent-check';
+  /* The group's own section of a Listening question sheet (a table, form,
+     flow chart or map), as focused-source-support.ts marks it. */
+  const sheetBesideRecording = Boolean(view.audio && view.legendHtml?.includes('focused-source-sheet'));
 
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [firstAnswers, setFirstAnswers] = useState<Record<string, string>>({});
@@ -607,12 +610,23 @@ export default function FocusedExercise({ view }: Props) {
                 </p>
               )
             )}
+            {/* A group with no wording of its own (focused-source-support.ts):
+                its section of the publisher's question sheet sits beside the
+                recording, where the full test player puts the sheet, and
+                stays on screen beside the answers on a wide screen. The
+                questions column is too narrow for a printed table. */}
+            {sheetBesideRecording && (
+              <div className="focused-audio-sheet">
+                <p className="focused-passage-label">{t('Question paper')}</p>
+                <div className="focused-legend" dangerouslySetInnerHTML={{ __html: view.legendHtml! }} />
+              </div>
+            )}
           </section>
         )}
 
         <section className="focused-questions" aria-label={t('Questions')}>
           <div className="focused-instructions" dangerouslySetInnerHTML={{ __html: view.instructionHtml }} />
-          {view.legendHtml && (
+          {view.legendHtml && !sheetBesideRecording && (
             <div className="focused-legend" dangerouslySetInnerHTML={{ __html: view.legendHtml }} />
           )}
 
@@ -683,10 +697,16 @@ export default function FocusedExercise({ view }: Props) {
                         className="focused-answer"
                         value={given}
                         disabled={locked}
-                        aria-label={t('Heading for {label}', { label: item.label })}
+                        aria-label={
+                          view.subskill === 'matching-headings'
+                            ? t('Heading for {label}', { label: item.label })
+                            : t('Answer for {label}', { label: item.label })
+                        }
                         onChange={(event) => setAnswer(item.itemId, event.target.value)}
                       >
-                        <option value="">{t('Choose a heading')}</option>
+                        {/* "Choose a heading" only where the list IS headings;
+                            a map letter, a box letter or a category is an option. */}
+                        <option value="">{view.subskill === 'matching-headings' ? t('Choose a heading') : t('Choose an option')}</option>
                         {view.options.map((option) => (
                           <option key={option} value={option}>
                             {option}

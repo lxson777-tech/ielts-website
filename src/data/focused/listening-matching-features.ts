@@ -45,15 +45,24 @@ const GUIDED_B: FocusedExercise = {
   objective: 'Match each item to the person, place or service the speaker actually settles on, not the first one mentioned.',
   expectedMinutes: 7,
   provenance: 'imported-paper',
+  /* Was Test 2 Q17-20 until 3 October 2026. That group is a "label the map"
+     task and is now typed diagram-labelling, so it is not matching. Test 21
+     Q16-20 replaces it: a real "what is planned for each facility" box,
+     each facility's own name as its question, and a stated-then-corrected
+     distractor in four of the five (refused car park, threatened
+     demolition, a wished-for extension, unchanged access). Test 21 is used
+     by no other focused exercise and by no lesson practice set. Same id, so
+     the catalogue entry and its link stay; the items are new, because the
+     questions are. */
   source: {
-    testId: 'listening-full-002',
+    testId: 'listening-full-021',
     partIndex: 1,
-    groupIndex: 2,
-    drillId: 'listening-full-002-drill-p2',
-    attribution: 'IELTS Listening Test 2, Part 2, Questions 17 to 20.',
+    groupIndex: 1,
+    drillId: 'listening-full-021-drill-p2',
+    attribution: 'IELTS Listening Test 21, Part 2, Questions 16 to 20.',
   },
   lesson: { key: 'listening-matching', blockHeading: 'How to Approach It' },
-  items: items('listening-full-002', ['q17', 'q18', 'q19', 'q20']),
+  items: items('listening-full-021', ['q16', 'q17', 'q18', 'q19', 'q20']),
   reasons: 'listening-matching-features',
 };
 
