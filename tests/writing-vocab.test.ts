@@ -44,7 +44,12 @@ test('a Task 2 prompt that asks two questions is tagged two-part', () => {
       .replace('Write at least 250 words.', '')
       .replace('Give reasons for your answer and include any relevant examples from your own knowledge or experience.', '');
     const questions = (text.match(/\?/g) ?? []).length;
-    if (questions >= 2 && prompt.variant !== 'two-part') {
+    /* A problem-solution question usually asks two questions too ("Why is
+       this? What can be done?", or causes then effects, 2 October 2026):
+       that tag is right when the second question asks for solutions,
+       measures or effects. */
+    const problemSolution = prompt.variant === 'problem-solution' && /solution|solve|measures|what can be done|tackle|effects/i.test(text);
+    if (questions >= 2 && prompt.variant !== 'two-part' && !problemSolution) {
       wrong.push(`${prompt.id}: ${questions} questions but tagged ${prompt.variant}`);
     }
     if (/outweigh/i.test(text) && prompt.variant !== 'advantages-disadvantages') {

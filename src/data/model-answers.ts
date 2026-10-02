@@ -22,6 +22,7 @@ import { BATCH_09 } from './models-real/batch-09';
 import { BATCH_10 } from './models-real/batch-10';
 import { BATCH_11 } from './models-real/batch-11';
 import { BATCH_12 } from './models-real/batch-12';
+import { BATCH_13 } from './models-real/batch-13';
 
 export type ModelBand = 6 | 7 | 8 | 8.5;
 
@@ -75,6 +76,8 @@ export const MODEL_ANSWERS: ModelAnswer[] = [
   ...BATCH_10,
   ...BATCH_11,
   ...BATCH_12,
+  /* 2 October 2026: the three problem-solution tasks (tests 87, 38, 95). */
+  ...BATCH_13,
 ];
 
 /** All model answers for a given prompt, in ascending band order. */

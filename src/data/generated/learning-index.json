@@ -1,7 +1,7 @@
 {
   "version": 1,
   "format": 3,
-  "indexVersion": "16dcda03bf7e0001",
+  "indexVersion": "80265bfa91eed9e4",
   "tests": [
     {
       "id": "listening-full-001",
@@ -4536,6 +4536,36 @@
       "task": "task2",
       "title": "Primary schools focus too much on formal learning",
       "form": "two-part",
+      "minWords": 250,
+      "suggestedMinutes": 40,
+      "modelAnswerBands": [8],
+      "provenance": "publisher"
+    },
+    {
+      "id": "pte-wt-38-task2",
+      "task": "task2",
+      "title": "People are less fit and active nowadays",
+      "form": "problem-solution",
+      "minWords": 250,
+      "suggestedMinutes": 40,
+      "modelAnswerBands": [8],
+      "provenance": "publisher"
+    },
+    {
+      "id": "pte-wt-87-task2",
+      "task": "task2",
+      "title": "The crime rate among teenagers has increased dramatically",
+      "form": "problem-solution",
+      "minWords": 250,
+      "suggestedMinutes": 40,
+      "modelAnswerBands": [8],
+      "provenance": "publisher"
+    },
+    {
+      "id": "pte-wt-95-task2",
+      "task": "task2",
+      "title": "The tradition of families having meals together",
+      "form": "problem-solution",
       "minWords": 250,
       "suggestedMinutes": 40,
       "modelAnswerBands": [8],

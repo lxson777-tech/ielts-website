@@ -2285,6 +2285,116 @@ export const WRITING_PLANS: Record<string, WritingPlan> = {
     ],
     timing: "5 minutes planning, 30 minutes writing, and 5 minutes checking.",
   },
+  /* The three problem-solution tasks added on 2 October 2026 (tests 87, 38
+     and 95). Written by hand, in the generator's format, alongside their
+     Band 8 models (src/data/models-real/batch-13.ts), so no paid generation
+     run was needed. The tool leaves entries it was not asked for untouched;
+     re-running it for these three ids would replace them. */
+  "pte-wt-87-task2": {
+    promptId: "pte-wt-87-task2",
+    task: "task2",
+    questionType: "Problem / Solution: causes and solutions",
+    whatItAsks: "Explain why crime among teenagers has risen and propose solutions. Both halves count equally, and every solution should answer one of the causes you give.",
+    keyPoints: [
+      "Weaker supervision at home: when parents work long or irregular hours, teenagers are unsupervised after school, which is when much petty crime such as shoplifting takes place.",
+      "A lack of purpose outside school: youth clubs and sports centres have closed, and pupils who struggle at school may join gangs for status and belonging.",
+      "Matched solution 1: local governments fund after-school programmes (sport, homework help, clubs) that fill the unsupervised hours. Iceland's youth policy is a well-known example.",
+      "Matched solution 2: schools and employers run mentoring and apprenticeship schemes that give struggling pupils a route into work, so they have something to lose.",
+    ],
+    position: "Take a clear line: youth crime rises mainly because teenagers are unsupervised and without direction, so the best solutions give them supervised time and a future, rather than relying on punishment alone.",
+    paragraphs: [
+      { label: "Introduction", goal: "Paraphrase the rise in teenage crime and give a roadmap: two causes, then two matched solutions.", tips: ["Paraphrase \"crime rate among teenagers\" (offences committed by young people, youth crime).", "Name both causes in a few words so the reader knows what is coming.", "Say you will propose measures that answer those causes."], starter: "In many countries, offences committed by teenagers have risen sharply, and this essay argues that the increase stems largely from..." },
+      { label: "Body 1", goal: "Explain two causes, each with a consequence or example.", tips: ["Cause 1: unsupervised hours between school and a parent coming home, with an example of how petty crime happens then.", "Cause 2: closed youth facilities and disengagement from school leading some teenagers into gangs.", "Develop two causes well rather than listing five."], starter: "The first cause can be traced to the home..." },
+      { label: "Body 2", goal: "Propose one solution for each cause, say who acts, and evaluate briefly.", tips: ["Match solution 1 to cause 1: after-school programmes funded by local government.", "Match solution 2 to cause 2: mentoring and apprenticeships run by schools and employers.", "Add one line of evaluation: a real example, or the main obstacle such as cost."], starter: "Each cause suggests its own remedy. To fill the unsupervised hours,..." },
+      { label: "Conclusion", goal: "Summarise the causes and solutions in one sentence and end with an outlook.", tips: ["Repeat the two causes in new words.", "End with what happens if nothing changes, for example that punishment alone will not work."], starter: "In conclusion, youth crime is rising chiefly because..." },
+    ],
+    vocabulary: [
+      { phrase: "juvenile offending", use: "A formal name for teenage crime." },
+      { phrase: "stems largely from", use: "Introduce the main cause." },
+      { phrase: "petty crime", use: "Shoplifting, vandalism and similar offences." },
+      { phrase: "unsupervised hours", use: "Time teenagers spend without adults." },
+      { phrase: "lack of purpose", use: "Explain disengagement and boredom." },
+      { phrase: "after-school provision", use: "Clubs, sport and homework help." },
+      { phrase: "a route into work", use: "Apprenticeships and mentoring as solutions." },
+      { phrase: "tackle the root causes", use: "Contrast prevention with punishment." },
+    ],
+    pitfalls: [
+      "Proposing solutions that do not answer any cause you gave, for example suggesting longer prison sentences after blaming boredom.",
+      "Writing \"parents should take more care\" or \"teenagers should behave better\", which is a slogan, not a solution with an actor and an action.",
+      "Spending most of the essay on causes and leaving solutions to one short sentence: the question gives both halves equal weight.",
+    ],
+    timing: "Plan for 5 minutes (match each solution to a cause before you write), write for 30 minutes, check for 5 minutes.",
+  },
+  "pte-wt-38-task2": {
+    promptId: "pte-wt-38-task2",
+    task: "task2",
+    questionType: "Problem / Solution: reasons and measures",
+    whatItAsks: "Give the reasons people are less fit and active than in the past, then suggest measures to reverse it. Each measure should answer one of your reasons.",
+    keyPoints: [
+      "Movement has been removed from daily routines: office work, cars and buses, household machines and home delivery mean people can go through a day with very little physical effort.",
+      "Leisure has become screen-based: streaming, video games and social media are designed to hold attention, so children in particular spend free time sitting down.",
+      "Matched measure 1: city authorities make walking and cycling the easiest way to travel (protected cycle lanes, car-free streets). Copenhagen is a strong example; employers can add standing desks.",
+      "Matched measure 2: schools guarantee daily physical activity and open sports facilities to families in the evening, building habits in childhood.",
+    ],
+    position: "Argue that inactivity is mainly a problem of how daily life is organised, so the best measures change routines and surroundings rather than relying on individual willpower.",
+    paragraphs: [
+      { label: "Introduction", goal: "Paraphrase the decline in fitness and give a roadmap: two reasons, then a measure for each.", tips: ["Paraphrase \"less fit and active\" (more sedentary, less physically active).", "Name both reasons briefly: sedentary work and transport, and screen-based leisure."], starter: "It is widely observed that people today are less active than earlier generations, a decline driven mainly by..." },
+      { label: "Body 1", goal: "Explain the two reasons with concrete comparisons between the past and today.", tips: ["Contrast walking to a manual job with driving to a desk.", "Show how delivery apps and machines remove the remaining exercise.", "Explain why screens are so hard to compete with, especially for children."], starter: "The most fundamental change is that physical effort is no longer built into..." },
+      { label: "Body 2", goal: "Propose a measure for each reason, name who acts, and evaluate briefly.", tips: ["Answer reason 1 with city design: cycle lanes, pedestrian streets, an example city.", "Answer reason 2 with schools: a daily hour of activity and open facilities.", "Add a short evaluation, for example cost compared with treating illness later."], starter: "Because the problem lies in daily routine, the most effective response is to..." },
+      { label: "Conclusion", goal: "Summarise the reasons and the measures in fresh words.", tips: ["Repeat that exercise has been squeezed out of everyday life.", "End with why changing routines works better than relying on motivation."], starter: "In conclusion, people have become less active because..." },
+    ],
+    vocabulary: [
+      { phrase: "sedentary lifestyle", use: "Describe a life with little movement." },
+      { phrase: "built into daily routines", use: "Exercise that happens without planning." },
+      { phrase: "motorised transport", use: "Cars and buses replacing walking." },
+      { phrase: "screen-based leisure", use: "Streaming, gaming and social media." },
+      { phrase: "active travel", use: "Walking and cycling as transport." },
+      { phrase: "protected cycle lanes", use: "A concrete city measure." },
+      { phrase: "physical education", use: "School sport and activity." },
+      { phrase: "rely on willpower", use: "Contrast with changing the environment." },
+    ],
+    pitfalls: [
+      "Writing \"people should go to the gym\" as a measure: it answers no specific reason and has no actor beyond the individual.",
+      "Treating this as a two-part opinion essay and arguing whether being unfit is good or bad, which the question does not ask.",
+      "Listing many reasons (diet, stress, pollution, cost) in single lines instead of developing two properly.",
+    ],
+    timing: "Plan for 5 minutes, write for 30 minutes, check for 5 minutes.",
+  },
+  "pte-wt-95-task2": {
+    promptId: "pte-wt-95-task2",
+    task: "task2",
+    questionType: "Problem / Solution family: causes and effects (no solutions)",
+    whatItAsks: "Explain why families no longer eat together and what this does to families and to society. The question never asks for solutions, so do not propose any: that would be answering a question that was not asked.",
+    keyPoints: [
+      "Schedules have fragmented: shift work, long commutes, evening tuition, sport and part-time jobs mean there is often no hour when everyone is home.",
+      "Convenience food and delivery remove the reason to gather, and phones and televisions compete with a shared table.",
+      "Effects on the family: less daily conversation, so parents notice less and pass on fewer values; meals eaten alone in front of a screen are eaten faster and with less attention.",
+      "Effects on society: children practise patience, manners and the give-and-take of discussion less, and food traditions such as regional recipes may be forgotten.",
+    ],
+    position: "There is no opinion to defend and no solution to offer. Explain the causes clearly, then the effects, in the order the question gives them: family first, then society.",
+    paragraphs: [
+      { label: "Introduction", goal: "Paraphrase the decline of family meals and give a cause and effect roadmap.", tips: ["Paraphrase \"families having meals together\" (the family meal, eating together).", "Say you will examine why it is happening and its effects on the family and on society.", "Do not promise solutions."], starter: "In many societies the family meal, once a fixed part of the day, is becoming rare. This essay will examine..." },
+      { label: "Body 1", goal: "Explain the causes, each with an everyday example.", tips: ["Start with clashing timetables and give examples for both parents and children.", "Add convenience food and delivery as the reason people no longer need to gather.", "Mention screens as a further pull away from the table."], starter: "The main cause is the way working and school timetables have..." },
+      { label: "Body 2", goal: "Explain the effects, first on the family and then on society.", tips: ["Family: the table as the one daily chance for conversation, and what is lost without it.", "Health: eating alone in front of a screen.", "Society: social skills learned at meals, and food traditions that may disappear."], starter: "Within the family, the loss is mainly one of..." },
+      { label: "Conclusion", goal: "Summarise the causes and effects without adding solutions.", tips: ["Restate the causes in one clause and the effects in another.", "Resist the urge to end with advice: the question did not ask for it."], starter: "In conclusion, family meals are disappearing because..." },
+    ],
+    vocabulary: [
+      { phrase: "fragmented schedules", use: "Timetables that no longer overlap." },
+      { phrase: "convenience food", use: "Ready meals and delivery as a cause." },
+      { phrase: "gives rise to", use: "Introduce an effect." },
+      { phrase: "the knock-on effect", use: "An indirect consequence for society." },
+      { phrase: "pass on values", use: "What parents do at the table." },
+      { phrase: "social skills", use: "Manners, patience, conversation." },
+      { phrase: "culinary traditions", use: "Recipes handed down in families." },
+      { phrase: "gradual erosion", use: "A slow loss over generations." },
+    ],
+    pitfalls: [
+      "Adding a paragraph of solutions, such as \"families should switch off their phones\": the question asks for causes and effects only, so this material counts as irrelevant.",
+      "Giving effects only on the family and forgetting society, which the question names separately.",
+      "Turning the essay into an opinion about whether family meals matter, instead of explaining what happens when they disappear.",
+    ],
+    timing: "Plan for 5 minutes (check the question again: there is no solution word in it), write for 30 minutes, check for 5 minutes.",
+  },
 };
 
 export function getWritingPlan(promptId: string): WritingPlan | undefined {

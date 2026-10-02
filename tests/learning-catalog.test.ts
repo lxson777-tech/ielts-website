@@ -137,7 +137,8 @@ test('Writing Task 1 and Task 2 are kept apart, and Speaking is kept apart by pa
   const task1 = writing.filter((a) => a.criterion === 'taskAchievement');
   const task2 = writing.filter((a) => a.criterion === 'taskResponse');
   assert.equal(task1.length, 30);
-  assert.equal(task2.length, 30);
+  // 33 since 2 October 2026: the three problem-solution tasks (tests 87, 38, 95).
+  assert.equal(task2.length, 33);
 
   const task1Objectives = new Set(task1.map((a) => a.objective));
   const task2Objectives = new Set(task2.map((a) => a.objective));
@@ -963,7 +964,9 @@ test('the whole catalogue is the size the report says it is', () => {
          same-prompt retry only. See tests/speaking-pilot-checks.test.ts. */
       ['focused-exercise', 123],
       ['full-test', 73],
-      ['graded-task', 189],
+      /* graded-task: 192 since 2 October 2026, the three problem-solution
+         Writing tasks (tests 87, 38, 95). */
+      ['graded-task', 192],
       ['lesson', 76],
       ['lesson-check', 22],
       ['planning', 1],
@@ -972,7 +975,7 @@ test('the whole catalogue is the size the report says it is', () => {
     ],
     'the counts in the work package report, asserted so they cannot drift silently',
   );
-  assert.equal(activities.length, 792);
+  assert.equal(activities.length, 795);
   /* Almost all of them are publisher material, verified by its source.
      Twenty two are not (eight from before WP20b, fourteen added by it),
      every one for a reason lead decision Q1 already allows for unverified

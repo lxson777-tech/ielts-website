@@ -23,12 +23,13 @@ test('every public English and Russian lesson is teaching prose without interact
 test('public worked examples match their task and never reveal the trial essay answer', () => {
   for (const lesson of Object.keys(LESSON_EXAMPLE_VARIANTS)) {
     const example = lessonExample(lesson);
-    if (lesson === 'problem') { assert.equal(example, null); continue; }
     assert.ok(example, lesson);
     assert.equal(example.model.promptId, example.prompt.id);
     assert.notEqual(example.prompt.id, TRIAL_WRITING.essayPromptId);
     assert.ok(example.model.text.length > 0);
     if (example.prompt.task === 'task1') assert.match(example.prompt.imageUrl ?? example.prompt.promptHtml, /data:image\//);
   }
+  // Since 2 October 2026 the Problem / Solution lesson has one too (test 87, causes + solutions).
+  assert.equal(lessonExample('problem')?.prompt.id, 'pte-wt-87-task2');
   assert.equal(lessonExample('unknown'), null);
 });

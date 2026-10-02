@@ -11,7 +11,19 @@
    prompts that ask two questions are now `two-part`, one that asks whether
    the advantages outweigh the disadvantages is `advantages-disadvantages`,
    and one positive-or-negative question that was tagged `problem-solution`
-   is `opinion`. Re-running the importer would undo these. */
+   is `opinion`. Re-running the importer would undo these.
+
+   SECOND EXCEPTION, 2 October 2026 (Alex: "find the problem solution essay
+   questions"): the bank had no problem-solution task, so the Problem /
+   Solution lesson had no worked example. Three Task 2 prompts from older
+   tests on the same site (same permission) are added by hand at the end,
+   in the importer's own output (read with its fetch / build_task2 code):
+   test 87 (causes + solutions), test 38 (causes + measures, which the
+   importer tagged two-part) and test 95 (causes + effects, the lesson's
+   "no solutions" pattern, which it tagged opinion). All three are tagged
+   problem-solution, the lesson's umbrella for those patterns, and test 95's
+   two questions are both in bold as in every other prompt. Their Task 1
+   charts are not imported. Re-running the importer would drop them. */
 
 import type { EssayPrompt } from '../lib/writing/schema';
 import { withBase } from '../lib/url';
@@ -945,6 +957,51 @@ export const IMPORTED_WRITING_PROMPTS: EssayPrompt[] = [
     source: {
       name: "PracticePTEOnline",
       url: "https://practicepteonline.com/ielts-writing-test-103/",
+      permission: "Reused with permission from the publisher.",
+    },
+  },
+  {
+    id: 'pte-wt-87-task2',
+    task: 'task2',
+    variant: 'problem-solution',
+    title: "The crime rate among teenagers has increased dramatically",
+    promptHtml: "The crime rate among teenagers has increased dramatically in many countries. <strong>Discuss some possible reasons for this increase and suggest solutions.</strong> Give reasons for your answer and include any relevant examples from your own experience or knowledge.",
+    minWords: 250,
+    suggestedMinutes: 40,
+    suggestedVocab: [],
+    source: {
+      name: "PracticePTEOnline",
+      url: "https://practicepteonline.com/ielts-writing-test-87/",
+      permission: "Reused with permission from the publisher.",
+    },
+  },
+  {
+    id: 'pte-wt-38-task2',
+    task: 'task2',
+    variant: 'problem-solution',
+    title: "People are less fit and active nowadays",
+    promptHtml: "People are less fit and active nowadays than in the past. <strong>What are the reasons for this? What measures can be taken to fix this?</strong> Give reasons for your answer and include any relevant examples from your own knowledge or experience.",
+    minWords: 250,
+    suggestedMinutes: 40,
+    suggestedVocab: [],
+    source: {
+      name: "PracticePTEOnline",
+      url: "https://practicepteonline.com/ielts-writing-test-38/",
+      permission: "Reused with permission from the publisher.",
+    },
+  },
+  {
+    id: 'pte-wt-95-task2',
+    task: 'task2',
+    variant: 'problem-solution',
+    title: "The tradition of families having meals together",
+    promptHtml: "In many countries, the tradition of families having meals together is disappearing. <strong>Why is this happening? What will be the effects of it on the family and society?</strong>",
+    minWords: 250,
+    suggestedMinutes: 40,
+    suggestedVocab: [],
+    source: {
+      name: "PracticePTEOnline",
+      url: "https://practicepteonline.com/ielts-writing-test-95/",
       permission: "Reused with permission from the publisher.",
     },
   },

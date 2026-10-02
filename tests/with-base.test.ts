@@ -31,6 +31,8 @@ test('the Writing lessons that publish a worked example are exactly the ones tha
   for (const lesson of ['method', 'charts', 'process', 'maps', 'task2-method', 'opinion', 'discussion', 'advantages', 'problem', 'twopart']) {
     assert.equal(hasLessonExample(lesson), lessonExample(lesson) !== null, lesson);
   }
-  // The question bank has no problem-solution task yet, so that lesson has no example and asks for none.
-  assert.equal(hasLessonExample('problem'), false);
+  // Every Writing lesson now has one: the Problem / Solution lesson gained its
+  // tasks on 2 October 2026 (tests 87, 38, 95).
+  assert.equal(hasLessonExample('problem'), true);
+  assert.equal(hasLessonExample('unknown-lesson'), false);
 });
