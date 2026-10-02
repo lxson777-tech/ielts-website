@@ -181,7 +181,7 @@ export const CUE_CARDS: CueCard[] = [
       { phrase: 'without exaggeration', note: 'a short intensifying phrase for emphasis without overstating' },
       { phrase: 'forced everyone to think properly instead of just repeating vague opinions', note: 'a precise contrast structure that shows analytical vocabulary' },
       { phrase: 'for no extra pay, purely because he thought I could do it', note: 'a reason clause that shows real motivation, not just a fact' },
-      { phrase: "I probably wouldn't be taking this exam so calmly if it weren't for", note: 'a mixed conditional linking the past to the present, strong grammatical range' },
+      { phrase: "I probably wouldn't be taking this exam so calmly if it weren't for", note: 'a second conditional with "if it weren\'t for", linking habits built in the past to the present, strong grammatical range' },
       { phrase: 'somehow made even grammar lessons bearable', note: 'a natural understatement with a touch of humour' },
     ],
     roundingOff: [
@@ -222,7 +222,7 @@ export const CUE_CARDS: CueCard[] = [
     ],
     model: [
       "I'd like to talk about a small park just behind the old observatory near where I live. It's not somewhere most people know about, which is exactly what makes it special to me.",
-      "I actually found it completely by accident a couple of years ago, when I took a wrong turn on the way home and ended up walking through it instead of around it. As far as how often I go, it's probably twice a month, usually on a Sunday afternoon when I need to switch my brain off for an hour or two. There are a few benches under some enormous pine trees, and because it's slightly out of the way, it's almost always empty, even in summer.",
+      "I actually found it completely by accident a couple of years ago, when I took a wrong turn on the way home and ended up walking through it instead of around it. As for how often I go, it's probably twice a month, usually on a Sunday afternoon when I need to switch my brain off for an hour or two. There are a few benches under some enormous pine trees, and because it's slightly out of the way, it's almost always empty, even in summer.",
       "What I usually do there is bring a book and leave my phone in my bag, which sounds small, but it makes a real difference. In terms of why I find it relaxing, I think it's mainly the combination of silence and the view, you can see the mountains from one corner of the park, and there's something about that scale that puts my own worries into perspective. Looking back, I probably wouldn't have discovered how much I needed a place like that if I hadn't got lost that one afternoon.",
     ],
     upgrades: [
@@ -557,7 +557,7 @@ export const CUE_CARDS: CueCard[] = [
     ],
     model: [
       "I'd like to describe a time I helped my elderly neighbour, a woman named Ms Orazova, who got locked out of her flat during a fairly severe snowstorm a couple of winters ago.",
-      "I happened to be coming home at the time and found her standing in the corridor, clearly cold and a bit shaken, since her phone had also run out of battery. What I did was fairly simple, really; I brought her into my flat, made her some tea to warm her up, and used my own phone to call a locksmith, since none of us had a spare key. The locksmith couldn't come for almost two hours, given the weather, so I basically just sat with her the whole time, and we ended up talking about her late husband and her garden, things I'd genuinely never have learned otherwise.",
+      "I happened to be coming home at the time and found her standing in the corridor, clearly cold and a bit shaken, since her phone had also run out of battery. What I did was fairly simple, really; I brought her into my flat, made her some tea to warm her up, and used my own phone to call a locksmith, since neither of us had a spare key. The locksmith couldn't come for almost two hours, given the weather, so I basically just sat with her the whole time, and we ended up talking about her late husband and her garden, things I'd genuinely never have learned otherwise.",
       "In terms of how I felt about it, I was mainly just glad I happened to be there at the right moment, but I did feel a quiet sense of pride afterwards, knowing I hadn't just walked past. It wasn't a huge gesture in the grand scheme of things, but she still stops to say hello warmly whenever we pass each other now, and that small change in our relationship has stayed with me. It made me realise how little effort it can actually take to make a real difference to someone.",
     ],
     upgrades: [
@@ -610,7 +610,7 @@ export const CUE_CARDS: CueCard[] = [
     ],
     upgrades: [
       { phrase: 'nearly dropped the plate I was holding', note: 'a physical detail that shows emotion without naming it directly' },
-      { phrase: 'loudly enough that I woke up my parents', note: 'a so...that result clause for grammatical range' },
+      { phrase: 'loudly enough that I woke up my parents', note: 'an "enough that" result clause for grammatical range' },
       { phrase: 'which honestly meant more than the offer itself', note: 'a reflective aside that deepens the emotional detail' },
       { phrase: 'half laughing, half still in disbelief', note: 'a parallel structure for describing a mixed emotion' },
       { phrase: 'unexpectedly ordinary the morning had started', note: 'a past perfect clause for contrast between before and after' },

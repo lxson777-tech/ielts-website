@@ -15,8 +15,8 @@
 export const strings: Record<string, string> = {
   /* ================= Speaking: A.R.E. (Part 1) ================= */
   'A.R.E. method': 'Метод A.R.E.',
-  'Answer every question in 2 to 4 sentences: one direct answer, then a reason or example. Never just "yes" or "no".':
-    'Отвечайте на каждый вопрос двумя, тремя или четырьмя предложениями: сначала прямой ответ, затем причина или пример. Никогда не ограничивайтесь "yes" или "no".',
+  'Most answers come out at 2 to 4 sentences: one direct answer, then a reason or example. Never just "yes" or "no".':
+    'Большинство ответов укладывается в два, три или четыре предложения: сначала прямой ответ, затем причина или пример. Никогда не ограничивайтесь "yes" или "no".',
   'Match the tense of the question: "Did you…?" needs a past answer, "Would you…?" needs would.':
     'Подстраивайте время под вопрос: "Did you…?" требует прошедшего, "Would you…?" требует would.',
   "It's a friendly conversation about you, so relaxed, natural language beats formal essay words here.":
@@ -51,11 +51,12 @@ export const strings: Record<string, string> = {
   '10-15s': '10-15 сек',
   'Introduce your topic clearly. Briefly cover the who/what/where.':
     'Понятно обозначьте тему. Коротко скажите кто, что и где.',
-  'Work through each bullet point on the cue card in turn, with specific details and examples.':
-    'По очереди пройдите каждый пункт карточки задания, с конкретными деталями и примерами.',
+  'Use the bullet points to build the talk, in any order, with specific details and examples.':
+    'Стройте рассказ на пунктах карточки задания, в любом порядке, с конкретными деталями и примерами.',
   'Expand beyond the bullet points with your personal reaction. How did you feel, what stood out?':
     'Выйдите за пункты карточки и добавьте свою реакцию. Что вы почувствовали, что запомнилось?',
-  'Round off your talk with a brief reflection.': 'Завершите рассказ короткой мыслью.',
+  'Only if you get there: round off with a brief reflection, then carry on with your backup idea.':
+    'Только если успеете: завершите короткой мыслью, а затем продолжайте запасной идеей.',
   'Opening your talk': 'Начать рассказ',
   'Telling the story': 'Рассказывать историю',
   'Your reaction': 'Ваша реакция',

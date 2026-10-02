@@ -391,16 +391,16 @@ export const strings: Record<string, string> = {
     "Запишите себя, отвечая вслух на 8 вопросов в духе Part 1 (любимая еда, родной город, планы на выходные), начиная не позже чем через 2 секунды после вопроса. 15 минут.",
   "Band 6 means being willing to speak at length, even if coherence is sometimes lost through occasional repetition, self-correction, or hesitation, and using a range of connectives and discourse markers, even if not always appropriately. Band 5 tends to over-use a small number of connectives and struggles once the topic gets more complex.":
     "Band 6 означает готовность говорить развёрнуто, пусть связность иногда и теряется из-за повторов, самоисправлений или запинок, и использование разных связок и дискурсивных маркеров, пусть не всегда уместно. На band 5 обычно злоупотребляют небольшим набором связок и теряются, как только тема усложняется.",
-  "Extend every answer to at least 3 to 4 sentences, even for simple Part 1 questions.":
-    "Растягивайте каждый ответ хотя бы до 3-4 предложений, даже на простые вопросы Part 1.",
+  "Extend your answers past the first sentence: in Part 1 that usually means 2 to 4 sentences, with a reason or example.":
+    "Продолжайте ответ дальше первого предложения: в Part 1 это обычно 2-4 предложения, с причиной или примером.",
   "Use a range of connecting words (also, however, because, so, actually) rather than the same one repeatedly.":
     "Используйте разные связки (also, however, because, so, actually), а не одну и ту же снова и снова.",
   "When you lose your thread, restart the sentence rather than trailing off in silence.":
     "Если потеряли мысль, начните предложение заново, а не замолкайте на полуслове.",
   "Give a reason or example after every opinion you state.":
     "После каждого высказанного мнения приводите причину или пример.",
-  "Stop giving answers shorter than two sentences on any question.":
-    "Перестаньте отвечать короче двух предложений на любой вопрос.",
+  "Stop giving one-sentence answers to questions that invite a reason or an example.":
+    "Перестаньте отвечать одним предложением на вопросы, которые просят причину или пример.",
   "Stop trailing off mid-sentence without finishing the thought.":
     "Перестаньте затихать на середине предложения, не договорив мысль.",
   "The first answer is two short, disconnected sentences. The second extends the idea with \"because\" and \"so\" and gives a reason, which is the willingness to speak at length band 6 is checking for.":
@@ -475,8 +475,8 @@ export const strings: Record<string, string> = {
     "Возьмите 3 незнакомые темы Part 3 (освоение космоса, городское планирование, климатическая политика). Ответьте на каждую двумя предложениями простыми общими словами, вместо того чтобы молчать. 15 минут.",
   "Band 6 asks for a wide enough vocabulary to discuss topics at length and make meaning clear despite some inappropriate word choices, and to generally paraphrase successfully. Band 5 manages this with limited flexibility and mixed success at paraphrase.":
     "Band 6 требует запаса слов, которого хватает, чтобы говорить на тему развёрнуто и оставаться понятным, несмотря на местами неудачный выбор слов, и в целом успешно перефразировать. Band 5 справляется с этим с ограниченной гибкостью и с переменным успехом.",
-  "Build your answers to 4 to 6 sentences using vocabulary specific to the topic, not just general words.":
-    "Доводите ответы до 4-6 предложений, используя лексику именно по теме, а не одни общие слова.",
+  "Build your Part 3 answers to 3 to 5 sentences using vocabulary specific to the topic, not just general words.":
+    "Доводите ответы в Part 3 до 3-5 предложений, используя лексику именно по теме, а не одни общие слова.",
   "Paraphrase the question's key word at least once in your answer instead of repeating it.":
     "Хотя бы раз перефразируйте ключевое слово вопроса в ответе, вместо того чтобы повторить его.",
   "Learn topic-specific vocabulary sets of 10 to 15 words for common Part 3 themes: technology, environment, education, work, society.":
@@ -499,8 +499,8 @@ export const strings: Record<string, string> = {
     "Подстраивайте регистр лексики под тему: попроще в Part 1, поточнее в Part 3.",
   "Practise common collocations for IELTS topics (raise awareness, tackle a problem, strike a balance) and use them naturally.":
     "Отрабатывайте частые коллокации по темам IELTS (raise awareness, tackle a problem, strike a balance) и вставляйте их естественно.",
-  "Paraphrase the question fully in your opening sentence rather than repeating any of its wording.":
-    "Полностью перефразируйте вопрос в первом же предложении ответа, не повторяя его формулировок.",
+  "In Part 3, paraphrase the question's key words in your opening sentence rather than repeating its wording.":
+    "В Part 3 перефразируйте ключевые слова вопроса в первом же предложении ответа, не повторяя его формулировок.",
   "Stop using only textbook-safe vocabulary. Take the risk of a less common word even if it is occasionally imperfect.":
     "Перестаньте держаться одной безопасной учебниковой лексики. Рискните взять менее частотное слово, даже если иногда выйдет не идеально.",
   "Stop giving the same simple answer style throughout Part 3 as you did in Part 1.":
@@ -591,8 +591,8 @@ export const strings: Record<string, string> = {
     "Перестаньте использовать на весь экзамен одну и ту же сложную конструкцию.",
   "Stop letting grammar mistakes persist on the same familiar-topic sentences you have already practised.":
     "Перестаньте оставлять грамматические ошибки в тех предложениях на знакомые темы, которые вы уже отрабатывали.",
-  "The original mixes present and future forms incorrectly for a hypothetical idea. The revision uses the correct second conditional (\"If I had... I would...\") and adds a relative-style justification, which is the range and accuracy band 7 asks for.":
-    "В исходном варианте настоящее и будущее смешаны неверно для гипотетической мысли. В исправленном взят верный second conditional (\"If I had... I would...\") и добавлено пояснение, а это и есть то разнообразие и та точность, которых требует band 7.",
+  "The original mixes present and future forms incorrectly for a hypothetical idea. The revision uses the correct second conditional (\"If I had... I would...\") and adds a reason clause with \"since\", which is the range and accuracy band 7 asks for.":
+    "В исходном варианте настоящее и будущее смешаны неверно для гипотетической мысли. В исправленном взят верный second conditional (\"If I had... I would...\") и добавлено придаточное причины с \"since\", а это и есть то разнообразие и та точность, которых требует band 7.",
   "Answer 4 questions using a second conditional each time (\"If I had...\", \"If I were...\"). Check the verb forms carefully. 15 minutes.":
     "Ответьте на 4 вопроса, каждый раз со вторым типом условного (\"If I had...\", \"If I were...\"). Внимательно проверьте формы глаголов. 15 минут.",
   "Band 8 asks for a wide range of structures used flexibly, where the majority of sentences are error-free, with only very occasional inappropriacies or basic errors. Band 7 already produces frequent error-free sentences, but some grammatical mistakes still persist regularly.":
@@ -633,8 +633,8 @@ export const strings: Record<string, string> = {
     "Определите 3-5 звуков, которые вы чаще всего произносите неверно (многим трудно даются th, r и l, конечные согласные), и отрабатывайте их каждый день.",
   "Mark word stress on new vocabulary when you learn it, and say the word aloud stressing the right syllable.":
     "Помечайте ударение в новых словах, когда их учите, и произносите слово вслух с верным ударным слогом.",
-  "Practise linking words together in short phrases (\"an apple\", not \"a... napple... pause\") instead of pronouncing every word separately.":
-    "Тренируйте слитное произношение коротких сочетаний (\"an apple\", а не \"a... napple... пауза\"), вместо того чтобы выговаривать каждое слово отдельно.",
+  "Practise linking words together in short phrases (so \"an apple\" runs together as \"a-napple\", not \"an... apple\" with a pause) instead of pronouncing every word separately.":
+    "Тренируйте слитное произношение коротких сочетаний (чтобы \"an apple\" звучало слитно, как \"a-napple\", а не \"an... apple\" с паузой), вместо того чтобы выговаривать каждое слово отдельно.",
   "Slow down slightly so individual sounds come out clearly. Speed can come later.":
     "Немного замедлитесь, чтобы отдельные звуки выходили чисто. Скорость придёт позже.",
   "Stop speaking so fast that individual sounds get dropped or blurred.":
