@@ -65,7 +65,7 @@ export const LISTENING_PARTS: ListeningPart[] = [
     title: 'Multiple Choice',
     group: 'types',
     stage: 2,
-    eyebrow: nt('Question type · Most common in Part 3'),
+    eyebrow: nt('Question type · Most common in Parts 2 & 3'),
     blurb: nt('Pick the correct option, or two, from a list while the recording plays.'),
     minutes: 12,
   },

@@ -176,7 +176,7 @@ export const strings: Record<string, string> = {
     'написать пересказ вместо точного слова из текста',
   'going over the stated word limit': 'выйти за указанный лимит слов',
 
-  /* ---- Listening: Sentence, Note & Short-answer Completion ---- */
+  /* ---- Listening: Sentence & Note Completion, Short-answer Questions ---- */
   'Before the audio starts, read the gaps and predict what type of word is missing: a name, a number, a date, a place, or a single noun.':
     'До начала записи прочитайте пропуски и предположите, что там пропущено: имя, число, дата, место или одно существительное.',
   'The answers come in the same order as the recording, so let each gap guide you to the next one as you listen.':
@@ -237,11 +237,11 @@ export const strings: Record<string, string> = {
     'спутать похожие на слух числа (например, thirteen и thirty)',
 
   /* ---- Listening: Multiple Answer ---- */
-  'Read all the options before listening. Note exactly how many you need to choose, the question states it.':
+  'Read all the options before listening. Note exactly how many you need to choose: the question states it.':
     'Прочитайте все варианты до прослушивания. Отметьте, сколько именно нужно выбрать, это указано в вопросе.',
   'The recording will usually mention every option. Some are confirmed, some are rejected or replaced. Only the confirmed ones count.':
     'В записи обычно упоминается каждый вариант. Одни подтверждают, другие отвергают или заменяют. Считаются только подтверждённые.',
-  'Listen to the full discussion of each option. Do not select a choice the moment you hear it named, it may be dismissed moments later.':
+  'Listen to the full discussion of each option. Do not select a choice the moment you hear it named: it may be dismissed moments later.':
     'Дослушайте обсуждение каждого варианта. Не отмечайте его сразу, как услышали название: через пару секунд его могут отбросить.',
   'The correct options are not always confirmed in the same order as the printed list, so keep tracking every option until the part ends.':
     'Правильные варианты подтверждаются не обязательно в том порядке, в каком они напечатаны, поэтому следите за всеми до конца части.',
@@ -254,29 +254,29 @@ export const strings: Record<string, string> = {
   /* ---- Listening: Matching ---- */
   'Read the list of options first and understand what each one represents: a person, a place, an opinion, or a service.':
     'Сначала прочитайте список вариантов и поймите, что стоит за каждым: человек, место, мнение или услуга.',
-  'The items to match usually come up in the order they appear in the recording, so follow along in order.':
-    'Пункты для сопоставления обычно идут в порядке записи, поэтому двигайтесь по порядку.',
+  'The items to match usually come up in the recording in the same order as the numbered questions, so follow along in order.':
+    'Пункты для сопоставления обычно звучат в записи в том же порядке, что и пронумерованные вопросы, поэтому двигайтесь по порядку.',
   "Listen for the description or opinion attached to each item, not just the item's name.":
     'Слушайте описание или мнение, привязанное к каждому пункту, а не только его название.',
-  'The same option can be used more than once unless the instructions say otherwise. Check the instructions before assuming each is used only once.':
-    'Один и тот же вариант можно использовать несколько раз, если в инструкции не сказано иначе. Проверьте инструкцию, прежде чем считать, что каждый идёт один раз.',
+  'Check the instructions and count the options. With a short list (for example A, B or C for six items) letters are used more than once; with a box of more options than questions, each letter is normally used once.':
+    'Проверьте инструкцию и посчитайте варианты. Если список короткий (например, A, B или C для шести пунктов), буквы используются по несколько раз; если в рамке вариантов больше, чем вопросов, каждая буква обычно используется один раз.',
   'Distractor options may be mentioned and then ruled out. Rely on what the speaker settles on, not on the first mention.':
     'Отвлекающие варианты могут прозвучать, а потом быть отброшены. Ориентируйтесь на то, к чему говорящий пришёл, а не на первое упоминание.',
-  'assuming each option can only be used once when the instructions do not say that':
-    'считать, что вариант можно использовать только один раз, хотя в инструкции этого нет',
+  'deciding whether a letter can be reused without checking the instructions and the number of options':
+    'решать, можно ли повторять букву, не проверив инструкцию и количество вариантов',
   "matching by the option's name rather than by the description actually given":
     'сопоставлять по названию варианта, а не по тому описанию, которое дали',
 
   /* ---- Listening: Categorisation ---- */
   'Read the category headings first and understand what belongs in each group.':
     'Сначала прочитайте названия категорий и поймите, что относится к каждой группе.',
-  'Items to sort come up in the order they are discussed, so listen for one at a time.':
-    'Пункты для сортировки идут в порядке обсуждения, поэтому слушайте по одному.',
+  'Items to sort come up in the same order as the numbered questions, so listen for one at a time.':
+    'Пункты для сортировки звучат в том же порядке, что и пронумерованные вопросы, поэтому слушайте по одному.',
   'The speaker may place an item in one category and then move it, or compare it against another. Keep the final placement, not the first one mentioned.':
     'Говорящий может отнести пункт к одной категории, а потом переставить его или сравнить с другой. Оставляйте итоговое место, а не первое названное.',
   'Some categories may end up with more items than others. Do not force an even split.':
     'В одних категориях может оказаться больше пунктов, чем в других. Не пытайтесь делить поровну.',
-  'Listen for the reason given for each placement, it usually contains the exact clue that decides the category.':
+  'Listen for the reason given for each placement: it usually contains the exact clue that decides the category.':
     'Слушайте причину, по которой пункт куда-то отнесли: обычно именно в ней и лежит подсказка.',
   'placing an item in the first category mentioned, before hearing the full reasoning':
     'отнести пункт к первой названной категории, не дослушав рассуждение',

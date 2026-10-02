@@ -33,7 +33,7 @@ type ListeningStrategyKey =
 
 export const LISTENING_STRATEGIES: Record<ListeningStrategyKey, ListeningStrategy> = {
   sentence: {
-    label: 'Sentence, Note & Short-answer Completion',
+    label: 'Sentence & Note Completion, Short-answer Questions',
     steps: [
       nt(
         'Before the audio starts, read the gaps and predict what type of word is missing: a name, a number, a date, a place, or a single noun.',
@@ -110,12 +110,12 @@ export const LISTENING_STRATEGIES: Record<ListeningStrategyKey, ListeningStrateg
   'multiple-answer': {
     label: 'Multiple Answer (choose more than one)',
     steps: [
-      nt('Read all the options before listening. Note exactly how many you need to choose, the question states it.'),
+      nt('Read all the options before listening. Note exactly how many you need to choose: the question states it.'),
       nt(
         'The recording will usually mention every option. Some are confirmed, some are rejected or replaced. Only the confirmed ones count.',
       ),
       nt(
-        'Listen to the full discussion of each option. Do not select a choice the moment you hear it named, it may be dismissed moments later.',
+        'Listen to the full discussion of each option. Do not select a choice the moment you hear it named: it may be dismissed moments later.',
       ),
       nt(
         'The correct options are not always confirmed in the same order as the printed list, so keep tracking every option until the part ends.',
@@ -133,15 +133,15 @@ export const LISTENING_STRATEGIES: Record<ListeningStrategyKey, ListeningStrateg
       nt(
         'Read the list of options first and understand what each one represents: a person, a place, an opinion, or a service.',
       ),
-      nt('The items to match usually come up in the order they appear in the recording, so follow along in order.'),
+      nt('The items to match usually come up in the recording in the same order as the numbered questions, so follow along in order.'),
       nt("Listen for the description or opinion attached to each item, not just the item's name."),
       nt(
-        'The same option can be used more than once unless the instructions say otherwise. Check the instructions before assuming each is used only once.',
+        'Check the instructions and count the options. With a short list (for example A, B or C for six items) letters are used more than once; with a box of more options than questions, each letter is normally used once.',
       ),
       nt('Distractor options may be mentioned and then ruled out. Rely on what the speaker settles on, not on the first mention.'),
     ],
     traps: [
-      nt('assuming each option can only be used once when the instructions do not say that'),
+      nt('deciding whether a letter can be reused without checking the instructions and the number of options'),
       nt("matching by the option's name rather than by the description actually given"),
     ],
   },
@@ -149,12 +149,12 @@ export const LISTENING_STRATEGIES: Record<ListeningStrategyKey, ListeningStrateg
     label: 'Categorisation',
     steps: [
       nt('Read the category headings first and understand what belongs in each group.'),
-      nt('Items to sort come up in the order they are discussed, so listen for one at a time.'),
+      nt('Items to sort come up in the same order as the numbered questions, so listen for one at a time.'),
       nt(
         'The speaker may place an item in one category and then move it, or compare it against another. Keep the final placement, not the first one mentioned.',
       ),
       nt('Some categories may end up with more items than others. Do not force an even split.'),
-      nt('Listen for the reason given for each placement, it usually contains the exact clue that decides the category.'),
+      nt('Listen for the reason given for each placement: it usually contains the exact clue that decides the category.'),
     ],
     traps: [
       nt('placing an item in the first category mentioned, before hearing the full reasoning'),
