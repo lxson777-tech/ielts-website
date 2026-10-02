@@ -139,12 +139,15 @@ export function stampBlockIds(root: ParentNode, ids: readonly string[]): number 
 /** The text of one block: its heading and everything up to the next one.
     The same span segmentLessonBody cuts, read off the page so the
     deterministic answer has something real to say when the tutor cannot be
-    reached. */
+    reached. The help control this module puts at the end of the block is
+    skipped: it is not the lesson, and reading it once quoted the buttons'
+    own labels ("Asking Mr EZ...Show me an example") back to a student whose
+    daily questions had run out. */
 export function blockTextOf(heading: HTMLElement): string {
   const parts: string[] = [heading.textContent ?? ''];
   let node: Element | null = heading.nextElementSibling;
   while (node && !/^H[23]$/.test(node.tagName)) {
-    parts.push(node.textContent ?? '');
+    if (!node.classList?.contains(HELP_NODE_CLASS)) parts.push(node.textContent ?? '');
     node = node.nextElementSibling;
   }
   return parts

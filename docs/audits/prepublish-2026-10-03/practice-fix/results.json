@@ -1,0 +1,95 @@
+{
+  "base": "http://localhost:4592/ielts-website",
+  "checks": [
+    {
+      "name": "en: set title translated",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "en: table unit states its rule",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "en: table unit has 10 blanks",
+      "ok": true,
+      "detail": "10"
+    },
+    {
+      "name": "en: F in blanks 5, 7, 9 scores 8 / 10, not 10 / 10",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "en: missed blank shows the letter still owed: Not quite. The answer is “G”.",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "en: missed blank shows the letter still owed: Not quite. The answer is “J”.",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "en: repeated letter is explained",
+      "ok": true,
+      "detail": "2"
+    },
+    {
+      "name": "en: header total counts 8",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "en: sentence unit states the word limit",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ru: set title translated",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ru: table unit states its rule",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ru: table unit has 10 blanks",
+      "ok": true,
+      "detail": "10"
+    },
+    {
+      "name": "ru: F in blanks 5, 7, 9 scores 8 / 10, not 10 / 10",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ru: missed blank shows the letter still owed: Не совсем. Правильный ответ: «G».",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ru: missed blank shows the letter still owed: Не совсем. Правильный ответ: «J».",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ru: repeated letter is explained",
+      "ok": true,
+      "detail": "2"
+    },
+    {
+      "name": "ru: header total counts 8",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ru: sentence unit states the word limit",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}
