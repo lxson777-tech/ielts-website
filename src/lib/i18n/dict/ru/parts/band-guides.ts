@@ -63,16 +63,18 @@ export const strings: Record<string, string> = {
     "Перестаньте добавлять факты и примеры, которые не связаны с вашей мыслью.",
   "The first sentence only announces that a conclusion is happening. The second restates the actual position in fresh words, which band 6 requires for a \"relevant position\" to hold through the end.":
     "Первое предложение только объявляет, что начинается заключение. Второе повторяет саму позицию свежими словами, а это и нужно на band 6, чтобы \"relevant position\" дожила до конца.",
-  "Write one full conclusion paragraph (3 sentences: summary, restated position, closing thought) for a question you already have an essay plan for. 10 minutes.":
-    "Напишите один полный абзац заключения (3 предложения: итог, повтор позиции, завершающая мысль) к вопросу, план эссе для которого у вас уже есть. 10 минут.",
-  "Band 7 requires addressing ALL parts of the task in full, not some parts more than others, a clear position held THROUGHOUT the response (not one that becomes unclear or repetitive), and main ideas that are extended and supported, not just stated. The descriptor still allows some over-generalising at band 7.":
-    "Band 7 требует раскрыть ВСЕ части задания полностью, а не одни подробнее других, держать ясную позицию НА ПРОТЯЖЕНИИ всего ответа, а не такую, которая теряется или сводится к повторам, и развивать и подкреплять главные мысли, а не просто заявлять их. Некоторые обобщения на band 7 дескриптор ещё допускает.",
+  "Write one conclusion (1 or 2 sentences: a brief summary and your position restated in fresh words, with no new idea) for a question you already have an essay plan for. 10 minutes.":
+    "Напишите одно заключение (1 или 2 предложения: короткий итог и ваша позиция, повторённая новыми словами, без новых мыслей) к вопросу, план эссе для которого у вас уже есть. 10 минут.",
+  "For Task 1 (Academic), band 6 Task Achievement asks for an overview to be attempted and for information to be appropriately selected and supported with figures. Band 5 recounts detail mechanically, without the bigger picture. Write a separate overview paragraph, even a short one.":
+    "Для Task 1 (Academic) band 6 по Task Achievement требует хотя бы попытки обзора, а также уместно отобранной информации, подкреплённой цифрами. На band 5 детали пересказываются механически, без общей картины. Напишите отдельный абзац обзора, пусть даже короткий.",
+  "Band 7 requires all the main parts of the task to be properly addressed, not some covered much more fully than others, a clear position that holds to the end (not conclusions that become unclear or repetitive), and main ideas that are extended and supported, not just stated. The descriptor still allows some over-generalising at band 7.":
+    "Band 7 требует как следует раскрыть все главные части задания, а не одни гораздо подробнее других, держать ясную позицию до самого конца (без выводов, которые теряются или сводятся к повторам), и развивать и подкреплять главные мысли, а не просто заявлять их. Некоторые обобщения на band 7 дескриптор ещё допускает.",
   "Give equal, full development to every part of the question, including the part you find harder.":
     "Развивайте каждую часть вопроса одинаково полно, включая ту, которая даётся труднее.",
   "Extend every main idea with a specific reason, cause, or example, not just a stated claim.":
     "Продолжайте каждую главную мысль конкретной причиной, поводом или примером, а не одним заявлением.",
-  "Repeat your position explicitly in each body paragraph, so a reader never has to guess where you stand.":
-    "Прямо повторяйте свою позицию в каждом основном абзаце, чтобы читателю не приходилось догадываться, на чём вы стоите.",
+  "Link each body paragraph back to your position where the question asks for one, so a reader never has to guess where you stand.":
+    "Связывайте каждый основной абзац со своей позицией, если вопрос её требует, чтобы читателю не приходилось догадываться, на чём вы стоите.",
   "Replace vague generalisations (\"many people believe\") with a concrete, specific detail where you can.":
     "Заменяйте расплывчатые обобщения (\"many people believe\") конкретной деталью там, где это возможно.",
   "Stop stating an idea and moving straight to the next one without extending it.":
@@ -83,6 +85,8 @@ export const strings: Record<string, string> = {
     "Первая пара предложений заявляет мысль и не развивает её. Вторая называет конкретное следствие и причину за ним, а это и означает \"extends and supports\" на band 7.",
   "Pick one body paragraph from an old essay. Rewrite it by adding one sentence of explanation and one specific example. 15 minutes.":
     "Возьмите один основной абзац из старого эссе. Перепишите его, добавив одно предложение с объяснением и один конкретный пример. 15 минут.",
+  "For Task 1 (Academic), the step to band 7 is mainly the overview: band 7 Task Achievement asks for a clear overview of the main trends, differences or stages, while band 6 needs only a relevant one. Make your overview name the two or three key features of the whole visual, then check that every key feature is covered and highlighted in the detail paragraphs.":
+    "Для Task 1 (Academic) шаг к band 7 связан прежде всего с обзором: band 7 по Task Achievement требует ясного обзора главных тенденций, различий или этапов, а для band 6 достаточно уместного. Пусть ваш обзор называет две или три ключевые особенности всего изображения, а затем проверьте, что каждая ключевая особенность раскрыта и выделена в абзацах с деталями.",
   "Band 8 requires all parts sufficiently addressed with a well-developed response, and ideas that are relevant, extended and supported, without the tendency to over-generalise that band 7 still allows. Support needs to be concrete, not a broad statement dressed up as an example.":
     "Band 8 требует, чтобы все части были раскрыты достаточно, ответ был хорошо развит, а мысли были уместными, развёрнутыми и подкреплёнными, без склонности к обобщениям, которую band 7 ещё допускает. Подкрепление должно быть конкретным, а не общим утверждением под видом примера.",
   "Support every main idea with a specific, concrete example: a named scenario, a real situation, a precise fact, not a general statement.":
@@ -299,8 +303,8 @@ export const strings: Record<string, string> = {
     "Перестаньте писать всё эссе одними короткими простыми предложениями.",
   "Stop mixing up basic tense forms within the same paragraph.":
     "Перестаньте путать базовые формы времён внутри одного абзаца.",
-  "The first version is three disconnected simple sentences with a subject-verb agreement error (\"many problem happen\"). The second links the ideas with \"because\" and \"although\", which is the attempted complex sentence band 5 is looking for.":
-    "В первом варианте три несвязанных простых предложения и ошибка в согласовании (\"many problem happen\"). Во втором мысли связаны через \"because\" и \"although\", а это и есть та попытка сложного предложения, которую ищет band 5.",
+  "The first version is three disconnected simple sentences with a plural error (\"many problem\" should be \"many problems\"). The second links the ideas with \"because\" and \"although\", which is the attempted complex sentence band 5 is looking for.":
+    "В первом варианте три несвязанных простых предложения и ошибка во множественном числе (\"many problem\" вместо \"many problems\"). Во втором мысли связаны через \"because\" и \"although\", а это и есть та попытка сложного предложения, которую ищет band 5.",
   "Write 5 sentences about a familiar topic, each using a different connector: because, although, if, when, which. 15 minutes.":
     "Напишите 5 предложений на знакомую тему, каждое с новой связкой: because, although, if, when, which. 15 минут.",
   "Band 6 asks for a mix of simple and complex sentence forms, with errors in grammar and punctuation that rarely reduce communication. Band 5 attempts complex sentences but they tend to be less accurate than the simple ones, and errors can cause the reader some real difficulty.":
@@ -317,8 +321,8 @@ export const strings: Record<string, string> = {
     "Перестаньте злоупотреблять одной конструкцией (например, только придаточными с \"because\"). Подмешивайте другие.",
   "Stop letting a grammar error change the actual meaning of a sentence.":
     "Перестаньте допускать грамматические ошибки, которые меняют смысл предложения.",
-  "The original has a verb-form error (\"should to build\") and a subject-verb agreement error (\"many child not go\"). The revision fixes both while keeping the same complex \"because\" structure, so the error no longer risks confusing the reader.":
-    "В исходном варианте ошибка в форме глагола (\"should to build\") и в согласовании (\"many child not go\"). В исправленном обе убраны, а сложная конструкция с \"because\" сохранена, так что ошибка больше не рискует сбить читателя.",
+  "The original has a verb-form error (\"should to build\"), missing plurals (\"more school\", \"many child\") and a missing auxiliary (\"not go\" instead of \"do not go\"). The revision fixes all of them while keeping the same complex \"because\" structure, so the errors no longer risk confusing the reader.":
+    "В исходном варианте ошибка в форме глагола (\"should to build\"), пропущено множественное число (\"more school\", \"many child\") и вспомогательный глагол (\"not go\" вместо \"do not go\"). В исправленном всё это убрано, а сложная конструкция с \"because\" сохранена, так что ошибки больше не рискуют сбить читателя.",
   "Take 5 sentences from a past essay. Circle the subject and verb in each and check they agree. Fix any article (a/an/the) that is missing or wrong. 15 minutes.":
     "Возьмите 5 предложений из прошлого эссе. Обведите в каждом подлежащее и сказуемое и проверьте, что они согласованы. Исправьте пропущенные и неверные артикли (a/an/the). 15 минут.",
   "Band 7 asks for a variety of complex structures, frequent error-free sentences, and good control of grammar and punctuation with only a few errors. Band 6 allows errors that only \"rarely reduce communication\" but does not require frequent error-free sentences or a variety of complex forms.":
@@ -353,8 +357,8 @@ export const strings: Record<string, string> = {
     "Перестаньте брать сложную конструкцию, в которой не уверены, не проверив её. В сомнении возьмите более простую, но верную.",
   "Stop leaving more than one or two errors uncorrected after proofreading.":
     "Перестаньте оставлять после проверки больше одной или двух ошибок.",
-  "The original has three errors in one sentence (wrong tense after \"if\", wrong preposition, and an unnecessary \"get\"). The revision is the same idea with zero errors, which is what \"the majority of sentences are error-free\" requires at band 8.":
-    "В исходном варианте три ошибки в одном предложении (неверное время после \"if\", неверный предлог и лишнее \"get\"). В исправленном та же мысль без единой ошибки, а это и требует band 8 своим \"большинство предложений без ошибок\".",
+  "The original has four errors in one sentence (a missing \"the\" before \"government\", the wrong tense after \"if\", the wrong preposition, and an unnecessary \"get\"). The revision is the same idea with zero errors, which is what \"the majority of sentences are error-free\" requires at band 8.":
+    "В исходном варианте четыре ошибки в одном предложении (пропущен \"the\" перед \"government\", неверное время после \"if\", неверный предлог и лишнее \"get\"). В исправленном та же мысль без единой ошибки, а это и требует band 8 своим \"большинство предложений без ошибок\".",
   "Take one paragraph. Mark every error you can find, however small. Rewrite the paragraph with all of them fixed and read it aloud. 20 minutes.":
     "Возьмите один абзац. Отметьте каждую ошибку, которую найдёте, даже мелкую. Перепишите абзац со всеми исправлениями и прочитайте вслух. 20 минут.",
   "Band 9 asks for a wide range of structures used with full flexibility and accuracy, where rare minor errors occur only as \"slips\", the kind of small mistake even a highly proficient writer occasionally makes. This band is genuinely rare: it means essentially no grammar weakness anywhere in the essay.":

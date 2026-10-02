@@ -28,10 +28,16 @@ const RULES = {
 
 const ATTRIBUTION = "PracticePTEOnline, reused with the publisher's permission.";
 
-const NOTICE = [
-  'It joins the two ideas with one subordinate clause, rather than a comma splice or two sentences left as they were.',
-  'The subordinating word it chooses (although, because, while...) actually matches the logical relationship between the two ideas, not a random one that happens to fit grammatically.',
-  'Nothing from either original sentence is lost. Combining is not the same as cutting one idea to fit the other in.',
+const NOTICE_GUIDED = [
+  'It joins contrasting ideas inside one sentence with a subordinating word ("whereas a colleague who moves to a smaller firm... may be uncomfortable for a year"), rather than leaving them as separate simple sentences.',
+  'The joining word matches the logic: "whereas" sets one person against another, and "where she knows nobody" adds detail about the place.',
+  'Nothing is lost in the combining: both ideas stay in the sentence. Do the same with your own pair, because combining is not the same as cutting one idea to fit the other in.',
+] as const;
+
+const NOTICE_CHECK = [
+  'It builds its sentences around subordinate clauses ("how a child reads failure", "who believes ability is fixed") rather than a run of simple sentences.',
+  'Each clause does a job the logic needs: "who believes ability is fixed" says which pupil is meant, and "that they are not built for the subject" says what the poor result is taken to prove.',
+  'Nothing is lost in the combining: both ideas stay in the sentence. Do the same with your own pair, because combining is not the same as cutting one idea to fit the other in.',
 ] as const;
 
 const GUIDED: WrittenFocusedTask = {
@@ -56,7 +62,7 @@ const GUIDED: WrittenFocusedTask = {
     'Which subordinating word matches that relationship (although and while signal contrast, because signals reason)?',
     'Which idea goes in the main clause and which in the subordinate clause? Either order can work, so long as the logic is clear.',
   ],
-  noticeInTheModel: NOTICE,
+  noticeInTheModel: NOTICE_GUIDED,
 };
 
 const CHECK: WrittenFocusedTask = {
@@ -76,7 +82,7 @@ const CHECK: WrittenFocusedTask = {
   rules: RULES,
   piece: 'sentence',
   modelParagraphIndex: 1,
-  noticeInTheModel: NOTICE,
+  noticeInTheModel: NOTICE_CHECK,
 };
 
 export const WRITING_TASK2_COMPLEX_SENTENCES: readonly WrittenFocusedTask[] = [GUIDED, CHECK];

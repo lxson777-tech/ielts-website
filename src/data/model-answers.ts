@@ -1,5 +1,5 @@
 /* Model-answer bank for the Writing section: one Band 8 model for every one of
-   the 60 real exam tasks in writing-prompts.ts, written against the prompt, its
+   the 63 real exam tasks in writing-prompts.ts, written against the prompt, its
    generated plan and, for Task 1, the chart image itself. Drives /writing/models
    and the Model answer tab in the Writing Trainer. Prompt text stays in
    writing-prompts.ts; this file references prompts by id only.
@@ -54,7 +54,7 @@ export interface ModelAnswer {
   criteria: ModelAnswerCriteria;
 }
 
-/* Band 8 models for the 60 real exam tasks, one per task, written against the
+/* Band 8 models for the 63 real exam tasks, one per task, written against the
    prompt, its generated plan and (for Task 1) the chart image itself. They
    live in src/data/models-real/ in batches of five, which is how they were
    written and how they are easiest to re-check.
@@ -85,8 +85,8 @@ export function getModelAnswers(promptId: string): ModelAnswer[] {
   return MODEL_ANSWERS.filter((m) => m.promptId === promptId).sort((a, b) => a.band - b.band);
 }
 
-/** The distinct bands available for a prompt (3 for most Task 2 prompts,
-    2 for Task 1 and any Task 2 prompt past the twelve-prompt cap). */
+/** The distinct bands available for a prompt (today only Band 8, one model
+    per prompt; the list grows if lower or higher band models are added). */
 export function getModelBands(promptId: string): ModelBand[] {
   return getModelAnswers(promptId).map((m) => m.band);
 }
