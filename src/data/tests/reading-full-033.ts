@@ -175,7 +175,7 @@ const test: PracticeTest = {
               "evidence": "Animals are just like we are. They need stimulation"
             }
           ],
-          "legendHtml": "<p><strong>A</strong>. Stanley Rapoport<br/>\n<strong>B</strong>. Marion Diamond<br/>\n<strong>C</strong>. Warner Schaie<br/>\n<strong>D</strong>. Harry Bahrick<br/>\n<strong>E</strong>. Robert Kail</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A</strong>. Stanley Rapoport<br/>\n<strong>B</strong>. Marion Diamond<br/>\n<strong>C</strong>. Warner Schaie<br/>\n<strong>D</strong>. Harry Bahrick<br/>\n<strong>E</strong>. Robert Kail</p>",
           "options": [
             "A",
             "B",
@@ -324,51 +324,39 @@ const test: PracticeTest = {
               "evidence": "The population of the world is expected to reach nine billion by 2045."
             }
           ],
-          "legendHtml": "<p><strong>The food we grow and eat</strong></p><p><strong>Supermarkets</strong><br/>\n• sell fruit and vegetables that transport well<br/>\n• want fruit and vegetables to be standard in their (21) …………….</p><p><strong>Public awareness</strong><br/>\n• while people know about plants disappearing from (22) ……………….. very few know about the decline in fruit and vegetable varieties</p><p><strong>Extinction of food varieties</strong><br/>\n• less than 100 of the types of (23) …………………. once available in the USA are still grown<br/>\n• over (24) ……………….. of food varieties around the world have disappeared in the last 100 years</p><p><strong>Current problems in food production</strong><br/>\n• a particular fungus is attacking wheat in various countries<br/>\n• Rick Ward believes the threat to food supplies in Asia and Africa might lead to a (25) ………………</p><p><strong>Food production in the future</strong><br/>\n• climate change and disease may put pressure on food production<br/>\n• twice the amount of food may be needed because of an increase in (26) …………….</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>The food we grow and eat</strong></p><p><strong>Supermarkets</strong><br/>\n• sell fruit and vegetables that transport well<br/>\n• want fruit and vegetables to be standard in their (21) …………….</p><p><strong>Public awareness</strong><br/>\n• while people know about plants disappearing from (22) ……………….. very few know about the decline in fruit and vegetable varieties</p><p><strong>Extinction of food varieties</strong><br/>\n• less than 100 of the types of (23) …………………. once available in the USA are still grown<br/>\n• over (24) ……………….. of food varieties around the world have disappeared in the last 100 years</p><p><strong>Current problems in food production</strong><br/>\n• a particular fungus is attacking wheat in various countries<br/>\n• Rick Ward believes the threat to food supplies in Asia and Africa might lead to a (25) ………………</p><p><strong>Food production in the future</strong><br/>\n• climate change and disease may put pressure on food production<br/>\n• twice the amount of food may be needed because of an increase in (26) …………….</p>",
           "wordLimit": 1,
           "table": {
             "rows": [
               [
-                "……………. Public awareness • while people know about plants disappearing from",
                 {
                   "questionId": "q21"
-                },
-                ""
+                }
               ],
               [
-                "……………….. very few know about the decline in fruit and vegetable varieties Extinction of food varieties • less than 100 of the types of",
                 {
                   "questionId": "q22"
-                },
-                ""
+                }
               ],
               [
-                "…………………. once available in the USA are still grown • over",
                 {
                   "questionId": "q23"
-                },
-                ""
+                }
               ],
               [
-                "……………….. of food varieties around the world have disappeared in the last 100 years Current problems in food production • a particular fungus is attacking wheat in various countries • Rick Ward believes the threat to food supplies in Asia and Africa might lead to a",
                 {
                   "questionId": "q24"
-                },
-                ""
+                }
               ],
               [
-                "……………… Food production in the future • climate change and disease may put pressure on food production • twice the amount of food may be needed because of an increase in",
                 {
                   "questionId": "q25"
-                },
-                ""
+                }
               ],
               [
-                "……………",
                 {
                   "questionId": "q26"
-                },
-                ""
+                }
               ]
             ]
           }
@@ -556,7 +544,7 @@ const test: PracticeTest = {
               "evidence": "Therefore I oppose fluoridation of water supplies and favor the voluntary use of fluoride tablets by those who want to take them."
             }
           ],
-          "legendHtml": "<p>The traditional view of science is that (36) ………………</p><p>A sociological view of science argues that (37) …………..</p><p>Collins is of the opinion that (38) ………………</p><p>The writer suggests that a supporter of fluoridation may conclude that (39) ………………</p><p>The writer suggests that an opponent of fluoridation may conclude that (40) …………….</p><p><strong>A</strong>. the results of scientific research are not always understood at first<br/>\n<strong>B</strong>. scientific knowledge is based on experiments conducted by scientists.<br/>\n<strong>C</strong>. people should be able to choose whether they want fluoride.<br/>\n<strong>D</strong>. there is insufficient proof to support a cautious approach.<br/>\n<strong>E</strong>. the serious damage fluoride causes far outweighs any positive effects.<br/>\n<strong>F</strong>. children are not the only ones who benefit from fluoridation.<br/>\n<strong>G</strong>. scientific knowledge is affected by the beliefs of everyone concerned.</p><p><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<p>The traditional view of science is that (36) ………………</p><p>A sociological view of science argues that (37) …………..</p><p>Collins is of the opinion that (38) ………………</p><p>The writer suggests that a supporter of fluoridation may conclude that (39) ………………</p><p>The writer suggests that an opponent of fluoridation may conclude that (40) …………….</p><p><strong>A</strong>. the results of scientific research are not always understood at first<br/>\n<strong>B</strong>. scientific knowledge is based on experiments conducted by scientists.<br/>\n<strong>C</strong>. people should be able to choose whether they want fluoride.<br/>\n<strong>D</strong>. there is insufficient proof to support a cautious approach.<br/>\n<strong>E</strong>. the serious damage fluoride causes far outweighs any positive effects.<br/>\n<strong>F</strong>. children are not the only ones who benefit from fluoridation.<br/>\n<strong>G</strong>. scientific knowledge is affected by the beliefs of everyone concerned.</p>"
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "format": 3,
-  "indexVersion": "5b258b04d881304a",
+  "indexVersion": "4710c7b4aea16bc8",
   "tests": [
     {
       "id": "listening-full-001",
@@ -376,7 +376,7 @@
       "id": "reading-full-012",
       "skill": "reading",
       "title": "Academic Reading Test 12",
-      "byType": { "matching-headings": 2, "multiple-choice": 3, "paragraph-matching": 14, "sentence-completion": 10, "tfng": 6, "yes-no-notgiven": 5 },
+      "byType": { "multiple-choice": 5, "paragraph-matching": 14, "sentence-completion": 10, "tfng": 6, "yes-no-notgiven": 5 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -439,7 +439,7 @@
       "id": "reading-full-019",
       "skill": "reading",
       "title": "Academic Reading Test 19",
-      "byType": { "matching-features": 6, "matching-headings": 5, "multiple-choice": 9, "sentence-completion": 14, "yes-no-notgiven": 6 },
+      "byType": { "matching-features": 6, "matching-headings": 5, "multiple-choice": 10, "sentence-completion": 13, "yes-no-notgiven": 6 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -619,7 +619,7 @@
       "id": "reading-full-039",
       "skill": "reading",
       "title": "Academic Reading Test 39",
-      "byType": { "matching-features": 16, "multiple-choice": 1, "paragraph-matching": 6, "sentence-completion": 5, "tfng": 12 },
+      "byType": { "matching-features": 16, "multiple-choice": 2, "paragraph-matching": 6, "sentence-completion": 4, "tfng": 12 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -1879,7 +1879,7 @@
       "sourceTestId": "reading-full-012",
       "partNumber": 3,
       "title": "Passage 3 Drill: THE POWER OF THE PLACEBO EFFECT",
-      "byType": { "matching-headings": 2, "paragraph-matching": 7, "yes-no-notgiven": 5 },
+      "byType": { "multiple-choice": 2, "paragraph-matching": 7, "yes-no-notgiven": 5 },
       "questions": [27, 40],
       "durationMinutes": 20
     },
@@ -2031,7 +2031,7 @@
       "sourceTestId": "reading-full-019",
       "partNumber": 1,
       "title": "Passage 1 Drill: Frogwatch",
-      "byType": { "matching-features": 6, "sentence-completion": 1, "yes-no-notgiven": 6 },
+      "byType": { "matching-features": 6, "multiple-choice": 1, "yes-no-notgiven": 6 },
       "questions": [1, 13],
       "durationMinutes": 20
     },
@@ -2527,7 +2527,7 @@
       "sourceTestId": "reading-full-039",
       "partNumber": 3,
       "title": "Passage 3 Drill: Tele-working",
-      "byType": { "matching-features": 8, "sentence-completion": 5 },
+      "byType": { "matching-features": 8, "multiple-choice": 1, "sentence-completion": 4 },
       "questions": [28, 40],
       "durationMinutes": 20
     },
@@ -2882,7 +2882,7 @@
           "paper": "reading-full-029",
           "firstQuestion": 22,
           "types": ["sentence-completion"],
-          "versions": ["f34f902bf66af722", "5f3da0a01b8e09da", "40ac9d151d4848a8", "95ea57231f680fea", "37c080df5b929f06"]
+          "versions": ["f34f902bf66af722", "97e4ca7ee086e226", "40ac9d151d4848a8", "95ea57231f680fea", "37c080df5b929f06"]
         },
         {
           "paper": "reading-full-035",
@@ -2901,7 +2901,7 @@
           "paper": "reading-full-016",
           "firstQuestion": 1,
           "types": ["table-completion"],
-          "versions": ["6238ef64c7438b4b", "3dd845a0d3a5708c", "e82472069d6d0738", "89c885506a6bbaa0", "613a223aee721dab", "7bc70469838afe61", "48bd6a2ee5fb4fb5", "0822b598a2624ccb", "8cc7500f9c70e101", "72c5e028a3263aa4"]
+          "versions": ["308b93d1751dec54", "ed90a13225e00cca", "af8eb228c9baa9c0", "08bc579b48fd867b", "42c45b058c39eec4", "ac23aa5a1c8340e8", "c6ab077f6720a507", "f60a984434b491a6", "4b2406a7bbdf8de5", "3a0e00bbec4399ae"]
         },
         {
           "paper": "reading-full-002",
@@ -2926,7 +2926,7 @@
           "paper": "reading-full-001",
           "firstQuestion": 1,
           "types": ["tfng"],
-          "versions": ["e140982a148c1e92", "9225da948258807a", "d05cdfec561f5d71", "7979c6d9ed8caf88", "abea3e79096117bc", "40675f43f50192ec", "bc1acb5645e9ac9f"]
+          "versions": ["e140982a148c1e92", "9225da948258807a", "d05cdfec561f5d71", "df294a42a689b5e0", "abea3e79096117bc", "40675f43f50192ec", "bc1acb5645e9ac9f"]
         }
       ]
     },
@@ -4717,7 +4717,7 @@
     {
       "type": "matching-headings",
       "absent": false,
-      "reading": { "questions": 79, "papers": 13, "drills": 14 },
+      "reading": { "questions": 77, "papers": 12, "drills": 13 },
       "listening": { "questions": 0, "papers": 0, "drills": 0 }
     },
     {
@@ -4729,7 +4729,7 @@
     {
       "type": "multiple-choice",
       "absent": false,
-      "reading": { "questions": 160, "papers": 30, "drills": 46 },
+      "reading": { "questions": 164, "papers": 30, "drills": 49 },
       "listening": { "questions": 192, "papers": 28, "drills": 49 }
     },
     {
@@ -4741,7 +4741,7 @@
     {
       "type": "sentence-completion",
       "absent": false,
-      "reading": { "questions": 431, "papers": 38, "drills": 81 },
+      "reading": { "questions": 429, "papers": 38, "drills": 80 },
       "listening": { "questions": 629, "papers": 30, "drills": 94 }
     },
     {

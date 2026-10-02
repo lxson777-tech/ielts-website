@@ -335,7 +335,7 @@ const test: PracticeTest = {
               "answer": "A",
               "textHtml": "More work will need to be done in future decades to deal with the impact of rising water levels",
               "explanation": "Pineda says ‘we’ll need to go back in there and adjust to the changing environment’ in future decades, matching this statement.",
-              "evidence": "we know that in 20, 30, 40 years, we’ll need to go back in there and adjust to the changing environment"
+              "evidence": "We know that in 20, 30, 40 years, we’ll need to go back in there and adjust to the changing environment"
             },
             {
               "id": "q26",
@@ -478,7 +478,7 @@ const test: PracticeTest = {
             {
               "id": "q36",
               "answer": "A",
-              "textHtml": "Teaching a livestock guard dog how to do its work needs a different focus from teaching a house guard dog. List of people A. Dan Macon B. Silvia Ribeiro C. Linda van Bommel D. Julie Young E. Bethany Smith",
+              "textHtml": "Teaching a livestock guard dog how to do its work needs a different focus from teaching a house guard dog.",
               "explanation": "Macon warns that ‘too much human affection makes it a great dog for guarding the front porch, rather than a great livestock guard dog’, matching this statement about different training focuses.",
               "evidence": "too much human affection makes it a great dog for guarding the front porch, rather than a great livestock guard dog"
             }

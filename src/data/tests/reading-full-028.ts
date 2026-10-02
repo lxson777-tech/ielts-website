@@ -187,7 +187,7 @@ const test: PracticeTest = {
               "evidence": "an instrument called MS-Nose that sucks in breath from a person’s nose while they are chewing gum, for instance, and analyses the aroma molecules it finds there"
             }
           ],
-          "legendHtml": "<p><strong>A</strong>. Givaudan<br/>\n<strong>B</strong>. University of Bath<br/>\n<strong>C</strong>. University of Nottingham<br/>\n<strong>D</strong>. Firmenich<br/>\n<strong>E</strong>. Chemical senses Institute<br/>\n<strong>F</strong>. Linguagen</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A</strong>. Givaudan<br/>\n<strong>B</strong>. University of Bath<br/>\n<strong>C</strong>. University of Nottingham<br/>\n<strong>D</strong>. Firmenich<br/>\n<strong>E</strong>. Chemical senses Institute<br/>\n<strong>F</strong>. Linguagen</p>",
           "options": [
             "A",
             "B",
@@ -246,7 +246,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 15-20",
           "type": "categorisation",
-          "instructionHtml": "Classify the following developments as characterising",
+          "instructionHtml": "Classify the following developments as characterising NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q15",
@@ -371,7 +371,7 @@ const test: PracticeTest = {
               "evidence": "This degree to which an adolescent is able to make friends and have an accepting peer group, though, is a major indicator of how well the adolescent will adjust in other areas of social and psychological development."
             }
           ],
-          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         }
       ]
     },
@@ -518,7 +518,7 @@ const test: PracticeTest = {
             },
             {
               "id": "q39",
-              "answer": "Trap lining",
+              "answer": "Trap-lining",
               "explanation": "Paragraph E says the bees learn where the scattered trees are and keep to the same routes, and it gives this habit a name. The passage prints it with a hyphen, as trap-lining, so write it exactly as it appears.",
               "evidence": "This is called ‘trap-lining’ and the bees forage for up to 23 km from their nests."
             }
@@ -545,7 +545,7 @@ const test: PracticeTest = {
               "evidence": "Thus, as pollinators of crops and natural vegetation, bees occupy key positions in the web of relationships which sustain the living architecture of our planet."
             }
           ],
-          "legendHtml": "<p><strong>Questions 40</strong></p><p><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<p><strong>Questions 40</strong></p>"
         }
       ]
     }

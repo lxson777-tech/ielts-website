@@ -105,7 +105,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 7-12",
           "type": "matching-features",
-          "instructionHtml": "The reading passage describes the opinions of Dr, Ken Aplin, Dr. Dale Roberts and Dr. Rick Speare in relation to strategies for frog conservation. Match one of the researchers A-C to each of the statements below. There may be more than one correct answer.",
+          "instructionHtml": "The reading passage describes the opinions of Dr, Ken Aplin, Dr. Dale Roberts and Dr. Rick Speare in relation to strategies for frog conservation. Match one of the researchers A-C to each of the statements below. There may be more than one correct answer. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q7",
@@ -162,19 +162,24 @@ const test: PracticeTest = {
         },
         {
           "title": "Question 13",
-          "type": "sentence-completion",
+          "type": "multiple-choice",
           "instructionHtml": "Write the appropriate letter A-D.",
           "questions": [
             {
               "id": "q13",
               "answer": "B",
-              "before": "The main purpose of Frogwatch is . A for people to collect and deliver dead or dying frogs to scientists. B for people to observe and collect information about frog populations for scientists. C for people to allow scientists onto their private land to look at frog habitats. D for people to set up ponds in their gardens as habitat for frogs",
-              "after": "",
               "explanation": "The opening paragraph describes the plan for members to 'observe the numbers and kinds of frogs' and 'report this information to the museum', matching B.",
-              "evidence": "report this information to the museum"
+              "evidence": "report this information to the museum",
+              "textHtml": "The main purpose of Frogwatch is",
+              "options": [
+                "for people to collect and deliver dead or dying frogs to scientists",
+                "for people to observe and collect information about frog populations for scientists",
+                "for people to allow scientists onto their private land to look at frog habitats",
+                "for people to set up ponds in their gardens as habitat for frogs"
+              ]
             }
           ],
-          "legendHtml": "<p><strong><span>Questions 13</span></strong></p><p><span>13. The main purpose of Frogwatch is .</span><br/>\n<span><strong>A</strong> for people to collect and deliver dead or dying frogs to scientists.</span><br/>\n<span><strong>B</strong> for people to observe and collect information about frog populations for scientists.</span><br/>\n<span><strong>C</strong> for people to allow scientists onto their private land to look at frog habitats.</span><br/>\n<span><strong>D</strong> for people to set up ponds in their gardens as habitat for frogs.</span></p>"
+          "legendHtml": ""
         }
       ]
     },

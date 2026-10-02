@@ -349,7 +349,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 15-21",
           "type": "tfng",
-          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 15-26 on your answer sheet, write",
+          "instructionHtml": "Do the following statements agree with the information given in reading passage? In boxes 15-21 on your answer sheet, write",
           "questions": [
             {
               "id": "q15",
@@ -405,7 +405,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 22-27",
           "type": "matching-features",
-          "instructionHtml": "Look at the following statements (Questions 8-13) and the list of companies below. Match each statement with the correct company, A-D.",
+          "instructionHtml": "Look at the following statements (Questions 22-27) and the list of companies below. Match each statement with the correct company, A-D. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q22",
@@ -623,7 +623,7 @@ const test: PracticeTest = {
               "evidence": "but this criticism may be overblown since fair trade has endured for and been praised in the developing world itself"
             }
           ],
-          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         }
       ]
     }

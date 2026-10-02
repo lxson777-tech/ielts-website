@@ -97,7 +97,7 @@ const test: PracticeTest = {
             {
               "id": "q6",
               "answer": "Tin",
-              "explanation": "Paragraph 10 says tin was rationed for the war effort, so frozen food, which needed none, became popular instead.",
+              "explanation": "Paragraph 10 says canned foods were rationed to save tin for the war effort, so frozen food, which needed no tin, became popular instead.",
               "evidence": "Canned foods were rationed to save tin for the war effort, while frozen foods were abundant and cheap."
             },
             {
@@ -212,7 +212,7 @@ const test: PracticeTest = {
               "answer": "ii",
               "textHtml": "Paragraph B",
               "explanation": "Paragraph B describes coral polyps and algae helping each other, the polyps getting protection and the algae providing nutrients, a cooperative relationship.",
-              "evidence": "This comfortable symbiotic relationship has led to the growth of coral reefs that cover 0."
+              "evidence": "This comfortable symbiotic relationship has led to the growth of coral reefs that cover 0.1% of the planet’s ocean bed while providing homes for more than 25% of marine species"
             },
             {
               "id": "q16",
@@ -407,7 +407,7 @@ const test: PracticeTest = {
             "html": "<span>Three leaders in their fields answer questions about our relationships with robot.</span>"
           },
           {
-            "html": "<span>When asked ‘Should robots be used to colonies other planets?’, cosmology and astrophysics Professor Martin Rees said he believed the solar system would be mapped by robotic craft by the end of the century. ‘The next step would be mining of asteroids, enabling fabrication of large structures in space without having to bring all the raw materials from Earth…. I think this is more realistic and benign than the… “terraforming”* of planets.’ He maintains that colonised planets ‘should be preserved with a status that is analogous to Antarctica here on Earth.’</span>"
+            "html": "<span>When asked ‘Should robots be used to colonise other planets?’, cosmology and astrophysics Professor Martin Rees said he believed the solar system would be mapped by robotic craft by the end of the century. ‘The next step would be mining of asteroids, enabling fabrication of large structures in space without having to bring all the raw materials from Earth…. I think this is more realistic and benign than the… “terraforming”* of planets.’ He maintains that colonised planets ‘should be preserved with a status that is analogous to Antarctica here on Earth.’</span>"
           },
           {
             "html": "<span>On the question of using robots to colonise other planets and exploit mineral resources, engineering Professor Daniel Wolpert replied, ‘I don’t see a pressing need to colonise other planets unless we can bring [these] resources back to Earth. The vast majority of Earth is currently inaccessible to us. Using robots to gather resources nearer to home would seem to be a better use of our robotic tools.’</span>"
