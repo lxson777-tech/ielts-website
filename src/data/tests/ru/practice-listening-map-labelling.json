@@ -19,16 +19,20 @@
       "ru": "На 24:43 лектор показывает приёмник (receiver), вживлённый под кожу во время операции."
     },
     "u1-q0": {
-      "sha": "5333737794fb66b0",
-      "ru": "На 09:39 Sally показывает автостоянку (car park) рядом с железнодорожными путями у олимпийской площадки. Это и есть подпись на плане."
+      "sha": "75bdfb7aec10306b",
+      "ru": "На 11:16 он размещает \"a bird hide to the west of\" озера, в конце тропинки. Это вариант A."
     },
     "u1-q1": {
-      "sha": "139f1953be502f81",
-      "ru": "На 10:06 Sally показывает розарий (rose garden) к западу от Tower."
+      "sha": "f2f83bd6cb8914fd",
+      "ru": "На 11:16 он говорит: \"there's a dog walking area in the southern part\" парка. Это вариант I."
     },
     "u1-q2": {
-      "sha": "09d6824d7c87aec2",
-      "ru": "На 10:06 Sally показывает кафе (cafe) у озера, которое видно сквозь деревья."
+      "sha": "1c99af13216b9cad",
+      "ru": "На 11:40 он говорит, что цветник это \"the circular area on the map surrounded by paths\". Это вариант F."
+    },
+    "u1-q3": {
+      "sha": "e43ece970eb48ba5",
+      "ru": "На 11:40 он размещает \"a wooded area in the western section of the park between two paths\". Это вариант E."
     }
   }
 }

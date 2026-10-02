@@ -143,7 +143,10 @@ export const listeningFull028: PracticeTest = {
             {
               "id": "q12",
               "textHtml": "He spent on a deserted island before he was rescued.",
-              "answer": "6 months",
+              "answer": [
+                "6 months",
+                "six months"
+              ],
               "explanation": "Around 8:55 the guide says the shipwrecked group waited six months before an American whale ship found them. Two numbers are close together here, his age of 14 and the year 1841, so keep your eye on the words 'before he was rescued' in the question.",
               "evidence": "They had to wait for six months before they were rescued"
             },

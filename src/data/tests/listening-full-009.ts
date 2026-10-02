@@ -33,14 +33,20 @@ export const listeningFull009: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "business",
+              "answer": [
+                "business",
+                "business studies"
+              ],
               "explanation": "At 01:46 the student says she is doing a degree in business studies. The published key spelled this 'busines'; that typo is corrected here so the correct spelling scores.",
               "evidence": "I'm doing a degree in business studies"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "third",
+              "answer": [
+                "third",
+                "3rd"
+              ],
               "explanation": "At 01:55 the student says she is in the third year of her course, having taken a year off.",
               "evidence": "I'm in the third year because I took last year off"
             }
@@ -105,14 +111,21 @@ export const listeningFull009: PracticeTest = {
             {
               "id": "q9",
               "textHtml": "Question 9",
-              "answer": "answer phone",
+              "answer": [
+                "answer phone",
+                "answer the phone",
+                "answering the phone"
+              ],
               "explanation": "At 05:05 the advisor says the duties include responding to enquiries and answering the phone.",
               "evidence": "deal with student inquiries and answer the phone"
             },
             {
               "id": "q10",
               "textHtml": "Question 10",
-              "answer": "11.30",
+              "answer": [
+                "11.30",
+                "11:30"
+              ],
               "explanation": "At 05:33 they settle on 11.30 for the interview, since the student is busy at 10.",
               "evidence": "How about 11.30"
             }
@@ -277,7 +290,10 @@ export const listeningFull009: PracticeTest = {
             {
               "id": "q22",
               "textHtml": "Question 22",
-              "answer": "13 countries",
+              "answer": [
+                "13 countries",
+                "thirteen countries"
+              ],
               "explanation": "At 14:32 the speaker says scientists from 13 countries have worked on the project so far.",
               "evidence": "scientists from 13 countries have been taking part in the project"
             }
@@ -343,7 +359,7 @@ export const listeningFull009: PracticeTest = {
               "id": "q29",
               "textHtml": "sustainable fishing practices",
               "answer": "B",
-              "explanation": "At 17:36 the speaker says results for sustainable fishing practices will be seen quite soon, so this is the near future.",
+              "explanation": "At 17:51 the speaker says results for sustainable fishing practices will be seen quite soon, so this is the near future.",
               "evidence": "We'll be seeing the results of that quite soon"
             },
             {
@@ -434,7 +450,7 @@ export const listeningFull009: PracticeTest = {
               "textHtml": "Question 35",
               "answer": "business",
               "explanation": "At 22:35 the speaker describes a company providing luxury serviced apartments aimed at business travellers.",
-              "evidence": "provide clients with luxury service departments"
+              "evidence": "business travelers don't want"
             },
             {
               "id": "q36",

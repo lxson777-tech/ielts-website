@@ -19,7 +19,7 @@ export const listeningFull029: PracticeTest = {
         "kind": "audio",
         "label": "Part 1",
         "src": "/audio/listening/test-029.mp3",
-        "questionHtml": "<section class=\"listening-source-group\" data-question-start=\"1\" data-question-end=\"5\" data-question-type=\"table-completion\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 1-5</p><p class=\"listening-source-instruction\">Complete the table below. Write NO MORE THAN THREE WORDS AND/ OR A NUMBER for each answer.</p></header><p><strong>Main programme Day 1</strong></p><figure class=\"listening-source-table\"><table><thead><tr><th>Time</th><th>Place</th><th>Activity</th></tr></thead><tbody><tr><td>9 am</td><td><span aria-label=\"Blank for question 1\" class=\"listening-answer-blank\" data-question=\"1\" role=\"img\"><span class=\"listening-answer-number\">(1)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></td><td>Welcome talk by Director of Studies</td></tr><tr><td>9.30 am</td><td> </td><td>Talk by the <span aria-label=\"Blank for question 2\" class=\"listening-answer-blank\" data-question=\"2\" role=\"img\"><span class=\"listening-answer-number\">(2)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></td></tr><tr><td>10am</td><td> </td><td>Break</td></tr><tr><td><span aria-label=\"Blank for question 3\" class=\"listening-answer-blank\" data-question=\"3\" role=\"img\"><span class=\"listening-answer-number\">(3)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span>am</td><td>Classroom 4</td><td><span aria-label=\"Blank for question 4\" class=\"listening-answer-blank\" data-question=\"4\" role=\"img\"><span class=\"listening-answer-number\">(4)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></td></tr><tr><td>12.30 am</td><td><span aria-label=\"Blank for question 5\" class=\"listening-answer-blank\" data-question=\"5\" role=\"img\"><span class=\"listening-answer-number\">(5)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></td><td>Lunch</td></tr></tbody></table></figure></section><section class=\"listening-source-group\" data-question-start=\"6\" data-question-end=\"10\" data-question-type=\"diagram-labelling\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 6-10</p><p class=\"listening-source-instruction\">Label the places on the map below.</p></header><figure class=\"listening-source-figure\"><img alt=\"Listening question diagram\" src=\"/pics/listening/imported/test-029.png\"/></figure><div class=\"listening-source-question-list\" role=\"list\"><div class=\"listening-source-question-row\" data-question-row=\"6\" role=\"listitem\"><span aria-label=\"Blank for question 6\" class=\"listening-answer-blank\" data-question=\"6\" role=\"img\"><span class=\"listening-answer-number\">(6)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span>                   <span aria-label=\"Blank for question 7\" class=\"listening-answer-blank\" data-question=\"7\" role=\"img\"><span class=\"listening-answer-number\">(7)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"8\" role=\"listitem\"><span aria-label=\"Blank for question 8\" class=\"listening-answer-blank\" data-question=\"8\" role=\"img\"><span class=\"listening-answer-number\">(8)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span>                   <span aria-label=\"Blank for question 9\" class=\"listening-answer-blank\" data-question=\"9\" role=\"img\"><span class=\"listening-answer-number\">(9)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"10\" role=\"listitem\"><span aria-label=\"Blank for question 10\" class=\"listening-answer-blank\" data-question=\"10\" role=\"img\"><span class=\"listening-answer-number\">(10)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div></div></section>",
+        "questionHtml": "<section class=\"listening-source-group\" data-question-start=\"1\" data-question-end=\"5\" data-question-type=\"table-completion\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 1-5</p><p class=\"listening-source-instruction\">Complete the table below. Write NO MORE THAN THREE WORDS AND/ OR A NUMBER for each answer.</p></header><p><strong>Main programme Day 1</strong></p><figure class=\"listening-source-table\"><table><thead><tr><th>Time</th><th>Place</th><th>Activity</th></tr></thead><tbody><tr><td>9 am</td><td><span aria-label=\"Blank for question 1\" class=\"listening-answer-blank\" data-question=\"1\" role=\"img\"><span class=\"listening-answer-number\">(1)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></td><td>Welcome talk by Director of Studies</td></tr><tr><td>9.30 am</td><td> </td><td>Talk by the <span aria-label=\"Blank for question 2\" class=\"listening-answer-blank\" data-question=\"2\" role=\"img\"><span class=\"listening-answer-number\">(2)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></td></tr><tr><td>10am</td><td> </td><td>Break</td></tr><tr><td><span aria-label=\"Blank for question 3\" class=\"listening-answer-blank\" data-question=\"3\" role=\"img\"><span class=\"listening-answer-number\">(3)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span>am</td><td>Classroom 4</td><td><span aria-label=\"Blank for question 4\" class=\"listening-answer-blank\" data-question=\"4\" role=\"img\"><span class=\"listening-answer-number\">(4)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></td></tr><tr><td>12.30 pm</td><td><span aria-label=\"Blank for question 5\" class=\"listening-answer-blank\" data-question=\"5\" role=\"img\"><span class=\"listening-answer-number\">(5)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></td><td>Lunch</td></tr></tbody></table></figure></section><section class=\"listening-source-group\" data-question-start=\"6\" data-question-end=\"10\" data-question-type=\"diagram-labelling\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 6-10</p><p class=\"listening-source-instruction\">Label the places on the map below.</p></header><figure class=\"listening-source-figure\"><img alt=\"Listening question diagram\" src=\"/pics/listening/imported/test-029.png\"/></figure><div class=\"listening-source-question-list\" role=\"list\"><div class=\"listening-source-question-row\" data-question-row=\"6\" role=\"listitem\"><span aria-label=\"Blank for question 6\" class=\"listening-answer-blank\" data-question=\"6\" role=\"img\"><span class=\"listening-answer-number\">(6)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span>                   <span aria-label=\"Blank for question 7\" class=\"listening-answer-blank\" data-question=\"7\" role=\"img\"><span class=\"listening-answer-number\">(7)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"8\" role=\"listitem\"><span aria-label=\"Blank for question 8\" class=\"listening-answer-blank\" data-question=\"8\" role=\"img\"><span class=\"listening-answer-number\">(8)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span>                   <span aria-label=\"Blank for question 9\" class=\"listening-answer-blank\" data-question=\"9\" role=\"img\"><span class=\"listening-answer-number\">(9)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"10\" role=\"listitem\"><span aria-label=\"Blank for question 10\" class=\"listening-answer-blank\" data-question=\"10\" role=\"img\"><span class=\"listening-answer-number\">(10)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div></div></section>",
         "startSeconds": 0.0,
         "endSeconds": 351.2,
         "transcriptHtml": "<p class=\"transcript-note\">Automatic transcript. It may contain small recognition errors; the answer key is authoritative.</p><p><span class=\"ts\">[00:00]</span> You will hear a number of different recordings, and you will have to answer questions on what you hear. There will be time for you to read the instructions, and you have a chance to check your work.</p><p><span class=\"ts\">[00:14]</span> All the recordings will be played once only. The test is in four sections. Section 1. You will hear a new student on a short summer course</p><p><span class=\"ts\">[00:28]</span> getting information from the college receptionist. First, you have some time to look at questions 1 to 5. Now the test will begin. You should answer the questions as you listen,</p><p><span class=\"ts\">[00:57]</span> as you will not hear the recording a second time. Listen carefully to the first part of the conversation and answer questions 1 to 5. Sorry to keep you waiting.</p><p><span class=\"ts\">[01:12]</span> OK, here&#x27;s the information you need. On the first page, there&#x27;s some info about the college, the facilities, the courses on offer, etc. Then, on these blue pages here,</p><p><span class=\"ts\">[01:25]</span> there&#x27;s an outline of the social activities. You see there? OK? Yes. Now this part of the booklet here, the yellow pages,</p><p><span class=\"ts\">[01:36]</span> that&#x27;s the main program starting at 9am tomorrow. 9am, OK. So all the new students will be gathering in Hervill Hall at 9 o&#x27;clock.</p><p><span class=\"ts\">[01:47]</span> Sorry, where? Hervill Hall. I&#x27;ll spell it for you. Yes, H-E-R-V-I,</p><p><span class=\"ts\">[01:56]</span> double L, and then H-A-double L, for Hall, of course. It&#x27;s the big white building by the entrance. OK, I&#x27;ve seen it.</p><p><span class=\"ts\">[02:06]</span> Right. Anyway, you&#x27;ll be in there for an hour. First, the Director of Studies will explain the various courses we offer in the requirements for them. Then for the second half hour,</p><p><span class=\"ts\">[02:19]</span> the Social Organiser will tell you more about the Social Program and Saturday Excursions. Is that all clear? Yes, I think so.</p><p><span class=\"ts\">[02:29]</span> Then, where do I go after that? Ah, yes, OK. After the talks in the hall, there&#x27;s a break. And then, at quarter to 11,</p><p><span class=\"ts\">[02:39]</span> go to Classroom 4 to have a placement test. Quarter to 11. This placement test is to find my level in English? Exactly.</p><p><span class=\"ts\">[02:49]</span> Then, after the test, all the new students are invited to a special welcome lunch. In the cafeteria? No, no.</p><p><span class=\"ts\">[02:58]</span> Not for the welcome lunch. It&#x27;s in a restaurant near the school, an Indian restaurant. Oh, OK. I don&#x27;t think I&#x27;ve ever tried Indian food.</p><p><span class=\"ts\">[03:08]</span> Do you like spicy food? Yes, I do. Then you&#x27;ll love Indian. Before you hear the rest of the conversation,</p><p><span class=\"ts\">[03:17]</span> you have some time to look at questions 6 to 10. Now, listen and answer questions 6 to 10. So, where&#x27;s the Indian restaurant? Don&#x27;t worry, it&#x27;s really easy to find.</p><p><span class=\"ts\">[03:53]</span> Have you got that map I gave you? This one. Yes, that&#x27;s it. See here, the main entrance to the school.</p><p><span class=\"ts\">[04:01]</span> Yes? Well, don&#x27;t go out of there. Oh. There&#x27;s a smaller entrance here, round the back.</p><p><span class=\"ts\">[04:08]</span> Oh, yes, I see. OK. So, you go out of there, pass the phone box, and then turn right into this road here,</p><p><span class=\"ts\">[04:17]</span> the one that goes along the side of the park. Mm-hmm. You&#x27;ll see a supermarket on the left, and then it&#x27;s just after that, on the right.</p><p><span class=\"ts\">[04:27]</span> Uh-huh. It&#x27;s quite a big place. You can&#x27;t miss it. OK.</p><p><span class=\"ts\">[04:32]</span> Add one more thing. Is there a post office near here? Post office. Oh, yes, of course.</p><p><span class=\"ts\">[04:40]</span> Just the other side of the park. Go through the middle of the park, and it&#x27;s there by the park entrance. Thanks a lot.</p><p><span class=\"ts\">[04:47]</span> You&#x27;re welcome. Oh, there&#x27;s a good cafe near here, too. Very popular with the students. Just there.</p><p><span class=\"ts\">[04:55]</span> You go out of the main entrance into Varley Road, then turn left at the bank, and it&#x27;s at the end of the street. They do amazing coffee.</p><p><span class=\"ts\">[05:05]</span> That&#x27;s great. Thanks very much. No problem. Enjoy your course.</p><p><span class=\"ts\">[05:09]</span> Thanks again. Bye. That is the end of section one. You now have half a minute to check your answers.</p><p><span class=\"ts\">[05:43]</span> Test one.</p>"
@@ -40,14 +40,20 @@ export const listeningFull029: PracticeTest = {
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "social organiser",
+              "answer": [
+                "social organiser",
+                "social organizer"
+              ],
               "explanation": "Around 2:19 the receptionist splits the first hour in two: the Director of Studies takes the first half hour, then the social organiser takes the second. The Director of Studies is already printed for 9 am, so the 9.30 talk belongs to the social organiser.",
               "evidence": "the Social Organiser will tell you more about the Social Program"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "10.45",
+              "answer": [
+                "10.45",
+                "10:45"
+              ],
               "explanation": "Around 2:29 the receptionist says that after the break you go to Classroom 4 at quarter to 11, and quarter to 11 written as a time is 10.45. The student repeats it back straight away, which is your chance to check.",
               "evidence": "And then, at quarter to 11"
             },
@@ -142,7 +148,10 @@ export const listeningFull029: PracticeTest = {
             {
               "id": "q12",
               "textHtml": "Question 12",
-              "answer": "7.30",
+              "answer": [
+                "7.30",
+                "7:30"
+              ],
               "explanation": "Around 7:27 the director says the Thursday evening theatre productions start at 7.30. Several times are given close together in this stretch, quarter to seven for the film and 8pm for the music, so hold on to the day in the table.",
               "evidence": "On Thursday evenings, at 7.30, the auditorium is given over to productions"
             },
@@ -186,7 +195,11 @@ export const listeningFull029: PracticeTest = {
             {
               "id": "q17",
               "textHtml": "Question 17",
-              "answer": "£15",
+              "answer": [
+                "£15",
+                "15 pounds",
+                "fifteen pounds"
+              ],
               "explanation": "Just after 10 minutes the director gives the price of membership as fifteen pounds. Write it with the pound sign as £15, and do not confuse it with the five pounds she quoted much earlier for a film ticket.",
               "evidence": "The cost of membership is just £15 a year"
             },
@@ -244,8 +257,7 @@ export const listeningFull029: PracticeTest = {
               "textHtml": "Question 21",
               "answer": [
                 "film studies",
-                "film",
-                "film studios"
+                "film"
               ],
               "explanation": "Around 13:05 the interviewer says John's first degree was in French and John adds the second half of it, a minor in film. He then says the films were European cinema in general with a bias towards French cinema, but that describes the subject rather than naming it.",
               "evidence": "Yes, with a minor in film studies"
@@ -280,7 +292,10 @@ export const listeningFull029: PracticeTest = {
             {
               "id": "q25",
               "textHtml": "Question 25",
-              "answer": "6",
+              "answer": [
+                "6",
+                "six"
+              ],
               "explanation": "Around 13:41 John says he spent six months as a volunteer restoring historic buildings. Two other lengths of time are thrown at you around it, the week he originally went for and the three months after which he got bored, so neither of those is the length of the job.",
               "evidence": "I spent six months as a volunteer working on restoring historic buildings in France"
             },
@@ -289,7 +304,7 @@ export const listeningFull029: PracticeTest = {
               "textHtml": "Question 26",
               "answer": [
                 "coordinator",
-                "coordinating"
+                "co-ordinator"
               ],
               "explanation": "Around 15:44 John says that as well as translating he was in charge of coordinating the translation work in the bank's other offices, so his second role was translation coordinator. The recording gives you the verb, coordinating, and the notes need the job title that goes with it.",
               "evidence": "I was also in charge of coordinating the translation work"
@@ -304,7 +319,10 @@ export const listeningFull029: PracticeTest = {
             {
               "id": "q28",
               "textHtml": "Question 28",
-              "answer": "18",
+              "answer": [
+                "18",
+                "eighteen"
+              ],
               "explanation": "Around 15:56 the interviewer sums up the length of the bank job as a year and a half, and the notes want it in months, so a year and a half becomes 18. You have to do the arithmetic yourself here, because the number 18 is never said.",
               "evidence": "So, you stayed there for a year and a half, and then you left."
             }

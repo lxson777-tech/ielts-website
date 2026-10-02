@@ -19,7 +19,7 @@ export const listeningFull012: PracticeTest = {
         "kind": "audio",
         "label": "Part 1",
         "src": "/audio/listening/test-012.mp3",
-        "questionHtml": "<section class=\"listening-source-group\" data-question-start=\"1\" data-question-end=\"10\" data-question-type=\"sentence-completion\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 1-10</p><p class=\"listening-source-instruction\">Complete the notes below. Write NO MORE THAN TWO WORDS AND/ OR A NUMBER for each answer.</p></header><div class=\"listening-source-note-block\"><div class=\"listening-source-note-row\"><strong>Harry’s Hire Company</strong></div><div class=\"listening-source-note-row\">Hire for: birthday party</div></div><div class=\"listening-source-question-list\" role=\"list\"><p class=\"listening-source-title\">Equipment hire:</p><div class=\"listening-source-question-row\" data-question-row=\"1\" role=\"listitem\">Day and date of event:  <span aria-label=\"Blank for question 1\" class=\"listening-answer-blank\" data-question=\"1\" role=\"img\"><span class=\"listening-answer-number\">(1)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> November</div><div class=\"listening-source-question-row\" data-question-row=\"2\" role=\"listitem\">Number attending event:  <span aria-label=\"Blank for question 2\" class=\"listening-answer-blank\" data-question=\"2\" role=\"img\"><span class=\"listening-answer-number\">(2)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div></div><div class=\"listening-source-question-list\" role=\"list\"><p class=\"listening-source-title\">Rental: 5 dozens dinner plates, bowls</p><div class=\"listening-source-question-row\" data-question-row=\"3\" role=\"listitem\">5 dozens sets of  <span aria-label=\"Blank for question 3\" class=\"listening-answer-blank\" data-question=\"3\" role=\"img\"><span class=\"listening-answer-number\">(3)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> and <span aria-label=\"Additional blank for question 3\" class=\"listening-answer-blank listening-answer-blank-continuation\" role=\"img\"><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"4\" role=\"listitem\">40 plastic  <span aria-label=\"Blank for question 4\" class=\"listening-answer-blank\" data-question=\"4\" role=\"img\"><span class=\"listening-answer-number\">(4)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-support-row\">4 dozen each small/ medium glasses</div><div class=\"listening-source-question-row\" data-question-row=\"5\" role=\"listitem\">Six  <span aria-label=\"Blank for question 5\" class=\"listening-answer-blank\" data-question=\"5\" role=\"img\"><span class=\"listening-answer-number\">(5)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div></div><div class=\"listening-source-question-list\" role=\"list\"><p class=\"listening-source-title\">Costings:</p><p class=\"listening-source-title\">Weekend package: 5pm Friday – 10am Monday: $1600 + tax</p><div class=\"listening-source-question-row\" data-question-row=\"6\" role=\"listitem\"><span aria-label=\"Blank for question 6\" class=\"listening-answer-blank\" data-question=\"6\" role=\"img\"><span class=\"listening-answer-number\">(6)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> package: 5pm Saturday – 10am Monday: $1350 + tax</div><div class=\"listening-source-question-row\" data-question-row=\"7\" role=\"listitem\"><span aria-label=\"Blank for question 7\" class=\"listening-answer-blank\" data-question=\"7\" role=\"img\"><span class=\"listening-answer-number\">(7)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> $50 (within 10Km)</div></div><p>Breakage allowance: $60</p><div class=\"listening-source-question-list\" role=\"list\"><p class=\"listening-source-title\">Replacement costs: plates, bowls – $3.55 per item</p><div class=\"listening-source-question-row\" data-question-row=\"8\" role=\"listitem\">Small glasses –  <span aria-label=\"Blank for question 8\" class=\"listening-answer-blank\" data-question=\"8\" role=\"img\"><span class=\"listening-answer-number\">(8)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> per item</div><div class=\"listening-source-support-row\">Medium glasses – $4.40 per item</div><div class=\"listening-source-support-row\">Customer details:</div><div class=\"listening-source-question-row\" data-question-row=\"9\" role=\"listitem\">Full name:  <span aria-label=\"Blank for question 9\" class=\"listening-answer-blank\" data-question=\"9\" role=\"img\"><span class=\"listening-answer-number\">(9)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-support-row\">Address: 28B, sandstone close, martinsborough</div><div class=\"listening-source-question-row\" data-question-row=\"10\" role=\"listitem\">Contact number:  084 <span aria-label=\"Blank for question 10\" class=\"listening-answer-blank\" data-question=\"10\" role=\"img\"><span class=\"listening-answer-number\">(10)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div></div></section>",
+        "questionHtml": "<section class=\"listening-source-group\" data-question-start=\"1\" data-question-end=\"10\" data-question-type=\"sentence-completion\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 1-10</p><p class=\"listening-source-instruction\">Complete the notes below. Write NO MORE THAN TWO WORDS AND/ OR A NUMBER for each answer.</p></header><div class=\"listening-source-note-block\"><div class=\"listening-source-note-row\"><strong>Harry’s Hire Company</strong></div><div class=\"listening-source-note-row\">Hire for: birthday party</div></div><div class=\"listening-source-question-list\" role=\"list\"><p class=\"listening-source-title\">Equipment hire:</p><div class=\"listening-source-question-row\" data-question-row=\"1\" role=\"listitem\">Day and date of event:  <span aria-label=\"Blank for question 1\" class=\"listening-answer-blank\" data-question=\"1\" role=\"img\"><span class=\"listening-answer-number\">(1)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> November</div><div class=\"listening-source-question-row\" data-question-row=\"2\" role=\"listitem\">Number attending event:  <span aria-label=\"Blank for question 2\" class=\"listening-answer-blank\" data-question=\"2\" role=\"img\"><span class=\"listening-answer-number\">(2)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div></div><div class=\"listening-source-question-list\" role=\"list\"><p class=\"listening-source-title\">Rental: 5 dozen dinner plates, bowls</p><div class=\"listening-source-question-row\" data-question-row=\"3\" role=\"listitem\">5 dozen sets of  <span aria-label=\"Blank for question 3\" class=\"listening-answer-blank\" data-question=\"3\" role=\"img\"><span class=\"listening-answer-number\">(3)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> and <span aria-label=\"Additional blank for question 3\" class=\"listening-answer-blank listening-answer-blank-continuation\" role=\"img\"><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"4\" role=\"listitem\">40 plastic  <span aria-label=\"Blank for question 4\" class=\"listening-answer-blank\" data-question=\"4\" role=\"img\"><span class=\"listening-answer-number\">(4)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-support-row\">4 dozen each small/ medium glasses</div><div class=\"listening-source-question-row\" data-question-row=\"5\" role=\"listitem\">Six  <span aria-label=\"Blank for question 5\" class=\"listening-answer-blank\" data-question=\"5\" role=\"img\"><span class=\"listening-answer-number\">(5)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div></div><div class=\"listening-source-question-list\" role=\"list\"><p class=\"listening-source-title\">Costings:</p><p class=\"listening-source-title\">Weekend package: 5pm Friday – 10am Monday: $1600 + tax</p><div class=\"listening-source-question-row\" data-question-row=\"6\" role=\"listitem\"><span aria-label=\"Blank for question 6\" class=\"listening-answer-blank\" data-question=\"6\" role=\"img\"><span class=\"listening-answer-number\">(6)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> package: 5pm Saturday – 10am Monday: $1350 + tax</div><div class=\"listening-source-question-row\" data-question-row=\"7\" role=\"listitem\"><span aria-label=\"Blank for question 7\" class=\"listening-answer-blank\" data-question=\"7\" role=\"img\"><span class=\"listening-answer-number\">(7)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> $50 (within 10Km)</div></div><p>Breakage allowance: $60</p><div class=\"listening-source-question-list\" role=\"list\"><p class=\"listening-source-title\">Replacement costs: plates, bowls – $3.55 per item</p><div class=\"listening-source-question-row\" data-question-row=\"8\" role=\"listitem\">Small glasses –  <span aria-label=\"Blank for question 8\" class=\"listening-answer-blank\" data-question=\"8\" role=\"img\"><span class=\"listening-answer-number\">(8)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> per item</div><div class=\"listening-source-support-row\">Medium glasses – $4.40 per item</div><div class=\"listening-source-support-row\">Customer details:</div><div class=\"listening-source-question-row\" data-question-row=\"9\" role=\"listitem\">Full name:  <span aria-label=\"Blank for question 9\" class=\"listening-answer-blank\" data-question=\"9\" role=\"img\"><span class=\"listening-answer-number\">(9)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-support-row\">Address: 28B, sandstone close, martinsborough</div><div class=\"listening-source-question-row\" data-question-row=\"10\" role=\"listitem\">Contact number:  084 <span aria-label=\"Blank for question 10\" class=\"listening-answer-blank\" data-question=\"10\" role=\"img\"><span class=\"listening-answer-number\">(10)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div></div></section>",
         "startSeconds": 0.0,
         "endSeconds": 450.69,
         "transcriptHtml": "<p class=\"transcript-note\">Automatic transcript. It may contain small recognition errors; the answer key is authoritative.</p><p><span class=\"ts\">[00:00]</span> Now turn to section 1, section 1. You will hear a conversation between a male clerk in a higher company and a woman customer. First, you have some time to look at questions 1 to 5. Now we shall begin.</p><p><span class=\"ts\">[00:35]</span> You should answer the questions as you listen because you will not hear the recording a second time. Open carefully and answer questions 1 to 5. Hello.</p><p><span class=\"ts\">[00:50]</span> Welcome to Harry&#x27;s Higher Company. How can I help you? Oh, hi. Yes.</p><p><span class=\"ts\">[00:55]</span> I&#x27;ve come in to find out about renting stuff for a 21st birthday party. Yes, of course. First of all, what date is the party? It&#x27;s next Saturday.</p><p><span class=\"ts\">[01:06]</span> That was the closest we could get to the actual birthday, which is the 22nd of November. Gosh, it&#x27;s hard to believe it was 21 years ago. Seems like yesterday. So the 18th of November?</p><p><span class=\"ts\">[01:19]</span> No, sorry. I meant the following Saturday, the 25th. Okay, we have just about everything here. Tableware, Marquis, you name it, we rent it.</p><p><span class=\"ts\">[01:30]</span> What size of event are we talking about here? Yes, that&#x27;s a good question. We were planning to have about 40 people, but you know how these things grow. And it went up to 60 at one stage.</p><p><span class=\"ts\">[01:43]</span> I think it&#x27;s back to 55 now. Yes, that&#x27;s right. It was all getting a bit out of hand. Okay.</p><p><span class=\"ts\">[01:51]</span> And what kind of catering and entertainment are you having? We can help with entertainment higher, too. You know, if you need microphones or a sound system. Oh, that&#x27;s good.</p><p><span class=\"ts\">[02:01]</span> We&#x27;ve booked a catering company and they&#x27;re providing a meal. There&#x27;s nothing elaborate, just finger food snacks and then a simple buffet meal. So we&#x27;ll need all the usual dinner plates and bowls. I suppose five dozen of everything.</p><p><span class=\"ts\">[02:16]</span> Oh, and knives and forks too, five dozen sets. We won&#x27;t need any cooking equipment because the caterers will do that. And they&#x27;re providing tea and coffee as well. I see.</p><p><span class=\"ts\">[02:28]</span> And do you need any tables or chairs? Well, not tables because we wouldn&#x27;t have room for them. But I suppose some extra chairs might come in handy. What type do you have?</p><p><span class=\"ts\">[02:40]</span> Come over here and I&#x27;ll show you. We have a couple of different kinds. We do have the folding wooden ones like these. But the most popular ones are just those stackable plastic garden chairs.</p><p><span class=\"ts\">[02:52]</span> We rent a lot of those. Yes, the plastic ones look great. Maybe 40 of those. Okay.</p><p><span class=\"ts\">[02:59]</span> I&#x27;m making a list here as we speak. Was there anything else? Oh, do you want small or medium glasses? People generally want both sizes.</p><p><span class=\"ts\">[03:08]</span> Yeah, better get both kinds. Four dozen of each. And what else? The caterers are supplying a punch bowl, so that&#x27;s okay.</p><p><span class=\"ts\">[03:18]</span> Oh, I know. What about six ice buckets for keeping the drinks cold? We&#x27;re providing all the drinks because I have a friend who&#x27;s helping us with that. I suppose this is going to get very expensive.</p><p><span class=\"ts\">[03:34]</span> Before you hear the rest of the conversation, you have some time to look at questions six to ten. Now listen and answer questions six to ten. Well, let&#x27;s talk about our packages and rental deals.</p><p><span class=\"ts\">[04:10]</span> Firstly, what day do you want to collect the equipment? Oh, I&#x27;m not sure. Does that make a difference to the price? Well, the weekend package deal is to pick up after 5pm on Friday and drop off before 10am</p><p><span class=\"ts\">[04:25]</span> on Monday. That will be $1,600 plus tax. If you want to save a bit of money, you can click the equipment on the day of the party before 5pm and drop off on the Monday before 10am and that will be $1,350 plus tax.</p><p><span class=\"ts\">[04:40]</span> That&#x27;s called the same day package. Your party numbers come between our small and medium price packages, I&#x27;m afraid. So in fact, you could rent a few extra of everything for the same price. I see.</p><p><span class=\"ts\">[04:52]</span> Well, we&#x27;re not inviting more guests. I think we have quite enough already. Are there any other hidden charges with those packages? No, not really.</p><p><span class=\"ts\">[05:04]</span> But if you want us to drop off and pick up at your house, there is an extra home delivery charge of $50 provided you live within 10km of here. Oh, and if you want to take out breakage insurance, that&#x27;s a $60 flat fee. Otherwise, you pay for every item you break at the replacement cost.</p><p><span class=\"ts\">[05:21]</span> Wow, so how much is that then? I bet that soon adds up. Well, yes it does a bit. Let&#x27;s see.</p><p><span class=\"ts\">[05:28]</span> Tableware is $3.55 a piece, small glasses are $3.50, and medium glasses are $4.40. Oh, and if you break a chair, they&#x27;re expensive, $15 each, and you&#x27;ll be surprised what happens when the party gets going. Yes, insurance sounds like a good idea, and I think I&#x27;ll take the weekend package deal,</p><p><span class=\"ts\">[05:49]</span> thanks. It&#x27;s much more convenient, isn&#x27;t it? And not much more expensive. Okay, so let&#x27;s take a few details then.</p><p><span class=\"ts\">[05:57]</span> Your name? Oh, it&#x27;s Susan Millens. Is that Miller? No.</p><p><span class=\"ts\">[06:03]</span> It&#x27;s M-I-L-L-I-N-S. Right, and your address please? 28B, Sandstone Close, Martinsboro. And just to confirm the order, the medium-sized party weekend package with breakage insurance.</p><p><span class=\"ts\">[06:20]</span> And did you want to collect this yourself? Yes, thank you. I do live within 10Ks, but I don&#x27;t want to pay any extra charges. I&#x27;ll get my son to help me.</p><p><span class=\"ts\">[06:31]</span> Okay, we&#x27;ll need an emergency contact number, just in case anything goes wrong. Oh, and credit card details, of course. Oh, yes, of course. The phone number is 084-398-7695.</p><p><span class=\"ts\">[06:47]</span> Okay, thank you. And now the credit card. That is the end of section one. You now have half a minute to check your answers.</p><p><span class=\"ts\">[07:26]</span> Now turn to section two.</p>"
@@ -33,14 +33,20 @@ export const listeningFull012: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "Saturday 25",
+              "answer": [
+                "Saturday 25",
+                "Saturday 25th"
+              ],
               "explanation": "At 01:19 Susan corrects herself from the 18th to the following Saturday, the 25th.",
               "evidence": "No, sorry. I meant the following Saturday, the 25th."
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "55",
+              "answer": [
+                "55",
+                "fifty-five"
+              ],
               "explanation": "At 01:43 the guest count moves from 40 to 60 before settling at 55.",
               "evidence": "I think it's back to 55 now"
             },
@@ -49,7 +55,8 @@ export const listeningFull012: PracticeTest = {
               "textHtml": "Question 3",
               "answer": [
                 "knives",
-                "forks"
+                "forks",
+                "knives, forks"
               ],
               "explanation": "At 02:16 Susan adds five dozen sets of knives and forks to the order.",
               "evidence": "knives and forks too, five dozen sets"
@@ -139,7 +146,7 @@ export const listeningFull012: PracticeTest = {
               "id": "q12",
               "textHtml": "are dangerous to people",
               "answer": "D",
-              "explanation": "At 08:48 the guide warns the green centipedes have a poisonous bite.",
+              "explanation": "At 09:05 the guide warns the green centipedes have a poisonous bite.",
               "evidence": "these centipedes have a very nasty poisonous bite"
             },
             {
@@ -179,7 +186,10 @@ export const listeningFull012: PracticeTest = {
             {
               "id": "q16",
               "textHtml": "What is the guano from the caves used for?",
-              "answer": "fertilizer",
+              "answer": [
+                "fertilizer",
+                "fertiliser"
+              ],
               "explanation": "At 11:37 the guide says the guano is valuable as fertiliser.",
               "evidence": "The guano is very valuable as fertilizer"
             },
@@ -211,7 +221,10 @@ export const listeningFull012: PracticeTest = {
             {
               "id": "q19",
               "textHtml": "wear a and a hat.",
-              "answer": "jacket",
+              "answer": [
+                "jacket",
+                "waterproof jacket"
+              ],
               "explanation": "At 12:48 the guide tells visitors to put on a waterproof jacket.",
               "evidence": "put your waterproof jacket on now"
             },
@@ -293,14 +306,20 @@ export const listeningFull012: PracticeTest = {
             {
               "id": "q24",
               "textHtml": "Mary’s plan must consider such as local rain or wind, the land and the party members.",
-              "answer": "factors",
+              "answer": [
+                "factors",
+                "significant factors"
+              ],
               "explanation": "At 17:31 Mr Hadstone names weather, terrain and group makeup as the significant factors.",
               "evidence": "we call those the significant factors"
             },
             {
               "id": "q25",
               "textHtml": "Mary’s plan does not need to consider things such as tropical storms or serious illnesses, which are known as",
-              "answer": "events",
+              "answer": [
+                "events",
+                "unlikely events"
+              ],
               "explanation": "At 17:54 he calls hazards like hurricanes or major disease unlikely events.",
               "evidence": "The official name for those is unlikely events"
             }
@@ -372,7 +391,10 @@ export const listeningFull012: PracticeTest = {
             {
               "id": "q31",
               "textHtml": "Question 31",
-              "answer": "ear drum",
+              "answer": [
+                "ear drum",
+                "eardrum"
+              ],
               "explanation": "At 23:22 the lecturer describes sound reaching the eardrum, labelled in image one.",
               "evidence": "channeled through the ear canal to the eardrum"
             },
