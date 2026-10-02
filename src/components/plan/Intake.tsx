@@ -665,7 +665,13 @@ export default function Intake({ variant, onDone, onDefer }: IntakeProps) {
           <fieldset className="settings-group"><legend>{t('Your goal')}</legend><TargetBandQuestion state={target} /><PerSectionMinimums state={target} /></fieldset>
           <fieldset className="settings-group"><legend>{t('Your schedule')}</legend>{examDateField}{studyDaysField}{dailyTimeField}</fieldset>
           <details className="support-disclosure"><summary>{t('Learning preferences')}</summary>{languageField}{hardestPaperField}{selfReportField}</details>
-          {dirty && !justSaved && <p role="status" className="text-sm text-ink-muted">{t('You have unsaved changes.')}</p>}
+          {/* A greyed-out Save says why: the day picker that explains it can
+              be a screen away, above the fold. */}
+          {!canSave ? (
+            <p role="status" className="text-sm text-ink-muted">{t('Choose at least one day.')}</p>
+          ) : (
+            dirty && !justSaved && <p role="status" className="text-sm text-ink-muted">{t('You have unsaved changes.')}</p>
+          )}
           <div className="intake-actions">
             <button type="submit" className="intake-button intake-button-primary" disabled={saving || !canSave}>
               {t('Save changes')}
