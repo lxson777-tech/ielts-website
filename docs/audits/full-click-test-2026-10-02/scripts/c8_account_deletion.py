@@ -88,6 +88,7 @@ with sync_playwright() as p:
     page.locator("#signup-password").fill(PASSWORD)
     if page.locator("#signup-confirm").count():
         page.locator("#signup-confirm").fill(PASSWORD)
+    page.locator("#signup-consent").check(force=True)
     page.locator("button.auth-button[type=submit]").click()
     from c_common import fill_profile  # noqa: E402
     fill_profile(page)
