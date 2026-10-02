@@ -349,3 +349,12 @@ button.auth-link { padding: 0; border: 0; background: none; font: inherit; curso
 
 /* A change that worked, said in the row after its form closed. */
 .acct-row-good { color: var(--color-success, #1d5b43); font-weight: 600; }
+
+/* Delete account (2 October 2026): set apart from the other rows, and the
+   final button red, so the one irreversible action never looks routine. */
+.acct-row-danger { margin-top: 8px; border-top: 1px solid var(--color-border); }
+.acct-confirm { display: flex; align-items: flex-start; gap: 10px; margin: 14px 0 4px; font-size: 14px; line-height: 1.5; color: var(--color-ink); cursor: pointer; }
+.acct-confirm input { width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; accent-color: #b3261e; }
+.auth-button.is-danger { background: #b3261e; border-color: #b3261e; color: #fff; }
+.auth-button.is-danger:hover:not(:disabled) { background: #8f1d17; border-color: #8f1d17; }
+.auth-button.is-danger:disabled { opacity: .45; cursor: not-allowed; }

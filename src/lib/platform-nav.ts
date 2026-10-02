@@ -62,6 +62,8 @@ export const APP_ROUTE_PREFIXES = [
   '/speaking',
   '/writing',
   '/account',
+  // The confirmation after deleting an account (2 October 2026).
+  '/account-deleted',
   '/admin',
   '/sign-in',
   '/sign-up',

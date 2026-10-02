@@ -59,6 +59,7 @@
    above) and lists separately what is still undecided, because silence
    would read as "kept forever, never removable". */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { ACCOUNT_DELETION_ENABLED } from '../lib/auth/session';
 import { SUPPORT_ENABLED } from '../lib/support';
 import { withBase } from '../lib/url';
 import { nt } from '../lib/i18n/translate';
@@ -104,6 +105,8 @@ const kept: string[] = [
 /* Purchases exist only in the gated build: the open site sells nothing and
    never creates a purchase record. */
 const sellsAccess = isTrialBuild();
+/* Self-service deletion (2 October 2026), where its database function exists. */
+const selfDeletion = ACCOUNT_DELETION_ENABLED;
 
 const purchaseRecord: string[] = [
   nt('Which plan you chose, its price and currency, and when you started the purchase.'),
@@ -116,9 +119,11 @@ const purchaseRecord: string[] = [
   nt('If the person who runs the site gives you free access, the dates it starts and ends and who gave it.'),
 ];
 
-const undecided = sellsAccess
-  ? nt('Still being decided: how long each kind of information is kept, including purchase records, and the full process for removing an account. This page will say so once it is.')
-  : nt('Still being decided: how long each kind of information is kept, and the full process for removing an account. This page will say so once it is.');
+const undecided = selfDeletion
+  ? nt('Still being decided: how long information is kept while an account stays open. This page will say so once it is.')
+  : sellsAccess
+    ? nt('Still being decided: how long each kind of information is kept, including purchase records, and the full process for removing an account. This page will say so once it is.')
+    : nt('Still being decided: how long each kind of information is kept, and the full process for removing an account. This page will say so once it is.');
 
 const services: { name: string; role: string }[] = [
   {
@@ -231,9 +236,21 @@ const services: { name: string; role: string }[] = [
 
     <section class="policy-section" aria-labelledby="privacy-removal">
       <h2 id="privacy-removal" data-i18n>Removing your account</h2>
-      <p data-i18n>The site has no button for deleting an account yet. To ask about removing your account or your information, use the support form.</p>
-      {sellsAccess && (
-        <p data-i18n>One limit applies today. An account that has any purchase record cannot be deleted, because purchase records are kept. This includes a purchase that was started and never paid.</p>
+      {selfDeletion ? (
+        <>
+          <p data-i18n>You can delete your account yourself at any time: open Account, then Profile, then Delete account.</p>
+          <p data-i18n>Everything is removed at once and cannot be recovered: your details, your progress and results, your essays and speaking feedback, your saved items and notes, your study plan, your conversations with Mr EZ and your messages to us. Any access you have paid for ends.</p>
+          {sellsAccess && (
+            <p data-i18n>A record of each payment (the plan, the amount, the date and the receipt number) is kept without your name or email, because sales records must be kept by law.</p>
+          )}
+        </>
+      ) : (
+        <>
+          <p data-i18n>The site has no button for deleting an account yet. To ask about removing your account or your information, use the support form.</p>
+          {sellsAccess && (
+            <p data-i18n>One limit applies today. An account that has any purchase record cannot be deleted, because purchase records are kept. This includes a purchase that was started and never paid.</p>
+          )}
+        </>
       )}
       <p class="policy-note" role="note" data-i18n>{undecided}</p>
       <p class="policy-foot">

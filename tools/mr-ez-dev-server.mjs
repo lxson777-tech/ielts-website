@@ -526,8 +526,41 @@ async function handleRpc(req, res, fn) {
   }
 }
 
+/* delete_my_account (supabase/migrations/2026-10-02-account-deletion.sql).
+   With --trial the REAL function runs in PGlite, which removes the account's
+   rows there and leaves its orders as anonymous sales. The tables this
+   stand-in keeps in memory (the sign-in, progress, profile, Mr EZ, learning
+   records) are what ON DELETE CASCADE removes in the real project, so they
+   are dropped here by the same rule: every row of that user. */
+async function handleDeleteMyAccount(req, res) {
+  const caller = userByToken(req);
+  if (!caller) return send(res, 401, { message: 'sign in to delete your account', code: '28000' });
+  if (trialDb) {
+    try {
+      await trialDb.rpc('delete_my_account', {}, { role: 'authenticated', userId: caller });
+    } catch (err) {
+      return send(res, err.status ?? 400, { message: err.message, code: err.code });
+    }
+  }
+  for (const [email, user] of db.users) if (user.id === caller) db.users.delete(email);
+  for (const [token, id] of db.tokens) if (id === caller) db.tokens.delete(token);
+  db.userState.delete(caller);
+  db.profiles.delete(caller);
+  db.recommendations.delete(caller);
+  db.learningPlans.delete(caller);
+  db.conversations = db.conversations.filter((r) => r.user_id !== caller);
+  db.messages = db.messages.filter((r) => r.user_id !== caller);
+  db.turns = db.turns.filter((r) => r.user_id !== caller);
+  db.notes = db.notes.filter((r) => r.user_id !== caller);
+  db.learningEvents = db.learningEvents.filter((r) => r.user_id !== caller);
+  db.learningCompanions = db.learningCompanions.filter((r) => r.user_id !== caller);
+  res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*' });
+  return res.end('null');
+}
+
 async function handleRest(req, res, url) {
   const table = url.pathname.replace('/rest/v1/', '');
+  if (table === 'rpc/delete_my_account') return handleDeleteMyAccount(req, res);
   if (table.startsWith('rpc/')) return handleRpc(req, res, table.slice(4));
   const where = filters(url);
   const caller = userByToken(req);

@@ -325,7 +325,7 @@ test('the table holds its shape: paid needs an order and a plan, complimentary h
   await db.close();
 });
 
-test('deleting an account: complimentary access does not block it; real payment records still do', async () => {
+test('deleting an account: complimentary access does not block it, and since 2 October 2026 neither does a payment (the sale stays, anonymous)', async () => {
   const db = await world();
   await complimentary(db, 'give', OTHER);
   assert.equal((await reserve(db, 'writing', 'comp-delete-1', OTHER)).ok, true);
@@ -336,12 +336,16 @@ test('deleting an account: complimentary access does not block it; real payment 
 
   await buy(db);
   await complimentary(db, 'give');
-  await assert.rejects(db.raw.query('delete from auth.users where id = $1', [STUDENT]), /foreign key|violates/);
-  assert.equal((await grantsOf(db)).length, 2, 'nothing was removed by the refused delete');
-  // The admin who gave access can leave too: the record keeps the grant, without the name.
+  // The admin who gave access can leave: the record keeps the grant, without the name.
   await db.raw.query('delete from public.admins where user_id = $1', [ALEX]);
   await db.raw.query('delete from auth.users where id = $1', [ALEX]);
   assert.equal((await grantsOf(db)).find((g) => g.kind === 'complimentary')!.granted_by, null);
+  // A paying student can be deleted too (2026-10-02-account-deletion.sql):
+  // the grants go, the order stays as a sale that names nobody.
+  await db.raw.query('delete from auth.users where id = $1', [STUDENT]);
+  assert.deepEqual(await grantsOf(db), [], 'the paid and complimentary grants went with the account');
+  const orders = (await db.select('select user_id, status from public.payment_orders', [], service)) as Json[];
+  assert.ok(orders.length >= 1 && orders.every((o) => o.user_id === null), 'the sale is kept, anonymous');
   await db.close();
 });
 

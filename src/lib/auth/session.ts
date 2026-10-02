@@ -13,6 +13,7 @@
 import type { Session, User } from '@supabase/supabase-js';
 import { getSupabase } from './supabase';
 import { t } from '../i18n/translate';
+import { ACCESS_MODE } from '../trial/mode';
 
 /** Which sign-in methods the Supabase project actually has enabled, so the UI
     can hide a provider button that would just error (e.g. Google before it's
@@ -160,6 +161,53 @@ export async function signOutEverywhere(): Promise<{ error?: string }> {
   if (!sb) return { error: t('Accounts are not configured for this site yet.') };
   const { error } = await sb.auth.signOut({ scope: 'global' });
   return error ? { error: error.message } : {};
+}
+
+/** Whether this build offers "Delete my account" (2 October 2026). The
+    database function it calls, delete_my_account(), comes with
+    supabase/migrations/2026-10-02-account-deletion.sql: on in the gated
+    build, which ships with every migration; on the open build (the live
+    site) once PUBLIC_ACCOUNT_DELETION=1 is set after that migration is
+    applied to production. */
+export const ACCOUNT_DELETION_ENABLED: boolean =
+  ACCESS_MODE === 'trial' || String(import.meta.env?.PUBLIC_ACCOUNT_DELETION ?? '').trim() === '1';
+
+/** Delete the signed-in student's account and everything in it, at once
+    (Alex, 2 October 2026). The database removes the sign-in and, with it,
+    every row of the student's data; a purchase stays only as an anonymous
+    sale for tax. Then this browser forgets the student too: every stored
+    item named with their account id, and the sign-in itself. Work done on
+    this device while signed out belongs to no account and is left. */
+export async function deleteMyAccount(): Promise<{ error?: string }> {
+  const sb = getSupabase();
+  if (!sb) return { error: t('Accounts are not configured for this site yet.') };
+  const { data } = await sb.auth.getSession();
+  const userId = data.session?.user.id ?? null;
+  if (!userId) return { error: t('Sign in to delete your account.') };
+  const { error } = await sb.rpc('delete_my_account');
+  if (error) return { error: error.message };
+  forgetAccountOnThisDevice(userId);
+  await sb.auth.signOut({ scope: 'local' });
+  return {};
+}
+
+/** Remove every browser-stored item that belongs to this account: the keys
+    the stores write per account (`...::u:<id>`, `ielts.profile.v1:<id>`,
+    `ielts.admin.v1:<id>` and the like all contain the id). */
+export function forgetAccountOnThisDevice(userId: string): void {
+  for (const store of [globalThis.localStorage, globalThis.sessionStorage]) {
+    try {
+      if (!store) continue;
+      const doomed: string[] = [];
+      for (let i = 0; i < store.length; i++) {
+        const key = store.key(i);
+        if (key && key.includes(userId)) doomed.push(key);
+      }
+      for (const key of doomed) store.removeItem(key);
+    } catch {
+      /* Storage blocked or unavailable: nothing was kept there either. */
+    }
+  }
 }
 
 /** Subscribe to auth changes (sign-in, sign-out, token refresh). Fires once

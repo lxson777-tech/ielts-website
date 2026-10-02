@@ -46,8 +46,11 @@ export const OFFER_MIGRATION = resolve(REPO, 'supabase/migrations/2026-09-30-pro
     lesson for a signed-in account, practice and guidance paid or
     complimentary, the trial retired. Runs after every other file. */
 export const FREE_MIGRATION = resolve(REPO, 'supabase/migrations/2026-10-01-free-account.sql');
+/** A student deleting their own account (2 October 2026). Runs after the
+    free-account migration, whose access_grants shape it relies on. */
+export const DELETION_MIGRATION = resolve(REPO, 'supabase/migrations/2026-10-02-account-deletion.sql');
 /** What a project runs today, in order. */
-export const ALL_MIGRATIONS = [TRIAL_MIGRATION, ADMIN_MIGRATION, PROFILES_MIGRATION, PAID_MIGRATION, OFFER_MIGRATION, FREE_MIGRATION];
+export const ALL_MIGRATIONS = [TRIAL_MIGRATION, ADMIN_MIGRATION, PROFILES_MIGRATION, PAID_MIGRATION, OFFER_MIGRATION, FREE_MIGRATION, DELETION_MIGRATION];
 /** The stack as it stood before the trial was retired (1 October 2026),
     for the tests that keep the trial's own history provable. */
 export const PRE_FREE_MIGRATIONS = [TRIAL_MIGRATION, PAID_MIGRATION, OFFER_MIGRATION];

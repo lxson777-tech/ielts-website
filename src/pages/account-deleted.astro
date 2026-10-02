@@ -1,0 +1,13 @@
+---
+/* After "Delete my account" (src/components/AccountSettings.tsx). */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AccountDeleted from '../components/auth/AccountDeleted';
+---
+
+<BaseLayout title="Account deleted · IELTS is EZ" description="Your IELTS is EZ account has been deleted." noindex>
+  <AccountDeleted client:load />
+</BaseLayout>
+
+<style is:global>
+  @import '../styles/auth.css';
+</style>

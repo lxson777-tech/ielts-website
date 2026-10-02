@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { isAuthConfigured } from '../lib/auth/supabase';
 import { onAccountChange } from '../lib/auth/lifecycle';
-import { signOutEverywhere, updateEmail, updatePassword } from '../lib/auth/session';
+import { ACCOUNT_DELETION_ENABLED, deleteMyAccount, signOutEverywhere, updateEmail, updatePassword } from '../lib/auth/session';
 import { checkPassword } from '../lib/auth/password';
 import { cachedProfile, loadProfile, onProfileChange, signInHref, type StudentProfile } from '../lib/auth/profile';
 import { absoluteHref } from '../lib/auth/next';
@@ -22,7 +22,7 @@ import { useT } from '../lib/i18n/react';
 import { Field, PasswordInput, PasswordStrength, SOURCE_LABELS, describedBy, passwordProblemSentence } from './auth/fields';
 import { friendlyAuthError } from './auth/shell';
 
-type Open = null | 'email' | 'password' | 'devices';
+type Open = null | 'email' | 'password' | 'devices' | 'delete';
 
 function formatDate(iso: string, locale: string): string {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
@@ -167,6 +167,27 @@ export default function AccountSettings() {
           </button>
           {open === 'devices' && <SignOutEverywhere />}
         </div>
+
+        {/* Delete the account and everything in it, at once (Alex,
+            2 October 2026). Only where the database has the function
+            (src/lib/auth/session.ts). */}
+        {ACCOUNT_DELETION_ENABLED && (
+          <div className="acct-row acct-row-danger">
+            <p className="acct-row-label">{t('Delete account')}</p>
+            <p className="acct-row-value">
+              <span className="is-muted">{t('Removes your account and all your data at once. This cannot be undone.')}</span>
+            </p>
+            <button
+              type="button"
+              className="acct-toggle acct-row-action"
+              aria-expanded={open === 'delete'}
+              onClick={() => toggle('delete')}
+            >
+              {open === 'delete' ? t('Cancel') : t('Delete my account')}
+            </button>
+            {open === 'delete' && <DeleteAccount />}
+          </div>
+        )}
       </div>
     </section>
     </>
@@ -315,6 +336,51 @@ function ChangePassword({ onChanged, onDone }: { onChanged: () => void; onDone: 
         </button>
       </div>
     </form>
+  );
+}
+
+function DeleteAccount() {
+  const { t } = useT();
+  const [sure, setSure] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function confirm() {
+    if (!sure) return;
+    setBusy(true);
+    setError(null);
+    const result = await deleteMyAccount();
+    if (result.error) {
+      setBusy(false);
+      setError(friendlyAuthError(t, result.error));
+      return;
+    }
+    window.location.assign(withBase('/account-deleted'));
+  }
+
+  return (
+    <div className="acct-row-form">
+      <p className="auth-hint">
+        {t('Deleting your account removes, immediately and for good: your details, your progress and results, your essays and speaking feedback, your saved items and notes, your study plan, your conversations with Mr EZ and your messages to us. Any access you have paid for ends.')}
+      </p>
+      <p className="auth-hint">
+        {t('Only a record of each payment is kept, without your name or email, because the law requires sales records to be kept.')}
+      </p>
+      <label className="acct-confirm">
+        <input type="checkbox" checked={sure} onChange={(e) => setSure(e.target.checked)} />
+        <span>{t('I understand that my account and all my data will be deleted and cannot be recovered.')}</span>
+      </label>
+      {error && (
+        <p className="auth-alert" role="alert">
+          {error}
+        </p>
+      )}
+      <div className="auth-actions">
+        <button type="button" className="auth-button is-inline is-danger" disabled={!sure || busy} onClick={() => void confirm()}>
+          {busy ? t('Deleting…') : t('Delete my account and all my data')}
+        </button>
+      </div>
+    </div>
   );
 }
 
