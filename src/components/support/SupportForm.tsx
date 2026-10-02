@@ -29,6 +29,7 @@ import { currentRoute, hrefFor } from '../../lib/auth/next';
 import { publishedOperator } from '../../lib/operator';
 import { withBase } from '../../lib/url';
 import { useT } from '../../lib/i18n/react';
+import { contentLocale } from '../../lib/i18n/locale';
 import { nt } from '../../lib/i18n/translate';
 import { isTrialBuild } from '../../lib/trial/mode';
 import {
@@ -234,7 +235,7 @@ export default function SupportForm() {
       return;
     }
     setStatus('sending');
-    const common = { topic: topic as SupportTopic, message, context: reason, page: from, locale: locale === 'ru' ? ('ru' as const) : ('en' as const) };
+    const common = { topic: topic as SupportTopic, message, context: reason, page: from, locale: contentLocale(locale) };
     const result = signedIn
       ? await sendSupportRequest({ ...common, email: null })
       : await sendVisitorSupportRequest({ ...common, email, challengeToken: captcha });

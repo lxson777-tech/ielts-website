@@ -29,7 +29,7 @@
  * so all of it can be tested with no browser (architecture section 1.7).
  */
 
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 import type { Paper, Subskill } from './contracts/catalog';
 import type { AssistanceLevel, CompletionState, EvidenceMode } from './contracts/evidence';
 import type { BrowserStorage } from './store.browser';

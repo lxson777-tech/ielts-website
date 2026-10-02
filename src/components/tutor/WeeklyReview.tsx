@@ -25,7 +25,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { withBase } from '../../lib/url';
 import { useT, type Translator } from '../../lib/i18n/react';
 import { nt } from '../../lib/i18n/translate';
-import type { Locale } from '../../lib/i18n/locale';
+import { contentLocale, type ContentLocale as Locale } from '../../lib/i18n/locale';
 import MrEzAvatar from './MrEzAvatar';
 import { askTutor, isTutorConfigured, TutorClientError } from '../../lib/tutor/client';
 import { localRecommendation, toTutorRecommendation } from '../../lib/tutor/local';
@@ -172,7 +172,7 @@ export default function WeeklyReview() {
   // the server render and the first client render must agree on "nothing
   // yet" and print nothing.
   useEffect(() => {
-    const refresh = () => setLocal(buildLocalView(t, locale));
+    const refresh = () => setLocal(buildLocalView(t, contentLocale(locale)));
     refresh();
     const offProgress = onProgressChange(refresh);
     const offPlan = onStudyPlanChange(refresh);
@@ -256,7 +256,7 @@ export default function WeeklyReview() {
         </h2>
 
         {local.mode === 'last-week' && (
-          <p className="mrez-weekly-range">{formatWeekRange(local.facts.window, t, locale)}</p>
+          <p className="mrez-weekly-range">{formatWeekRange(local.facts.window, t, contentLocale(locale))}</p>
         )}
 
         <p className="mrez-weekly-text">{shown.text}</p>

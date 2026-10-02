@@ -116,7 +116,7 @@ import { formatDate, tutorCount, tutorText } from '../../../src/lib/tutor/ru';
 import { buildCourse, courseLessonCount } from '../../../src/lib/course';
 import { parseAccessMode } from '../../../src/lib/trial/offer';
 import { TrialRefusal, TrialServiceError, paidAccessRunning, paidRequired, serviceRpc } from '../../../src/lib/trial/gate';
-import type { Locale } from '../../../src/lib/i18n/locale';
+import type { ContentLocale as Locale } from '../../../src/lib/i18n/locale';
 import type { ProgressV1 } from '../../../src/lib/progress';
 import type { SavedPlan } from '../../../src/lib/study-plan';
 /* The learning layer. Every one of these is pure: the browser entry point

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PRACTICE_ITEM_IDENTITY, type PracticeQuestion, type PracticeSet, type PracticeUnit } from '../data/reading-practice';
 import { useT } from '../lib/i18n/react';
+import { contentLocale } from '../lib/i18n/locale';
 import { t } from '../lib/i18n/translate';
 import { practiceKey, useExplanations, type Explain } from '../lib/i18n/test-explanations';
 import type { Paper } from '../lib/learning/contracts/catalog';
@@ -758,7 +759,7 @@ export default function PracticeQuiz({ set, setId, onAllChecked }: Props) {
           contentVersion: LESSON_CHECK_CONTENT_VERSION,
           paper,
           at: new Date().toISOString(),
-          locale,
+          locale: contentLocale(locale),
           completion: completionOf(submissions),
           /* Checking a unit prints the correct answer and the
              explanation, so everything after it is assisted. */

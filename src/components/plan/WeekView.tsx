@@ -13,6 +13,7 @@
 import { withBase } from '../../lib/url';
 import type { AgendaDay } from '../../lib/learning/agenda';
 import { useT } from '../../lib/i18n/react';
+import { intlLocale } from '../../lib/i18n/locale';
 import { nt } from '../../lib/i18n/translate';
 import { useCourseAgenda } from './useCourseAgenda';
 import '../../styles/course-agenda.css';
@@ -34,7 +35,7 @@ export default function WeekView() {
   const selectedDay = agenda.selectedDay;
 
   const dateLabel = (date: string) =>
-    new Date(`${date}T12:00:00`).toLocaleDateString(locale === 'ru' ? 'ru-RU' : 'en-GB', {
+    new Date(`${date}T12:00:00`).toLocaleDateString(intlLocale(locale, 'en-GB'), {
       weekday: 'long',
       day: 'numeric',
       month: 'long',

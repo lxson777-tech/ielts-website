@@ -22,7 +22,7 @@
  * dropped.
  */
 import { RU_STRINGS } from './ru';
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 
 interface Pair {
   en: string;

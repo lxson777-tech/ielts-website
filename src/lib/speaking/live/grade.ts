@@ -20,7 +20,7 @@ import { blobToMp3Base64 } from '../encode';
 import type { TranscriptTurn } from './session';
 import { GraderRefusal, isGraderRefusalCode, type TrialGrading } from '../../writing/grader';
 import { gatedSignIn } from '../../trial/content';
-import { getLocale } from '../../i18n/locale';
+import { getLocale, contentLocale } from '../../i18n/locale';
 
 const GRADER_URL: string | undefined = import.meta.env?.PUBLIC_SPEAKING_GRADER_URL;
 
@@ -70,7 +70,7 @@ export async function gradeInterview(
       ...(opts.trial
         ? { trialSitting: opts.trial.sitting, locale: opts.trial.locale ?? 'en' }
         : signIn
-          ? { locale: getLocale() === 'ru' ? 'ru' : 'en' }
+          ? { locale: contentLocale(getLocale()) }
           : {}),
       interview: {
         transcript: transcript.map((t) => ({ role: t.role, text: t.text.trim() })).filter((t) => t.text),

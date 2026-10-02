@@ -38,7 +38,7 @@
  */
 
 import { t } from '../../lib/i18n/translate';
-import { getLocale } from '../../lib/i18n/locale';
+import { getLocale, contentLocale } from '../../lib/i18n/locale';
 import type { LessonHelpKind } from '../../lib/learning/contracts/ai';
 import {
   bindToCurrentOwner,
@@ -363,7 +363,7 @@ function buildControl(input: {
           assistanceSoFar: 'none',
           versions: context.versions,
           sessionId: context.sessionId,
-          locale: getLocale(),
+          locale: contentLocale(getLocale()),
         },
         {
           /* Only while the student who pressed is still the one here. */

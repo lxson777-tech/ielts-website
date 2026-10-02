@@ -17,7 +17,7 @@
 import { buildCourse, type CourseLesson } from '../course';
 import { practisePath, lessonPath, questionTypeLabel } from '../tests/question-types';
 import type { QuestionType } from '../tests/schema';
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 import { tutorText, type TextVars } from './ru';
 
 export type ActivityKind = 'lesson' | 'drill' | 'test' | 'trainer' | 'review' | 'tool';

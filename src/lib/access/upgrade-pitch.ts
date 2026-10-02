@@ -12,7 +12,7 @@
    (src/lib/i18n/dict/ru/p-free.ts). */
 
 import { nt } from '../i18n/translate';
-import type { Locale } from '../i18n/locale';
+import { intlLocale, type Locale } from '../i18n/locale';
 import { AVAILABLE_PAID_PLANS } from './plans';
 import { PAID_ALLOWANCE } from '../trial/status';
 
@@ -46,8 +46,8 @@ export function pitchPlan(): { amount: number; days: number } {
 
 /** "12,990 KZT" in English, "12 990 ₸" in Russian. */
 export function pitchPrice(amount: number, locale: Locale): string {
-  const number = new Intl.NumberFormat(locale === 'ru' ? 'ru-RU' : 'en-US', { maximumFractionDigits: 0 }).format(amount);
-  return locale === 'ru' ? `${number} ₸` : `${number} KZT`;
+  const number = new Intl.NumberFormat(intlLocale(locale, 'en-US'), { maximumFractionDigits: 0 }).format(amount);
+  return locale === 'en' ? `${number} KZT` : `${number} ₸`;
 }
 
 /** The price sentence, with {price} and {days} filled by the dialog. */

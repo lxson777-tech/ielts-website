@@ -19,7 +19,7 @@
    English plus a code, which is exactly what it should return. */
 
 import { t } from '../i18n/translate';
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 import { MAX_MESSAGE_CHARS, type TutorErrorCode } from './schema';
 
 /** Our own wording for a refusal, or null when this code has no wording of

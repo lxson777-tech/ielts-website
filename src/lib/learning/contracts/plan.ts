@@ -27,7 +27,7 @@
  * that representable as a refusal rather than as a list.
  */
 
-import type { Locale } from '../../i18n/locale';
+import type { ContentLocale as Locale } from '../../i18n/locale';
 import type { Paper, Subskill } from './catalog';
 import type { PolicyScopeKey } from './policy';
 

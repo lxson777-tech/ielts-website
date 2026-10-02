@@ -74,7 +74,7 @@ export default function DatePicker({
   showCountdown = false,
 }: DatePickerProps) {
   const { t, tn, locale } = useT();
-  const calLocale = locale === 'ru' ? 'ru' : 'en';
+  const calLocale = locale;
   const dialogId = useId();
   const titleId = `${dialogId}-title`;
 

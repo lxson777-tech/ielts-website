@@ -264,6 +264,11 @@
 @media (max-width: 400px) {
   .workspace-v2 .ws-login { gap: 0; padding: 0 14px; }
   .workspace-v2 .ws-login svg { display: none; }
+  /* Three languages (EN / RU / KZ, 2 October 2026) instead of two: slimmer
+     buttons and a smaller gap give back the width the third one takes. */
+  .workspace-v2 .ws-account { gap: 6px; }
+  .workspace-v2 .ws-lang { padding: 2px; }
+  .workspace-v2 .ws-lang-option { min-width: 28px; height: 36px; padding: 0 5px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .workspace-v2 *, .workspace-v2 *::before, .workspace-v2 *::after { scroll-behavior: auto; animation-duration: .01ms !important; animation-delay: 0ms !important; transition-duration: .01ms !important; }

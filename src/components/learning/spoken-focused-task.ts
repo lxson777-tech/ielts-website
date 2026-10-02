@@ -22,6 +22,7 @@
  * static sentence saying exactly this, never a judgement.
  */
 
+import { contentLocale, isLocale } from '../../lib/i18n/locale';
 import type { Subskill } from '../../lib/learning/contracts/catalog';
 import type { AssistanceLevel, CompletionState, EvidenceMode } from '../../lib/learning/contracts/evidence';
 import type { EvidenceDraft } from '../../lib/learning/evidence';
@@ -138,6 +139,6 @@ export function spokenEvidenceDraft(input: {
     outcome: { kind: 'studied', estimatedMinutes: input.view.expectedMinutes },
     sourceMaterial: [promptExposureKey(input.view.promptId)],
     ...(input.sessionId ? { sessionId: input.sessionId } : {}),
-    ...(input.locale === 'en' || input.locale === 'ru' ? { locale: input.locale } : {}),
+    ...(isLocale(input.locale) ? { locale: contentLocale(input.locale) } : {}),
   };
 }

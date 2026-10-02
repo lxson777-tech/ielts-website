@@ -48,7 +48,7 @@ import type { SavedPlan } from '../study-plan';
 import { PLAN_SKILLS, skillTargetFor, daysUntilTest, type PlanSkill } from '../study-plan';
 import { questionTypeLabel } from '../tests/question-types';
 import { CRITERIA as WRITING_CRITERIA } from '../writing/schema';
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 import { tutorText, tutorCount, type CountForms, type TextVars } from './ru';
 import { goalsFrom, planSettingsFromSavedPlan } from '../learning/adapters';
 import { migrateProgress } from '../learning/migrate';

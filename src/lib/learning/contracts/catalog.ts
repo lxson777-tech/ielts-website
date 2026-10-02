@@ -28,7 +28,7 @@
  * planner from their evidence, never by the catalogue.
  */
 
-import type { Locale } from '../../i18n/locale';
+import type { ContentLocale as Locale } from '../../i18n/locale';
 import type { QuestionType } from '../../tests/schema';
 
 /* ── Shape of the world ──────────────────────────────────────────────────── */

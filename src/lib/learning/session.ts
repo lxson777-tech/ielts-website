@@ -73,7 +73,7 @@ import {
   vocabReviewActivityId,
 } from './catalog';
 import { canonicalJson, hashContent, paperExposureKey, promptExposureKey, seenKeys } from './evidence';
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 import { learningText } from './ru';
 
 /* ── Every sentence this file can write ──────────────────────────────────── */

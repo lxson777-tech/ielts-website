@@ -33,7 +33,7 @@
    already happened is called immediately, so a listener in a later
    <script> block can never miss the event it was waiting for. */
 
-import { getLocale, type Locale } from './locale';
+import { getLocale, contentLocale, type ContentLocale as Locale } from './locale';
 import { withBase } from '../url';
 import { t } from './translate';
 
@@ -225,7 +225,11 @@ async function loadGated(locale: Locale, slug: string): Promise<{ html: string |
 }
 
 async function applyGated(el: HTMLElement, slug: string): Promise<void> {
-  const locale = getLocale();
+  // Kazakh reads the Russian lesson: lessons are not translated into
+  // Kazakh (the owner's decision, 2 October 2026), and Russian, not
+  // English, is Kazakh's fallback. Switching between RU and KZ therefore
+  // never re-fetches or re-swaps the body.
+  const locale = contentLocale(getLocale());
   if (el.getAttribute(LOCALE_ATTR) === locale) return;
   const mine = ++generation;
   setLoading(el, true);
@@ -274,7 +278,11 @@ export async function applyLessonBody(): Promise<void> {
   // a swapped one can never overwrite the original.
   if (!englishHtml.has(slug) && !el.hasAttribute(LOCALE_ATTR)) englishHtml.set(slug, capture(el));
 
-  const locale = getLocale();
+  // Kazakh reads the Russian lesson: lessons are not translated into
+  // Kazakh (the owner's decision, 2 October 2026), and Russian, not
+  // English, is Kazakh's fallback. Switching between RU and KZ therefore
+  // never re-fetches or re-swaps the body.
+  const locale = contentLocale(getLocale());
   const mine = ++generation;
 
   if (locale === 'en') {

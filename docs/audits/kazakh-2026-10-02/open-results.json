@@ -1,0 +1,46 @@
+{
+ "base": "http://localhost:4476/ielts-website",
+ "results": [
+  {
+   "check": "open: English /terms is unchanged",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "open: the switch offers EN / RU / KZ",
+   "ok": true,
+   "detail": "['EN', 'RU', 'KZ']"
+  },
+  {
+   "check": "open: Russian /terms is as before",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "open: KZ turns /terms Kazakh",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "open: /privacy is Kazakh",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "open: /help is Kazakh where translated, Russian elsewhere",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "open: a lesson body is Russian for a Kazakh reader",
+   "ok": true,
+   "detail": "locale=ru"
+  },
+  {
+   "check": "open: no uncaught page errors",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "page_errors": []
+}

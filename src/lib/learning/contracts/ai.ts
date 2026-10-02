@@ -31,7 +31,7 @@
  * each one is cached against the versions it was computed from.
  */
 
-import type { Locale } from '../../i18n/locale';
+import type { ContentLocale as Locale } from '../../i18n/locale';
 import type { Subskill } from './catalog';
 import type { AssistanceLevel } from './evidence';
 

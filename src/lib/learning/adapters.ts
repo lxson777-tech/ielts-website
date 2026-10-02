@@ -34,7 +34,7 @@
  * is looked up from the same raw registries course.ts reads, not through it.
  */
 
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 import type { SavedPlan } from '../study-plan';
 import { PLAN_SKILLS, sanitiseSkillTargets } from '../study-plan';
 import { LESSONS as LESSON_META } from '../../data/lessons';

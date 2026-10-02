@@ -124,6 +124,12 @@
 .lang-switch button[aria-pressed=true]:hover{opacity:1}
 .lang-switch button:focus-visible{outline:2px solid #b95735;outline-offset:2px}
 @media(max-width:760px){.lang-switch{padding:0;border:0}.lang-switch button[aria-pressed=true]{display:none}.lang-switch button{min-width:38px;min-height:38px;padding:0 6px;border:1px solid color-mix(in srgb,currentColor 22%,transparent)}}
+/* The narrowest phones (320 to 380 px): with Kazakh there are two other
+   languages to show instead of one (Builder K, 2 October 2026), so the
+   buttons, the gaps, the sign-up button and the menu button all give a few
+   pixels back and the header still fits without a sideways scroll, in
+   Russian too. */
+@media(max-width:380px){.lang-switch{gap:0}.lang-switch button{min-width:30px;min-height:34px;padding:0 3px}.story-nav{gap:6px}.nav-actions .button-small{padding-inline:9px}.menu-toggle{width:36px;padding:7px}}
 @media(prefers-reduced-motion:reduce){.lang-switch button{transition:none}}
 
 /* The feature list describes full access, not the trial: a small label says so. */

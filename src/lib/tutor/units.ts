@@ -27,7 +27,7 @@ import { lessonForType } from './catalog';
 import { observationEvidence, observationText, type Observation, type StudentInsights, type Confidence } from './insights';
 import type { ProgressV1 } from '../progress';
 import type { SavedPlan } from '../study-plan';
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 import { tutorText, tutorCount } from './ru';
 
 /** One reason this unit matters to THIS student: an observation from their

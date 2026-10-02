@@ -20,7 +20,7 @@
 import { getSupabase, isAuthConfigured } from '../auth/supabase';
 import { bindTutorRequest, tokenForRequest, type TutorSession } from './review-owner';
 import { t } from '../i18n/translate';
-import { getLocale, type Locale } from '../i18n/locale';
+import { getLocale, contentLocale, type ContentLocale as Locale } from '../i18n/locale';
 import { tutorErrorMessage } from './errors';
 import {
   MAX_MESSAGE_CHARS,
@@ -189,7 +189,9 @@ async function send<TRequest extends { locale?: Locale; idempotencyKey?: string 
 
     const withKey = {
       ...req,
-      locale: req.locale ?? getLocale(),
+      // Kazakh is an interface language only: Mr EZ answers a Kazakh
+      // reader in Russian (contentLocale), and the Worker knows en and ru.
+      locale: contentLocale(req.locale ?? getLocale()),
       idempotencyKey: req.idempotencyKey ?? newIdempotencyKey(),
     };
 

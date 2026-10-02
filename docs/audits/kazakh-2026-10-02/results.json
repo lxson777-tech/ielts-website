@@ -1,0 +1,196 @@
+{
+ "base": "http://localhost:4475/ielts-website",
+ "results": [
+  {
+   "check": "device: a Kazakh-first browser opens the sales page in Kazakh",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "sales: the KZ button is pressed",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "sales: the price list is Kazakh, with the tenge price",
+   "ok": true,
+   "detail": " Мазмұнға өту Беттің алдын ала нұсқасы: бағалар мен шарттар келісілген, төлем әлі қосылмаған.  IELTSisEZ  ЖИ тәлімгер ЖИ талдауы Сіздің жоспарыңызБағалар Кіру     EN RU KZ  КіруТегін аккаунт ашуТегін "
+  },
+  {
+   "check": "pages: /plans is in Kazakh",
+   "ok": true,
+   "detail": "missing []"
+  },
+  {
+   "check": "pages: /plans prices in tenge, written the Kazakh or Russian way",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "pages: /terms is in Kazakh",
+   "ok": true,
+   "detail": "missing []"
+  },
+  {
+   "check": "pages: /privacy is in Kazakh",
+   "ok": true,
+   "detail": "missing []"
+  },
+  {
+   "check": "pages: /help is in Kazakh",
+   "ok": true,
+   "detail": "missing []"
+  },
+  {
+   "check": "pages: /sign-up is in Kazakh",
+   "ok": true,
+   "detail": "missing []"
+  },
+  {
+   "check": "pages: /help course answers fall back to Russian, not English",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "pages: /terms seller block and refund example are Kazakh",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "account: sign-up refuses without consent, in Kazakh",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "account: the full consent wording is Kazakh",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "account: the profile form is Kazakh",
+   "ok": true,
+   "detail": "IELTS is EZ\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nEN\nRU\nKZ\nKC\nПерейти к содержимому\n\nСоңғы қадам\n\nӨзіңіз туралы айтып беріңіз\n\nКурс сізге атыңызбен жүгінуі және оқуыңызға немесе аккаунтыңызға қатысты сі"
+  },
+  {
+   "check": "account: Account > Profile shows Delete account and Download my data in Kazakh",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "account: Account > Access is Kazakh",
+   "ok": true,
+   "detail": "IELTS is EZ\nСегодня\nКурс\nПрактика\nТесты\nСловарь\nEN\nRU\nKZ\nSS\nПерейти к содержимому\nАккаунтыңыз\nПрофиль\nҚолжетімділік\nСақталғандар мен нәтижелер\nҚолжетімділігіңіз\n\nАккаунтыңызда не ашық және сіздің барлық сатып алуларыңыз.\n\nТегін аккаунт\nАккаунтыңызбен барлық сабақ тегін. Практика мен сүйемелдеу төлем"
+  },
+  {
+   "check": "lesson: a lesson body is Russian for a Kazakh reader",
+   "ok": true,
+   "detail": "locale=ru"
+  },
+  {
+   "check": "switch: English still reads English",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "switch: the workspace offers EN / RU / KZ",
+   "ok": true,
+   "detail": "['EN', 'RU', 'KZ']"
+  },
+  {
+   "check": "switch: Russian still reads Russian",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "switch: pressing KZ turns the page Kazakh without a reload",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "switch: the choice carries to the sales page",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "switch: the sales page KZ button works",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "phone: / has no sideways scroll at 390 px",
+   "ok": true,
+   "detail": "[390, 390]"
+  },
+  {
+   "check": "phone: / shows Kazakh",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "phone: /plans has no sideways scroll at 390 px",
+   "ok": true,
+   "detail": "[390, 390]"
+  },
+  {
+   "check": "phone: /plans shows Kazakh",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "phone: /terms has no sideways scroll at 390 px",
+   "ok": true,
+   "detail": "[390, 390]"
+  },
+  {
+   "check": "phone: /terms shows Kazakh",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "phone: /privacy has no sideways scroll at 390 px",
+   "ok": true,
+   "detail": "[390, 390]"
+  },
+  {
+   "check": "phone: /privacy shows Kazakh",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "phone: /help has no sideways scroll at 390 px",
+   "ok": true,
+   "detail": "[390, 390]"
+  },
+  {
+   "check": "phone: /help shows Kazakh",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "phone: /sign-up has no sideways scroll at 390 px",
+   "ok": true,
+   "detail": "[390, 390]"
+  },
+  {
+   "check": "phone: /sign-up shows Kazakh",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "phone: /account has no sideways scroll at 390 px",
+   "ok": true,
+   "detail": "[390, 390]"
+  },
+  {
+   "check": "phone: /lessons/reading/tfng has no sideways scroll at 390 px",
+   "ok": true,
+   "detail": "[390, 390]"
+  },
+  {
+   "check": "no uncaught page errors on any visit",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "page_errors": []
+}

@@ -12,7 +12,7 @@
    below are still read by the i18n coverage test like any other t() call. */
 
 import type { Vars } from '../../lib/i18n/translate';
-import type { Locale } from '../../lib/i18n/locale';
+import { intlLocale as tagFor, type Locale } from '../../lib/i18n/locale';
 import { nt } from '../../lib/i18n/translate';
 import { paidPlan, type OrderStatus, type PaymentOrder } from '../../lib/access/plans';
 import { hasPaidAccess, paidAccessEnded, type TrialStatus } from '../../lib/trial/status';
@@ -23,8 +23,9 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 
 /* ── Formatting ──────────────────────────────────────────────────────── */
 
+/* Kazakh dates use kk-KZ where the browser has it (src/lib/i18n/locale.ts). */
 function intlLocale(locale: Locale): string {
-  return locale === 'ru' ? 'ru-RU' : 'en-GB';
+  return tagFor(locale, 'en-GB');
 }
 
 /** "29 October 2026" / "29 октября 2026 г.". */
@@ -45,10 +46,10 @@ export function formatDateTime(iso: string, locale: Locale, timeZone?: string): 
 }
 
 /** Whole tenge for the locale: "₸10,000" in English (as the approved plans
-    page shows it), "10 000 ₸" in Russian. */
+    page shows it), "10 000 ₸" in Russian and Kazakh. */
 export function formatMoney(amount: number, currency: string, locale: Locale): string {
   try {
-    return new Intl.NumberFormat(locale === 'ru' ? 'ru-RU' : 'en-US', {
+    return new Intl.NumberFormat(tagFor(locale, 'en-US'), {
       style: 'currency',
       currency,
       currencyDisplay: 'narrowSymbol',

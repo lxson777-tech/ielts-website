@@ -45,7 +45,7 @@ import type { DailyMinutes, PersonalPlanV1 } from '../../lib/learning/contracts/
 import type { Paper } from '../../lib/learning/contracts/catalog';
 import { PAPERS } from '../../lib/learning/contracts/catalog';
 import { SKILL_TARGET_BANDS } from '../../lib/study-plan';
-import type { Locale } from '../../lib/i18n/locale';
+import type { ContentLocale as Locale } from '../../lib/i18n/locale';
 import { LOCALE_LABEL } from '../../lib/i18n/locale';
 import { useT } from '../../lib/i18n/react';
 import { planOutcome } from '../../lib/plan/summary';
@@ -99,7 +99,7 @@ function prefersReducedMotion(): boolean {
 
 export default function Intake({ variant, onDone, onDefer }: IntakeProps) {
   const { t, locale } = useT();
-  const calLocale = locale === 'ru' ? 'ru' : 'en';
+  const calLocale = locale;
   const [ready, setReady] = useState(false);
   const [plan, setPlan] = useState<PersonalPlanV1 | null>(null);
   const [today] = useState(() => todayKey());

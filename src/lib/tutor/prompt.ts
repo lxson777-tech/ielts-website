@@ -30,7 +30,7 @@
 import type { Activity } from './catalog';
 import type { Observation, StudentInsights } from './insights';
 import type { TutorPlace, TutorTask, TutorTurn } from './schema';
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 import type { WeekFacts } from './week';
 import type { UnitFacts, UnitNoteKind } from './units';
 import type { Certainty } from '../learning/contracts/policy';

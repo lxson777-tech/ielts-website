@@ -23,7 +23,7 @@ import { signInHref } from '../lib/auth/profile';
 import { currentRoute } from '../lib/auth/next';
 import { WORKSPACE_MENU } from '../lib/platform-nav';
 import { isAdminCached } from '../lib/admin';
-import { LOCALE_LABEL, SUPPORTED_LOCALES, switchLocale } from '../lib/i18n';
+import { LOCALE_LABEL, LOCALE_SHORT, SUPPORTED_LOCALES, switchLocale } from '../lib/i18n';
 import { useT } from '../lib/i18n/react';
 import { fullNameOf, initialsFor, useKnownProfile } from './auth/known-profile';
 
@@ -119,7 +119,7 @@ export default function WorkspaceMenu() {
               if (code !== locale) void switchLocale(code);
             }}
           >
-            {code.toUpperCase()}
+            {LOCALE_SHORT[code]}
           </button>
         ))}
       </div>

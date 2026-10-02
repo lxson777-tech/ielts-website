@@ -42,7 +42,7 @@
    version with the same values (a question type name, a paper name, both
    exam vocabulary that stays English) put back in. */
 
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 
 export type TextVars = Record<string, string | number>;
 

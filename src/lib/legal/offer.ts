@@ -18,7 +18,7 @@
      imports so tests can call it. */
 
 import { nt } from '../i18n/translate';
-import type { Locale } from '../i18n/locale';
+import { intlLocale, type Locale } from '../i18n/locale';
 import { legalDetail, LEGAL, type LegalDetails, type LegalKey } from '../operator';
 
 /** The date this version of the public offer took effect (YYYY-MM-DD). */
@@ -28,7 +28,7 @@ export const PRIVACY_VERSION = '2026-10-02';
 
 /** "2 October 2026" or "2 октября 2026 г.". */
 export function formatVersion(version: string, locale: Locale): string {
-  return new Intl.DateTimeFormat(locale === 'ru' ? 'ru-RU' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(
+  return new Intl.DateTimeFormat(intlLocale(locale, 'en-GB'), { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(
     new Date(`${version}T00:00:00Z`),
   );
 }
