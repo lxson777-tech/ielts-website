@@ -557,13 +557,13 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       whatChanges:
         nt('Band 6 means being willing to speak at length, even if coherence is sometimes lost through occasional repetition, self-correction, or hesitation, and using a range of connectives and discourse markers, even if not always appropriately. Band 5 tends to over-use a small number of connectives and struggles once the topic gets more complex.'),
       doThis: [
-        nt('Extend every answer to at least 3 to 4 sentences, even for simple Part 1 questions.'),
+        nt('Extend your answers past the first sentence: in Part 1 that usually means 2 to 4 sentences, with a reason or example.'),
         nt('Use a range of connecting words (also, however, because, so, actually) rather than the same one repeatedly.'),
         nt('When you lose your thread, restart the sentence rather than trailing off in silence.'),
         nt('Give a reason or example after every opinion you state.'),
       ],
       stopThis: [
-        nt('Stop giving answers shorter than two sentences on any question.'),
+        nt('Stop giving one-sentence answers to questions that invite a reason or an example.'),
         nt('Stop trailing off mid-sentence without finishing the thought.'),
       ],
       example: {
@@ -672,7 +672,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       whatChanges:
         nt('Band 6 asks for a wide enough vocabulary to discuss topics at length and make meaning clear despite some inappropriate word choices, and to generally paraphrase successfully. Band 5 manages this with limited flexibility and mixed success at paraphrase.'),
       doThis: [
-        nt('Build your answers to 4 to 6 sentences using vocabulary specific to the topic, not just general words.'),
+        nt('Build your Part 3 answers to 3 to 5 sentences using vocabulary specific to the topic, not just general words.'),
         nt('Paraphrase the question\'s key word at least once in your answer instead of repeating it.'),
         nt('Learn topic-specific vocabulary sets of 10 to 15 words for common Part 3 themes: technology, environment, education, work, society.'),
         nt('Use a synonym whenever you would otherwise repeat the same word twice in one answer.'),
@@ -698,7 +698,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
         nt('Use at least one less common word or natural idiomatic phrase per answer, where it genuinely fits.'),
         nt('Match your vocabulary\'s formality to the topic: more casual for Part 1, more precise for Part 3.'),
         nt('Practise common collocations for IELTS topics (raise awareness, tackle a problem, strike a balance) and use them naturally.'),
-        nt('Paraphrase the question fully in your opening sentence rather than repeating any of its wording.'),
+        nt('In Part 3, paraphrase the question\'s key words in your opening sentence rather than repeating its wording.'),
       ],
       stopThis: [
         nt('Stop using only textbook-safe vocabulary. Take the risk of a less common word even if it is occasionally imperfect.'),
@@ -823,7 +823,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       example: {
         before: 'If I have more time, I will travel more, I think it is important.',
         after: 'If I had more time, I would definitely travel more, since I think it broadens the way you see the world.',
-        why: nt('The original mixes present and future forms incorrectly for a hypothetical idea. The revision uses the correct second conditional ("If I had... I would...") and adds a relative-style justification, which is the range and accuracy band 7 asks for.'),
+        why: nt('The original mixes present and future forms incorrectly for a hypothetical idea. The revision uses the correct second conditional ("If I had... I would...") and adds a reason clause with "since", which is the range and accuracy band 7 asks for.'),
       },
       practice:
         nt('Answer 4 questions using a second conditional each time ("If I had...", "If I were..."). Check the verb forms carefully. 15 minutes.'),
@@ -883,7 +883,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       doThis: [
         nt('Identify your 3 to 5 most frequently mispronounced sounds (many students struggle with th, r/l, or final consonants) and drill them daily.'),
         nt('Mark word stress on new vocabulary when you learn it, and say the word aloud stressing the right syllable.'),
-        nt('Practise linking words together in short phrases ("an apple", not "a... napple... pause") instead of pronouncing every word separately.'),
+        nt('Practise linking words together in short phrases (so "an apple" runs together as "a-napple", not "an... apple" with a pause) instead of pronouncing every word separately.'),
         nt('Slow down slightly so individual sounds come out clearly. Speed can come later.'),
       ],
       stopThis: [

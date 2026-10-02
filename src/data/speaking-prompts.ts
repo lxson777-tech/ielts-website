@@ -873,7 +873,7 @@ export const SPEAKING_CUE_CARDS: CueCard[] = [
     vocab: [
       { phrase: "a must-have gadget", meaning: "a device many people consider essential", example: "Noise-cancelling headphones feel like a must-have gadget now." },
       { phrase: "worth the investment", meaning: "good value despite the cost", example: "A good laptop is worth the investment." },
-      { phrase: "state of the art", meaning: "using the most modern technology available", example: "The device uses state of the art sensors." },
+      { phrase: "state-of-the-art", meaning: "using the most modern technology available", example: "The device uses state-of-the-art sensors." },
       { phrase: "save time and effort", meaning: "make a task faster and easier", example: "It would save me a lot of time and effort." },
     ],
     part3Questions: [
@@ -1292,9 +1292,9 @@ export const SPEAKING_CUE_CARDS: CueCard[] = [
     ],
     vocab: [
       { phrase: "a strong performance", meaning: "acting that is impressive and convincing", example: "The lead actor gave a strong performance." },
-      { phrase: "well-directed", meaning: "skilfully made by the director", example: "It was a beautifully well-directed film." },
+      { phrase: "well-directed", meaning: "skilfully made by the director", example: "It was a really well-directed film." },
       { phrase: "a memorable scene", meaning: "a part of a film that stays in your memory", example: "The final scene was especially memorable." },
-      { phrase: "critically acclaimed", meaning: "praised highly by critics", example: "It is a critically acclaimed film this year." },
+      { phrase: "critically acclaimed", meaning: "praised highly by critics", example: "It was one of this year's most critically acclaimed films." },
     ],
     part3Questions: [
       { id: "q1", text: "Do you think film critics influence what people choose to watch?", ideas: ["Reviews versus word of mouth", "How much you personally trust reviews"] },
@@ -1381,7 +1381,7 @@ export const SPEAKING_CUE_CARDS: CueCard[] = [
       { phrase: "community-minded", meaning: "caring about the wellbeing of a wider community", example: "She is very community-minded." },
     ],
     part3Questions: [
-      { id: "q1", text: "Why do you think some people are more willing to help others than others?", ideas: ["Upbringing, personality, culture", "A moment that shaped someone's willingness"] },
+      { id: "q1", text: "Why do you think some people are more willing than others to help?", ideas: ["Upbringing, personality, culture", "A moment that shaped someone's willingness"] },
       { id: "q2", text: "Do you think volunteering benefits the volunteer as much as the people helped?", ideas: ["Skills, connection, sense of purpose", "An example either way"] },
       { id: "q3", text: "How can communities encourage more people to help each other?", ideas: ["Organised programmes versus informal culture", "An idea you think would work well"] },
     ],
@@ -1655,7 +1655,7 @@ export const SPEAKING_CUE_CARDS: CueCard[] = [
       "A story that shows this quality clearly",
     ],
     vocab: [
-      { phrase: "wise beyond words", meaning: "showing great wisdom", example: "She is wise beyond words, honestly." },
+      { phrase: "as sharp as a tack", meaning: "mentally quick and alert, often said of an older person", example: "At ninety, she is still as sharp as a tack." },
       { phrase: "resilient", meaning: "able to recover quickly from difficulty", example: "He has remained remarkably resilient." },
       { phrase: "a wealth of experience", meaning: "a great deal of life experience", example: "She has a wealth of experience to share." },
       { phrase: "age gracefully", meaning: "grow older with dignity and calm", example: "She has aged so gracefully." },
@@ -1935,7 +1935,7 @@ export const SPEAKING_CUE_CARDS: CueCard[] = [
       "A photo of theirs that stayed with you",
     ],
     vocab: [
-      { phrase: "a keen eye", meaning: "a natural ability to notice good detail or composition", example: "She has a real keen eye for detail." },
+      { phrase: "a keen eye", meaning: "a natural ability to notice good detail or composition", example: "She has a really keen eye for detail." },
       { phrase: "composition", meaning: "how elements are arranged within a photo", example: "The composition of her shots is excellent." },
       { phrase: "an amateur photographer", meaning: "someone who takes photos as a hobby, not professionally", example: "He is just an amateur photographer, but very good." },
       { phrase: "develop an eye for", meaning: "gradually become skilled at noticing something", example: "She has developed a real eye for light." },

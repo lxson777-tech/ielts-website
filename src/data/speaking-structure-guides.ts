@@ -56,7 +56,7 @@ export const SPEAKING_STRUCTURE_GUIDES: Record<StructureMethod, StructureGuide> 
     title: nt('A.R.E. method'),
     part: 'Part 1',
     notes: [
-      nt('Answer every question in 2 to 4 sentences: one direct answer, then a reason or example. Never just "yes" or "no".'),
+      nt('Most answers come out at 2 to 4 sentences: one direct answer, then a reason or example. Never just "yes" or "no".'),
       nt('Match the tense of the question: "Did you…?" needs a past answer, "Would you…?" needs would.'),
       nt("It's a friendly conversation about you, so relaxed, natural language beats formal essay words here."),
     ],
@@ -122,7 +122,7 @@ export const SPEAKING_STRUCTURE_GUIDES: Record<StructureMethod, StructureGuide> 
       {
         name: 'Explain',
         timing: nt('60-70s'),
-        description: nt('Work through each bullet point on the cue card in turn, with specific details and examples.'),
+        description: nt('Use the bullet points to build the talk, in any order, with specific details and examples.'),
         phrases: ['In terms of [bullet]…', 'As far as [bullet] is concerned…', 'When it comes to [bullet]…'],
       },
       {
@@ -134,7 +134,7 @@ export const SPEAKING_STRUCTURE_GUIDES: Record<StructureMethod, StructureGuide> 
       {
         name: 'Link',
         timing: nt('10-15s'),
-        description: nt('Round off your talk with a brief reflection.'),
+        description: nt('Only if you get there: round off with a brief reflection, then carry on with your backup idea.'),
         phrases: ['All in all…', 'To sum up…', "It's definitely an experience I'd recommend because…"],
       },
     ],
