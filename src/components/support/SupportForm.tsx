@@ -67,6 +67,8 @@ const REASON_NOTES: Partial<Record<SupportReason, string>> = {
   'trial-ended': isTrialBuild() ? nt('You came here because your practice and guidance ended.') : nt('You came here from the end of your trial.'),
   locked: nt('You came here from a page that is not included in your access.'),
   plans: nt('You came here from the plans page.'),
+  refund: nt('You came here to ask for a refund. Tell us which purchase it is for, and a person will answer by email.'),
+  'ai-review': nt('You came here to ask a person to review an AI-marked result. Tell us which essay or Speaking result it is and what you would like checked.'),
 };
 
 type Status = 'idle' | 'sending' | 'sent';

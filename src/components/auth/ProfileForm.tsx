@@ -19,7 +19,21 @@
    The parent block appears only while the typed date of birth makes the
    student under 18 (isMinor). The database applies every rule again
    (supabase/migrations/2026-09-24-profiles.sql), so a bypassed form still
-   cannot store a bad row. */
+   cannot store a bad row.
+
+   Consent (2 October 2026, src/lib/legal/consent.ts):
+   - After a Google sign-in from /sign-up, the tick kept in this tab is
+     written to the account here (syncPendingConsent) before anything else.
+   - An account with no consent to the current wording (a Google account
+     made from /sign-in, or one made before 2 October 2026) gets the same
+     required tick box on this form, and it is written with the save.
+   - Under 18, the parent's tick is now a declaration that the parent agrees
+     to the student using the site, to the processing of their data and, in
+     the gated build, to any purchase. The profile row keeps the time it was
+     first ticked (parent_consent_at, stamped by the database); the wording
+     version it was given for has no column there, so it goes into the
+     account's metadata as parent_consent_version and parent_consent_at. A
+     declaration given for an older wording is asked again. */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
@@ -45,6 +59,15 @@ import {
 import { hasNext, hrefFor, readNext } from '../../lib/auth/next';
 import { withBase } from '../../lib/url';
 import { useT } from '../../lib/i18n/react';
+import { isTrialBuild } from '../../lib/trial/mode';
+import {
+  consentRecord,
+  hasCurrentParentConsent,
+  parentConsentRecord,
+  parentDeclaration,
+} from '../../lib/legal/consent';
+import { readPendingConsent, saveConsentToAccount, syncPendingConsent } from '../../lib/legal/consent-store';
+import ConsentCheck from '../legal/ConsentCheck';
 import { Field, SOURCE_LABELS, describedBy } from './fields';
 import { AuthShell, NotConfigured } from './shell';
 
@@ -201,6 +224,14 @@ export default function ProfileForm() {
   const [saveError, setSaveError] = useState<string | null>(null);
   /** Set once the student types, so a late server answer never overwrites them. */
   const touched = useRef(false);
+  /** Whether the account holds consent to the current wording: null until
+      a pending Google tick has been moved onto it (or found absent). */
+  const [accountConsent, setAccountConsent] = useState<boolean | null>(null);
+  const [consentTick, setConsentTick] = useState(false);
+  const [consentError, setConsentError] = useState<string | null>(null);
+  /** Whether a parent's declaration to the CURRENT wording is on the
+      account. A tick from an older wording is not carried into the form. */
+  const parentDeclared = useRef(false);
 
   useEffect(() => {
     setSetup(hasNext());
@@ -217,26 +248,35 @@ export default function ProfileForm() {
     let cancelled = false;
     touched.current = false;
     setLoaded(false);
+    parentDeclared.current = hasCurrentParentConsent(user.user_metadata);
+    // A tick given on /sign-up before the Google redirect goes onto the
+    // account first; leaving waits for it, so it is never dropped.
+    const consentSynced = syncPendingConsent(user).then((held) => {
+      if (!cancelled) setAccountConsent(held);
+      return held;
+    });
+    const leave = () => {
+      setStatus('leaving');
+      void consentSynced.finally(() => window.location.replace(hrefFor(readNext())));
+    };
     const forward = hasNext();
     const cached = cachedProfile(userId);
     if (cached && forward && isProfileComplete(cached)) {
-      setStatus('leaving');
-      window.location.replace(hrefFor(readNext()));
+      leave();
       return;
     }
     setSaved(cached);
-    setValues(cached ? toInput(cached) : { ...EMPTY_PROFILE_INPUT, ...prefillFromUser(user) });
+    setValues(cached ? fromProfile(cached) : { ...EMPTY_PROFILE_INPUT, ...prefillFromUser(user) });
     void loadProfile(userId).then((fresh) => {
       if (cancelled) return;
       setLoaded(true);
       if (fresh === undefined) return; // Could not ask; the form still works.
       setSaved(fresh);
       if (fresh && forward && isProfileComplete(fresh)) {
-        setStatus('leaving');
-        window.location.replace(hrefFor(readNext()));
+        leave();
         return;
       }
-      if (fresh && !touched.current) setValues(toInput(fresh));
+      if (fresh && !touched.current) setValues(fromProfile(fresh));
     });
     return () => {
       cancelled = true;
@@ -244,6 +284,13 @@ export default function ProfileForm() {
     // The user object changes identity on every token refresh; the id is what matters.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
+
+  /** The saved profile as form values; the parent's tick only when it was
+      given for the current wording. */
+  function fromProfile(p: StudentProfile): ProfileInput {
+    const input = toInput(p);
+    return { ...input, parentConsent: input.parentConsent && parentDeclared.current };
+  }
 
   if (!isAuthConfigured()) return <NotConfigured />;
   if (!known || status === 'leaving') return <div className="auth-spinner" aria-hidden="true" />;
@@ -260,9 +307,12 @@ export default function ProfileForm() {
 
   /* Nothing cached and the server not answered yet: wait a moment rather
      than flash the first-time heading at a student who has a profile. */
-  if (!saved && !loaded) return <div className="auth-spinner" aria-hidden="true" />;
+  if ((!saved && !loaded) || accountConsent === null) return <div className="auth-spinner" aria-hidden="true" />;
 
   const minor = isMinor(values.dateOfBirth);
+  /* This account has not agreed to the current wording yet, so the same
+     required tick box as on /sign-up is part of this form. */
+  const needsConsent = !accountConsent;
   const firstTime = !saved;
 
   function set<K extends Key>(key: K, value: ProfileInput[K]) {
@@ -277,6 +327,8 @@ export default function ProfileForm() {
     if (!userId) return;
     setSaveError(null);
     const check = validateProfile(values, new Date());
+    const consentMissing = needsConsent && !consentTick;
+    setConsentError(consentMissing ? t('Please tick the box to agree before you continue.') : null);
     if (!check.ok) {
       setErrors(check.errors);
       const first = FIELD_ORDER.find((k) => check.errors[k]);
@@ -284,7 +336,29 @@ export default function ProfileForm() {
       return;
     }
     setErrors({});
+    if (consentMissing) {
+      document.getElementById('profile-consent')?.focus();
+      return;
+    }
     setStatus('saving');
+    /* The proof goes onto the account before the details are saved: the
+       student's own consent, and for a student under 18 the parent's
+       declaration to the current wording. One call for both. */
+    const now = new Date();
+    const record = {
+      ...(needsConsent ? (readPendingConsent(now) ?? consentRecord(now)) : {}),
+      ...(isMinor(check.value.dateOfBirth) && !parentDeclared.current ? parentConsentRecord(now) : {}),
+    };
+    if (Object.keys(record).length > 0) {
+      const stored = await saveConsentToAccount(record);
+      if (stored.error) {
+        setStatus('idle');
+        setSaveError(t('We could not save your details: {error}', { error: stored.error }));
+        return;
+      }
+      if (needsConsent) setAccountConsent(true);
+      if ('parent_consent_version' in record) parentDeclared.current = true;
+    }
     const result = await saveProfile(userId, check.value, saved);
     if (!result.ok) {
       setStatus('idle');
@@ -292,7 +366,7 @@ export default function ProfileForm() {
       return;
     }
     setSaved(result.profile);
-    setValues(toInput(result.profile));
+    setValues(fromProfile(result.profile));
     touched.current = false;
     if (setup) {
       setStatus('leaving');
@@ -429,7 +503,7 @@ export default function ProfileForm() {
                   aria-describedby={describedBy('profile-parentConsent', err('parentConsent'))}
                   onChange={(e) => set('parentConsent', e.target.checked)}
                 />
-                <span>{t('My parent or guardian agrees to me using this site')}</span>
+                <span>{t(parentDeclaration(isTrialBuild()))}</span>
               </label>
               {err('parentConsent') && (
                 <p className="auth-field-error" id="profile-parentConsent-error" role="alert">
@@ -438,6 +512,19 @@ export default function ProfileForm() {
               )}
             </div>
           </div>
+        )}
+
+        {needsConsent && (
+          <ConsentCheck
+            id="profile-consent"
+            checked={consentTick}
+            error={consentError}
+            onChange={(v) => {
+              setConsentTick(v);
+              if (v) setConsentError(null);
+              if (status === 'saved') setStatus('idle');
+            }}
+          />
         )}
 
         {saveError && (

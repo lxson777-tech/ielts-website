@@ -46,6 +46,7 @@ import * as gFree from './g-free';
 import * as pFree from './p-free';
 import * as accountCategories from './account-categories';
 import * as lLegal from './l-legal';
+import * as cConsent from './c-consent';
 
 /** Every batch module, in merge order. The test imports this same list. */
 export const BATCHES = [
@@ -87,6 +88,7 @@ export const BATCHES = [
   pFree,
   accountCategories,
   lLegal,
+  cConsent,
 ];
 
 export const strings: Record<string, string> = Object.assign({}, ...BATCHES.map((b) => b.strings));

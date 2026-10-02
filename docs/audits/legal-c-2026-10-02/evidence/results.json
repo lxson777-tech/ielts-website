@@ -1,0 +1,222 @@
+[
+  {
+    "check": "sign-up: the consent box is there and unticked",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "sign-up: without the tick the account is not created and the box says why",
+    "ok": true,
+    "detail": "http://127.0.0.1:4461/ielts-website/sign-up?next=%2Fdashboard"
+  },
+  {
+    "check": "sign-up: without the tick the Google button does not leave the page",
+    "ok": true,
+    "detail": "http://127.0.0.1:4461/ielts-website/sign-up?next=%2Fdashboard"
+  },
+  {
+    "check": "sign-up: the wording says 'Who processes your data'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "sign-up: the wording says '[full registered name]'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "sign-up: the wording says '[IIN]'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "sign-up: the wording says 'Supabase'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "sign-up: the wording says 'OpenAI'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "sign-up: the wording says 'Cloudflare'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "sign-up: the wording says 'GitHub Pages'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "sign-up: the wording says 'outside Kazakhstan'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "sign-up: the wording says 'The payment company handles payments (Kazakhstan)'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "sign-up: the wording says 'until you withdraw it or delete your account'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "sign-up: the wording says 'Delete account'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "sign-up: the wording says 'Consent version 2026-10-02'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "sign-up: the account holds consent_version 2026-10-02 and a time",
+    "ok": true,
+    "detail": "{'consent_version': '2026-10-02', 'consent_at': '2026-10-02T09:35:06.270Z'}"
+  },
+  {
+    "check": "profile after email sign-up: no second consent box",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "profile: the parent's declaration covers data and, in the gated build, purchases",
+    "ok": true,
+    "detail": "My parent or guardian agrees to me using this site, to my personal data being processed as the privacy notice describes, and to any purchase of access I make."
+  },
+  {
+    "check": "profile: under 18 cannot save without the parent's tick",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "profile: parent_consent_version and parent_consent_at are on the account",
+    "ok": true,
+    "detail": "{'consent_version': '2026-10-02', 'consent_at': '2026-10-02T09:35:06.270Z', 'parent_consent_version': '2026-10-02', 'parent_consent_at': '2026-10-02T09:35:09.237Z'}"
+  },
+  {
+    "check": "support: reason ai-review explains why the student came",
+    "ok": true,
+    "detail": "Support\n\nAsk a person\n\nSomething not working, or a question the help page does not answer? Write it here. A person reads every message and replies by email.\n\nYou came here to ask a person to review an AI-marked result. Tell us which essay or Speaking result it is and what you would like checked.\n\nWh"
+  },
+  {
+    "check": "support: the topic 'Something else' is pre-selected",
+    "ok": true,
+    "detail": "other"
+  },
+  {
+    "check": "account: the Download my data row is there",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "download: the file is named by date",
+    "ok": true,
+    "detail": "ielts-is-ez-my-data-2026-10-02.json"
+  },
+  {
+    "check": "download: the account and its consent record are in it",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "download: the profile is in it",
+    "ok": true,
+    "detail": "[{'user_id': '40db8175-e1bd-485e-bc04-4c8479cab7c6', 'first_name': 'Synthetic', 'last_name': 'Student', 'date_of_birth': '2011-03-04', 'phone': '+77012345678', 'city': 'Almaty', 'occupation': 'Synthetic School', 'source': 'friend', 'parent_name': 'Synthetic Parent', 'parent_phone': '+77010000001', 'parent_consent_at': '2026-10-02T09:35:09.250Z', 'created_at': '2026-10-02T09:35:09.252Z', 'updated_a"
+  },
+  {
+    "check": "download: the support message sent above is in it, with its reason",
+    "ok": true,
+    "detail": "[{'id': '5d81332b-99ba-4f4b-9491-535d12a08231', 'page': None, 'topic': 'other', 'locale': 'en', 'context': 'ai-review', 'message': 'Please review the band on my last essay, synthetic test message.', 'created_at': '2026-10-02T14:35:10.809+05:00', 'answered_at': None, 'contact_email': None}]"
+  },
+  {
+    "check": "download: what this browser keeps is in it, without the sign-in token",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "download: nothing could not be read",
+    "ok": true,
+    "detail": "None"
+  },
+  {
+    "check": "download: the closed records are named",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "account: the row says the file is downloading",
+    "ok": true,
+    "detail": " Your file is downloading."
+  },
+  {
+    "check": "stand-in: complimentary access given",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "essay result: says it was marked by AI and is not an official IELTS score",
+    "ok": true,
+    "detail": "Marked by AI. This band is an AI estimate, not an official IELTS score. Ask a person to review it"
+  },
+  {
+    "check": "essay result: links to a person's review with reason ai-review",
+    "ok": true,
+    "detail": "/ielts-website/support?reason=ai-review"
+  },
+  {
+    "check": "examiner: before the interview, Ms. Taylor is named as an AI voice",
+    "ok": true,
+    "detail": "Ms. Taylor is an AI voice, not a real person. Your interview is marked by AI."
+  },
+  {
+    "check": "Mr EZ: the panel says he is an AI tutor, not a real person",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "Google: the tick given before the redirect is on the account afterwards",
+    "ok": true,
+    "detail": "{'full_name': 'Aigerim Google', 'given_name': 'Aigerim', 'family_name': 'Google', 'provider': 'google', 'consent_version': '2026-10-02', 'consent_at': '2026-10-02T09:34:25.523Z'}"
+  },
+  {
+    "check": "Google: the pending tick is cleared from the tab",
+    "ok": true,
+    "detail": "None"
+  },
+  {
+    "check": "Google: the profile form does not ask again",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "no consent on the account: the profile form shows the box",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "no consent: saving without the tick is refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "no consent: ticking and saving stores it",
+    "ok": true,
+    "detail": "{'full_name': 'Aigerim Google', 'given_name': 'Aigerim', 'family_name': 'Google', 'provider': 'google', 'consent_version': '2026-10-02', 'consent_at': '2026-10-02T09:35:31.685Z'}"
+  },
+  {
+    "check": "ru: the consent sentence and wording are Russian",
+    "ok": true,
+    "detail": "Что входит в согласие\nКто обрабатывает ваши данные\nВаши данные обрабатывает [full registered name] (ИИН [IIN]), владелец IELTS is EZ.\nКакие данные\nВаш адрес электронной почты, а при входе через Google"
+  },
+  {
+    "check": "no uncaught page errors in the English run",
+    "ok": true,
+    "detail": "[]"
+  }
+]

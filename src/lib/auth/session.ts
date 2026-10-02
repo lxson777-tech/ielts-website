@@ -78,19 +78,22 @@ export async function signInWithPassword(
     `emailRedirectTo` is where the confirmation link lands the student: the
     profile page, so a new account gives its details first. Returns
     `needsConfirmation: true` when Supabase created the user but withheld a
-    session pending that email click. */
+    session pending that email click. `metadata` is stored as the new
+    account's user metadata: the consent record given on the sign-up form
+    (src/lib/legal/consent.ts), so the account never exists without it. */
 export async function signUpWithPassword(
   email: string,
   password: string,
   emailRedirectTo: string,
   captchaToken?: string | null,
+  metadata?: Record<string, string>,
 ): Promise<{ error?: string; needsConfirmation?: boolean }> {
   const sb = getSupabase();
   if (!sb) return { error: t('Accounts are not configured for this site yet.') };
   const { data, error } = await sb.auth.signUp({
     email: email.trim(),
     password,
-    options: withCaptcha({ emailRedirectTo }, captchaToken),
+    options: withCaptcha({ emailRedirectTo, ...(metadata ? { data: metadata } : {}) }, captchaToken),
   });
   if (error) return { error: error.message };
   // A confirmed session comes back immediately if email confirmation is off;

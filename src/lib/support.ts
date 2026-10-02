@@ -56,6 +56,10 @@ export function topicForReason(reason: SupportReason | null): SupportTopic | nul
     case 'mr-ez':
     case 'grader':
       return 'problem';
+    case 'ai-review':
+      return 'other';
+    case 'refund':
+      return 'account';
     case 'trial-ended':
     case 'locked':
     case 'plans':

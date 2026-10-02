@@ -57,6 +57,7 @@ import {
 } from './writing-editor-owner';
 import { nt } from '../lib/i18n/translate';
 import SupportLink from './support/SupportLink'; // [E trust]
+import AiEstimateNote from './legal/AiEstimateNote';
 import { writingActivityId } from '../lib/learning/catalog';
 import { isTrialBuild } from '../lib/trial/mode';
 
@@ -777,6 +778,11 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             </div>
           )}
         </BandReport>
+
+        {/* Marked by AI, an estimate, and a person can review it (AI Law
+            Art. 21; src/components/legal/AiEstimateNote.tsx). Only under a
+            real AI result: the offline sample says what it is above. */}
+        {result.grader.live && <AiEstimateNote />}
 
         {/* Mr EZ reads the marking above rather than re-marking anything. He
             points at the stored attempt by its timestamp, so the explanation

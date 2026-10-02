@@ -9,7 +9,14 @@
    on that same /profile?next=... address.
 
    A line under the button says what the next step asks for and links to
-   /privacy (audit F04, 29 September 2026). */
+   /privacy (audit F04, 29 September 2026).
+
+   Consent (2 October 2026, Personal Data Law Art. 8): a required, unticked
+   box with the full wording one click away (ConsentCheck). Without the tick
+   neither the form nor the Google button goes ahead. The tick is stored as
+   proof in the new account's user metadata: sent with the sign-up call for
+   email, kept in this tab across the Google redirect and written on the
+   profile page for Google (src/lib/legal/consent-store.ts). */
 
 import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
@@ -25,8 +32,11 @@ import Turnstile, { captchaEnabled } from './Turnstile';
 import { Field, PasswordInput, PasswordStrength, describedBy, passwordProblemSentence } from './fields';
 import { leaveFor, whenSignedInSettled } from './after-auth';
 import { AuthShell, GoogleButton, NotConfigured, SignedInAlready, friendlyAuthError } from './shell';
+import ConsentCheck from '../legal/ConsentCheck';
+import { consentRecord } from '../../lib/legal/consent';
+import { rememberPendingConsent } from '../../lib/legal/consent-store';
 
-type Errors = Partial<Record<'email' | 'password' | 'confirm', string>>;
+type Errors = Partial<Record<'email' | 'password' | 'confirm' | 'consent', string>>;
 
 export default function SignUpForm() {
   const { t } = useT();
@@ -43,6 +53,7 @@ export default function SignUpForm() {
   const [google, setGoogle] = useState(false);
   const [captcha, setCaptcha] = useState<string | null>(null);
   const [captchaReset, setCaptchaReset] = useState(0);
+  const [consent, setConsent] = useState(false);
 
   useEffect(() => {
     setNext(readNext());
@@ -91,15 +102,16 @@ export default function SignUpForm() {
     const check = checkPassword(password);
     if (!check.ok) found.password = passwordProblemSentence(t, check.problems);
     if (!found.password && password !== confirm) found.confirm = t("Passwords don't match.");
+    if (!consent) found.consent = t('Please tick the box to agree before creating your account.');
     setErrors(found);
     if (Object.keys(found).length > 0) {
-      const first = found.email ? 'signup-email' : found.password ? 'signup-password' : 'signup-confirm';
+      const first = found.email ? 'signup-email' : found.password ? 'signup-password' : found.confirm ? 'signup-confirm' : 'signup-consent';
       document.getElementById(first)?.focus();
       return;
     }
 
     setBusy(true);
-    const result = await signUpWithPassword(email, password, absoluteHref(profileAfter), captcha);
+    const result = await signUpWithPassword(email, password, absoluteHref(profileAfter), captcha, { ...consentRecord(new Date()) });
     setCaptchaReset((n) => n + 1);
     if (result.error) {
       setError(friendlyAuthError(t, result.error));
@@ -168,6 +180,16 @@ export default function SignUpForm() {
           />
         </Field>
 
+        <ConsentCheck
+          id="signup-consent"
+          checked={consent}
+          error={errors.consent}
+          onChange={(v) => {
+            setConsent(v);
+            if (v && errors.consent) setErrors((x) => ({ ...x, consent: undefined }));
+          }}
+        />
+
         <Turnstile onToken={setCaptcha} resetSignal={captchaReset} />
         {error && (
           <p className="auth-alert" role="alert">
@@ -191,7 +213,19 @@ export default function SignUpForm() {
       {google && (
         <>
           <div className="auth-divider">{t('or')}</div>
-          <GoogleButton onClick={() => void signInWithGoogle(absoluteHref(profileAfter))} />
+          {/* The same tick is needed first. It is kept in this tab across
+              the redirect and written to the account on /profile. */}
+          <GoogleButton
+            onClick={() => {
+              if (!consent) {
+                setErrors((x) => ({ ...x, consent: t('Please tick the box to agree before creating your account.') }));
+                document.getElementById('signup-consent')?.focus();
+                return;
+              }
+              rememberPendingConsent(consentRecord(new Date()));
+              void signInWithGoogle(absoluteHref(profileAfter));
+            }}
+          />
         </>
       )}
 

@@ -123,6 +123,9 @@ def sign_up(page, email, next_route="/dashboard"):
     page.locator("#signup-password").fill(PASSWORD)
     if page.locator("#signup-confirm").count():
         page.locator("#signup-confirm").fill(PASSWORD)
+    # Consent to data processing is required since 2 October 2026.
+    if page.locator("#signup-consent").count():
+        page.locator("#signup-consent").check(force=True)
     page.locator("button.auth-button[type=submit]").click()
     fill_profile(page)
 

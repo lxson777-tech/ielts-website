@@ -74,6 +74,8 @@ def account(page, tier: str, tag: str) -> str | None:
         page.locator("#signup-password").fill(PASSWORD)
         if page.locator("#signup-confirm").count():
             page.locator("#signup-confirm").fill(PASSWORD)
+        if page.locator("#signup-consent").count():
+            page.locator("#signup-consent").check(force=True)
         page.locator("button.auth-button[type=submit]").click()
         try:
             page.wait_for_function("() => !location.pathname.endsWith('/sign-up')", timeout=12000)

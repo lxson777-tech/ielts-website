@@ -37,6 +37,8 @@ const CONTEXT: Record<string, string> = {
   footer: 'Footer link',
   terms: 'Terms page',
   privacy: 'Privacy page',
+  refund: 'Refund request',
+  'ai-review': 'Review of an AI result',
 };
 
 function when(iso: string): string {

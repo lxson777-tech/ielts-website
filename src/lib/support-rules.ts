@@ -29,6 +29,10 @@ export const SUPPORT_REASONS = [
   'footer',
   'terms',
   'privacy',
+  /* 2 October 2026 (docs/legal/BUILD-PLAN-2026-10-02.md): a request for a
+     refund, and a request for a person to review an AI-marked result. */
+  'refund',
+  'ai-review',
 ] as const;
 export type SupportReason = (typeof SUPPORT_REASONS)[number];
 

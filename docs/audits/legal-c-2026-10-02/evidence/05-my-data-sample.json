@@ -1,0 +1,842 @@
+{
+  "format": "ielts-is-ez-export/1",
+  "about": "Everything your IELTS is EZ account holds, and what this browser keeps for you, as read when you downloaded this file.",
+  "exportedAt": "2026-10-02T09:35:15.221Z",
+  "consentVersionShownToday": "2026-10-02",
+  "account": {
+    "id": "40db8175-e1bd-485e-bc04-4c8479cab7c6",
+    "email": "c-consent-1790933699@example.test",
+    "createdAt": "2026-10-02T09:35:09.245Z",
+    "lastSignInAt": null,
+    "signInMethods": [
+      "email"
+    ],
+    "metadata": {
+      "consent_version": "2026-10-02",
+      "consent_at": "2026-10-02T09:35:06.270Z",
+      "parent_consent_version": "2026-10-02",
+      "parent_consent_at": "2026-10-02T09:35:09.237Z"
+    }
+  },
+  "database": {
+    "student_profiles": {
+      "description": "Your details from the profile form.",
+      "rows": [
+        {
+          "user_id": "40db8175-e1bd-485e-bc04-4c8479cab7c6",
+          "first_name": "Synthetic",
+          "last_name": "Student",
+          "date_of_birth": "2011-03-04",
+          "phone": "+77012345678",
+          "city": "Almaty",
+          "occupation": "Synthetic School",
+          "source": "friend",
+          "parent_name": "Synthetic Parent",
+          "parent_phone": "+77010000001",
+          "parent_consent_at": "2026-10-02T09:35:09.250Z",
+          "created_at": "2026-10-02T09:35:09.252Z",
+          "updated_at": "2026-10-02T09:35:09.252Z"
+        }
+      ]
+    },
+    "user_state": {
+      "description": "Your saved progress and study plan.",
+      "rows": [
+        {
+          "user_id": "40db8175-e1bd-485e-bc04-4c8479cab7c6",
+          "progress": {
+            "version": 1,
+            "lessons": {},
+            "tests": {},
+            "writing": {},
+            "speaking": [],
+            "activity": {}
+          },
+          "study_plan": null
+        }
+      ]
+    },
+    "learning_events": {
+      "description": "A record of what you studied and when.",
+      "rows": []
+    },
+    "learning_plan": {
+      "description": "Your personal study plan.",
+      "rows": [
+        {
+          "user_id": "40db8175-e1bd-485e-bc04-4c8479cab7c6",
+          "plan": {
+            "version": 1,
+            "revision": 1,
+            "evidenceVersion": 0,
+            "status": "provisional-no-date",
+            "confirmed": false,
+            "createdAt": "2026-10-02T09:35:13.603Z",
+            "updatedAt": "2026-10-02T09:35:13.603Z",
+            "goals": {
+              "overallTarget": null,
+              "perPaperMinimums": {},
+              "examDate": null,
+              "route": "academic",
+              "selfReported": []
+            },
+            "constraints": {
+              "regularDailyMinutes": 60,
+              "regularDailyMinutesStatus": "provisional",
+              "studyDays": "daily",
+              "explanationLocale": "en",
+              "tzOffsetMinutes": 0
+            },
+            "activeSession": {
+              "id": "sess:1c0caa31b88a11b02e74217a0eaa6b5b",
+              "date": "2026-10-02",
+              "objective": "Fill a gap with the exact words from the passage, inside the word limit.",
+              "objectiveScope": "subskill:reading:sentence-completion",
+              "paper": "reading",
+              "subskill": "sentence-completion",
+              "reason": "Nothing has been recorded yet, so this starts with how the paper works rather than with a level nobody has measured.",
+              "evidenceRefs": [
+                {
+                  "kind": "no-evidence",
+                  "ref": "paper:reading",
+                  "evidence": "Nothing independent recorded for this yet."
+                }
+              ],
+              "steps": [
+                {
+                  "stepId": "sess:1c0caa31b88a11b02e74217a0eaa6b5b:1:teach",
+                  "role": "teach",
+                  "activityId": "lesson:reading-task1",
+                  "contentVersion": 1,
+                  "minutes": 8,
+                  "purpose": "Start with what this question type actually asks you for.",
+                  "state": "pending"
+                },
+                {
+                  "stepId": "sess:1c0caa31b88a11b02e74217a0eaa6b5b:2:teach",
+                  "role": "teach",
+                  "activityId": "lesson:reading-sentence",
+                  "contentVersion": 1,
+                  "minutes": 10,
+                  "purpose": "Start with what this question type actually asks you for.",
+                  "state": "pending",
+                  "blockId": "b3-63e75b6f"
+                },
+                {
+                  "stepId": "sess:1c0caa31b88a11b02e74217a0eaa6b5b:3:practise",
+                  "role": "practise",
+                  "activityId": "focus:reading-sentence-completion-guided",
+                  "contentVersion": 1,
+                  "minutes": 11,
+                  "purpose": "Work through real questions with help available when you get stuck.",
+                  "state": "pending"
+                },
+                {
+                  "stepId": "sess:1c0caa31b88a11b02e74217a0eaa6b5b:4:independent-check",
+                  "role": "independent-check",
+                  "activityId": "check:practice-reading-sentence",
+                  "contentVersion": 1,
+                  "minutes": 5,
+                  "purpose": "Answer a short set you have not seen, with no help, so the result means something.",
+                  "state": "pending"
+                },
+                {
+                  "stepId": "sess:1c0caa31b88a11b02e74217a0eaa6b5b:5:assess",
+                  "role": "assess",
+                  "activityId": "check:practice-listening-map-labelling",
+                  "contentVersion": 1,
+                  "minutes": 4,
+                  "purpose": "A short sample to find out where you are. It is too short to be a band.",
+                  "state": "pending"
+                },
+                {
+                  "stepId": "sess:1c0caa31b88a11b02e74217a0eaa6b5b:6:recap",
+                  "role": "recap",
+                  "activityId": "focus:reading-sentence-completion-guided",
+                  "contentVersion": 1,
+                  "minutes": 5,
+                  "purpose": "Go back over what you got wrong and say the rule in your own words.",
+                  "state": "pending"
+                }
+              ],
+              "budgetMinutes": 60,
+              "state": "active",
+              "chosenByStudent": false
+            },
+            "schedule": [
+              {
+                "date": "2026-10-02",
+                "budgetMinutes": 60,
+                "focus": "Fill a gap with the exact words from the passage, inside the word limit.",
+                "activityIds": [
+                  "lesson:reading-task1",
+                  "lesson:reading-sentence",
+                  "focus:reading-sentence-completion-guided",
+                  "check:practice-reading-sentence",
+                  "check:practice-listening-map-labelling"
+                ],
+                "kind": "study"
+              },
+              {
+                "date": "2026-10-03",
+                "budgetMinutes": 60,
+                "focus": "Complete a sentence with the exact words you hear, inside the word limit.",
+                "activityIds": [
+                  "focus:listening-sentence-completion-guided",
+                  "focus:writing-task2-cohesion-and-linking-guided"
+                ],
+                "kind": "study"
+              },
+              {
+                "date": "2026-10-04",
+                "budgetMinutes": 60,
+                "focus": "Decide whether a statement is True, False or Not Given, and know the difference.",
+                "activityIds": [
+                  "focus:reading-tfng-guided",
+                  "focus:listening-multiple-choice-guided-2"
+                ],
+                "kind": "study"
+              },
+              {
+                "date": "2026-10-05",
+                "budgetMinutes": 60,
+                "focus": "Match each item to the person, place or category the speaker gives it.",
+                "activityIds": [
+                  "focus:listening-matching-features-guided",
+                  "focus:writing-collocation-accuracy-guided"
+                ],
+                "kind": "study"
+              },
+              {
+                "date": "2026-10-06",
+                "budgetMinutes": 60,
+                "focus": "Match each statement to the person, place or thing it belongs to.",
+                "activityIds": [
+                  "focus:reading-matching-features-guided",
+                  "focus:writing-task2-structure-range-guided"
+                ],
+                "kind": "study"
+              },
+              {
+                "date": "2026-10-07",
+                "budgetMinutes": 60,
+                "focus": "Practise one thing on a few unseen items, with no help and no timer.",
+                "activityIds": [
+                  "focus:writing-task2-complex-sentences-guided",
+                  "check:practice-reading-paraphrase"
+                ],
+                "kind": "study"
+              },
+              {
+                "date": "2026-10-08",
+                "budgetMinutes": 60,
+                "focus": "Find which paragraph holds one specific piece of information.",
+                "activityIds": [
+                  "focus:reading-paragraph-matching-guided",
+                  "focus:writing-lexical-topic-vocabulary-guided"
+                ],
+                "kind": "study"
+              }
+            ],
+            "milestones": [
+              {
+                "id": "milestone:diagnostic:reading",
+                "label": "Take a short Reading sample so the plan stops guessing",
+                "targetDate": null,
+                "scopeKey": "paper:reading",
+                "state": "planned"
+              },
+              {
+                "id": "milestone:diagnostic:listening",
+                "label": "Take a short Listening sample so the plan stops guessing",
+                "targetDate": null,
+                "scopeKey": "paper:listening",
+                "state": "planned"
+              },
+              {
+                "id": "milestone:diagnostic:writing",
+                "label": "Take a short Writing sample so the plan stops guessing",
+                "targetDate": null,
+                "scopeKey": "paper:writing",
+                "state": "planned"
+              },
+              {
+                "id": "milestone:diagnostic:speaking",
+                "label": "Take a short Speaking sample so the plan stops guessing",
+                "targetDate": null,
+                "scopeKey": "paper:speaking",
+                "state": "planned"
+              },
+              {
+                "id": "milestone:objective:subskill:reading:sentence-completion",
+                "label": "Fill a gap with the exact words from the passage, inside the word limit shown on questions you have not seen",
+                "targetDate": null,
+                "scopeKey": "subskill:reading:sentence-completion",
+                "state": "planned"
+              }
+            ],
+            "alternatives": [
+              {
+                "kind": "shorter",
+                "label": "I have less time today: 40 minutes instead",
+                "sessionSketch": {
+                  "objective": "Fill a gap with the exact words from the passage, inside the word limit.",
+                  "activityIds": [
+                    "lesson:reading-task1",
+                    "lesson:reading-sentence",
+                    "focus:reading-sentence-completion-guided",
+                    "check:practice-reading-sentence"
+                  ],
+                  "minutes": 39
+                }
+              },
+              {
+                "kind": "other-skill",
+                "label": "Work on Listening instead today",
+                "sessionSketch": {
+                  "objective": "Complete a sentence with the exact words you hear, inside the word limit.",
+                  "activityIds": [
+                    "lesson:listening",
+                    "lesson:listening-sentence-completion",
+                    "focus:listening-sentence-completion-guided",
+                    "focus:listening-sentence-completion-check-b"
+                  ],
+                  "minutes": 38
+                }
+              },
+              {
+                "kind": "defer-diagnostic",
+                "label": "Skip the Listening sample for now and leave it marked unknown",
+                "sessionSketch": {
+                  "objective": "Fill a gap with the exact words from the passage, inside the word limit.",
+                  "activityIds": [
+                    "lesson:reading-task1",
+                    "lesson:reading-sentence",
+                    "focus:reading-sentence-completion-guided",
+                    "check:practice-reading-sentence"
+                  ],
+                  "minutes": 39
+                }
+              }
+            ],
+            "overrides": [],
+            "history": [
+              {
+                "at": "2026-10-02T09:35:13.603Z",
+                "trigger": "initial",
+                "summary": "Your plan is set up. Today is Fill a gap with the exact words from the passage, inside the word limit.",
+                "detail": {
+                  "addedActivityIds": [
+                    "lesson:reading-task1",
+                    "lesson:reading-sentence",
+                    "focus:reading-sentence-completion-guided",
+                    "check:practice-reading-sentence",
+                    "check:practice-listening-map-labelling",
+                    "focus:reading-sentence-completion-guided"
+                  ],
+                  "scopeKeys": [
+                    "subskill:reading:sentence-completion"
+                  ]
+                },
+                "fromRevision": 0,
+                "toRevision": 1
+              }
+            ],
+            "diagnosticsOutstanding": [
+              "reading",
+              "listening",
+              "writing",
+              "speaking"
+            ],
+            "scopeNote": "There is no exam date on this plan, so the pacing is provisional. Add a date and the plan will pace itself to it.",
+            "missedStudyDays": 0
+          },
+          "revision": 1,
+          "confirmed": false,
+          "updated_at": "2026-10-02T09:35:13.603Z"
+        }
+      ]
+    },
+    "learning_companions": {
+      "description": "Your saved words, notes and study preferences.",
+      "rows": [
+        {
+          "user_id": "40db8175-e1bd-485e-bc04-4c8479cab7c6",
+          "kind": "vocab",
+          "data": {
+            "version": 1,
+            "updatedAt": "0000-01-01T00:00:00.000Z",
+            "value": {
+              "version": 1,
+              "settings": {
+                "newPerDay": 10
+              },
+              "cards": {}
+            }
+          },
+          "revision": 1,
+          "updated_at": "2026-10-02T09:35:06.352Z"
+        },
+        {
+          "user_id": "40db8175-e1bd-485e-bc04-4c8479cab7c6",
+          "kind": "notes",
+          "data": {
+            "version": 1,
+            "updatedAt": "0000-01-01T00:00:00.000Z",
+            "value": {
+              "version": 1,
+              "bookmarks": [],
+              "notes": {}
+            }
+          },
+          "revision": 1,
+          "updated_at": "2026-10-02T09:35:06.358Z"
+        },
+        {
+          "user_id": "40db8175-e1bd-485e-bc04-4c8479cab7c6",
+          "kind": "preferences",
+          "data": {
+            "version": 1,
+            "updatedAt": "2026-10-02T09:35:06.360Z",
+            "value": {
+              "locale": "en"
+            }
+          },
+          "revision": 1,
+          "updated_at": "2026-10-02T09:35:06.363Z"
+        }
+      ]
+    },
+    "mr_ez_conversations": {
+      "description": "Your conversations with Mr EZ.",
+      "rows": []
+    },
+    "mr_ez_messages": {
+      "description": "The messages in those conversations.",
+      "rows": []
+    },
+    "mr_ez_recommendations": {
+      "description": "The latest next step Mr EZ suggested.",
+      "rows": []
+    },
+    "mr_ez_notes": {
+      "description": "Weekly reviews and unit notes from Mr EZ.",
+      "rows": []
+    },
+    "trial_accounts": {
+      "description": "Your trial, if you had one.",
+      "rows": []
+    },
+    "trial_usage": {
+      "description": "What you used during the trial.",
+      "rows": []
+    },
+    "assessment_usage": {
+      "description": "Each AI assessment counted against your access.",
+      "rows": []
+    },
+    "access_grants": {
+      "description": "Your periods of access.",
+      "rows": []
+    },
+    "payment_orders": {
+      "description": "Your purchases and receipts.",
+      "rows": []
+    },
+    "support_requests": {
+      "description": "The messages you sent us through the support form.",
+      "rows": [
+        {
+          "id": "5d81332b-99ba-4f4b-9491-535d12a08231",
+          "page": null,
+          "topic": "other",
+          "locale": "en",
+          "context": "ai-review",
+          "message": "Please review the band on my last essay, synthetic test message.",
+          "created_at": "2026-10-02T14:35:10.809+05:00",
+          "answered_at": null,
+          "contact_email": null
+        }
+      ]
+    }
+  },
+  "notIncluded": [
+    {
+      "table": "mr_ez_turns",
+      "description": "A usage record for each Mr EZ reply (the AI model, its size and cost), used for spending limits.",
+      "why": "Kept for spending limits and not readable from your browser. Ask us for a copy if you need it."
+    },
+    {
+      "table": "live_examiner_sessions",
+      "description": "When each live Speaking interview started and ended, used for the daily limits. Your voice is never stored.",
+      "why": "Kept for spending limits and not readable from your browser. Ask us for a copy if you need it."
+    },
+    {
+      "table": "assessment_provider_usage",
+      "description": "The AI service’s usage figures for each assessment. Never your essay, your audio or the reply.",
+      "why": "Kept for spending limits and not readable from your browser. Ask us for a copy if you need it."
+    }
+  ],
+  "thisBrowser": {
+    "note": "Kept only on this device. Other devices may hold different items.",
+    "localStorage": {
+      "ielts.device.v1": "f0f13292-a0c0-457a-ba78-ebf3cf30cdde",
+      "ielts.learning.legacy.v1": {
+        "version": 1,
+        "migrated": {
+          "u:40db8175-e1bd-485e-bc04-4c8479cab7c6": {
+            "migrationVersion": 1,
+            "ranAt": "2026-10-02T09:35:06.331Z",
+            "lessonsMigrated": 0,
+            "testAttemptsMigrated": 0,
+            "writingAttemptsMigrated": 0,
+            "speakingAttemptsMigrated": 0,
+            "lessonsWithoutSubskill": 0,
+            "planStepsMigrated": 0,
+            "rowsSkipped": 0
+          }
+        }
+      },
+      "ielts.learning.plan.v1::u:40db8175-e1bd-485e-bc04-4c8479cab7c6": {
+        "version": 1,
+        "revision": 1,
+        "evidenceVersion": 0,
+        "status": "provisional-no-date",
+        "confirmed": false,
+        "createdAt": "2026-10-02T09:35:13.603Z",
+        "updatedAt": "2026-10-02T09:35:13.603Z",
+        "goals": {
+          "overallTarget": null,
+          "perPaperMinimums": {},
+          "examDate": null,
+          "route": "academic",
+          "selfReported": []
+        },
+        "constraints": {
+          "regularDailyMinutes": 60,
+          "regularDailyMinutesStatus": "provisional",
+          "studyDays": "daily",
+          "explanationLocale": "en",
+          "tzOffsetMinutes": 0
+        },
+        "activeSession": {
+          "id": "sess:1c0caa31b88a11b02e74217a0eaa6b5b",
+          "date": "2026-10-02",
+          "objective": "Fill a gap with the exact words from the passage, inside the word limit.",
+          "objectiveScope": "subskill:reading:sentence-completion",
+          "paper": "reading",
+          "subskill": "sentence-completion",
+          "reason": "Nothing has been recorded yet, so this starts with how the paper works rather than with a level nobody has measured.",
+          "evidenceRefs": [
+            {
+              "kind": "no-evidence",
+              "ref": "paper:reading",
+              "evidence": "Nothing independent recorded for this yet."
+            }
+          ],
+          "steps": [
+            {
+              "stepId": "sess:1c0caa31b88a11b02e74217a0eaa6b5b:1:teach",
+              "role": "teach",
+              "activityId": "lesson:reading-task1",
+              "contentVersion": 1,
+              "minutes": 8,
+              "purpose": "Start with what this question type actually asks you for.",
+              "state": "pending"
+            },
+            {
+              "stepId": "sess:1c0caa31b88a11b02e74217a0eaa6b5b:2:teach",
+              "role": "teach",
+              "activityId": "lesson:reading-sentence",
+              "contentVersion": 1,
+              "minutes": 10,
+              "purpose": "Start with what this question type actually asks you for.",
+              "state": "pending",
+              "blockId": "b3-63e75b6f"
+            },
+            {
+              "stepId": "sess:1c0caa31b88a11b02e74217a0eaa6b5b:3:practise",
+              "role": "practise",
+              "activityId": "focus:reading-sentence-completion-guided",
+              "contentVersion": 1,
+              "minutes": 11,
+              "purpose": "Work through real questions with help available when you get stuck.",
+              "state": "pending"
+            },
+            {
+              "stepId": "sess:1c0caa31b88a11b02e74217a0eaa6b5b:4:independent-check",
+              "role": "independent-check",
+              "activityId": "check:practice-reading-sentence",
+              "contentVersion": 1,
+              "minutes": 5,
+              "purpose": "Answer a short set you have not seen, with no help, so the result means something.",
+              "state": "pending"
+            },
+            {
+              "stepId": "sess:1c0caa31b88a11b02e74217a0eaa6b5b:5:assess",
+              "role": "assess",
+              "activityId": "check:practice-listening-map-labelling",
+              "contentVersion": 1,
+              "minutes": 4,
+              "purpose": "A short sample to find out where you are. It is too short to be a band.",
+              "state": "pending"
+            },
+            {
+              "stepId": "sess:1c0caa31b88a11b02e74217a0eaa6b5b:6:recap",
+              "role": "recap",
+              "activityId": "focus:reading-sentence-completion-guided",
+              "contentVersion": 1,
+              "minutes": 5,
+              "purpose": "Go back over what you got wrong and say the rule in your own words.",
+              "state": "pending"
+            }
+          ],
+          "budgetMinutes": 60,
+          "state": "active",
+          "chosenByStudent": false
+        },
+        "schedule": [
+          {
+            "date": "2026-10-02",
+            "budgetMinutes": 60,
+            "focus": "Fill a gap with the exact words from the passage, inside the word limit.",
+            "activityIds": [
+              "lesson:reading-task1",
+              "lesson:reading-sentence",
+              "focus:reading-sentence-completion-guided",
+              "check:practice-reading-sentence",
+              "check:practice-listening-map-labelling"
+            ],
+            "kind": "study"
+          },
+          {
+            "date": "2026-10-03",
+            "budgetMinutes": 60,
+            "focus": "Complete a sentence with the exact words you hear, inside the word limit.",
+            "activityIds": [
+              "focus:listening-sentence-completion-guided",
+              "focus:writing-task2-cohesion-and-linking-guided"
+            ],
+            "kind": "study"
+          },
+          {
+            "date": "2026-10-04",
+            "budgetMinutes": 60,
+            "focus": "Decide whether a statement is True, False or Not Given, and know the difference.",
+            "activityIds": [
+              "focus:reading-tfng-guided",
+              "focus:listening-multiple-choice-guided-2"
+            ],
+            "kind": "study"
+          },
+          {
+            "date": "2026-10-05",
+            "budgetMinutes": 60,
+            "focus": "Match each item to the person, place or category the speaker gives it.",
+            "activityIds": [
+              "focus:listening-matching-features-guided",
+              "focus:writing-collocation-accuracy-guided"
+            ],
+            "kind": "study"
+          },
+          {
+            "date": "2026-10-06",
+            "budgetMinutes": 60,
+            "focus": "Match each statement to the person, place or thing it belongs to.",
+            "activityIds": [
+              "focus:reading-matching-features-guided",
+              "focus:writing-task2-structure-range-guided"
+            ],
+            "kind": "study"
+          },
+          {
+            "date": "2026-10-07",
+            "budgetMinutes": 60,
+            "focus": "Practise one thing on a few unseen items, with no help and no timer.",
+            "activityIds": [
+              "focus:writing-task2-complex-sentences-guided",
+              "check:practice-reading-paraphrase"
+            ],
+            "kind": "study"
+          },
+          {
+            "date": "2026-10-08",
+            "budgetMinutes": 60,
+            "focus": "Find which paragraph holds one specific piece of information.",
+            "activityIds": [
+              "focus:reading-paragraph-matching-guided",
+              "focus:writing-lexical-topic-vocabulary-guided"
+            ],
+            "kind": "study"
+          }
+        ],
+        "milestones": [
+          {
+            "id": "milestone:diagnostic:reading",
+            "label": "Take a short Reading sample so the plan stops guessing",
+            "targetDate": null,
+            "scopeKey": "paper:reading",
+            "state": "planned"
+          },
+          {
+            "id": "milestone:diagnostic:listening",
+            "label": "Take a short Listening sample so the plan stops guessing",
+            "targetDate": null,
+            "scopeKey": "paper:listening",
+            "state": "planned"
+          },
+          {
+            "id": "milestone:diagnostic:writing",
+            "label": "Take a short Writing sample so the plan stops guessing",
+            "targetDate": null,
+            "scopeKey": "paper:writing",
+            "state": "planned"
+          },
+          {
+            "id": "milestone:diagnostic:speaking",
+            "label": "Take a short Speaking sample so the plan stops guessing",
+            "targetDate": null,
+            "scopeKey": "paper:speaking",
+            "state": "planned"
+          },
+          {
+            "id": "milestone:objective:subskill:reading:sentence-completion",
+            "label": "Fill a gap with the exact words from the passage, inside the word limit shown on questions you have not seen",
+            "targetDate": null,
+            "scopeKey": "subskill:reading:sentence-completion",
+            "state": "planned"
+          }
+        ],
+        "alternatives": [
+          {
+            "kind": "shorter",
+            "label": "I have less time today: 40 minutes instead",
+            "sessionSketch": {
+              "objective": "Fill a gap with the exact words from the passage, inside the word limit.",
+              "activityIds": [
+                "lesson:reading-task1",
+                "lesson:reading-sentence",
+                "focus:reading-sentence-completion-guided",
+                "check:practice-reading-sentence"
+              ],
+              "minutes": 39
+            }
+          },
+          {
+            "kind": "other-skill",
+            "label": "Work on Listening instead today",
+            "sessionSketch": {
+              "objective": "Complete a sentence with the exact words you hear, inside the word limit.",
+              "activityIds": [
+                "lesson:listening",
+                "lesson:listening-sentence-completion",
+                "focus:listening-sentence-completion-guided",
+                "focus:listening-sentence-completion-check-b"
+              ],
+              "minutes": 38
+            }
+          },
+          {
+            "kind": "defer-diagnostic",
+            "label": "Skip the Listening sample for now and leave it marked unknown",
+            "sessionSketch": {
+              "objective": "Fill a gap with the exact words from the passage, inside the word limit.",
+              "activityIds": [
+                "lesson:reading-task1",
+                "lesson:reading-sentence",
+                "focus:reading-sentence-completion-guided",
+                "check:practice-reading-sentence"
+              ],
+              "minutes": 39
+            }
+          }
+        ],
+        "overrides": [],
+        "history": [
+          {
+            "at": "2026-10-02T09:35:13.603Z",
+            "trigger": "initial",
+            "summary": "Your plan is set up. Today is Fill a gap with the exact words from the passage, inside the word limit.",
+            "detail": {
+              "addedActivityIds": [
+                "lesson:reading-task1",
+                "lesson:reading-sentence",
+                "focus:reading-sentence-completion-guided",
+                "check:practice-reading-sentence",
+                "check:practice-listening-map-labelling",
+                "focus:reading-sentence-completion-guided"
+              ],
+              "scopeKeys": [
+                "subskill:reading:sentence-completion"
+              ]
+            },
+            "fromRevision": 0,
+            "toRevision": 1
+          }
+        ],
+        "diagnosticsOutstanding": [
+          "reading",
+          "listening",
+          "writing",
+          "speaking"
+        ],
+        "scopeNote": "There is no exam date on this plan, so the pacing is provisional. Add a date and the plan will pace itself to it.",
+        "missedStudyDays": 0
+      },
+      "ielts.learning.sync.v1::u:40db8175-e1bd-485e-bc04-4c8479cab7c6": {
+        "version": 1,
+        "ownerKey": "u:40db8175-e1bd-485e-bc04-4c8479cab7c6",
+        "pending": [],
+        "eventCursor": null,
+        "ackedPlan": {
+          "revision": 1,
+          "confirmed": false,
+          "updatedAt": "2026-10-02T09:35:13.603Z"
+        },
+        "companions": {
+          "vocab": {
+            "revision": 1,
+            "updatedAt": "0000-01-01T00:00:00.000Z",
+            "digest": "73154da80c29959e7a5335776950d8f0"
+          },
+          "notes": {
+            "revision": 1,
+            "updatedAt": "0000-01-01T00:00:00.000Z",
+            "digest": "3a0deb0e56b3f76e55d118119abbc6c3"
+          },
+          "preferences": {
+            "revision": 1,
+            "updatedAt": "2026-10-02T09:35:06.360Z",
+            "digest": "50b5061819a3df3dd93c3f7148b572a5"
+          }
+        },
+        "lastSyncedAt": "2026-10-02T09:35:15.155Z"
+      },
+      "ielts.locale.v1": "en",
+      "ielts.profile.v1:40db8175-e1bd-485e-bc04-4c8479cab7c6": {
+        "firstName": "Synthetic",
+        "lastName": "Student",
+        "dateOfBirth": "2011-03-04",
+        "phone": "+77012345678",
+        "city": "Almaty",
+        "occupation": "Synthetic School",
+        "source": "friend",
+        "parentName": "Synthetic Parent",
+        "parentPhone": "+77010000001",
+        "parentConsentAt": "2026-10-02T09:35:09.250Z",
+        "updatedAt": "2026-10-02T09:35:09.252Z"
+      },
+      "ielts.progress.v1::u:40db8175-e1bd-485e-bc04-4c8479cab7c6": {
+        "version": 1,
+        "lessons": {},
+        "tests": {},
+        "writing": {},
+        "speaking": [],
+        "activity": {}
+      }
+    },
+    "sessionStorage": {
+      "ielts.admin.v1:40db8175-e1bd-485e-bc04-4c8479cab7c6": 0
+    }
+  }
+}

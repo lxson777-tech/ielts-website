@@ -7,11 +7,16 @@
 
    Every change here goes through src/lib/auth/session.ts and Supabase. A
    sign-out on all devices ends in the same SIGNED_OUT event as the menu's
-   sign-out, so the account lifecycle handles it exactly as it always has. */
+   sign-out, so the account lifecycle handles it exactly as it always has.
+
+   "Download my data" (2 October 2026, src/lib/legal/export.ts): one JSON
+   file of everything the account holds, read with the student's own
+   session, plus what this browser keeps for them. On both builds. */
 
 import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
-import { isAuthConfigured } from '../lib/auth/supabase';
+import { getSupabase, isAuthConfigured } from '../lib/auth/supabase';
+import { downloadMyData } from '../lib/legal/export';
 import { onAccountChange } from '../lib/auth/lifecycle';
 import { ACCOUNT_DELETION_ENABLED, deleteMyAccount, signOutEverywhere, updateEmail, updatePassword } from '../lib/auth/session';
 import { checkPassword } from '../lib/auth/password';
@@ -167,6 +172,9 @@ export default function AccountSettings() {
           </button>
           {open === 'devices' && <SignOutEverywhere />}
         </div>
+
+        {/* ── Your data: a copy of everything, as one file ── */}
+        <DownloadMyData user={user} />
 
         {/* Delete the account and everything in it, at once (Alex,
             2 October 2026). Only where the database has the function
@@ -380,6 +388,56 @@ function DeleteAccount() {
           {busy ? t('Deleting…') : t('Delete my account and all my data')}
         </button>
       </div>
+    </div>
+  );
+}
+
+function DownloadMyData({ user }: { user: User }) {
+  const { t } = useT();
+  const [state, setState] = useState<'idle' | 'busy' | 'done' | 'partial' | 'error'>('idle');
+
+  async function run() {
+    const sb = getSupabase();
+    if (!sb) {
+      setState('error');
+      return;
+    }
+    setState('busy');
+    try {
+      const { failed } = await downloadMyData(sb, user, (text) => t(text));
+      setState(failed > 0 ? 'partial' : 'done');
+    } catch {
+      setState('error');
+    }
+  }
+
+  return (
+    <div className="acct-row" data-testid="download-my-data">
+      <p className="acct-row-label">{t('Your data')}</p>
+      <p className="acct-row-value">
+        <span className="is-muted">{t('Download a copy of everything your account holds, as one file.')}</span>
+        {state === 'done' && (
+          <span className="acct-row-good" role="status">
+            {' '}
+            {t('Your file is downloading.')}
+          </span>
+        )}
+        {state === 'partial' && (
+          <span className="acct-row-good" role="status">
+            {' '}
+            {t('Your file is downloading, but some parts could not be read just now. Try again later for a complete copy.')}
+          </span>
+        )}
+        {state === 'error' && (
+          <span className="auth-field-error" role="alert">
+            {' '}
+            {t('Your data could not be read just now. Please try again.')}
+          </span>
+        )}
+      </p>
+      <button type="button" className="acct-toggle acct-row-action" disabled={state === 'busy'} onClick={() => void run()}>
+        {state === 'busy' ? t('Preparing…') : t('Download my data')}
+      </button>
     </div>
   );
 }

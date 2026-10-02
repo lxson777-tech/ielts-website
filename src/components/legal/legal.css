@@ -1,0 +1,52 @@
+/* The consent tick box with its "Read what this covers" disclosure, and the
+   quiet "AI estimate" line on AI result screens (Builder C, 2 October
+   2026). Built on the auth and account styles (src/styles/auth.css); only
+   what those do not already have is here. */
+
+.consent-field { display: grid; gap: 10px; }
+
+.consent-details {
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface);
+  padding: 0 16px;
+  transition: background 160ms ease;
+}
+.consent-details[open] { padding-bottom: 16px; }
+.consent-details > summary {
+  padding: 12px 0;
+  color: var(--color-ink);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style-position: inside;
+}
+.consent-details > summary:hover { text-decoration: underline; text-underline-offset: 3px; }
+.consent-details h3 {
+  margin: 14px 0 6px;
+  color: var(--color-ink);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+.consent-details h3:first-of-type { margin-top: 2px; }
+.consent-details ul { margin: 0; padding: 0 0 0 16px; display: grid; gap: 4px; list-style: disc; }
+.consent-details li { color: var(--color-ink-muted); font-size: 13px; line-height: 1.55; }
+.consent-details li::marker { color: var(--color-ink-muted); }
+.consent-details .consent-foot { margin: 14px 0 0; color: var(--color-ink-muted); font-size: 12.5px; line-height: 1.55; }
+.consent-details .consent-foot a { color: var(--color-ink); text-underline-offset: 3px; }
+
+/* "This band is an AI estimate, not an official IELTS score." */
+.ai-estimate-note {
+  margin: 0 auto;
+  max-width: 40rem;
+  color: var(--color-ink-muted);
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: center;
+}
+.ai-estimate-note a { color: var(--color-ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; transition: color 160ms ease; }
+.ai-estimate-note a:hover { color: var(--color-brand); }
+
+/* "Ms. Taylor is an AI voice, not a real person." */
+.ai-voice-note { margin: 12px auto 0; max-width: 28rem; color: var(--color-ink-muted); font-size: 12.5px; line-height: 1.55; }

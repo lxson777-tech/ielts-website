@@ -418,6 +418,8 @@ export default function MrEzPanel() {
               <span className="mrez-intro-eyebrow">{t('A little guidance. A lot of progress.')}</span>
               <h2>{t('Let’s figure it out together.')}</h2>
               <p>{t('Understand a tricky question, learn from your results, or find your next step.')}</p>
+              {/* AI Law Art. 21: said plainly, not only in the header. */}
+              <p data-testid="mrez-ai-label">{t('Mr EZ is an AI tutor, not a real person.')}</p>
             </div>
           )}
           {/* The boundary notice: shown above everything else while a timed
