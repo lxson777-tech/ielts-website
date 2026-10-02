@@ -27,7 +27,7 @@
  */
 
 import { getProgress, onProgressChange, type ProgressV1 } from '../progress';
-import { getLocale, onLocaleChange, type Locale } from '../i18n/locale';
+import { getLocale, contentLocale, onLocaleChange, type ContentLocale as Locale } from '../i18n/locale';
 import type { SavedPlan } from '../study-plan';
 import {
   certaintyByPaperFrom,
@@ -294,7 +294,7 @@ export function ensurePlan(): PersonalPlanV1 {
        English until something else happened to rebuild it (see
        syncExplanationLocale). Their own recorded preference always wins. */
     const constraints = constraintsFrom(settings, {
-      explanationLocale: settings?.explanationLocale ?? getLocale(),
+      explanationLocale: settings?.explanationLocale ?? contentLocale(getLocale()),
     });
     const record = getLearnerStore().read();
     const policy = evaluateEvidence({ record, goals, now });
@@ -399,7 +399,7 @@ export function watchLocale(): () => void {
   if (unsubscribeLocale) return unsubscribeLocale;
   const sync = () => {
     try {
-      syncExplanationLocale(getLocale());
+      syncExplanationLocale(contentLocale(getLocale()));
     } catch {
       /* See below. */
     }
@@ -412,7 +412,7 @@ export function watchLocale(): () => void {
   sync();
   const off = onLocaleChange(() => {
     try {
-      syncExplanationLocale(getLocale());
+      syncExplanationLocale(contentLocale(getLocale()));
     } catch {
       /* A plan that cannot be rebuilt must not break the language switch.
          The interface is already Russian; the plan's own sentences catch up

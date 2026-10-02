@@ -42,7 +42,7 @@
 import { buildCourse, type CourseLesson } from '../course';
 import { lessonPath, practisePath, questionTypeLabel } from '../tests/question-types';
 import type { QuestionType } from '../tests/schema';
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 import committedIndex from '../../data/generated/learning-index.json' with { type: 'json' };
 import { decodeLearningIndex, type CompactLearningIndexV1 } from './index-format';
 import { SPOKEN_FOCUSED_TASKS, spokenFocusedTaskHref, type SpokenFocusedTask } from '../../data/focused-exercises';

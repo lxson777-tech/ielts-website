@@ -23,7 +23,7 @@ import { activityTitle, type SharedSessionView } from './adapters';
 import { describeSubskill } from './evidence';
 import type { PersonalPlanV1, ScheduledDay } from './contracts/plan';
 import type { ActivityKind, LearningDomain, Paper } from './contracts/catalog';
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 
 export type AgendaItemState =
   /** Today, finished. */

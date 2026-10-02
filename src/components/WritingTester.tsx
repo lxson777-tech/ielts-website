@@ -35,7 +35,7 @@ import { nextInRotation } from '../lib/rotation';
 import { withBase } from '../lib/url';
 import { recordWritingAttemptFor } from '../lib/progress';
 import { useT } from '../lib/i18n/react';
-import { getLocale } from '../lib/i18n/locale';
+import { getLocale, contentLocale } from '../lib/i18n/locale';
 import BandReport from './BandReport';
 import Html from './Html';
 import WritingCoachPanel from './WritingCoachPanel';
@@ -328,7 +328,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
     if (trialTest.active) {
       const token = await getAccessToken();
       const sitting = trialTest.sittingId();
-      if (token && sitting) trialGrading = { token, sitting, locale: getLocale() === 'ru' ? 'ru' : 'en' };
+      if (token && sitting) trialGrading = { token, sitting, locale: contentLocale(getLocale()) };
     }
     try {
       await runOwnedGrade(binding, () => gradeEssay({ prompt: submitted.prompt, essay: submitted.essay }, trialGrading), {

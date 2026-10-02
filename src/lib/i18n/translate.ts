@@ -109,10 +109,18 @@ export function ntn(n: number, forms: CountForms): CountedPhrase {
 
 const pluralRules = new Map<string, Intl.PluralRules>();
 
+/* Kazakh counts with the RUSSIAN rules, on purpose. Its dictionary is the
+   Russian one with Kazakh laid on top (dict/index.ts), so most counted
+   phrases a Kazakh reader sees are Russian and need Russian's one / few /
+   many choice. Kazakh's own plural entries fill all four forms with the
+   same Kazakh text (a Kazakh noun does not change after a number: "5
+   сабақ"), so whichever form the Russian rule picks reads correctly. */
+const PLURAL_RULES_LOCALE: Partial<Record<Locale, string>> = { kk: 'ru' };
+
 function rulesFor(locale: Locale): Intl.PluralRules {
   let rules = pluralRules.get(locale);
   if (!rules) {
-    rules = new Intl.PluralRules(locale);
+    rules = new Intl.PluralRules(PLURAL_RULES_LOCALE[locale] ?? locale);
     pluralRules.set(locale, rules);
   }
   return rules;

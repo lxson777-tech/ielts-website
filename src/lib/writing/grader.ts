@@ -7,7 +7,7 @@ import type { EssayAssessment, EssayGrader, EssayInput, GradeResult, MechanicsRe
 import { overallBand } from './schema';
 import { analyzeEssay } from './mechanics';
 import { t } from '../i18n/translate';
-import { getLocale } from '../i18n/locale';
+import { getLocale, contentLocale } from '../i18n/locale';
 import { gatedSignIn } from '../trial/content';
 
 /* Which codes are refusals: ./refusal-code.ts (shared by every grader
@@ -75,7 +75,7 @@ class RemoteGrader implements EssayGrader {
         ...(this.trial
           ? { trialSitting: this.trial.sitting, locale: this.trial.locale ?? 'en' }
           : signIn
-            ? { locale: getLocale() === 'ru' ? 'ru' : 'en' }
+            ? { locale: contentLocale(getLocale()) }
             : {}),
       }),
       // Three reasoning-model runs are taken and the median kept; allow three minutes.

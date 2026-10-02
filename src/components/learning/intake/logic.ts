@@ -22,7 +22,7 @@ import type {
   PlanGoals,
 } from '../../../lib/learning/contracts/plan';
 import { RECOMMENDED_DAILY_MINUTES } from '../../../lib/learning/contracts/plan';
-import type { Locale } from '../../../lib/i18n/locale';
+import type { ContentLocale as Locale } from '../../../lib/i18n/locale';
 
 /** Everything one save (a first-visit finish, or a settings-page save) can
  *  carry. `examDate: null` is the one deliberate way to say "I do not have

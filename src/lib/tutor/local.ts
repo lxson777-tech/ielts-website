@@ -14,7 +14,7 @@ import { getProgress } from '../progress';
 import { loadStudyPlan } from '../study-plan';
 import { buildCourse, courseLessonCount } from '../course';
 import { t } from '../i18n/translate';
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 import { observationEvidence, observationText, readInsights, type StudentInsights } from './insights';
 import { activityLabel } from './catalog';
 import { recommendNext, recommendationReason, type Recommendation } from './recommend';

@@ -53,6 +53,7 @@ import {
 // The site's one locale-aware date helper: a Russian page must not be
 // handed an English date. Shared with the Worker, dependency-free.
 import { formatDate } from '../lib/tutor/ru';
+import { contentLocale } from '../lib/i18n/locale';
 import SkillTrendGrid from './SkillTrendGrid';
 import '../styles/learning-progress.css';
 
@@ -724,7 +725,7 @@ function TeacherReviewSummary({
           <ul className="report-detail-list mt-2">
             {planChanges.map((change, i) => (
               <li key={i}>
-                {formatDate(change.at, locale)} · &ldquo;{planHistoryText(locale, change.summary)}&rdquo;
+                {formatDate(change.at, locale)} · &ldquo;{planHistoryText(contentLocale(locale), change.summary)}&rdquo;
               </li>
             ))}
           </ul>

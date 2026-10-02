@@ -138,7 +138,7 @@ import { SPEAKING_PART1_TOPICS, SPEAKING_CUE_CARDS } from '../data/speaking-prom
 import type { StructureMethod } from '../data/speaking-structure-guides';
 import { SPEAKING_BAND_GUIDES, guideFor } from '../data/band-guides';
 import { useT } from '../lib/i18n/react';
-import { getLocale } from '../lib/i18n/locale';
+import { getLocale, contentLocale } from '../lib/i18n/locale';
 import BandReport from './BandReport';
 import AiEstimateNote from './legal/AiEstimateNote';
 import GradingProgress from './GradingProgress';
@@ -976,7 +976,7 @@ export default function LiveExaminer({
                   scope: DRILL_GRADE_SCOPE[m],
                   trial:
                     trialSitting && trialToken
-                      ? { token: trialToken, sitting: trialSitting, locale: getLocale() === 'ru' ? 'ru' : 'en' }
+                      ? { token: trialToken, sitting: trialSitting, locale: contentLocale(getLocale()) }
                       : undefined,
                 },
           );

@@ -41,7 +41,7 @@
  * src/lib/learning/index.ts, which is what makes the active session stable.
  */
 
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 import { getProgressFor, type ProgressV1 } from '../progress';
 import { loadStudyPlanFor, saveStudyPlanFor, type SavedPlan } from '../study-plan';
 /* Imported for their base keys, and so that each store's own re-stamp rule

@@ -22,6 +22,7 @@ import { withBase } from '../lib/url';
 import { ensureLearningWired, getCurrentSession, onLearnerRecordChange, onPersonalPlanChange, readPersonalPlan } from '../lib/learning';
 import type { PersonalPlanV1 } from '../lib/learning/contracts/plan';
 import { useT } from '../lib/i18n/react';
+import { contentLocale } from '../lib/i18n/locale';
 import { planHistoryText } from '../lib/learning/plan-history';
 import { daysUntil } from './learning/today/todayViewModel';
 import ScopeNote from './learning/ScopeNote';
@@ -166,7 +167,7 @@ export default function Course() {
             <ul className="mt-3 space-y-3">
               {recentChanges.map((change) => (
                 <li key={`${change.at}-${change.toRevision}`} className="text-sm">
-                  <span className="text-ink">{planHistoryText(locale, change.summary)}</span>
+                  <span className="text-ink">{planHistoryText(contentLocale(locale), change.summary)}</span>
                   <span className="ml-2 text-xs text-ink-muted">{change.at.slice(0, 10)}</span>
                 </li>
               ))}

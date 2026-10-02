@@ -16,6 +16,7 @@ import {
 import { courseAgenda, type AgendaDay, type CourseAgenda } from '../../lib/learning/agenda';
 import type { PersonalPlanV1 } from '../../lib/learning/contracts/plan';
 import { useT } from '../../lib/i18n/react';
+import { contentLocale } from '../../lib/i18n/locale';
 
 ensureLearningWired();
 
@@ -56,7 +57,7 @@ export function useCourseAgenda(): CourseAgendaState {
     };
   }, []);
 
-  const agenda = useMemo(() => courseAgenda(plan, session, locale, (english) => t(english)), [plan, session, locale, t]);
+  const agenda = useMemo(() => courseAgenda(plan, session, contentLocale(locale), (english) => t(english)), [plan, session, locale, t]);
   /* A chosen day that a replan has dropped falls back to the agenda's own
      opening day rather than to nothing. */
   const selectedDate = chosen && agenda.days.some((day) => day.date === chosen) ? chosen : agenda.initialDate;

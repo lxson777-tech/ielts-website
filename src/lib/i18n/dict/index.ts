@@ -1,8 +1,16 @@
 /* Locale to dictionary, loaded lazily.
 
-   Adding a third language (Kazakh) is: one folder under dict/, one entry in
-   LOADERS below, one entry in SUPPORTED_LOCALES/LOCALE_LABEL in locale.ts.
-   No component changes.
+   Adding a language is: one folder under dict/, one entry in LOADERS below,
+   one entry in SUPPORTED_LOCALES/LOCALE_LABEL in locale.ts. No component
+   changes.
+
+   Kazakh (dict/kk, 2 October 2026) is a PARTIAL language: only the legal
+   and buying pages are translated, and everything else must read Russian,
+   not English (FALLBACK_LOCALE in locale.ts). So the Kazakh dictionary is
+   built as the Russian one with the Kazakh entries laid on top: one lookup
+   object, t() unchanged, and any string without Kazakh comes out Russian.
+   The extra parts and the paid Russian pack (src/lib/trial/packs.ts) are
+   merged UNDER the Kazakh entries for the same reason, never over them.
 
    The loaders are dynamic imports on purpose: an English student never
    downloads a byte of Russian text. The bundler puts each language in its
@@ -41,19 +49,59 @@ interface DictionaryModule {
 
 const pick = (m: DictionaryModule): Dictionary => ({ strings: m.strings, plurals: m.plurals });
 
+/** The keys each locale translates itself, as opposed to the ones it reads
+    from its fallback language. Filled when a layered dictionary loads, and
+    read when something is merged in later, so a later merge can never
+    overwrite a locale's own translation with its fallback's. */
+const ownKeys = new Map<Locale, Set<string>>();
+
+/** `fallback` with `own` laid on top: the shape of a partial language. */
+function layered(locale: Locale, fallback: Dictionary, own: Dictionary): Dictionary {
+  ownKeys.set(locale, new Set([...Object.keys(own.strings), ...Object.keys(own.plurals)]));
+  return {
+    strings: { ...fallback.strings, ...own.strings },
+    plurals: { ...fallback.plurals, ...own.plurals },
+  };
+}
+
 const LOADERS: Record<TranslatedLocale, () => Promise<Dictionary>> = {
   ru: () => import('./ru/index').then(pick),
+  kk: () =>
+    Promise.all([import('./ru/index').then(pick), import('./kk/index').then(pick)]).then(([ru, kk]) =>
+      layered('kk', ru, kk),
+    ),
+};
+
+const RU_PARTS: Record<DictionaryPart, () => Promise<Dictionary>> = {
+  strategies: () => import('./ru/parts/strategies').then(pick),
+  structures: () => import('./ru/parts/structures').then(pick),
+  'band-guides': () => import('./ru/parts/band-guides').then(pick),
 };
 
 /** One loader per locale per part. A locale with no entry for a part simply
-    has nothing extra to show there, and stays English. */
+    has nothing extra to show there, and stays in its fallback. Kazakh has no
+    guidance of its own: it reads the Russian parts. */
 const PART_LOADERS: Record<TranslatedLocale, Partial<Record<DictionaryPart, () => Promise<Dictionary>>>> = {
-  ru: {
-    strategies: () => import('./ru/parts/strategies').then(pick),
-    structures: () => import('./ru/parts/structures').then(pick),
-    'band-guides': () => import('./ru/parts/band-guides').then(pick),
-  },
+  ru: RU_PARTS,
+  kk: RU_PARTS,
 };
+
+/**
+ * Merge extra entries into a loaded dictionary, below the locale's own
+ * translations: for Russian that is a plain merge; for Kazakh a key Kazakh
+ * already translates keeps its Kazakh. Used for the parts and for the paid
+ * Russian pack. Returns the dictionary it merged into.
+ */
+export function mergeUnderOwn(locale: Locale, dict: Dictionary, extra: Partial<Dictionary>): Dictionary {
+  const own = ownKeys.get(locale);
+  for (const [key, value] of Object.entries(extra.strings ?? {})) {
+    if (!own || !own.has(key)) dict.strings[key] = value;
+  }
+  for (const [key, value] of Object.entries(extra.plurals ?? {})) {
+    if (!own || !own.has(key)) dict.plurals[key] = value;
+  }
+  return dict;
+}
 
 const loaded = new Map<Locale, Dictionary>();
 const inFlight = new Map<Locale, Promise<Dictionary | null>>();
@@ -152,8 +200,7 @@ export function loadDictionaryPart(locale: Locale, part: DictionaryPart): Promis
       // No base dictionary means the whole language failed to load; there is
       // nothing sensible to merge into, and the page stays English.
       if (!base) return;
-      Object.assign(base.strings, extra.strings);
-      Object.assign(base.plurals, extra.plurals);
+      mergeUnderOwn(locale, base, extra);
       loadedParts.add(token);
       notifyLocaleListeners();
     })

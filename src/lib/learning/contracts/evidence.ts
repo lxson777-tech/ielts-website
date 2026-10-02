@@ -27,7 +27,7 @@
  * measured features the grader already produced, not the recording.
  */
 
-import type { Locale } from '../../i18n/locale';
+import type { ContentLocale as Locale } from '../../i18n/locale';
 import type { Paper, Subskill, WritingCriterion, SpeakingCriterion } from './catalog';
 
 /* ── How the work was done ───────────────────────────────────────────────── */

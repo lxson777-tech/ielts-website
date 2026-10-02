@@ -11,6 +11,8 @@
  * read in Kazakhstan.
  */
 
+import { intlLocale as sharedIntlLocale } from '../../lib/i18n/locale';
+
 export type IsoDate = string;
 
 const DAY_MS = 86_400_000;
@@ -181,12 +183,12 @@ export function hasSelectableAfter(year: number, monthIndex: number, max?: IsoDa
    its own, "3 декабря" in a date). Every formatter is pinned to UTC because
    the keys above are UTC midnights. */
 
-export type CalendarLocale = 'en' | 'ru';
+export type CalendarLocale = 'en' | 'ru' | 'kk';
 
 function intlLocale(locale: CalendarLocale): string {
   /* en-GB, not en-US: "3 December 2026", day first, the way Alex's students
-     write a date. */
-  return locale === 'ru' ? 'ru-RU' : 'en-GB';
+     write a date. Kazakh uses kk-KZ where the browser has it. */
+  return sharedIntlLocale(locale, 'en-GB');
 }
 
 function capitalise(text: string): string {

@@ -30,7 +30,7 @@
    unit names (those live in the site's own dictionary, which the Worker
    cannot read), and anything the model itself writes. */
 
-import type { Locale } from '../i18n/locale';
+import { intlLocale, type ContentLocale as Locale } from '../i18n/locale';
 
 export type TextVars = Record<string, string | number>;
 
@@ -120,18 +120,22 @@ const RU_YEAR_MARKER = /\s*г\.?$/;
     or an ISO date key; only the calendar date is ever shown. Falls back to
     the plain yyyy-mm-dd if Intl refuses it, which is readable rather than
     empty. */
-export function formatDate(iso: string, locale: Locale): string {
+export function formatDate(iso: string, locale: Locale | 'kk'): string {
   const dateKey = iso.slice(0, 10);
   const parsed = new Date(`${dateKey}T00:00:00Z`);
   if (Number.isNaN(parsed.getTime())) return dateKey;
+  /* A Kazakh page (the site's interface language 'kk', which the Worker
+     never sends) writes its dates in kk-KZ where the browser has it, and in
+     Russian where it does not (intlLocale in src/lib/i18n/locale.ts). */
+  const tag = locale === 'kk' ? intlLocale('kk') : DATE_LOCALE[locale];
   try {
-    const written = new Intl.DateTimeFormat(DATE_LOCALE[locale], {
+    const written = new Intl.DateTimeFormat(tag, {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
       timeZone: 'UTC',
     }).format(parsed);
-    return locale === 'ru' ? written.replace(RU_YEAR_MARKER, '') : written;
+    return tag === 'ru-RU' ? written.replace(RU_YEAR_MARKER, '') : written;
   } catch {
     return dateKey;
   }

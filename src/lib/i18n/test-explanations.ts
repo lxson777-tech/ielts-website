@@ -39,7 +39,7 @@
  */
 
 import { useEffect, useMemo, useState, createContext, useContext } from 'react';
-import { DEFAULT_LOCALE, type Locale } from './locale';
+import { DEFAULT_LOCALE, contentLocale, type Locale } from './locale';
 import { withBase } from '../url';
 import { ACCESS_MODE } from '../trial/mode';
 
@@ -136,8 +136,11 @@ export function explainWith(entries: Record<string, string> | null): Explain {
  * directions with no reload, because switching back to English simply
  * drops the table.
  */
-export function useExplanations(id: string, locale: Locale, enabled: boolean): Explain {
+export function useExplanations(id: string, interfaceLocale: Locale, enabled: boolean): Explain {
   const [entries, setEntries] = useState<Record<string, string> | null>(null);
+  // A Kazakh reader gets the Russian notes: explanations are course
+  // content, and Kazakh falls back to Russian (src/lib/i18n/locale.ts).
+  const locale = contentLocale(interfaceLocale);
 
   useEffect(() => {
     if (!enabled || locale === DEFAULT_LOCALE) {

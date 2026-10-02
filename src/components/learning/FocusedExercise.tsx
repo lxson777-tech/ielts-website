@@ -49,7 +49,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useT } from '../../lib/i18n/react';
 import { planHistoryText } from '../../lib/learning/plan-history';
-import { getLocale } from '../../lib/i18n/locale';
+import { getLocale, contentLocale } from '../../lib/i18n/locale';
 import { useExplanations } from '../../lib/i18n/test-explanations';
 import { withBase } from '../../lib/url';
 import { MAX_REASON_NOTE_CHARS } from '../../data/focused-exercises';
@@ -418,7 +418,7 @@ export default function FocusedExercise({ view }: Props) {
         bySubskill: bySubskillOf(view, drafts),
         sourceTestId: view.testId,
         sessionId: session?.sessionId,
-        locale,
+        locale: contentLocale(locale),
       });
     } catch {
       setStorageProblem(true);
@@ -864,7 +864,7 @@ export default function FocusedExercise({ view }: Props) {
           <p className="focused-uncertain">{t(feedback.uncertainKey)}</p>
           {planChange && (
             <p className="focused-plan-change">
-              <span className="focused-plan-change-label">{t('What changed:')}</span> {planHistoryText(locale, planChange)}
+              <span className="focused-plan-change-label">{t('What changed:')}</span> {planHistoryText(contentLocale(locale), planChange)}
             </p>
           )}
           {view.lessonHref && (

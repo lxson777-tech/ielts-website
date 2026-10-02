@@ -4,26 +4,29 @@
    (`ielts.locale.v1` through src/lib/i18n/locale.ts), so the language a
    visitor picks here is the language of sign-up, sign-in, profile and the
    workspace, and a student who chose Russian in the workspace sees this page
-   in Russian. With nothing stored, a device set to Russian or Kazakh opens in
-   Russian, exactly like the workspace (detectLocale).
+   in Russian. With nothing stored, a device set to Russian opens in
+   Russian and one set to Kazakh in Kazakh, exactly like the workspace
+   (detectLocale).
 
    Markup contract (the English is rendered at build time from
    src/marketing/sales-copy.ts):
      data-sales="key"                     the element's content is that entry
      data-sales-attr="aria-label:key,alt:key2"   those attributes are entries
-     data-lang-option="en" | "ru"         a language switch button
+     data-lang-option="en" | "ru" | "kk"  a language switch button
 
    After every change it fires `sales:locale` on document, so scripts that
    write their own sentences (the questionnaire) re-render. */
 
-import { getLocale, setLocale, onLocaleChange, applyDocumentLocale, PENDING_CLASS } from '../lib/i18n/locale';
+import { getLocale, setLocale, isLocale, onLocaleChange, applyDocumentLocale, PENDING_CLASS } from '../lib/i18n/locale';
 import { isSalesKey, salesText, type SalesLocale } from './sales-copy';
 
 export const SALES_LOCALE_EVENT = 'sales:locale';
 
-/** The sales page speaks English and Russian; any other stored locale reads as English. */
+/** The sales page speaks English, Russian and Kazakh (a Kazakh entry
+    missing its Kazakh shows the Russian, see salesText). */
 export function salesLocale(): SalesLocale {
-  return getLocale() === 'ru' ? 'ru' : 'en';
+  const locale = getLocale();
+  return locale === 'ru' || locale === 'kk' ? locale : 'en';
 }
 
 /** Translate one attribute list, `aria-label:nav.main,alt:hero.alt`. */
@@ -61,11 +64,12 @@ function start(): void {
   onLocaleChange(() => applySalesCopy());
   document.querySelectorAll<HTMLButtonElement>('[data-lang-option]').forEach((button) => {
     button.addEventListener('click', () => {
-      const next = button.dataset.langOption === 'ru' ? 'ru' : 'en';
+      const option = button.dataset.langOption;
+      const next = isLocale(option) ? option : 'en';
       if (next === salesLocale()) return;
       setLocale(next);
-      // On a phone only the other language is shown, so the pressed button
-      // hides itself: hand focus to the one that is now visible.
+      // On a phone only the other languages are shown, so the pressed button
+      // hides itself: hand focus to the first one that is now visible.
       if (document.activeElement === button && button.offsetParent === null) {
         document.querySelector<HTMLButtonElement>(`[data-lang-option]:not([data-lang-option="${next}"])`)?.focus();
       }

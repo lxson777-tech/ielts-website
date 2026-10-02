@@ -59,6 +59,7 @@ import {
 import { hasNext, hrefFor, readNext } from '../../lib/auth/next';
 import { withBase } from '../../lib/url';
 import { useT } from '../../lib/i18n/react';
+import { intlLocale } from '../../lib/i18n/locale';
 import { isTrialBuild } from '../../lib/trial/mode';
 import {
   consentRecord,
@@ -157,7 +158,7 @@ function DateOfBirth({
   }, [value]);
 
   const months = useMemo(() => {
-    const format = new Intl.DateTimeFormat(locale === 'ru' ? 'ru-RU' : 'en-GB', { month: 'long', timeZone: 'UTC' });
+    const format = new Intl.DateTimeFormat(intlLocale(locale, 'en-GB'), { month: 'long', timeZone: 'UTC' });
     return Array.from({ length: 12 }, (_, i) => {
       const name = format.format(new Date(Date.UTC(2000, i, 1)));
       return name.charAt(0).toUpperCase() + name.slice(1);

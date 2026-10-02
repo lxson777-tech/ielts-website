@@ -36,8 +36,8 @@ import { fetchGated, type GatedResult } from './content';
 import { onTrialChange, serverNow, trialView, type TrialView } from './client';
 import { hasPaidAccess } from './status';
 import { ACCESS_MODE } from './mode';
-import { getLocale, onLocaleChange, notifyLocaleListeners } from '../i18n/locale';
-import { loadDictionary } from '../i18n/dict/index';
+import { getLocale, contentLocale, onLocaleChange, notifyLocaleListeners } from '../i18n/locale';
+import { loadDictionary, mergeUnderOwn } from '../i18n/dict/index';
 /* The learning index as a gated build's browser imports it (the trimmed
    copy: astro.config.mjs), which applyLearningIndex restores in place. */
 import trimmedIndex from '../../data/generated/learning-index.json' with { type: 'json' };
@@ -176,16 +176,19 @@ let russian: RussianPack | null = null;
 let russianWatched = false;
 
 /** Merges the paid Russian into the loaded Russian dictionary. Only when
-    the student reads Russian: an English student downloads no Russian. */
+    the student reads Russian (or Kazakh, whose fallback is Russian): an
+    English student downloads no Russian. For Kazakh it goes UNDER the
+    Kazakh entries (mergeUnderOwn), so it can never replace a Kazakh line. */
 const mergedInto = new WeakSet<object>();
 async function mergeRussian(): Promise<void> {
-  if (!russian || getLocale() !== 'ru') return;
-  const dict = await loadDictionary('ru');
+  const locale = getLocale();
+  if (!russian || contentLocale(locale) !== 'ru') return;
+  const dict = await loadDictionary(locale);
   /* Once per dictionary: the signal below reaches this function's own
      listener too, so merging again would signal again, for ever. */
   if (!dict || !russian || mergedInto.has(dict)) return;
   mergedInto.add(dict);
-  Object.assign(dict.strings, russian.strings, russian.parts);
+  mergeUnderOwn(locale, dict, { strings: { ...russian.strings, ...russian.parts } });
   notifyLocaleListeners();
 }
 
@@ -268,7 +271,7 @@ export async function loadPacks(names: readonly ModulePack[]): Promise<PackOutco
     (titles, objectives, cue-card topics) and, for a Russian reader, the
     Russian that goes with them. */
 export function commonPacks(): ModulePack[] {
-  return getLocale() === 'ru' ? ['learning-index', 'ru-dictionary'] : ['learning-index'];
+  return contentLocale(getLocale()) === 'ru' ? ['learning-index', 'ru-dictionary'] : ['learning-index'];
 }
 
 /** Is this pack already in place in this tab? */
@@ -293,7 +296,7 @@ function watchAccount(): void {
   /* A Russian reader who opens a paid page in English and switches later
      still gets the paid Russian: ask for it on the switch. */
   onLocaleChange(() => {
-    if (getLocale() === 'ru' && paidNow() && !applied.has('ru-dictionary')) void loadPacks(['ru-dictionary']);
+    if (contentLocale(getLocale()) === 'ru' && paidNow() && !applied.has('ru-dictionary')) void loadPacks(['ru-dictionary']);
   });
 }
 

@@ -34,7 +34,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useT } from '../../lib/i18n/react';
-import type { Locale } from '../../lib/i18n/locale';
+import { contentLocale, type ContentLocale as Locale } from '../../lib/i18n/locale';
 import MrEzAvatar from './MrEzAvatar';
 import { askTutor, isTutorConfigured } from '../../lib/tutor/client';
 import { localInsights } from '../../lib/tutor/local';
@@ -104,7 +104,7 @@ export default function UnitNote({ unitId, kind }: UnitNoteProps) {
   // Everything is read after mount: these stores are localStorage-backed, so
   // a server render and the first client render must agree on "nothing yet".
   useEffect(() => {
-    const refresh = () => setLocal(buildLocalView(unitId, kind, locale));
+    const refresh = () => setLocal(buildLocalView(unitId, kind, contentLocale(locale)));
     refresh();
     const offProgress = onProgressChange(refresh);
     const offPlan = onStudyPlanChange(refresh);

@@ -29,7 +29,7 @@
  * Nothing simulated or deterministic is ever labelled live.
  */
 
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 import { tutorText } from '../tutor/ru';
 import type { AssistanceLevel } from './contracts/evidence';
 import { ASSISTANCE_ORDER } from './contracts/evidence';

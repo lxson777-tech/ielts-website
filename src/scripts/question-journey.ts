@@ -92,15 +92,18 @@ if(root){
    return;
   }
   const locale=salesLocale();
-  const skill=journeySkill(answers.skill,locale),time=Number(answers.time);
-  // "Start with speaking" in English, "Начните с Speaking" in Russian: the paper name stays English there.
-  const skillInSentence=locale==='ru'?skill.name:skill.name.toLowerCase();
+  // The suggested lessons are course content, which has no Kazakh: a Kazakh
+  // reader gets their Russian titles (Kazakh falls back to Russian).
+  const content=locale==='en'?'en':'ru';
+  const skill=journeySkill(answers.skill,content),time=Number(answers.time);
+  // "Start with speaking" in English, "Начните с Speaking" in Russian and Kazakh: the paper name stays English there.
+  const skillInSentence=locale==='en'?skill.name.toLowerCase():skill.name;
   root!.querySelector('#journey-result-title')!.textContent=say('journey.plan.title',{band:answers.band==='8'?'8.0+':Number(answers.band).toFixed(1)});
   root!.querySelector('[data-plan-label]')!.textContent=say('journey.plan.label',{skill:skill.name,time});
   root!.querySelector('[data-result-description]')!.textContent=say('journey.plan.lead',{skill:skillInSentence,focus:say(answers.focus==='method'?'journey.plan.help.method':'journey.plan.help.confidence')});
   // Two free lessons, each with the one thing it helps with.
   const list=root!.querySelector('[data-plan-lessons]')!;
-  list.replaceChildren(...journeyLessons(answers as JourneyAnswers,locale).map(lesson=>{
+  list.replaceChildren(...journeyLessons(answers as JourneyAnswers,content).map(lesson=>{
    const li=document.createElement('li');
    li.dataset.lessonKey=lesson.key;
    const tag=document.createElement('span');tag.className='plan-access is-free';tag.dataset.planAccess='free';tag.textContent=say('journey.plan.free');

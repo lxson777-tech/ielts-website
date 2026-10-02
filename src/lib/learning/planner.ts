@@ -82,7 +82,7 @@ import { MAX_PROPOSAL_CANDIDATES } from './contracts/ai';
 import { LEARNING_INDEX, coverageFit, findActivity, learningCatalogue, prerequisiteClosure } from './catalog';
 import { canonicalJson, hashContent } from './evidence';
 import { scopeKeyOf } from './policy';
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 import { learningText } from './ru';
 import type { EligibilityContext, LearnerFacts, PlannedObjective } from './session';
 import {

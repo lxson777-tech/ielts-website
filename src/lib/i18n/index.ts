@@ -9,6 +9,10 @@ export {
   SUPPORTED_LOCALES,
   DEFAULT_LOCALE,
   LOCALE_LABEL,
+  LOCALE_SHORT,
+  FALLBACK_LOCALE,
+  contentLocale,
+  intlLocale,
   LOCALE_STORAGE_KEY,
   PENDING_CLASS,
   isLocale,
@@ -17,12 +21,14 @@ export {
   onLocaleChange,
   applyDocumentLocale,
   type Locale,
+  type ContentLocale,
 } from './locale';
 
 export { t, tn, nt, ntn, messageKey, interpolate, translateWith, pluralWith, type CountForms, type CountedPhrase, type Vars } from './translate';
 export {
   loadDictionary,
   getLoadedDictionary,
+  mergeUnderOwn,
   loadDictionaryPart,
   loadDictionaryParts,
   isDictionaryPartLoaded,

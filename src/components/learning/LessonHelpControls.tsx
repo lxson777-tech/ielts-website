@@ -30,7 +30,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useT } from '../../lib/i18n/react';
-import { getLocale } from '../../lib/i18n/locale';
+import { getLocale, contentLocale } from '../../lib/i18n/locale';
 import type { LessonHelpKind } from '../../lib/learning/contracts/ai';
 import { MAX_HINTS_PER_ITEM } from '../../lib/learning/contracts/ai';
 import type { AssistanceLevel } from '../../lib/learning/contracts/evidence';
@@ -192,7 +192,7 @@ export default function LessonHelpControls({
           assistanceSoFar: assistance,
           versions: context.versions,
           sessionId: context.sessionId,
-          locale: getLocale(),
+          locale: contentLocale(getLocale()),
         },
         {
           keep: (result, owner) => keepHelp?.(result, owner),

@@ -7,13 +7,27 @@
    progress is touched by it.
 
    English is the fallback everywhere, and the default unless the device
-   itself is set to Russian (see detectLocale). A missing translation
-   can never produce a blank or a key name, because the English text IS the
-   key (see translate.ts). */
+   itself is set to Russian or Kazakh (see detectLocale). A missing
+   translation can never produce a blank or a key name, because the English
+   text IS the key (see translate.ts).
 
-export const SUPPORTED_LOCALES = ['en', 'ru'] as const;
+   Kazakh ('kk', added 2 October 2026 for the legal and buying pages, which
+   Kazakh consumer law asks for in Kazakh as well as Russian) is a partial
+   language: a string with a Kazakh translation shows in Kazakh, and
+   EVERYTHING ELSE shows in Russian, not English. Lesson bodies, test
+   explanations, plurals without a Kazakh entry, Mr EZ and every AI reply
+   are Russian for a Kazakh reader. contentLocale() is that rule in one
+   place: any code that only knows English and Russian (the tutor layer,
+   the learning layer, the Workers, the lesson-body files) receives
+   contentLocale(locale), never 'kk'. */
+
+export const SUPPORTED_LOCALES = ['en', 'ru', 'kk'] as const;
 
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
+
+/** The languages the course content, the AI and the Workers speak. Kazakh
+    is an interface language only; its content language is Russian. */
+export type ContentLocale = 'en' | 'ru';
 
 export const DEFAULT_LOCALE: Locale = 'en';
 
@@ -21,7 +35,54 @@ export const DEFAULT_LOCALE: Locale = 'en';
 export const LOCALE_LABEL: Record<Locale, string> = {
   en: 'English',
   ru: 'Русский',
+  kk: 'Қазақша',
 };
+
+/** The short code the language switches show. Kazakh shows as KZ, the
+    country code students know, rather than the ISO language code KK. */
+export const LOCALE_SHORT: Record<Locale, string> = {
+  en: 'EN',
+  ru: 'RU',
+  kk: 'KZ',
+};
+
+/** The language a locale falls back to for anything it has not translated:
+    Kazakh falls back to Russian, Russian to English. */
+export const FALLBACK_LOCALE: Partial<Record<Locale, Locale>> = {
+  kk: 'ru',
+};
+
+/** The content language for an interface language: Kazakh reads Russian
+    lessons, Russian AI replies and Russian Worker messages. Also safe on an
+    unknown value (English). */
+export function contentLocale(locale: Locale | string | null | undefined): ContentLocale {
+  if (locale === 'ru' || locale === 'kk') return 'ru';
+  return 'en';
+}
+
+/** The BCP 47 tag Intl should format dates and numbers with. English keeps
+    each call site's own variant (en-GB dates, en-US numbers); Kazakh uses
+    kk-KZ where the browser has it, otherwise Russian, so a date is never
+    printed in English inside a Kazakh or Russian sentence. */
+export function intlLocale(locale: Locale | string | null | undefined, english = 'en-GB'): string {
+  if (locale === 'kk') return kazakhIntlSupported() ? 'kk-KZ' : 'ru-RU';
+  if (locale === 'ru') return 'ru-RU';
+  return english;
+}
+
+let kazakhIntl: boolean | null = null;
+
+function kazakhIntlSupported(): boolean {
+  if (kazakhIntl !== null) return kazakhIntl;
+  try {
+    kazakhIntl =
+      Intl.DateTimeFormat.supportedLocalesOf(['kk-KZ']).length > 0 &&
+      Intl.NumberFormat.supportedLocalesOf(['kk-KZ']).length > 0;
+  } catch {
+    kazakhIntl = false;
+  }
+  return kazakhIntl;
+}
 
 /** localStorage key. Versioned like the progress store, so a future shape
     change (e.g. an account-synced locale object) can migrate cleanly. */
@@ -36,25 +97,34 @@ export const PENDING_CLASS = 'i18n-pending';
 /** Device languages that open the site in Russian when the student has not
     chosen a language yet. Decided by Alex on 2026-09-21: most students are in
     Almaty with a phone set to Russian, and one who reads no English should
-    not have to find a switch first. Kazakh is here too: there is no Kazakh
-    version, and a Kazakh-set phone in Almaty is far more likely to be read in
-    Russian than in English. This is only ever a first guess. It is never
-    saved, so the EN / RU switch (which does save) always wins.
+    not have to find a switch first. This is only ever a first guess. It is
+    never saved, so the EN / RU / KZ switch (which does save) always wins. */
+export const RUSSIAN_DEVICE_LANGUAGES: readonly string[] = ['ru'];
 
-    BaseLayout's blocking head script repeats this rule before first paint and
-    receives this very list through define:vars, so the two cannot disagree. */
-export const RUSSIAN_DEVICE_LANGUAGES: readonly string[] = ['ru', 'kk'];
+/** Device languages that open the site in Kazakh (2 October 2026, when the
+    Kazakh interface arrived; before that a Kazakh-set phone opened in
+    Russian, which is still what it reads wherever there is no Kazakh). */
+export const KAZAKH_DEVICE_LANGUAGES: readonly string[] = ['kk'];
+
+/** Device language to interface language, both lists above in one map.
+    BaseLayout's and StoryLayout's blocking head scripts repeat this rule
+    before first paint and receive this very map through define:vars, so the
+    three cannot disagree. */
+export const DEVICE_LANGUAGE_LOCALE: Readonly<Record<string, Locale>> = Object.freeze({
+  ...Object.fromEntries(RUSSIAN_DEVICE_LANGUAGES.map((code) => [code, 'ru' as Locale])),
+  ...Object.fromEntries(KAZAKH_DEVICE_LANGUAGES.map((code) => [code, 'kk' as Locale])),
+});
 
 /** The language to use when nothing is stored: Russian for a device set to
-    one of RUSSIAN_DEVICE_LANGUAGES, English otherwise. Looks at the device's
-    FIRST language only, so an English-first student who merely lists Russian
-    further down keeps English. */
+    Russian, Kazakh for a device set to Kazakh, English otherwise. Looks at
+    the device's FIRST language only, so an English-first student who merely
+    lists Russian further down keeps English. */
 export function detectLocale(): Locale {
   if (typeof navigator === 'undefined') return DEFAULT_LOCALE;
   try {
     const first = (navigator.languages && navigator.languages[0]) || navigator.language || '';
     const base = first.toLowerCase().split('-')[0] ?? '';
-    return RUSSIAN_DEVICE_LANGUAGES.includes(base) ? 'ru' : DEFAULT_LOCALE;
+    return Object.prototype.hasOwnProperty.call(DEVICE_LANGUAGE_LOCALE, base) ? DEVICE_LANGUAGE_LOCALE[base]! : DEFAULT_LOCALE;
   } catch {
     return DEFAULT_LOCALE;
   }

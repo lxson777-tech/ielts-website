@@ -25,7 +25,7 @@ import type { ProgressV1 } from '../progress';
 import type { SavedPlan, PlanSkill } from '../study-plan';
 import { PLAN_SKILLS } from '../study-plan';
 import { buildCourse } from '../course';
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 import { tutorText, tutorCount } from './ru';
 
 /* ── Week windows ─────────────────────────────────────────────────────── */

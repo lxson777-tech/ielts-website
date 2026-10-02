@@ -24,6 +24,7 @@ import { cachedProfile, loadProfile, onProfileChange, signInHref, type StudentPr
 import { absoluteHref } from '../lib/auth/next';
 import { withBase } from '../lib/url';
 import { useT } from '../lib/i18n/react';
+import { intlLocale } from '../lib/i18n/locale';
 import { Field, PasswordInput, PasswordStrength, SOURCE_LABELS, describedBy, passwordProblemSentence } from './auth/fields';
 import { friendlyAuthError } from './auth/shell';
 
@@ -33,7 +34,7 @@ function formatDate(iso: string, locale: string): string {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
   if (!match) return iso;
   const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
-  return new Intl.DateTimeFormat(locale === 'ru' ? 'ru-RU' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(date);
+  return new Intl.DateTimeFormat(intlLocale(locale, 'en-GB'), { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(date);
 }
 
 export default function AccountSettings() {

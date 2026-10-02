@@ -26,6 +26,7 @@
  *    two can be read as before and after.
  */
 
+import { contentLocale, isLocale } from '../../lib/i18n/locale';
 import { countWords } from '../../lib/writing/mechanics';
 import type { WrittenCheckId, WrittenPiece } from '../../data/focused-exercises';
 import type { Paper, Subskill } from '../../lib/learning/contracts/catalog';
@@ -1044,7 +1045,7 @@ export function writtenEvidenceDraft(input: {
     items: [writtenItemDraft({ view: input.view, text: input.text, help: input.help, met })],
     sourceMaterial: [promptExposureKey(input.view.promptId)],
     ...(input.sessionId ? { sessionId: input.sessionId } : {}),
-    ...(input.locale === 'en' || input.locale === 'ru' ? { locale: input.locale } : {}),
+    ...(isLocale(input.locale) ? { locale: contentLocale(input.locale) } : {}),
   };
 }
 

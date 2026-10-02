@@ -28,7 +28,7 @@
 import { MAX_GIVEN_CHARS, MAX_REVIEW_ITEMS, isPublishedTestId, sourceTestId } from './test-items';
 /* Type only, so nothing of the site's i18n layer (its lazy loader, its
    localStorage reads) is pulled into the Worker bundle. */
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 /* The three learning tasks share this endpoint, so their wire rules live
    here beside the other seven. The contract itself (what each task is for,
    and what the model may and may not do) is

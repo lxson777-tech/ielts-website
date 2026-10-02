@@ -64,7 +64,7 @@ import {
   fallbackLessonHelp,
   type LessonHelpPromptInput,
 } from '../../lib/learning/ai-prompt';
-import type { Locale } from '../../lib/i18n/locale';
+import type { ContentLocale as Locale } from '../../lib/i18n/locale';
 import type { CacheOwner } from '../../lib/learning/contracts/sync';
 import { runOwnedGrade, type OwnerBinding, type OwnerBindingState } from '../../lib/store-owner';
 import { openUpgrade, PAID_REQUIRED_CODE } from '../../lib/access/upgrade';

@@ -15,7 +15,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { SALES_COPY, isSalesKey, salesText, salesVars, tenge, type SalesKey } from '../src/marketing/sales-copy.ts';
+import { SALES_COPY, isSalesKey, pickSalesText, salesText, salesVars, tenge, type SalesKey } from '../src/marketing/sales-copy.ts';
 import { journeyDays, journeyQuery, journeySteps, type JourneyAnswers } from '../src/lib/journey-plan.ts';
 import { PAID_AI_ALLOWANCE } from '../src/lib/access/plans.ts';
 
@@ -56,6 +56,64 @@ test('every entry has English and Russian that follow the translation rules', ()
     }
   }
   assert.deepEqual(problems, []);
+});
+
+/* Kazakh (Builder K, 2 October 2026): the sales page is the shop's
+   advertising and price list, which Kazakh consumer law asks for in Kazakh
+   as well as Russian. Every entry carries a Kazakh line with the same
+   placeholders and the same markup as the English. */
+const KAZAKH_LETTERS = /[әғқңөұүһі]/i;
+
+test('every entry has Kazakh that follows the same rules as the Russian', () => {
+  const problems: string[] = [];
+  for (const [key, entry] of Object.entries(SALES_COPY)) {
+    if (!entry.kk || !entry.kk.trim()) {
+      problems.push(`${key}: no Kazakh`);
+      continue;
+    }
+    if (DASHES.test(entry.kk)) problems.push(`${key}: Kazakh contains an em or en dash`);
+    if (placeholders(entry.en).join() !== placeholders(entry.kk).join()) {
+      problems.push(`${key}: Kazakh placeholders differ (${placeholders(entry.en)} vs ${placeholders(entry.kk)})`);
+    }
+    if (tags(entry.en).join() !== tags(entry.kk).join()) problems.push(`${key}: markup differs between English and Kazakh`);
+    for (const tag of tags(entry.kk)) if (!ALLOWED_TAGS.has(tag)) problems.push(`${key}: <${tag}> is not an allowed tag (kk)`);
+    // A Kazakh line that is still the Russian is a miss, unless it is a
+    // short label the two languages genuinely share ("15 минут", "Band 7.0").
+    const words = entry.kk.replace(/<[^>]+>/g, ' ').trim().split(/\s+/).length;
+    if (entry.kk === entry.ru && words > 2) problems.push(`${key}: Kazakh is identical to the Russian`);
+    if (words > 6 && !KAZAKH_LETTERS.test(entry.kk)) problems.push(`${key}: Kazakh has no Kazakh letters, is it still Russian?`);
+  }
+  assert.deepEqual(problems, []);
+});
+
+test('a missing Kazakh line falls back to the Russian, never to the English', () => {
+  assert.equal(pickSalesText({ en: 'Hello', ru: 'Привет', kk: 'Сәлем' }, 'kk'), 'Сәлем');
+  assert.equal(pickSalesText({ en: 'Hello', ru: 'Привет', kk: '' }, 'kk'), 'Привет');
+  assert.equal(pickSalesText({ en: 'Hello', ru: 'Привет' }, 'kk'), 'Привет');
+  assert.equal(pickSalesText({ en: 'Hello', ru: '' }, 'kk'), 'Hello');
+  // English and Russian read exactly what they always did.
+  assert.equal(pickSalesText({ en: 'Hello', ru: 'Привет', kk: 'Сәлем' }, 'ru'), 'Привет');
+  assert.equal(pickSalesText({ en: 'Hello', ru: 'Привет', kk: 'Сәлем' }, 'en'), 'Hello');
+  assert.equal(salesText('price.paid.label', 'kk'), 'Практика және сүйемелдеу');
+  assert.equal(salesText('price.paid.label', 'ru'), 'Практика и сопровождение');
+  assert.equal(salesText('price.paid.label', 'en'), 'Practice and guidance');
+});
+
+test('the Kazakh page keeps the offer: refunds, no renewal, no trial, the right price', () => {
+  for (const [key, entry] of Object.entries(SALES_COPY)) {
+    // ("сынақ емтиханы", a mock exam, is not a trial; "сынақ мерзімі" is.)
+    assert.doesNotMatch(entry.kk, /сынақ мерзім|72 сағат/i, `${key} (kk) mentions a trial`);
+  }
+  for (const key of ['price.status', 'price.status.open'] as const) {
+    assert.match(SALES_COPY[key].kk, /автоматты ұзартусыз/);
+    assert.match(SALES_COPY[key].kk, /Пайдаланылмаған үлесті сұрау бойынша қайтаруға болады/);
+  }
+  assert.match(SALES_COPY['faq.refund.a'].kk, /^Иә\. 30 күн ішінде кез келген уақытта ақшаны қайтаруды сұрай аласыз/);
+  assert.match(SALES_COPY['faq.refund.a'].kk, /жария офертада/);
+  assert.match(SALES_COPY['faq.unlimited.a'].kk, /12 эссе тексеруі, 5 минутқа дейінгі 6 Speaking жазбасын тексеру, 15 минутқа дейінгі талдауы бар 2 ауызша сұхбат, 2 толық сынақ емтиханы/);
+  assert.match(SALES_COPY['faq.unlimited.a'].kk, /40 хабарлама және сабақтағы көмекке 60 сұрау/);
+  assert.match(SALES_COPY['faq.academic.a'].kk, /Academic IELTS/);
+  assert.match(salesText('faq.cost.a', 'kk'), /^30 күн 12\s990 ₸ тұрады/);
 });
 
 test('every data-sales key in the sales page markup and scripts exists', () => {
@@ -179,6 +237,7 @@ test('the questionnaire plan says which days are free lessons', () => {
 test('prices are formatted for each language from the one approved source', () => {
   assert.equal(tenge(10000, 'en'), '₸10,000');
   assert.equal(tenge(10000, 'ru').replace(/\s/g, ' '), '10 000 ₸');
+  assert.equal(tenge(10000, 'kk').replace(/\s/g, ' '), '10 000 ₸');
   const en = salesVars('en');
   const ru = salesVars('ru');
   assert.equal(en.oneMonth, '₸12,990');
@@ -187,7 +246,7 @@ test('prices are formatted for each language from the one approved source', () =
   assert.match(salesText('faq.cost.a', 'ru'), /30 дней стоят 12\s990 ₸/);
   // Every placeholder is filled in both languages.
   for (const key of Object.keys(SALES_COPY) as SalesKey[]) {
-    for (const locale of ['en', 'ru'] as const) {
+    for (const locale of ['en', 'ru', 'kk'] as const) {
       const text = salesText(key, locale, { count: 1, band: '7.0', skill: 'Reading', time: 30, focus: 'x' });
       assert.doesNotMatch(text, /\{\w+\}/, `${key} (${locale}) leaves a placeholder unfilled: ${text}`);
     }

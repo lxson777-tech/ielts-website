@@ -34,7 +34,7 @@ import type { SavedPlan } from '../study-plan';
 import { buildCatalog, findActivity, type Activity } from './catalog';
 import { observationEvidence, observationText, type Observation, type StudentInsights } from './insights';
 import { buildCourse, courseStatus } from '../course';
-import type { Locale } from '../i18n/locale';
+import type { ContentLocale as Locale } from '../i18n/locale';
 import { tutorText, type TextVars } from './ru';
 import {
   constraintsFrom,

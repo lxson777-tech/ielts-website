@@ -52,6 +52,7 @@
    today. */
 
 import { useT } from '../../lib/i18n/react';
+import { intlLocale } from '../../lib/i18n/locale';
 import { withBase } from '../../lib/url';
 import { publishedOperator } from '../../lib/operator';
 import { isTrialBuild } from '../../lib/trial/mode';
@@ -72,7 +73,7 @@ export default function TermsDocument() {
 
 function usePrice() {
   const { t, locale } = useT();
-  const number = new Intl.NumberFormat(locale === 'ru' ? 'ru-RU' : 'en-US');
+  const number = new Intl.NumberFormat(intlLocale(locale, 'en-US'));
   return (amount: number) => t('{amount} KZT', { amount: number.format(amount) });
 }
 
