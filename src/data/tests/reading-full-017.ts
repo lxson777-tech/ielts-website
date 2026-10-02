@@ -284,7 +284,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 22-26",
           "type": "categorisation",
-          "instructionHtml": "Classify the following as:",
+          "instructionHtml": "Classify the following as: NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q22",
@@ -412,7 +412,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 30-34",
           "type": "matching-features",
-          "instructionHtml": "Match ONE of the researchers (A-D) to each of the statements (30-34) below. There may be more than one correct answer.",
+          "instructionHtml": "Match ONE of the researchers (A-D) to each of the statements (30-34) below. There may be more than one correct answer. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q30",

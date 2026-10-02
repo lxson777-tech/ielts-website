@@ -275,7 +275,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 17-21",
           "type": "matching-features",
-          "instructionHtml": "Look at the following characteristics (Questions 17-21) and the list of sub-families below. Match each characteristic with the correct sub-family, A, B, C or D.",
+          "instructionHtml": "Look at the following characteristics (Questions 17-21) and the list of sub-families below. Match each characteristic with the correct sub-family, A, B, C or D. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q17",

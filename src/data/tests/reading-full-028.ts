@@ -246,7 +246,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 15-20",
           "type": "categorisation",
-          "instructionHtml": "Classify the following developments as characterising",
+          "instructionHtml": "Classify the following developments as characterising NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q15",

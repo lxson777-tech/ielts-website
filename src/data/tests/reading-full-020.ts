@@ -471,7 +471,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 34-39",
           "type": "categorisation",
-          "instructionHtml": "From the information given in the passage, classify the following (34-39) as characteristic of:",
+          "instructionHtml": "From the information given in the passage, classify the following (34-39) as characteristic of: NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q34",

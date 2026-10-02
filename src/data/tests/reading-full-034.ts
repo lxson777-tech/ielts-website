@@ -450,7 +450,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 34-40",
           "type": "categorisation",
-          "instructionHtml": "Classify the following things that relate to:",
+          "instructionHtml": "Classify the following things that relate to: NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q34",

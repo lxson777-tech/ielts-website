@@ -405,7 +405,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 22-27",
           "type": "matching-features",
-          "instructionHtml": "Look at the following statements (Questions 22-27) and the list of companies below. Match each statement with the correct company, A-D.",
+          "instructionHtml": "Look at the following statements (Questions 22-27) and the list of companies below. Match each statement with the correct company, A-D. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q22",

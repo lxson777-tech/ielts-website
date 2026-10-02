@@ -504,19 +504,24 @@ const test: PracticeTest = {
         },
         {
           "title": "Question 40",
-          "type": "sentence-completion",
+          "type": "multiple-choice",
           "instructionHtml": "Choose correct letter A, B, C or D.",
           "questions": [
             {
               "id": "q40",
               "answer": "C",
-              "before": "Implied in the passage, what is the author’s attitude toward Telework? A surprised by its fast growth B unconcerned about the future pattern C believe it is generally positive and encouraging D worried in the economical problems arise",
-              "after": "",
               "explanation": "Across the passage the writer reports higher productivity, lower absenteeism, less office space needed, large savings in energy and emissions, and a better quality of life for most people surveyed, so the overall tone is favourable towards telework. Option D is the trap, because the last paragraph does raise the cost of broken equipment at home, but that is one late worry rather than the writer's general view.",
-              "evidence": "the SUSTEL research found that most survey respondents felt that teleworking gave them a better quality of life and work-life balance"
+              "evidence": "the SUSTEL research found that most survey respondents felt that teleworking gave them a better quality of life and work-life balance",
+              "textHtml": "Implied in the passage, what is the author’s attitude toward Telework?",
+              "options": [
+                "surprised by its fast growth",
+                "unconcerned about the future pattern",
+                "believe it is generally positive and encouraging",
+                "worried in the economical problems arise"
+              ]
             }
           ],
-          "legendHtml": "<p>40. Implied in the passage, what is the author’s attitude toward Telework?<br/>\n<strong>A</strong> surprised by its fast growth<br/>\n<strong>B</strong> unconcerned about the future pattern<br/>\n<strong>C</strong> believe it is generally positive and encouraging<br/>\n<strong>D</strong> worried in the economical problems arise</p>"
+          "legendHtml": ""
         }
       ]
     }

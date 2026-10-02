@@ -3220,7 +3220,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
       ],
       "questions": [
         {
-          "prompt": "Table blank 1: what word goes here?",
+          "prompt": "Table blank 1: which letter goes here?",
           "kind": "text",
           "answer": [
             "A",
@@ -3230,7 +3230,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 16, Questions 1 to 10"
         },
         {
-          "prompt": "Table blank 2: what word goes here?",
+          "prompt": "Table blank 2: which letter goes here?",
           "kind": "text",
           "answer": [
             "B",
@@ -3240,7 +3240,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 16, Questions 1 to 10"
         },
         {
-          "prompt": "Table blank 3: what word goes here?",
+          "prompt": "Table blank 3: which letter goes here?",
           "kind": "text",
           "answer": [
             "A",
@@ -3250,7 +3250,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 16, Questions 1 to 10"
         },
         {
-          "prompt": "Table blank 4: what word goes here?",
+          "prompt": "Table blank 4: which letter goes here?",
           "kind": "text",
           "answer": [
             "B",
@@ -3260,7 +3260,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 16, Questions 1 to 10"
         },
         {
-          "prompt": "Table blank 5: what word goes here?",
+          "prompt": "Table blank 5: which letter goes here?",
           "kind": "text",
           "answer": [
             "F",
@@ -3271,7 +3271,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 16, Questions 1 to 10"
         },
         {
-          "prompt": "Table blank 6: what word goes here?",
+          "prompt": "Table blank 6: which letter goes here?",
           "kind": "text",
           "answer": [
             "E",
@@ -3282,7 +3282,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 16, Questions 1 to 10"
         },
         {
-          "prompt": "Table blank 7: what word goes here?",
+          "prompt": "Table blank 7: which letter goes here?",
           "kind": "text",
           "answer": [
             "F",
@@ -3293,7 +3293,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 16, Questions 1 to 10"
         },
         {
-          "prompt": "Table blank 8: what word goes here?",
+          "prompt": "Table blank 8: which letter goes here?",
           "kind": "text",
           "answer": [
             "E",
@@ -3304,7 +3304,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 16, Questions 1 to 10"
         },
         {
-          "prompt": "Table blank 9: what word goes here?",
+          "prompt": "Table blank 9: which letter goes here?",
           "kind": "text",
           "answer": [
             "F",
@@ -3315,7 +3315,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "source": "Academic Reading Test 16, Questions 1 to 10"
         },
         {
-          "prompt": "Table blank 10: what word goes here?",
+          "prompt": "Table blank 10: which letter goes here?",
           "kind": "text",
           "answer": [
             "E",
@@ -4004,16 +4004,16 @@ export const PRACTICE_ITEM_IDENTITY: Record<string, readonly LessonCheckItemIden
     { key: 'u1-q4', version: 'ceea3bf86f4f65d3', type: 'sentence-completion', testId: 'reading-full-035', questionId: 'q32' },
   ],
   'practice-reading-summary-completion': [
-    { key: 'u0-q0', version: '6238ef64c7438b4b', type: 'table-completion', testId: 'reading-full-016', questionId: 'q1' },
-    { key: 'u0-q1', version: '3dd845a0d3a5708c', type: 'table-completion', testId: 'reading-full-016', questionId: 'q2' },
-    { key: 'u0-q2', version: 'e82472069d6d0738', type: 'table-completion', testId: 'reading-full-016', questionId: 'q3' },
-    { key: 'u0-q3', version: '89c885506a6bbaa0', type: 'table-completion', testId: 'reading-full-016', questionId: 'q4' },
-    { key: 'u0-q4', version: '613a223aee721dab', type: 'table-completion', testId: 'reading-full-016', questionId: 'q5' },
-    { key: 'u0-q5', version: '7bc70469838afe61', type: 'table-completion', testId: 'reading-full-016', questionId: 'q6' },
-    { key: 'u0-q6', version: '48bd6a2ee5fb4fb5', type: 'table-completion', testId: 'reading-full-016', questionId: 'q7' },
-    { key: 'u0-q7', version: '0822b598a2624ccb', type: 'table-completion', testId: 'reading-full-016', questionId: 'q8' },
-    { key: 'u0-q8', version: '8cc7500f9c70e101', type: 'table-completion', testId: 'reading-full-016', questionId: 'q9' },
-    { key: 'u0-q9', version: '72c5e028a3263aa4', type: 'table-completion', testId: 'reading-full-016', questionId: 'q10' },
+    { key: 'u0-q0', version: '308b93d1751dec54', type: 'table-completion', testId: 'reading-full-016', questionId: 'q1' },
+    { key: 'u0-q1', version: 'ed90a13225e00cca', type: 'table-completion', testId: 'reading-full-016', questionId: 'q2' },
+    { key: 'u0-q2', version: 'af8eb228c9baa9c0', type: 'table-completion', testId: 'reading-full-016', questionId: 'q3' },
+    { key: 'u0-q3', version: '08bc579b48fd867b', type: 'table-completion', testId: 'reading-full-016', questionId: 'q4' },
+    { key: 'u0-q4', version: '42c45b058c39eec4', type: 'table-completion', testId: 'reading-full-016', questionId: 'q5' },
+    { key: 'u0-q5', version: 'ac23aa5a1c8340e8', type: 'table-completion', testId: 'reading-full-016', questionId: 'q6' },
+    { key: 'u0-q6', version: 'c6ab077f6720a507', type: 'table-completion', testId: 'reading-full-016', questionId: 'q7' },
+    { key: 'u0-q7', version: 'f60a984434b491a6', type: 'table-completion', testId: 'reading-full-016', questionId: 'q8' },
+    { key: 'u0-q8', version: '4b2406a7bbdf8de5', type: 'table-completion', testId: 'reading-full-016', questionId: 'q9' },
+    { key: 'u0-q9', version: '3a0e00bbec4399ae', type: 'table-completion', testId: 'reading-full-016', questionId: 'q10' },
     { key: 'u1-q0', version: '4a6e10f67ea7eea5', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q19' },
     { key: 'u1-q1', version: 'afd077e37f6dfbcf', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q20' },
     { key: 'u1-q2', version: '27a21561c7026733', type: 'sentence-completion', testId: 'reading-full-002', questionId: 'q21' },

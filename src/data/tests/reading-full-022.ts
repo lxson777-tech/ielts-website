@@ -260,7 +260,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 15-19",
           "type": "categorisation",
-          "instructionHtml": "Classify the following as relating to:",
+          "instructionHtml": "Classify the following as relating to: NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q15",
@@ -471,7 +471,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 32-36",
           "type": "matching-features",
-          "instructionHtml": "Use the information in the text to match the map projections [M A P] with the characteristics listed below.",
+          "instructionHtml": "Use the information in the text to match the map projections [M A P] with the characteristics listed below. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q32",

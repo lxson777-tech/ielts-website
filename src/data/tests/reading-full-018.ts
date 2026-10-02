@@ -144,7 +144,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 10-14",
           "type": "matching-features",
-          "instructionHtml": "Match one of the researchers (A-C) to each of the findings (10-14) below.",
+          "instructionHtml": "Match one of the researchers (A-C) to each of the findings (10-14) below. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q10",
@@ -313,7 +313,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 24-27",
           "type": "matching-features",
-          "instructionHtml": "Use the information in the text to match one scientist (A-C) with each area of study (24-27) listed below.",
+          "instructionHtml": "Use the information in the text to match one scientist (A-C) with each area of study (24-27) listed below. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q24",
@@ -400,7 +400,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 28-33",
           "type": "matching-features",
-          "instructionHtml": "Use the information in the passage to match the people (A-C) with the opinions (28-33) listed below. There may be more than one correct answer.",
+          "instructionHtml": "Use the information in the passage to match the people (A-C) with the opinions (28-33) listed below. There may be more than one correct answer. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q28",

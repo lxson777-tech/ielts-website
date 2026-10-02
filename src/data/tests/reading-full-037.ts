@@ -489,7 +489,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 36-40",
           "type": "matching-features",
-          "instructionHtml": "Look at the following features (Questions 36-40) and the list of locations below. Match each feature with the correct location, A, B or C. Write the correct letter, A, B or C, in boxes 36-40 on your answer sheet.",
+          "instructionHtml": "Look at the following features (Questions 36-40) and the list of locations below. Match each feature with the correct location, A, B or C. Write the correct letter, A, B or C, in boxes 36-40 on your answer sheet. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q36",

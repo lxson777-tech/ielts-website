@@ -83,7 +83,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 3-7",
           "type": "sentence-completion",
-          "instructionHtml": "Choose the type of music from the list A-D below which corresponds to the findings of the study.",
+          "instructionHtml": "Choose the type of music from the list A-D below which corresponds to the findings of the study. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q3",
