@@ -48,6 +48,7 @@ import { readPersonalPlan } from '../lib/learning';
 import { withBase } from '../lib/url';
 import { isTrialBuild } from '../lib/trial/mode';
 import SupportLink from './support/SupportLink'; // [E trust]
+import AiEstimateNote from './legal/AiEstimateNote';
 import {
   CUE_CARD_FAMILY_EXAMPLE,
   bandLadderHref,
@@ -707,6 +708,11 @@ export default function SpeakingTester({ trialRecorded = false }: { trialRecorde
             </div>
           )}
         </BandReport>
+
+        {/* Marked by AI, an estimate, and a person can review it (AI Law
+            Art. 21; src/components/legal/AiEstimateNote.tsx). Only under a
+            real AI result: the offline sample says what it is above. */}
+        {result.grader.live && <AiEstimateNote />}
 
         {attemptAt && (
           <ExplainResult

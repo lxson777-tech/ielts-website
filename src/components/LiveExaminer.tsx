@@ -140,6 +140,7 @@ import { SPEAKING_BAND_GUIDES, guideFor } from '../data/band-guides';
 import { useT } from '../lib/i18n/react';
 import { getLocale } from '../lib/i18n/locale';
 import BandReport from './BandReport';
+import AiEstimateNote from './legal/AiEstimateNote';
 import GradingProgress from './GradingProgress';
 import SpeakingCoachPanel from './SpeakingCoachPanel';
 import SpeakingPartCards from './SpeakingPartCards';
@@ -1420,6 +1421,10 @@ export default function LiveExaminer({
           )}
         </BandReport>
 
+        {/* Marked by AI, an estimate, and a person can review it (AI Law
+            Art. 21; src/components/legal/AiEstimateNote.tsx). */}
+        <AiEstimateNote />
+
         {/* Mock embed: onComplete already fired above, in the same tick as
             setPhase('report') — MockExam swaps to its own results screen
             before this ever paints, so there's nothing for a button here to
@@ -1460,6 +1465,11 @@ export default function LiveExaminer({
             'Part 1 of the real test, about five minutes. {name} asks you short questions about yourself and everyday topics, out loud, listens, and follows up on what you say. You get a band report at the end.',
             { name: EXAMINER_NAME },
           )}
+        </p>
+        {/* AI Law Art. 21 p.2: before the interview, say plainly that the
+            examiner's voice is synthetic. */}
+        <p className="ai-voice-note" data-testid="ai-voice-note">
+          {t('{name} is an AI voice, not a real person. Your interview is marked by AI.', { name: EXAMINER_NAME })}
         </p>
         <ul className="mx-auto mt-4 max-w-md space-y-1 text-left text-xs text-ink-muted">
           <li>· {t('Use headphones if you can, in a quiet room')}</li>
@@ -1514,6 +1524,11 @@ export default function LiveExaminer({
                 "Three parts, about 12 minutes. Speak with {name} and get feedback after your interview.",
                 { name: EXAMINER_NAME },
               )}
+        </p>
+        {/* AI Law Art. 21 p.2: before the interview, say plainly that the
+            examiner's voice is synthetic. */}
+        <p className="ai-voice-note" data-testid="ai-voice-note">
+          {t('{name} is an AI voice, not a real person. Your interview is marked by AI.', { name: EXAMINER_NAME })}
         </p>
         <details className="support-disclosure speaking-tips"><summary>{t('Before you speak')}</summary>
         <ul className="mx-auto mt-4 max-w-md space-y-1 text-left text-xs text-ink-muted">
@@ -1584,6 +1599,7 @@ export default function LiveExaminer({
     content = (
       <div className="rounded-card border border-border bg-surface p-10 text-center shadow-card">
         <p className="text-sm text-ink-muted">{t('Connecting you to {name}…', { name: EXAMINER_NAME })}</p>
+        <p className="ai-voice-note">{t('{name} is an AI voice, not a real person. Your interview is marked by AI.', { name: EXAMINER_NAME })}</p>
       </div>
     );
   } else if (phase === 'grading') {
