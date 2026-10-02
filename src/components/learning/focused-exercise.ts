@@ -29,6 +29,7 @@ import type { MistakeReason } from '../../data/focused-exercises';
 import type { Paper, Subskill } from '../../lib/learning/contracts/catalog';
 import type { AssistanceLevel, CompletionState, EvidenceMode } from '../../lib/learning/contracts/evidence';
 import { ASSISTANCE_ORDER } from '../../lib/learning/contracts/evidence';
+import { answerMatches } from '../../lib/tests/schema';
 import type { ItemOutcomeDraft } from '../../lib/learning/evidence';
 
 /* ── What the page hands the component ───────────────────────────────────── */
@@ -387,17 +388,16 @@ export interface FocusedExerciseView {
 
 /* ── Marking ─────────────────────────────────────────────────────────────── */
 
-/** The same leniency the rest of the site uses for a one-word answer: case
-    and surrounding space never decide a mark. An array answer is a multiple
-    answer pair (see FocusedItemView.answer): the given value only has to be
-    A member of the accepted set, because the real pair's two numbered slots
-    share one pool and either slot may carry either accepted value. */
+/** Marked exactly as the full test player marks the same question
+    (answerMatches in src/lib/tests/schema.ts): case, spacing, British and
+    American spelling, a number in words or figures and the other forms an
+    examiner accepts never decide a mark, and a misspelling still does. An
+    array answer is a multiple answer pair (see FocusedItemView.answer): the
+    given value only has to be A member of the accepted set, because the real
+    pair's two numbered slots share one pool and either slot may carry either
+    accepted value. */
 export function isCorrect(given: string, answer: string | readonly string[]): boolean {
-  const norm = (value: string) => value.toLowerCase().trim().replace(/\s+/g, ' ');
-  const normalisedGiven = norm(given);
-  if (normalisedGiven === '') return false;
-  if (Array.isArray(answer)) return answer.some((candidate) => norm(candidate) === normalisedGiven);
-  return normalisedGiven === norm(answer as string);
+  return answerMatches(given, answer);
 }
 
 export function countCorrect(

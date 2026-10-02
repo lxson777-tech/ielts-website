@@ -71,7 +71,15 @@ PERMISSION = "Reused with publisher permission confirmed by Alex on 2026-09-11."
 #
 # ANSWER_OVERRIDES: (local test number, question id) -> {answer, reason}.
 # `answer` is stored exactly as given: a string, or a list of accepted
-# spellings (the scorer accepts any member, comparing case-insensitively).
+# spellings (the scorer accepts any member; see normalizeAnswer in
+# src/lib/tests/schema.ts for what it forgives). An optional `answerPairId`
+# makes the slot part of an unordered answer pool.
+#
+# Every key in the data that differs from the publisher's is listed here,
+# including the September 2026 corrections to Tests 21-40 and the 3 October
+# 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md).
+# `python tools/check_answer_overrides.py` proves each entry matches the data
+# file, and with `--source-cache .tmp` that nothing is left unrecorded.
 ANSWER_OVERRIDES: dict[tuple[int, str], dict] = {
     # --- Plain typos in the published key ---
     (9, "q36"): {
@@ -132,6 +140,63 @@ ANSWER_OVERRIDES: dict[tuple[int, str], dict] = {
         "answer": "D",
         "reason": "Question: 'the possibility of students not being able to sleep well'. Paragraph D is the one that mentions sleep: 'too much screen time can lead to problems such as eye strain, headaches, and difficulty sleeping'. Paragraph C covers over-reliance, distraction and inappropriate content, and never mentions sleep. Published key: C, which repeats the (correct) answer to question 19.",
     },
+    # --- Recorded 3 October 2026: the September 2026 corrections to Tests 21-40 that were
+    # never written down, and the 3 October 2026 content review ---
+    # (generated from the data with tools/check_answer_overrides.py --source-cache .tmp --emit,
+    # each reason written from docs/audits/content-review-2026-10-03/reading-tests.md)
+    (9, "q25"): {"answer": ["Transition", "Shift"], "reason": "Accepted forms added because IELTS marks them right: 'Shift'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (9, "q26"): {"answer": ["Cities", "Municipalities"], "reason": "Accepted forms added because IELTS marks them right: 'Municipalities'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (10, "q11"): {"answer": "Buses", "answerPairId": "reading-308-q11-q13", "reason": "'buses / ferries / trams' is a three-item list from one sentence; the order is not part of the answer, so the three slots share one pool. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (10, "q12"): {"answer": "Ferries", "answerPairId": "reading-308-q11-q13", "reason": "'buses / ferries / trams' is a three-item list from one sentence; the order is not part of the answer, so the three slots share one pool. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (10, "q13"): {"answer": "Trams", "answerPairId": "reading-308-q11-q13", "reason": "'buses / ferries / trams' is a three-item list from one sentence; the order is not part of the answer, so the three slots share one pool. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (10, "q19"): {"answer": ["Somatic", "Body"], "reason": "Accepted forms added because IELTS marks them right: 'Body'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (10, "q24"): {"answer": "False", "reason": "Statement 'So far, gene therapy has only been used on adults'. Passage: 'two children treated for X-linked severe combined immunodeficiency (X-SCID) in a clinical trial in 1999 had developed leukaemia'. Published key: Not Given. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (12, "q3"): {"answer": "Heat", "reason": "Gap 'absorbing and retaining solar ___' (ONE WORD). Passage: 'hard surfaces such as concrete and asphalt storing heat from the sun'. Published key: Surfaces. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (22, "q1"): {"answer": ["18", "eighteen"], "reason": "Instruction ONE WORD AND/OR A NUMBER; the published '18 (years old)' made typing 18 score nothing. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (25, "q22"): {"answer": ["visualisation", "visualization", "Visualisation", "Visualization"], "reason": "Accepted forms added because IELTS marks them right: 'visualisation', 'Visualisation'. September 2026 review, recorded here on 3 October 2026."},
+    (28, "q23"): {"answer": ["E", "D"], "reason": "Endings D and E are printed with identical wording on the publisher's page, so either letter is accepted. September 2026 review, recorded here on 3 October 2026."},
+    (28, "q24"): {"answer": ["D", "E"], "reason": "Endings D and E are printed with identical wording on the publisher's page, so either letter is accepted. September 2026 review, recorded here on 3 October 2026."},
+    (28, "q28"): {"answer": ["ii", "iii"], "reason": "Headings ii and iii are printed with identical wording on the publisher's page, so either is accepted. September 2026 review, recorded here on 3 October 2026."},
+    (28, "q35"): {"answer": ["One-third", "one third", "a third", "1/3"], "reason": "Accepted forms added because IELTS marks them right: 'one third', 'a third', '1/3'. September 2026 review, recorded here on 3 October 2026."},
+    (28, "q39"): {"answer": "Trap-lining", "reason": "Shown with the hyphen, as its explanation tells students to write it (the unhyphenated form still scores, with the hyphen note). 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (29, "q4"): {"answer": "vii", "reason": "Key changed from the published 'viii' to 'vii' after checking the source text. September 2026 review, recorded here on 3 October 2026."},
+    (29, "q24"): {"answer": ["Long, splayed hooves", "long splayed hooves", "splayed hooves"], "reason": "Accepted forms added because IELTS marks them right: 'long splayed hooves', 'splayed hooves'. September 2026 review, recorded here on 3 October 2026."},
+    (30, "q40"): {"answer": ["Germs", "Bacteria", "Bacterial transfer"], "reason": "'germs or bacteria' is two alternatives over the two-word limit; each word is accepted on its own. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (31, "q21"): {"answer": "C", "reason": "Key changed from the published 'D' to 'C' after checking the source text. September 2026 review, recorded here on 3 October 2026."},
+    (31, "q22"): {"answer": "D", "reason": "Key changed from the published 'C' to 'D' after checking the source text. September 2026 review, recorded here on 3 October 2026."},
+    (31, "q24"): {"answer": ["One-sixth", "one sixth", "1/6", "One- sixth"], "reason": "Accepted forms added because IELTS marks them right: 'one sixth', '1/6', 'One- sixth'. September 2026 review, recorded here on 3 October 2026."},
+    (31, "q25"): {"answer": ["16th century", "sixteenth century"], "reason": "Accepted forms added because IELTS marks them right: 'sixteenth century'. September 2026 review, recorded here on 3 October 2026."},
+    (32, "q19"): {"answer": "False", "reason": "Statement '1925 artworks ... were simpler than her previous ones'. Passage: 'in comparison with earlier artworks, they were compact and busy'. Published key: Not Given. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (32, "q24"): {"answer": ["Stenciling", "Stencilling"], "reason": "Accepted forms added because IELTS marks them right: 'Stencilling'. September 2026 review, recorded here on 3 October 2026."},
+    (32, "q26"): {"answer": ["Painting", "Travel"], "reason": "Accepted forms added because IELTS marks them right: 'Travel'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (33, "q23"): {"answer": ["Apples", "apple", "apples"], "reason": "Accepted forms added because IELTS marks them right: 'apple', 'apples'. September 2026 review, recorded here on 3 October 2026."},
+    (33, "q40"): {"answer": "C", "reason": "Key changed from the published 'E' to 'C' after checking the source text. September 2026 review, recorded here on 3 October 2026."},
+    (34, "q10"): {"answer": ["Portable computers", "computers"], "reason": "Accepted forms added because IELTS marks them right: 'computers'. September 2026 review, recorded here on 3 October 2026."},
+    (35, "q5"): {"answer": ["Starch", "corn starch"], "reason": "Accepted forms added because IELTS marks them right: 'corn starch'. September 2026 review, recorded here on 3 October 2026."},
+    (35, "q6"): {"answer": ["Fermentation", "fermentation process"], "reason": "Accepted forms added because IELTS marks them right: 'fermentation process'. September 2026 review, recorded here on 3 October 2026."},
+    (35, "q11"): {"answer": ["A", "B", "D"], "reason": "Accepted forms added because IELTS marks them right: 'B', 'D'. Removed from the published key: 'C'. September 2026 review, recorded here on 3 October 2026."},
+    (35, "q12"): {"answer": ["A", "B", "D"], "reason": "Accepted forms added because IELTS marks them right: 'B', 'D'. Removed from the published key: 'C'. September 2026 review, recorded here on 3 October 2026."},
+    (35, "q30"): {"answer": ["A tiny number", "tiny number"], "reason": "Accepted forms added because IELTS marks them right: 'tiny number'. September 2026 review, recorded here on 3 October 2026."},
+    (35, "q31"): {"answer": ["Positively", "positively impacted"], "reason": "Accepted forms added because IELTS marks them right: 'positively impacted'. September 2026 review, recorded here on 3 October 2026."},
+    (36, "q9"): {"answer": ["Pectoral and pelvic", "pectoral"], "reason": "'pectoral and pelvic fins' was over the three-word limit; the shorter forms stay. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (36, "q10"): {"answer": ["Slows and stops", "slowing and stopping"], "reason": "'slows down and stops' was over the three-word limit; the shorter forms stay. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (36, "q12"): {"answer": ["Fats and glycogen", "fat and glycogen"], "reason": "Accepted forms added because IELTS marks them right: 'fat and glycogen'. September 2026 review, recorded here on 3 October 2026."},
+    (36, "q16"): {"answer": ["Families and friends", "friends and family"], "reason": "Accepted forms added because IELTS marks them right: 'friends and family'. September 2026 review, recorded here on 3 October 2026."},
+    (36, "q19"): {"answer": ["Background", "experience"], "reason": "Accepted forms added because IELTS marks them right: 'experience'. September 2026 review, recorded here on 3 October 2026."},
+    (36, "q36"): {"answer": ["Chemical", "chemical solvents"], "reason": "Accepted forms added because IELTS marks them right: 'chemical solvents'. September 2026 review, recorded here on 3 October 2026."},
+    (36, "q37"): {"answer": ["Holes", "small holes"], "reason": "Accepted forms added because IELTS marks them right: 'small holes'. September 2026 review, recorded here on 3 October 2026."},
+    (37, "q7"): {"answer": ["Prisms", "prism"], "reason": "Accepted forms added because IELTS marks them right: 'prism'. September 2026 review, recorded here on 3 October 2026."},
+    (37, "q8"): {"answer": ["Land and language", "topography and language"], "reason": "Accepted forms added because IELTS marks them right: 'topography and language'. September 2026 review, recorded here on 3 October 2026."},
+    (37, "q26"): {"answer": "capture or storage", "reason": "The published key reads 'Capture of shortage', a misprint; 'capture or storage' (the passage words) is the key. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (37, "q30"): {"answer": ["C", "E"], "reason": "Paragraph C: 'the monkeys keep their systems primed by sampling a variety of plants and then focusing on a small number of the most nutritious food items'. The publisher's E stays accepted. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (37, "q34"): {"answer": ["toxins", "Toxics"], "reason": "Accepted forms added because IELTS marks them right: 'toxins'. September 2026 review, recorded here on 3 October 2026."},
+    (37, "q37"): {"answer": ["A", "C"], "reason": "Accepted forms added because IELTS marks them right: 'A'. September 2026 review, recorded here on 3 October 2026."},
+    (37, "q39"): {"answer": "B", "reason": "Key changed from the published 'A' to 'B' after checking the source text. September 2026 review, recorded here on 3 October 2026."},
+    (38, "q28"): {"answer": ["Genetic", "genetics"], "reason": "Accepted forms added because IELTS marks them right: 'genetics'. September 2026 review, recorded here on 3 October 2026."},
+    (38, "q29"): {"answer": ["All of siblings", "all siblings"], "reason": "'all of the siblings' was over the three-word limit; the shorter forms stay. 3 October 2026 content review (docs/audits/content-review-2026-10-03/reading-tests.md)."},
+    (40, "q17"): {"answer": ["Pilgrimage", "pilgrimages"], "reason": "Accepted forms added because IELTS marks them right: 'pilgrimages'. September 2026 review, recorded here on 3 October 2026."},
+    (40, "q19"): {"answer": ["Colonies", "colonial subjects", "societies"], "reason": "Accepted forms added because IELTS marks them right: 'colonial subjects', 'societies'. September 2026 review, recorded here on 3 October 2026."},
+    (40, "q21"): {"answer": ["Wealthy", "wealthy societies"], "reason": "Accepted forms added because IELTS marks them right: 'wealthy societies'. September 2026 review, recorded here on 3 October 2026."},
 }
 
 # GROUP_OVERRIDES: (local test number, group title) -> corrections to the
@@ -182,6 +247,39 @@ GROUP_OVERRIDES: dict[tuple[int, str], dict] = {
         "options": list("ABC"),
         "reason": "The task matches people A-C and only three people are listed, but the option list offered a fourth letter, D, that answers no question.",
     },
+    # --- Recorded 3 October 2026: option lists the data corrects but the table never listed ---
+    (20, "Questions 23-26"): {
+        "options": ["Cheaper", "Cure", "Heal itself", "Illness", "Treatments", "Getting better", "Control symptoms", "More expensive", "Side effects", "Stronger", "Healthy", "Patients"],
+        "reason": "The answers are words from the box under the summary, but the source page gave the dropdown only 'A', so no choice could score. The twelve words of the box are the options (3 October 2026 content review).",
+    },
+    (22, "Questions 28-31"): {
+        "options": ["Axis", "Estimate", "Perspective", "Map", "Direction", "Compare", "Projection", "Size", "Judge", "Accurately", "Angle", "Distances", "Models", "Change"],
+        "reason": "The answers are words from the box under the summary, but the source page gave the dropdown only 'A', so no choice could score. The fourteen words of the box are the options (3 October 2026 content review).",
+    },
+    (22, "Questions 32-36"): {
+        "options": ["M", "A", "P"],
+        "reason": "The source page gave the dropdown only 'A'; the site offers M, A and P, the categories the key uses. Corrected in September 2026, recorded here on 3 October 2026.",
+    },
+    (27, "Questions 21-23"): {
+        "options": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
+        "reason": "The passage and the instruction have ten paragraphs, A-J, but the option list stopped at H (3 October 2026 content review).",
+    },
+    (27, "Questions 28-35"): {
+        "options": ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xii"],
+        "reason": "The importer's option list stopped at x; the site offers i to xii. Corrected in September 2026, recorded here on 3 October 2026.",
+    },
+    (31, "Questions 15-20"): {
+        "options": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
+        "reason": "The importer's option list stopped at I; the site offers A to J. Corrected in September 2026, recorded here on 3 October 2026.",
+    },
+    (39, "Questions 15-20"): {
+        "options": ["A", "B", "C", "D", "E", "F", "G"],
+        "reason": "The importer's option list stopped at E; the site offers A to G. Corrected in September 2026, recorded here on 3 October 2026.",
+    },
+    (39, "Questions 28-35"): {
+        "options": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N"],
+        "reason": "The importer's option list stopped at J; the site offers A to N. Corrected in September 2026, recorded here on 3 October 2026.",
+    },
 }
 
 
@@ -211,6 +309,10 @@ def apply_overrides(test: dict, local_number: int) -> None:
                 answer_fix = ANSWER_OVERRIDES.get((local_number, question["id"]))
                 if answer_fix:
                     question["answer"] = answer_fix["answer"]
+                    # An unordered answer pool (several numbered slots that
+                    # share one list, any order) is part of the key too.
+                    if "answerPairId" in answer_fix:
+                        question["answerPairId"] = answer_fix["answerPairId"]
 
 
 def clean(text: str) -> str:
