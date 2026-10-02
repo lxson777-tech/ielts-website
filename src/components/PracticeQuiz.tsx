@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PRACTICE_ITEM_IDENTITY, type PracticeQuestion, type PracticeSet, type PracticeUnit } from '../data/reading-practice';
+import { acceptsAnswer, practiceCorrections, practiceMarks } from '../lib/practice-scoring';
 import { useT } from '../lib/i18n/react';
 import { contentLocale } from '../lib/i18n/locale';
 import { t } from '../lib/i18n/translate';
@@ -188,14 +189,9 @@ function UnitPassage({ passages }: { passages: NonNullable<PracticeUnit['passage
   );
 }
 
-function isRight(q: PracticeQuestion, given: string): boolean {
-  const norm = (s: string) => s.toLowerCase().trim().replace(/\s+/g, ' ');
-  const accepted = Array.isArray(q.answer) ? q.answer : [q.answer];
-  return accepted.some((a) => norm(a) === norm(given));
-}
-
-function answerLabel(q: PracticeQuestion): string {
-  const value = Array.isArray(q.answer) ? q.answer[0]! : q.answer;
+/** How a value shows on screen: a choice question's option label, or the
+    value itself. */
+function answerLabel(q: PracticeQuestion, value: string): string {
   const opt = q.options?.find((o) => o.value === value);
   return opt?.label ?? value;
 }
@@ -303,7 +299,11 @@ function UnitBlock({
   const selectNounTitle = translatedNoun.charAt(0).toUpperCase() + translatedNoun.slice(1);
   const locked = state.checked;
   const answeredCount = state.drafts.filter((d) => d.trim() !== '').length;
-  const correctCount = unit.questions.filter((q, qi) => isRight(q, state.drafts[qi]!)).length;
+  /* Marked as a unit, so a pooled group (an unordered set of answers) gives
+     each accepted answer one mark at most. */
+  const marks = practiceMarks(unit.questions, state.drafts);
+  const corrections = practiceCorrections(unit.questions, state.drafts, marks);
+  const correctCount = marks.filter(Boolean).length;
 
   return (
     <div className="border-b border-border last:border-b-0">
@@ -321,11 +321,13 @@ function UnitBlock({
           if (!locked) onCheck();
         }}
       >
-        {unit.intro && <p className="text-sm text-ink-muted">{unit.intro}</p>}
+        {/* Data, translated through the dictionary (dict/ru/practice-sets.ts). */}
+        {unit.intro && <p className="text-sm text-ink-muted">{t(unit.intro)}</p>}
 
         {unit.questions.map((q, qi) => {
           const g = state.drafts[qi]!;
-          const right = locked && isRight(q, g);
+          const right = locked && marks[qi]!;
+          const correction = corrections[qi]!;
           const explanation = explain(practiceKey(unitIndex, qi), q.explanation);
 
           return (
@@ -350,7 +352,7 @@ function UnitBlock({
                 <div className="mt-3 flex flex-wrap gap-2 pl-11">
                   {q.options!.map((opt) => {
                     const chosen = g === opt.value;
-                    const isAnswer = isRight(q, opt.value);
+                    const isAnswer = acceptsAnswer(q, opt.value);
                     let cls =
                       'border-border bg-surface text-ink hover:-translate-y-0.5 hover:border-[var(--skill)] hover:bg-[var(--skill-tint)] hover:shadow-card';
                     if (locked) {
@@ -431,8 +433,15 @@ function UnitBlock({
                   ) : (
                     <p>
                       <strong className="text-error">
-                        💡 {t('Not quite. The answer is “{answer}”.', { answer: answerLabel(q) })}
+                        💡 {t('Not quite. The answer is “{answer}”.', { answer: answerLabel(q, correction.expected) })}
                       </strong>{' '}
+                      {correction.repeated && (
+                        <>
+                          {t('“{answer}” already earned its mark in another blank of this group, and each answer counts once.', {
+                            answer: answerLabel(q, g.trim()),
+                          })}{' '}
+                        </>
+                      )}
                       {explanation}
                     </p>
                   )}
@@ -565,7 +574,7 @@ export default function PracticeQuiz({ set, setId, onAllChecked }: Props) {
   const total = set.units.reduce((n, u) => n + u.questions.length, 0);
   const checkedQuestions = shown.reduce((n, s, i) => (s.checked ? n + set.units[i]!.questions.length : n), 0);
   const correct = shown.reduce(
-    (n, s, i) => (s.checked ? n + set.units[i]!.questions.filter((q, qi) => isRight(q, s.drafts[qi]!)).length : n),
+    (n, s, i) => (s.checked ? n + practiceMarks(set.units[i]!.questions, s.drafts).filter(Boolean).length : n),
     0,
   );
   const allDone = !withheld && units.every((s) => s.checked);
@@ -734,7 +743,10 @@ export default function PracticeQuiz({ set, setId, onAllChecked }: Props) {
     if (!setId || !paper || identityByKey.size === 0) return;
     const unit = set.units[unitIndex]!;
     const submissions: LessonCheckSubmission[] = [];
-    unit.questions.forEach((question, qi) => {
+    /* The same marks the screen shows, so a repeated answer in a pool is
+       recorded as wrong there too. */
+    const marks = practiceMarks(unit.questions, state.drafts);
+    unit.questions.forEach((_question, qi) => {
       const identity = identityByKey.get(lessonCheckItemKey(unitIndex, qi));
       if (!identity) return;
       const given = state.drafts[qi] ?? '';
@@ -742,7 +754,7 @@ export default function PracticeQuiz({ set, setId, onAllChecked }: Props) {
       submissions.push({
         identity,
         given,
-        correct: given.trim() !== '' && isRight(question, given),
+        correct: given.trim() !== '' && marks[qi]!,
         attempt: state.attempt,
         /* Only when help was really used. Left out, the shared module
            applies its own rule: a first go is unassisted, a later one
@@ -821,12 +833,15 @@ export default function PracticeQuiz({ set, setId, onAllChecked }: Props) {
       {/* Header */}
       <div className="bg-gradient-to-r from-[var(--color-brand)] to-[var(--skill,var(--color-brand-hover))] px-5 py-4 text-white sm:px-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 className="font-display text-base font-bold sm:text-lg">🎯 {set.title}</h3>
+          {/* Title and intro are data, translated through the dictionary
+              (dict/ru/practice-sets.ts; tests/practice-quiz.test.ts checks
+              every one has its Russian). */}
+          <h3 className="font-display text-base font-bold sm:text-lg">🎯 {t(set.title)}</h3>
           <span className="rounded-full bg-white/20 px-3 py-1 font-display text-xs font-bold">
             {t('{correct} / {total} correct', { correct, total })}
           </span>
         </div>
-        {set.intro && <p className="mt-1 text-sm text-white/85">{set.intro}</p>}
+        {set.intro && <p className="mt-1 text-sm text-white/85">{t(set.intro)}</p>}
         <div
           className="mt-3 h-2 overflow-hidden rounded-full bg-white/25"
           role="progressbar"
