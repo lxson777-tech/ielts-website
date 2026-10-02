@@ -1,7 +1,7 @@
 /* Marking for the practice exercises inside lessons (src/components/PracticeQuiz.tsx).
 
    Most questions are marked on their own: the typed or chosen answer is
-   compared with the accepted answers, ignoring case and extra spaces.
+   compared with the accepted answers by the test player's own normaliser.
 
    Some groups have answers that form an unordered set: "which THREE...", or
    a table where blanks 5, 7 and 9 take any of three letters in any order.
@@ -12,14 +12,19 @@
    applies to `answerPairId` (scoredQuestionIds in src/lib/tests/schema.ts),
    and the practice data copies those ids into `pool`. */
 
+import { normalizeAnswer } from './tests/schema';
+
 export interface ScorableQuestion {
   answer: string | string[];
   /** Questions in one unit sharing this id form an unordered answer pool. */
   pool?: string;
 }
 
+/** The same normaliser the full tests mark with, so "three" and "3", British
+    and American spellings and phone-number spacing count the same in a lesson
+    as in a paper. */
 export function normalizePracticeAnswer(s: string): string {
-  return s.toLowerCase().trim().replace(/\s+/g, ' ');
+  return normalizeAnswer(s);
 }
 
 function acceptedOf(q: ScorableQuestion): string[] {
