@@ -30,8 +30,9 @@
   letter-spacing: 0;
 }
 .consent-details h3:first-of-type { margin-top: 2px; }
-.consent-details ul { margin: 0; padding: 0 0 0 18px; display: grid; gap: 4px; }
+.consent-details ul { margin: 0; padding: 0 0 0 16px; display: grid; gap: 4px; list-style: disc; }
 .consent-details li { color: var(--color-ink-muted); font-size: 13px; line-height: 1.55; }
+.consent-details li::marker { color: var(--color-ink-muted); }
 .consent-details .consent-foot { margin: 14px 0 0; color: var(--color-ink-muted); font-size: 12.5px; line-height: 1.55; }
 .consent-details .consent-foot a { color: var(--color-ink); text-underline-offset: 3px; }
 
