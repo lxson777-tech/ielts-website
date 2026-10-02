@@ -189,7 +189,7 @@ export const IMPORTED_WRITING_PROMPTS: EssayPrompt[] = [
     task: 'task1',
     variant: 'chart',
     title: "A public library in a town called Little Chalfont (chart)",
-    promptHtml: `The charts below give information about a public library in a town called Little Chalfont. <strong>Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</strong> Write at lease 150 words.
+    promptHtml: `The charts below give information about a public library in a town called Little Chalfont. <strong>Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</strong> Write at least 150 words.
       <img src="${withBase('/pics/writing/imported/wt-127-task1.webp')}" alt="Chart showing a public library in a town called Little Chalfont" loading="lazy" style="width:100%;max-width:560px;height:auto;margin-top:12px;background:#fff">`,
     minWords: 150,
     suggestedMinutes: 20,
@@ -268,7 +268,7 @@ export const IMPORTED_WRITING_PROMPTS: EssayPrompt[] = [
     task: 'task2',
     variant: 'opinion',
     title: "Access to clean water is a basic human",
-    promptHtml: "Access to clean water is a basic human right. Therefore, every home should have a water supply that is provided free of charge. Do you agree or disagree? <strong>Write at lease 250 words.</strong> Give reasons for your answer and include any relevant examples from your own knowledge or experience.",
+    promptHtml: "Access to clean water is a basic human right. Therefore, every home should have a water supply that is provided free of charge. Do you agree or disagree? <strong>Write at least 250 words.</strong> Give reasons for your answer and include any relevant examples from your own knowledge or experience.",
     minWords: 250,
     suggestedMinutes: 40,
     suggestedVocab: [],
@@ -732,8 +732,8 @@ export const IMPORTED_WRITING_PROMPTS: EssayPrompt[] = [
     id: 'pte-wt-110-task2',
     task: 'task2',
     variant: 'two-part',
-    title: "In their advertising business nowadays usually emphasise",
-    promptHtml: "In their advertising business nowadays usually emphasise that their products are new in some way. Why is this? Do you think it is a positive or negative development? <strong>Write at least 250 words.</strong>",
+    title: "In their advertising, businesses nowadays usually emphasise",
+    promptHtml: "In their advertising, businesses nowadays usually emphasise that their products are new in some way. Why is this? Do you think it is a positive or negative development? <strong>Write at least 250 words.</strong>",
     minWords: 250,
     suggestedMinutes: 40,
     suggestedVocab: [],

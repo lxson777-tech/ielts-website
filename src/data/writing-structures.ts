@@ -156,6 +156,7 @@ export const WRITING_STRUCTURES: Record<VariantKey, WritingStructure> = {
       nt('Problem + Solution. "What problems does this cause? How can these be solved?"'),
       nt('Cause + Effect: "What are the causes? What effects does it have?" (no solution word anywhere, so don\'t propose any)'),
       nt('Solution-only. "What can be done to address this?" (causes/problems not asked)'),
+      nt('For every solution, say who acts (governments, employers, schools, individuals) and evaluate it briefly: is it realistic, and has it worked somewhere?'),
     ],
     language: [
       { job: nt('Cause'), phrases: 'stems from / is largely driven by / can be traced to' },
@@ -168,6 +169,7 @@ export const WRITING_STRUCTURES: Record<VariantKey, WritingStructure> = {
       nt('Answering "causes" when the question asked "problems" (or vice versa)'),
       nt("Solutions that don't match any stated problem or cause"),
       nt('A shopping list of five one-line ideas instead of two developed ones'),
+      nt('"People should be more aware". A slogan, not a solution'),
     ],
   },
   'advantages-disadvantages': {
@@ -252,6 +254,7 @@ export const WRITING_STRUCTURES: Record<VariantKey, WritingStructure> = {
       nt('Spending 80% of the essay on question 1 and a rushed sentence on question 2'),
       nt('Answering "positive or negative?" with a list of both and no verdict'),
       nt('Merging every question into one muddled paragraph, whatever the count'),
+      nt('A three-question prompt squeezed into two thin paragraphs'),
       nt('Introduction that only paraphrases and previews nothing'),
     ],
   },

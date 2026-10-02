@@ -174,6 +174,8 @@ export const strings: Record<string, string> = {
     'Причина и следствие: "What are the causes? What effects does it have?" (слова о решении нет нигде, значит и предлагать его не нужно)',
   'Solution-only. "What can be done to address this?" (causes/problems not asked)':
     'Только решение. "What can be done to address this?" (про причины и проблемы не спрашивают)',
+  'For every solution, say who acts (governments, employers, schools, individuals) and evaluate it briefly: is it realistic, and has it worked somewhere?':
+    'Для каждого решения назовите, кто действует (правительство, работодатели, школы, сами люди), и коротко оцените его: реально ли оно и сработало ли где-нибудь?',
   Cause: 'Причина',
   Effect: 'Следствие',
   Proposing: 'Предложить',
@@ -186,6 +188,8 @@ export const strings: Record<string, string> = {
     'Решения, которые не отвечают ни одной названной проблеме или причине',
   'A shopping list of five one-line ideas instead of two developed ones':
     'Список из пяти идей по строчке вместо двух развёрнутых',
+  '"People should be more aware". A slogan, not a solution':
+    '"People should be more aware". Это лозунг, а не решение',
 
   /* ================= Writing: Advantages & Disadvantages ================= */
   'Advantages & Disadvantages Essay': 'Эссе о плюсах и минусах',
@@ -243,6 +247,8 @@ export const strings: Record<string, string> = {
     'На "positive or negative?" перечислить и то и другое без вывода',
   'Merging every question into one muddled paragraph, whatever the count':
     'Слить все вопросы в один путаный абзац, сколько бы их ни было',
+  'A three-question prompt squeezed into two thin paragraphs':
+    'Задание с тремя вопросами, втиснутое в два тонких абзаца',
   'Introduction that only paraphrases and previews nothing':
     'Вступление, которое только перефразирует и ничего не анонсирует',
 
