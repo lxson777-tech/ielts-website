@@ -19,7 +19,7 @@ export const listeningFull010: PracticeTest = {
         "kind": "audio",
         "label": "Part 1",
         "src": "/audio/listening/test-010.mp3",
-        "questionHtml": "<section class=\"listening-source-group\" data-question-start=\"1\" data-question-end=\"4\" data-question-type=\"sentence-completion\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 1-4</p><p class=\"listening-source-instruction\">Complete the form below. Write NO MORE THAN ONE WORD AND/OR A NUMBER for each answer.</p></header><p><strong>GRANDVIEW HOTEL</strong></p><figure class=\"listening-source-table\"><table><tbody><tr><td>Arrival date:</td><td><span aria-label=\"Blank for question 1\" class=\"listening-answer-blank\" data-question=\"1\" role=\"img\"><span class=\"listening-answer-number\">(1)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span>13th, number of nights:2</td></tr><tr><td>Number of guests:</td><td><span aria-label=\"Blank for question 2\" class=\"listening-answer-blank\" data-question=\"2\" role=\"img\"><span class=\"listening-answer-number\">(2)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></td></tr><tr><td>Guest name:</td><td>Roxanne <span aria-label=\"Blank for question 3\" class=\"listening-answer-blank\" data-question=\"3\" role=\"img\"><span class=\"listening-answer-number\">(3)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></td></tr><tr><td>Credit card number:</td><td><span aria-label=\"Blank for question 4\" class=\"listening-answer-blank\" data-question=\"4\" role=\"img\"><span class=\"listening-answer-number\">(4)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></td></tr></tbody></table></figure></section><section class=\"listening-source-group\" data-question-start=\"5\" data-question-end=\"7\" data-question-type=\"multiple-answer\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 5-7</p><p class=\"listening-source-instruction\">Choose THREE letters, A-G.</p></header><dl class=\"listening-source-legend\"><div><dt>A</dt><dd>art museum</dd></div><div><dt>B</dt><dd>science museum</dd></div><div><dt>C</dt><dd>shopping mall</dd></div><div><dt>D</dt><dd>monument</dd></div><div><dt>E</dt><dd>post office</dd></div><div><dt>F</dt><dd>restaurant</dd></div><div><dt>G</dt><dd>park</dd></div></dl></section><section class=\"listening-source-group\" data-question-start=\"8\" data-question-end=\"10\" data-question-type=\"multiple-choice\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 8-10</p><p class=\"listening-source-instruction\">Choose the correct letters, A, B, or C.</p></header><article class=\"listening-source-question\" data-question=\"8\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">8</span>When will the caller arrive at the airport?</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>In the morning</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>In the afternoon</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>At night</span></li></ol></article><article class=\"listening-source-question\" data-question=\"9\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">9</span>How will the caller get to the hotel?</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>Subway</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>Bus</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>Taxi</span></li></ol></article><article class=\"listening-source-question\" data-question=\"10\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">10</span>What time does the hotel front desk close?</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>10:00</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>12:00</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>2:00</span></li></ol></article></section>",
+        "questionHtml": "<section class=\"listening-source-group\" data-question-start=\"1\" data-question-end=\"4\" data-question-type=\"sentence-completion\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 1-4</p><p class=\"listening-source-instruction\">Complete the form below. Write NO MORE THAN ONE WORD AND/OR A NUMBER for each answer.</p></header><p><strong>GRANDVIEW HOTEL</strong></p><figure class=\"listening-source-table\"><table><tbody><tr><td>Arrival date:</td><td><span aria-label=\"Blank for question 1\" class=\"listening-answer-blank\" data-question=\"1\" role=\"img\"><span class=\"listening-answer-number\">(1)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span>13th, number of nights:2</td></tr><tr><td>Number of guests:</td><td><span aria-label=\"Blank for question 2\" class=\"listening-answer-blank\" data-question=\"2\" role=\"img\"><span class=\"listening-answer-number\">(2)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></td></tr><tr><td>Guest name:</td><td>Roxanne <span aria-label=\"Blank for question 3\" class=\"listening-answer-blank\" data-question=\"3\" role=\"img\"><span class=\"listening-answer-number\">(3)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></td></tr><tr><td>Credit card number:</td><td><span aria-label=\"Blank for question 4\" class=\"listening-answer-blank\" data-question=\"4\" role=\"img\"><span class=\"listening-answer-number\">(4)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></td></tr></tbody></table></figure></section><section class=\"listening-source-group\" data-question-start=\"5\" data-question-end=\"7\" data-question-type=\"multiple-answer\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 5-7</p><p class=\"listening-source-instruction\">Choose THREE letters, A-G.</p></header><p class=\"listening-source-prompt\">Which THREE places will the caller visit?</p><dl class=\"listening-source-legend\"><div><dt>A</dt><dd>art museum</dd></div><div><dt>B</dt><dd>science museum</dd></div><div><dt>C</dt><dd>shopping mall</dd></div><div><dt>D</dt><dd>monument</dd></div><div><dt>E</dt><dd>post office</dd></div><div><dt>F</dt><dd>restaurant</dd></div><div><dt>G</dt><dd>park</dd></div></dl></section><section class=\"listening-source-group\" data-question-start=\"8\" data-question-end=\"10\" data-question-type=\"multiple-choice\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 8-10</p><p class=\"listening-source-instruction\">Choose the correct letters, A, B, or C.</p></header><article class=\"listening-source-question\" data-question=\"8\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">8</span>When will the caller arrive at the airport?</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>In the morning</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>In the afternoon</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>At night</span></li></ol></article><article class=\"listening-source-question\" data-question=\"9\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">9</span>How will the caller get to the hotel?</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>Subway</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>Bus</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>Taxi</span></li></ol></article><article class=\"listening-source-question\" data-question=\"10\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">10</span>What time does the hotel front desk close?</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>10:00</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>12:00</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>2:00</span></li></ol></article></section>",
         "startSeconds": 0.0,
         "endSeconds": 257.34,
         "transcriptHtml": "<p class=\"transcript-note\">Automatic transcript. It may contain small recognition errors; the answer key is authoritative.</p><p><span class=\"ts\">[00:01]</span> Section 1. You will hear a woman making a hotel reservation over the phone. First you have some time to look at questions 1 to 4. Now we shall begin. You should answer the questions as you listen because you will not hear the recording a second time. Listen carefully and answer questions 1 to 4.</p><p><span class=\"ts\">[00:46]</span> Good afternoon, Grandview Hotel. Yes, hello. I, um, I&#x27;m planning to spend a few days in your city next week and I&#x27;d like to, uh, make a reservation. Of course. When did you want to stay here? Next week. Wednesday night and Thursday night. So that&#x27;s February 13th and 14th. Yes, that&#x27;s</p><p><span class=\"ts\">[01:12]</span> right. And how many guests will there be? Just me. So do you have a room available? Yes, we do. I&#x27;ll just need to take some of your information. May I have your name, please? Oh, right. Yes. It&#x27;s Roxanne Wilson, W-I-L-S-O-N. Thank you, Ms. Wilson. And may I have your credit card number?</p><p><span class=\"ts\">[01:37]</span> It&#x27;s 2, 3, 3, 6, 1, 8, 9, 8, 7, 2, 9, 8, 7, 2, got it. All right, Ms. Wilson, I have your reservation confirmed. Can I help you with anything else? Now listen and answer questions 5 to 10. Well, yes. I was wondering, since I&#x27;ll have a couple of free hours Friday morning before</p><p><span class=\"ts\">[02:28]</span> I leave, is there anything interesting to see close to the hotel? Do you like museums? The art museums very close by. I love museums, but not art. Can&#x27;t stand it. I&#x27;ve heard your city has a very interesting science museum, though. Yes, but unfortunately it&#x27;s closed in the winter. Are you interested</p><p><span class=\"ts\">[02:52]</span> in shopping? Sure. I love shopping. Are there any good stores nearby? Yes. We have a large shopping mall just two bus stops away. You take the bus to Monument Square and it&#x27;s just half a block from there. Just look for the post office and you&#x27;ll see the mall entrance next to it. Fabulous. What about lunch? I hear your city has good restaurants.</p><p><span class=\"ts\">[03:19]</span> Yes. There&#x27;s a nice restaurant very near. It&#x27;s just across the street from the park. Sounds good. I can have lunch, then walk in the park afterwards. I have one more question. What&#x27;s the best way to get to the hotel from the airport? Subway is the fastest, of course. There are buses, but they&#x27;re quite slow.</p><p><span class=\"ts\">[03:43]</span> I&#x27;ll be arriving quite late after 10 p.m. I thought I might have to take a taxi. The subway runs until midnight. Oh, good. Then I&#x27;ll do that. Will there be someone at the hotel front desk that late? Oh, yes. The front desk stays open until two. That is the end of section one. You now have half a minute to check your answers.</p>"
@@ -40,7 +40,10 @@ export const listeningFull010: PracticeTest = {
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "one",
+              "answer": [
+                "one",
+                "1"
+              ],
               "explanation": "At 01:12 the caller says it will be just her, meaning one guest.",
               "evidence": "how many guests will there be? Just me"
             },
@@ -64,7 +67,7 @@ export const listeningFull010: PracticeTest = {
         {
           "title": "Questions 5-7",
           "type": "multiple-answer",
-          "instructionHtml": "Choose THREE letters, A-G.",
+          "instructionHtml": "Which THREE places will the caller visit? Choose THREE letters, A-G.",
           "questions": [
             {
               "id": "q5",
@@ -212,7 +215,8 @@ export const listeningFull010: PracticeTest = {
               "explanation": "At 05:16 the guide says children aged 5 to 12 pay half the $18 adult fare, so $9.",
               "evidence": "Children between the ages of 5 and 12 pay half the adult fare"
             }
-          ]
+          ],
+          "wordLimit": 1
         },
         {
           "title": "Questions 13-15",
@@ -237,7 +241,7 @@ export const listeningFull010: PracticeTest = {
               "id": "q15",
               "textHtml": "Question 15",
               "answer": "green street",
-              "explanation": "At 05:43 the guide names the fifth and final stop as Green Street.",
+              "explanation": "At 06:07 the guide names the fifth and final stop as Green Street.",
               "evidence": "the fifth and last stop is at Green Street"
             }
           ],
@@ -308,22 +312,36 @@ export const listeningFull010: PracticeTest = {
             {
               "id": "q21",
               "textHtml": "When is the research project due?",
-              "answer": "in three weeks",
+              "answer": [
+                "in three weeks",
+                "three weeks",
+                "3 weeks",
+                "in 3 weeks"
+              ],
               "explanation": "At 07:56 the students say the research project is due in three weeks.",
               "evidence": "I know, only three more weeks"
             },
             {
               "id": "q22",
               "textHtml": "Where will the students conduct the interviews?",
-              "answer": "a shopping mall",
+              "answer": [
+                "a shopping mall",
+                "shopping mall",
+                "the shopping mall"
+              ],
               "explanation": "At 08:46 they agree to interview shoppers at the shopping mall rather than the department store.",
               "evidence": "I think the shopping mall would be a better place"
             },
             {
               "id": "q23",
               "textHtml": "How many interviews will they complete all together?",
-              "answer": "thirty",
-              "explanation": "At 08:46 they confirm the professor requires at least 30 interviews in total.",
+              "answer": [
+                "thirty",
+                "at least 30",
+                "at least thirty",
+                "30"
+              ],
+              "explanation": "At 09:08 they confirm the professor requires at least 30 interviews in total.",
               "evidence": "She said at least 30"
             }
           ],
@@ -337,7 +355,11 @@ export const listeningFull010: PracticeTest = {
             {
               "id": "q24",
               "textHtml": "Question 24",
-              "answer": "a government study",
+              "answer": [
+                "a government study",
+                "government study",
+                "the government study"
+              ],
               "explanation": "At 10:09 they plan to read a government study on spending habits before designing their questionnaire.",
               "evidence": "compare our results to the results of a government study"
             },
@@ -358,7 +380,10 @@ export const listeningFull010: PracticeTest = {
             {
               "id": "q27",
               "textHtml": "Question 27",
-              "answer": "conduct interviews",
+              "answer": [
+                "conduct interviews",
+                "conduct the interviews"
+              ],
               "explanation": "At 10:32 they plan to conduct the interviews once the questionnaire is approved.",
               "evidence": "we'll get her approval and then conduct the interviews"
             },

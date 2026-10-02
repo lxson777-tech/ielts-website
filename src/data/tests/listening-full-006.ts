@@ -33,21 +33,27 @@ export const listeningFull006: PracticeTest = {
             {
               "id": "q1",
               "textHtml": "Question 1",
-              "answer": "John Petterson",
-              "explanation": "At 01:34 the caller spells his surname letter by letter: P-E-double T-E-R-double S-O-N, giving John Petterson.",
+              "answer": "John Pettersson",
+              "explanation": "At 01:34 the caller spells his surname letter by letter: P-E-double T-E-R-double S-O-N, giving John Pettersson.",
               "evidence": "P, E, double T, E, R, double S, O, N"
             },
             {
               "id": "q2",
               "textHtml": "Question 2",
-              "answer": "12",
+              "answer": [
+                "12",
+                "twelve"
+              ],
               "explanation": "At 02:08 the officer says the maximum class size is 12, though usually only nine or ten students attend.",
               "evidence": "The maximum class size is 12"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "5",
+              "answer": [
+                "5",
+                "five"
+              ],
               "explanation": "At 02:36 he confirms the course runs three weeks with five hours of study a day on weekdays.",
               "evidence": "five hours a day, two hours only on Saturday"
             },
@@ -61,7 +67,13 @@ export const listeningFull006: PracticeTest = {
             {
               "id": "q5",
               "textHtml": "Question 5",
-              "answer": "8th June",
+              "answer": [
+                "8th June",
+                "8 June",
+                "June 8",
+                "June 8th",
+                "8th of June"
+              ],
               "explanation": "At 04:02 he confirms the Berlin course starts a week after Hamburg's, on the eighth of June.",
               "evidence": "That's the eighth of June"
             }
@@ -143,7 +155,10 @@ export const listeningFull006: PracticeTest = {
             {
               "id": "q10",
               "textHtml": "To get a free course you need to find other people.",
-              "answer": "Five",
+              "answer": [
+                "Five",
+                "5"
+              ],
               "explanation": "At 06:42 he explains that for every five people the caller recruits, one course place is free.",
               "evidence": "for every five people you find, one goes free"
             }
@@ -186,7 +201,10 @@ export const listeningFull006: PracticeTest = {
             {
               "id": "q13",
               "textHtml": "The use of hormones was banned over ago in Europe.",
-              "answer": "20 years",
+              "answer": [
+                "20 years",
+                "twenty years"
+              ],
               "explanation": "At 09:39 the speaker says the hormones were banned in Europe over 20 years ago.",
               "evidence": "over 20 years ago they were banned in Europe"
             },
@@ -348,7 +366,7 @@ export const listeningFull006: PracticeTest = {
                 "B",
                 "C"
               ],
-              "explanation": "At 17:40 Jake says top achievers do not see mistakes as failures, instead learning from them.",
+              "explanation": "At 18:08 Jake says top achievers do not see mistakes as failures, instead learning from them.",
               "evidence": "they learn from them, so they can do better next time"
             },
             {
@@ -372,7 +390,7 @@ export const listeningFull006: PracticeTest = {
                 "B",
                 "C"
               ],
-              "explanation": "At 18:58 Jake says loners cannot delegate and end up having to do everything themselves.",
+              "explanation": "At 19:22 Jake says loners cannot delegate and end up having to do everything themselves.",
               "evidence": "they must do everything themselves"
             }
           ]
@@ -385,7 +403,7 @@ export const listeningFull006: PracticeTest = {
         "kind": "audio",
         "label": "Part 4",
         "src": "/audio/listening/test-006.mp3",
-        "questionHtml": "<section class=\"listening-source-group\" data-question-start=\"31\" data-question-end=\"34\" data-question-type=\"multiple-choice\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 31-34</p><p class=\"listening-source-instruction\">Choose the correct letter A, B or C.</p></header><article class=\"listening-source-question\" data-question=\"31\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">31</span>Exposure to bright light</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>stopped production of melatonin in patients</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>increased the production of melatonin in many patients</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>caused people to crave sweet things</span></li></ol></article><article class=\"listening-source-question\" data-question=\"32\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">32</span>Melatonin’s role in SAD is</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>not considered that important</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>now fully understood</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>not fully understood</span></li></ol></article><article class=\"listening-source-question\" data-question=\"33\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">33</span>Subsyndromal SAD</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>is more common than SAD</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>has approximately the same number of sufferers as SAD</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>is far less common than SAD</span></li></ol></article><article class=\"listening-source-question\" data-question=\"34\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">34</span>You would expect the typical SAD sufferer to be</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>a 45 year old man</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>a 16 year old girl</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>a 25 year old women</span></li></ol></article></section><section class=\"listening-source-group\" data-question-start=\"35\" data-question-end=\"40\" data-question-type=\"sentence-completion\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 35-40</p><p class=\"listening-source-instruction\">Complete the sentences below. Write NO MORE THAN TWO WORDS for each answer.</p></header><p>35. Depression probably has a <span aria-label=\"Blank for question 35\" class=\"listening-answer-blank\" data-question=\"35\" role=\"img\"><span class=\"listening-answer-number\">(35)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> as it seems to run in the family.</p><p>36. Many SAD sufferers have a <span aria-label=\"Blank for question 36\" class=\"listening-answer-blank\" data-question=\"36\" role=\"img\"><span class=\"listening-answer-number\">(36)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> craving.</p><p>37. Serotonin has a <span aria-label=\"Blank for question 37\" class=\"listening-answer-blank\" data-question=\"37\" role=\"img\"><span class=\"listening-answer-number\">(37)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> effect on the brain.</p><p>38. The serotonin system of the brain cannot regulate itself well during <span aria-label=\"Blank for question 38\" class=\"listening-answer-blank\" data-question=\"38\" role=\"img\"><span class=\"listening-answer-number\">(38)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></p><p>39. Some neurotransmitters may be <span aria-label=\"Blank for question 39\" class=\"listening-answer-blank\" data-question=\"39\" role=\"img\"><span class=\"listening-answer-number\">(39)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> in certain cases.</p><p>40. Many SAD patients put on fat in late autumn, just as <span aria-label=\"Blank for question 40\" class=\"listening-answer-blank\" data-question=\"40\" role=\"img\"><span class=\"listening-answer-number\">(40)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></p></section>",
+        "questionHtml": "<section class=\"listening-source-group\" data-question-start=\"31\" data-question-end=\"34\" data-question-type=\"multiple-choice\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 31-34</p><p class=\"listening-source-instruction\">Choose the correct letter A, B or C.</p></header><article class=\"listening-source-question\" data-question=\"31\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">31</span>Exposure to bright light</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>stopped production of melatonin in patients</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>increased the production of melatonin in many patients</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>caused people to crave sweet things</span></li></ol></article><article class=\"listening-source-question\" data-question=\"32\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">32</span>Melatonin’s role in SAD is</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>not considered that important</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>now fully understood</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>not fully understood</span></li></ol></article><article class=\"listening-source-question\" data-question=\"33\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">33</span>Subsyndromal SAD</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>is more common than SAD</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>has approximately the same number of sufferers as SAD</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>is far less common than SAD</span></li></ol></article><article class=\"listening-source-question\" data-question=\"34\"><p class=\"listening-source-prompt\"><span class=\"listening-source-question-number\">34</span>You would expect the typical SAD sufferer to be</p><ol class=\"listening-source-options\"><li data-option=\"A\"><span class=\"listening-source-option-key\">A</span><span>a 45 year old man</span></li><li data-option=\"B\"><span class=\"listening-source-option-key\">B</span><span>a 16 year old girl</span></li><li data-option=\"C\"><span class=\"listening-source-option-key\">C</span><span>a 25 year old woman</span></li></ol></article></section><section class=\"listening-source-group\" data-question-start=\"35\" data-question-end=\"40\" data-question-type=\"sentence-completion\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 35-40</p><p class=\"listening-source-instruction\">Complete the sentences below. Write NO MORE THAN TWO WORDS for each answer.</p></header><p>35. Depression probably has a <span aria-label=\"Blank for question 35\" class=\"listening-answer-blank\" data-question=\"35\" role=\"img\"><span class=\"listening-answer-number\">(35)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> as it seems to run in the family.</p><p>36. Many SAD sufferers have a <span aria-label=\"Blank for question 36\" class=\"listening-answer-blank\" data-question=\"36\" role=\"img\"><span class=\"listening-answer-number\">(36)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> craving.</p><p>37. Serotonin has a <span aria-label=\"Blank for question 37\" class=\"listening-answer-blank\" data-question=\"37\" role=\"img\"><span class=\"listening-answer-number\">(37)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> effect on the brain.</p><p>38. The serotonin system of the brain cannot regulate itself well during <span aria-label=\"Blank for question 38\" class=\"listening-answer-blank\" data-question=\"38\" role=\"img\"><span class=\"listening-answer-number\">(38)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></p><p>39. Some neurotransmitters may be <span aria-label=\"Blank for question 39\" class=\"listening-answer-blank\" data-question=\"39\" role=\"img\"><span class=\"listening-answer-number\">(39)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> in certain cases.</p><p>40. Many SAD patients put on fat in late autumn, just as <span aria-label=\"Blank for question 40\" class=\"listening-answer-blank\" data-question=\"40\" role=\"img\"><span class=\"listening-answer-number\">(40)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></p></section>",
         "startSeconds": 1225.82,
         "endSeconds": 1505.62,
         "transcriptHtml": "<p class=\"transcript-note\">Automatic transcript. It may contain small recognition errors; the answer key is authoritative.</p><p><span class=\"ts\">[20:25]</span> Section four. You will hear a talk on seasonal effective disorder. First, you have some time to look at questions 31 to 40. Now, listen carefully and answer questions 31 to 40. In the past few years, a new condition has been identified and given a name.</p><p><span class=\"ts\">[21:01]</span> Sad, short for seasonal effective disorder. This is now recognised as a distinct kind of clinical depression, where people become depressed at the onset of winter, accompanied by craving for sweet things causing weight gain. Each spring and summer would then bring on almost maniacal highs and feelings of boundless</p><p><span class=\"ts\">[21:24]</span> energy and happiness. Experiments to combat this depression showed that increased exposure to bright light in humans could suppress their production of the darkness related hormone called melatonin. The light needed to induce this change was about 2000 lux or about four times brighter than ordinary household lighting. It was then calculated that if bright light could suppress</p><p><span class=\"ts\">[21:51]</span> melatonin secretion, then it might have other effects on the brain, including the reversal of symptoms of depression. While melatonin&#x27;s precise role in sad has not been pinned down, the theory led to effective treatment. Not surprisingly, sad affects more people where winter nights are longer and days shorter. In the UK, an estimated half a million adults</p><p><span class=\"ts\">[22:19]</span> develop a full-blown sad in winter, and twice this number suffer the milder condition called sub-syndramal sad. About 80% of sufferers improve when given light therapy, and improvement usually comes within two to four days. Scientists are still unsure why winter depression happens, but more than a decade of research has turned up some surprising findings.</p><p><span class=\"ts\">[22:46]</span> Nearly 80% of sad victims are women. Researchers are uncertain why this is so. Sad can affect people at any age, but typically it begins around the age of 20 and becomes less common between 40 and 50. Sad is comparatively rare in children and adolescents, but so far researchers have been unable to come up with a logical reason for this.</p><p><span class=\"ts\">[23:11]</span> As many as half of sad sufferers have at least one family member with depressive illness, suggesting that the depression has a genetic component. Some patients experience shifts in their body clocks when they&#x27;re depressed in winter. They are morning people at one time of the year and become evening people at another. What is the underlying difference between sad sufferers</p><p><span class=\"ts\">[23:36]</span> and others? A clue can be found in carbohydrate craving, a common symptom. People often become obsessed with chocolate, for example. Carbohydrates alter brain chemistry by increasing the level of a soothing chemical called serotonin, a neurotransmitter that carries signals between brain cells. Sad sufferers crave carbohydrates because they may need serotonin</p><p><span class=\"ts\">[24:01]</span> to lift their mood. This craving can be intense, in fact, an addiction. It may be that the serotonin system of the brain has problems regulating itself during the winter. Some sad sufferers respond well to the drug, Prozac, thought to influence the brain serotonin using system. Other brain chemicals and hormones probably play a role in wind depression.</p><p><span class=\"ts\">[24:27]</span> Another neurotransmitter, dopamine, for example, may be inadequate in certain cases. Research has hoped to uncover clues to sad secret by probing similarities between sad and hibernation. Though no valid link between the two has been established, some sad patients say they feel like hibernating animals. Sad sufferers tend to put on fat in autumn and early winter,</p><p><span class=\"ts\">[24:54]</span> roughly the time when such hibernators as bears and squirrels do. That is the end of section 4. You now have half a minute to check your answers.</p>"
@@ -492,8 +510,12 @@ export const listeningFull006: PracticeTest = {
             {
               "id": "q40",
               "textHtml": "Many SAD patients put on fat in late autumn, just as",
-              "answer": "Hibernations",
-              "explanation": "At 24:54 the speaker compares SAD sufferers putting on fat in autumn to hibernating animals like bears and squirrels.",
+              "answer": [
+                "hibernators",
+                "hibernators do",
+                "hibernating animals"
+              ],
+              "explanation": "At 24:54 the speaker compares SAD sufferers putting on fat in autumn to \"such hibernators as bears and squirrels\", so the gap takes hibernators.",
               "evidence": "roughly the time when such hibernators as bears and squirrels do"
             }
           ],

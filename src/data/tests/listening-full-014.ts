@@ -54,7 +54,10 @@ export const listeningFull014: PracticeTest = {
             {
               "id": "q4",
               "textHtml": "Question 4",
-              "answer": "24 months",
+              "answer": [
+                "24 months",
+                "twenty-four months"
+              ],
               "explanation": "At 02:57 Michael says he is now on the 24 month plan, having switched from the 12 month one.",
               "evidence": "switched to the 24 month plan"
             },
@@ -75,7 +78,12 @@ export const listeningFull014: PracticeTest = {
             {
               "id": "q7",
               "textHtml": "Question 7",
-              "answer": "30 June",
+              "answer": [
+                "30 June",
+                "30th June",
+                "June 30",
+                "June 30th"
+              ],
               "explanation": "At 03:44 Natasha notes the new password was sent on the 30th of June.",
               "evidence": "the date, 30th of June"
             },
@@ -192,7 +200,10 @@ export const listeningFull014: PracticeTest = {
             {
               "id": "q18",
               "textHtml": "Question 18",
-              "answer": "monday",
+              "answer": [
+                "monday",
+                "mondays"
+              ],
               "explanation": "At 11:02 Ron says the Early History Museum is closed on Mondays.",
               "evidence": "it's not open on Mondays"
             },
@@ -309,7 +320,10 @@ export const listeningFull014: PracticeTest = {
             {
               "id": "q27",
               "textHtml": "Question 27",
-              "answer": "shortlist",
+              "answer": [
+                "shortlist",
+                "short list"
+              ],
               "explanation": "At 17:47 she says students should narrow their research down into a shortlist.",
               "evidence": "put together a short list"
             },
@@ -394,7 +408,10 @@ export const listeningFull014: PracticeTest = {
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "cooperate",
+              "answer": [
+                "cooperate",
+                "co-operate"
+              ],
               "explanation": "At 23:59 the lecturer says teamwork means learning to cooperate on the research project.",
               "evidence": "learn how to cooperate as a team"
             },

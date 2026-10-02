@@ -4,7 +4,7 @@
   "entries": {
     "q1": {
       "sha": "c274f5b74d6bb424",
-      "ru": "На 02:00 клиентка говорит: \"it'd be nice to be central\"."
+      "ru": "На 02:00 клиент говорит: \"it'd be nice to be central\"."
     },
     "q2": {
       "sha": "36af5efd73166b4d",
@@ -19,8 +19,8 @@
       "ru": "На 02:49 у дома на Oakington Avenue \"doesn't have a garage\", хотя машину можно оставить на улице."
     },
     "q5": {
-      "sha": "4addf65686290462",
-      "ru": "На 03:11 про дом на Mead Street говорят: \"a big garden. I don't think we could cope with that.\""
+      "sha": "7d3c9dd580af48dc",
+      "ru": "На 03:25 про дом на Mead Street говорят: \"a big garden. I don't think we could cope with that.\""
     },
     "q6": {
       "sha": "eef9040bc3dfcdb6",
@@ -28,7 +28,7 @@
     },
     "q7": {
       "sha": "9e338049dda7ac99",
-      "ru": "На 03:48 клиентка переживает, что Hamilton Road \"will be very noisy\"."
+      "ru": "На 03:48 клиент переживает, что Hamilton Road \"will be very noisy\"."
     },
     "q8": {
       "sha": "d7da0ddea4689502",
@@ -95,8 +95,8 @@
       "ru": "На 14:02 он выбрал \"tourism, taking tourists for walks around the volcanoes\". Это вариант C."
     },
     "q23": {
-      "sha": "c583d0220861ecdc",
-      "ru": "На 14:19 он говорит о проекте на ферме: \"I never really knew whether I'd be needed or not\", и ему хотелось \"more of a proper structure\". Это вариант A."
+      "sha": "7c0f32f6b525c5a2",
+      "ru": "На 14:19 он говорит о выбранном им туристическом проекте: \"I never really knew whether I'd be needed or not\", и ему хотелось \"more of a proper structure\". Это вариант A."
     },
     "q24": {
       "sha": "58f0321f1e89b410",
@@ -131,8 +131,8 @@
       "ru": "На 20:23 сказано, что повторение успеха \"is less glamorous... but it actually happens more often\", чем чистые инновации. Это вариант B."
     },
     "q32": {
-      "sha": "9ce40c2a26c75a21",
-      "ru": "На 20:57 исследования \"hasn't been confined to the United States\", и в целом сходятся на том, что большинство попыток проваливаются. Это вариант B."
+      "sha": "f29785d472b7fc5f",
+      "ru": "На 20:57 лектор говорит, что эти исследования \"hasn't been confined to the United States\" и что \"the overwhelming majority of attempts fail\", а на 21:24 добавляет: \"A host of studies confirm this\". Исследования согласуются между собой, значит, результаты последовательные. Это вариант B."
     },
     "q33": {
       "sha": "1e0faab3a9ab6098",
