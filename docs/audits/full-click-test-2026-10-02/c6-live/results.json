@@ -1,0 +1,242 @@
+[
+ {
+  "check": "en 1440 /: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440 /dashboard: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440: signed out, the header shows one Log in button",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "en 1440: no 'Report a problem' link (support form not live yet)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "en 1440: no sideways scroll",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "en 1440 /start: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440 /learn: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440 /trainers: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "Practice links Model answers and Cue cards",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "en 1440 /tests: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440 /review: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440 /lessons/writing/problem: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "the Problem / Solution lesson shows its Band 8 worked example",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "en 1440 /lessons/reading/tfng: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440 /writing/models: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440 /trainers/focused/listening-categorisation-check-a: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440 /tests/reading-full-001: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440 /account: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440: signed-out Account is only a log-in card",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "en 1440 /help: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440 /privacy: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440 /terms: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440 /support: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440 /sign-in: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en 1440 /sign-up: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /dashboard: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390: signed out, the header shows one Log in button",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "ru 390: no 'Report a problem' link (support form not live yet)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "ru 390: no sideways scroll",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "ru 390 /start: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /learn: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /trainers: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /tests: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /review: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /lessons/writing/problem: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /lessons/reading/tfng: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /writing/models: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /trainers/focused/listening-categorisation-check-a: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /tests/reading-full-001: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /account: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390: signed-out Account is only a log-in card",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "ru 390 /help: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /privacy: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /terms: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /support: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /sign-in: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru 390 /sign-up: loads (200), no error",
+  "ok": true,
+  "detail": "[]"
+ }
+]

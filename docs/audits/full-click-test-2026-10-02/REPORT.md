@@ -110,3 +110,44 @@ Folders: `c1-sweep-*` every page, `c2-click-*` every control (`c2-trial` is
 the click script's own trial runs), `c4-flows*` whole tasks with screenshots,
 `w01-website`, `v1-...` to `v5-...` the earlier suites rerun, `findings-raw.md`
 the grouped output of `scripts/c3_report.py`.
+
+## Release to the live site (2 October 2026)
+
+Alex: "find the problem solution essay questions and write an essay according
+to the lesson, and once you do that, put all fixes live."
+
+- **Problem / Solution essays.** The bank had none, so the lesson had no
+  worked example. Three real Task 2 questions from older PracticePTEOnline
+  tests (same permission) were added, each with a Band 8 answer written to
+  the lesson's method and a plan for the coach panel: test 87 (causes and
+  solutions, now the lesson's example), test 38 (reasons and measures), test
+  95 (causes and effects, the pattern that asks for no solutions).
+- **What went live.** The whole branch, with the paid model OFF (as the live
+  site has always run): the account rework, the fixes above, the essays. The
+  paid model stays off until a payment company is chosen.
+- **Held back from the live site.** The support form ("Report a problem" /
+  "Ask a person") and the admin panel's support inbox and free-access tools
+  save to database tables that production does not have yet
+  (`supabase/migrations/2026-09-30-support.sql` and the paid-access
+  migrations). They are switched off on the live build
+  (`src/lib/support.ts`, `SUPPORT_ENABLED`); to turn the form on, apply the
+  support migration to production and set the GitHub variable
+  `PUBLIC_SUPPORT_ENABLED=1` (plus the deploy workflow passing it).
+- **Checked before the push** (`scripts/c5_open_release.py`): the open build,
+  signed in, against a database with only production's migrations: 33 pages
+  and every call it makes are to tables and functions production has
+  (learning progress, profiles, saved state, Mr EZ conversations, is_admin);
+  **0 failures**. The admin panel's own calls are identical to the version
+  already live. `npm test` 2,481 / 2,481, `astro check` 0 errors.
+- **Pushed** `d0491ff..d18f83f` to `main`; the GitHub Pages deploy succeeded.
+- **Checked on the live site** (`scripts/c6_live_check.py`, signed out, no
+  account created): 19 key pages in English at 1440 and Russian at 390,
+  **48 / 48**: every page loads without an error, the Problem / Solution
+  lesson shows its Band 8 example, Practice links Model answers and Cue
+  cards, signed out there is one Log in button and a log-in card on Account,
+  no link to the support form, no sideways scroll. (A first run met one
+  "503" for a script file seconds after publishing, while the host was still
+  spreading the new files; it loaded on every later try.)
+- **Not deployed**: the Workers (essay, speaking, live examiner, Mr EZ,
+  content, payments, support). Their changes serve the paid model only; the
+  live site sends them exactly what it sent before.

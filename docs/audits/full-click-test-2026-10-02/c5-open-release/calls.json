@@ -1,0 +1,208 @@
+{
+ "calls": [
+  {
+   "who": "admin",
+   "method": "GET",
+   "path": "/auth/v1/settings",
+   "status": 200,
+   "count": 1
+  },
+  {
+   "who": "admin",
+   "method": "GET",
+   "path": "/auth/v1/user",
+   "status": 200,
+   "count": 2
+  },
+  {
+   "who": "admin",
+   "method": "GET",
+   "path": "/rest/v1/learning_companions",
+   "status": 200,
+   "count": 9
+  },
+  {
+   "who": "admin",
+   "method": "GET",
+   "path": "/rest/v1/learning_events",
+   "status": 200,
+   "count": 3
+  },
+  {
+   "who": "admin",
+   "method": "GET",
+   "path": "/rest/v1/learning_plan",
+   "status": 200,
+   "count": 3
+  },
+  {
+   "who": "admin",
+   "method": "GET",
+   "path": "/rest/v1/mr_ez_conversations",
+   "status": 200,
+   "count": 2
+  },
+  {
+   "who": "admin",
+   "method": "GET",
+   "path": "/rest/v1/student_profiles",
+   "status": 200,
+   "count": 2
+  },
+  {
+   "who": "admin",
+   "method": "GET",
+   "path": "/rest/v1/user_state",
+   "status": 200,
+   "count": 3
+  },
+  {
+   "who": "admin",
+   "method": "GET",
+   "path": "/tutor",
+   "status": 200,
+   "count": 2
+  },
+  {
+   "who": "admin",
+   "method": "POST",
+   "path": "/auth/v1/signup",
+   "status": 200,
+   "count": 1
+  },
+  {
+   "who": "admin",
+   "method": "POST",
+   "path": "/rest/v1/learning_companions",
+   "status": 201,
+   "count": 3
+  },
+  {
+   "who": "admin",
+   "method": "POST",
+   "path": "/rest/v1/rpc/is_admin",
+   "status": 200,
+   "count": 2
+  },
+  {
+   "who": "admin",
+   "method": "POST",
+   "path": "/rest/v1/student_profiles",
+   "status": 201,
+   "count": 1
+  },
+  {
+   "who": "admin",
+   "method": "POST",
+   "path": "/rest/v1/user_state",
+   "status": 201,
+   "count": 3
+  },
+  {
+   "who": "student",
+   "method": "GET",
+   "path": "/auth/v1/settings",
+   "status": 200,
+   "count": 1
+  },
+  {
+   "who": "student",
+   "method": "GET",
+   "path": "/auth/v1/user",
+   "status": 200,
+   "count": 29
+  },
+  {
+   "who": "student",
+   "method": "GET",
+   "path": "/rest/v1/learning_companions",
+   "status": 200,
+   "count": 105
+  },
+  {
+   "who": "student",
+   "method": "GET",
+   "path": "/rest/v1/learning_events",
+   "status": 200,
+   "count": 35
+  },
+  {
+   "who": "student",
+   "method": "GET",
+   "path": "/rest/v1/learning_plan",
+   "status": 200,
+   "count": 35
+  },
+  {
+   "who": "student",
+   "method": "GET",
+   "path": "/rest/v1/mr_ez_conversations",
+   "status": 200,
+   "count": 29
+  },
+  {
+   "who": "student",
+   "method": "GET",
+   "path": "/rest/v1/student_profiles",
+   "status": 200,
+   "count": 31
+  },
+  {
+   "who": "student",
+   "method": "GET",
+   "path": "/rest/v1/user_state",
+   "status": 200,
+   "count": 34
+  },
+  {
+   "who": "student",
+   "method": "GET",
+   "path": "/tutor",
+   "status": 200,
+   "count": 29
+  },
+  {
+   "who": "student",
+   "method": "POST",
+   "path": "/auth/v1/signup",
+   "status": 200,
+   "count": 1
+  },
+  {
+   "who": "student",
+   "method": "POST",
+   "path": "/rest/v1/learning_companions",
+   "status": 201,
+   "count": 3
+  },
+  {
+   "who": "student",
+   "method": "POST",
+   "path": "/rest/v1/learning_plan",
+   "status": 201,
+   "count": 1
+  },
+  {
+   "who": "student",
+   "method": "POST",
+   "path": "/rest/v1/rpc/is_admin",
+   "status": 200,
+   "count": 1
+  },
+  {
+   "who": "student",
+   "method": "POST",
+   "path": "/rest/v1/student_profiles",
+   "status": 201,
+   "count": 1
+  },
+  {
+   "who": "student",
+   "method": "POST",
+   "path": "/rest/v1/user_state",
+   "status": 201,
+   "count": 35
+  }
+ ],
+ "failures": []
+}
