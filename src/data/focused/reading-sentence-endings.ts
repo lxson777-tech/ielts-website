@@ -3,7 +3,11 @@
  *
  * No paper in the 40-paper Reading library contains this type at all (the
  * generated index's questionTypes section marks it absent for both
- * papers). The lesson stays (reading-matching-sentence-endings.html
+ * papers). Correction found in the 2026-10-03 content review: twelve real
+ * "Complete each sentence with the correct ending" groups do exist (Tests
+ * 2, 6, 8, 13 twice, 16, 24, 28, 31, 33, 35, 39), but the test files type
+ * them as 'sentence-completion', so the index cannot see them. See
+ * docs/audits/content-review-2026-10-03/reading-lessons.md. The lesson stays (reading-matching-sentence-endings.html
  * already teaches it), but there was nothing real to practise it on, so
  * WP4 confirmed the type is genuinely missing and lead decision Q1 asks for
  * exactly one small authored set here: guided practice only, never an

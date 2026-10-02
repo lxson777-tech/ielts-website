@@ -1,7 +1,7 @@
 {
   "version": 1,
   "format": 3,
-  "indexVersion": "7cfd209ef7bb0dc1",
+  "indexVersion": "45fc15866e5c26f6",
   "tests": [
     {
       "id": "listening-full-001",
@@ -3464,7 +3464,7 @@
       "role": "independent-check",
       "objective": "Show on a passage you have not seen that you can match headings to paragraphs on your own.",
       "lessonKey": "reading-headings",
-      "lessonBlockId": "b3-4bc13cd8",
+      "lessonBlockId": "b3-86fb3fc0",
       "paperId": "reading-full-029",
       "questions": [1, 6],
       "drillPart": 1
@@ -3478,7 +3478,7 @@
       "role": "independent-check",
       "objective": "Show on a second unseen passage that you can match headings to paragraphs on your own.",
       "lessonKey": "reading-headings",
-      "lessonBlockId": "b3-4bc13cd8",
+      "lessonBlockId": "b3-86fb3fc0",
       "paperId": "reading-full-037",
       "questions": [1, 5],
       "drillPart": 1
@@ -3492,7 +3492,7 @@
       "role": "guided-practice",
       "objective": "Match a heading to a paragraph by what the whole paragraph is about, not by a word it repeats.",
       "lessonKey": "reading-headings",
-      "lessonBlockId": "b3-4bc13cd8",
+      "lessonBlockId": "b3-86fb3fc0",
       "paperId": "reading-full-020",
       "questions": [14, 19],
       "drillPart": 2
@@ -3731,7 +3731,7 @@
       "role": "guided-practice",
       "objective": "Complete a sentence with the ending the passage actually supports, not just one that fits grammatically.",
       "lessonKey": "reading-matching-sentence-endings",
-      "lessonBlockId": "b3-1727a7e0",
+      "lessonBlockId": "b3-7c2142a1",
       "itemIds": ["authored:reading-sentence-endings-authored:q1", "authored:reading-sentence-endings-authored:q2", "authored:reading-sentence-endings-authored:q3", "authored:reading-sentence-endings-authored:q4", "authored:reading-sentence-endings-authored:q5"]
     },
     {
