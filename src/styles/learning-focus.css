@@ -597,3 +597,40 @@
 .focused-legend .listening-source-legend > div { display:flex; gap:12px; padding:5px 0; }
 .focused-legend .listening-source-legend dt { font-weight:750; }
 .focused-legend img { display:block; max-width:100%; height:auto; margin:auto; }
+
+/* A Listening group's own section of the question sheet, under the
+   recording (FocusedExercise sheetBesideRecording). On a wide screen the
+   recording panel is a sticky column of fixed height, so the sheet scrolls
+   inside it and stays beside the answers, like the passage does. */
+.focused-audio-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  padding: 16px 22px 22px;
+  border-top: 1px solid var(--color-border, #dddfd6);
+}
+.focused-audio-sheet .focused-legend {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0;
+  background: none;
+}
+.focused-source-sheet { font-size: 0.9rem; }
+.focused-source-sheet > :first-child { margin-top: 0; }
+.focused-source-sheet > :last-child { margin-bottom: 0; }
+/* The full player lets a printed table run to 34rem and scroll sideways.
+   Here a hidden column would hide a numbered gap, so the table fits its
+   panel and a gap wraps its number above its line when a cell is narrow. */
+.focused-source-sheet table { min-width: 0; }
+.focused-source-sheet .listening-answer-blank { flex-wrap: wrap; white-space: normal; }
+@media (min-width: 900px) {
+  .focused-audio-sheet { flex: 1 1 auto; }
+}
+@media (max-width: 640px) {
+  .focused-audio-sheet { padding: 14px 16px 18px; }
+  .focused-source-sheet table { font-size: 0.8rem; }
+  .focused-source-sheet th,
+  .focused-source-sheet td { padding: 0.5rem 0.45rem; hyphens: auto; }
+  .focused-source-sheet .listening-answer-line { width: 3.25rem; }
+}

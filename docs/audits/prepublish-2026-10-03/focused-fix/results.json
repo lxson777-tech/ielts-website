@@ -1,0 +1,201 @@
+[
+  {
+    "exercise": "listening-sentence-completion-guided",
+    "width": 1440,
+    "sheet": true,
+    "sheet_beside_recording": true,
+    "numbers": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "gaps_in_stimulus": {
+      "1": true,
+      "2": true,
+      "3": true,
+      "4": true,
+      "5": true
+    },
+    "page_scrolls_sideways": false,
+    "errors": [],
+    "screenshot": "listening-sentence-completion-guided-1440.png"
+  },
+  {
+    "exercise": "listening-table-completion-check-a",
+    "width": 1440,
+    "sheet": true,
+    "sheet_beside_recording": true,
+    "numbers": [
+      27,
+      28,
+      29,
+      30
+    ],
+    "gaps_in_stimulus": {
+      "27": true,
+      "28": true,
+      "29": true,
+      "30": true
+    },
+    "page_scrolls_sideways": false,
+    "errors": [],
+    "screenshot": "listening-table-completion-check-a-1440.png"
+  },
+  {
+    "exercise": "listening-matching-features-check-a",
+    "width": 1440,
+    "sheet": true,
+    "sheet_beside_recording": true,
+    "numbers": [
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "gaps_in_stimulus": {
+      "11": true,
+      "12": true,
+      "13": true,
+      "14": true,
+      "15": true,
+      "16": true
+    },
+    "page_scrolls_sideways": false,
+    "errors": [],
+    "screenshot": "listening-matching-features-check-a-1440.png"
+  },
+  {
+    "exercise": "listening-matching-features-guided-2",
+    "width": 1440,
+    "sheet": true,
+    "sheet_beside_recording": true,
+    "numbers": [
+      17,
+      18,
+      19,
+      20
+    ],
+    "gaps_in_stimulus": {
+      "17": true,
+      "18": true,
+      "19": true,
+      "20": true
+    },
+    "page_scrolls_sideways": false,
+    "errors": [],
+    "screenshot": "listening-matching-features-guided-2-1440.png"
+  },
+  {
+    "exercise": "listening-multiple-answer-check-a",
+    "width": 1440,
+    "sheet": true,
+    "sheet_beside_recording": true,
+    "numbers": [
+      17,
+      18
+    ],
+    "gaps_in_stimulus": {
+      "17": false,
+      "18": false
+    },
+    "page_scrolls_sideways": false,
+    "errors": [],
+    "screenshot": "listening-multiple-answer-check-a-1440.png"
+  },
+  {
+    "exercise": "reading-table-completion-guided-2",
+    "width": 1440,
+    "sheet": false,
+    "sheet_beside_recording": false,
+    "numbers": [
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "gaps_in_stimulus": {
+      "14": true,
+      "15": true,
+      "16": true,
+      "17": true,
+      "18": true,
+      "19": true
+    },
+    "page_scrolls_sideways": false,
+    "errors": [],
+    "screenshot": "reading-table-completion-guided-2-1440.png"
+  },
+  {
+    "exercise": "reading-sentence-completion-check-b",
+    "width": 1440,
+    "sheet": false,
+    "sheet_beside_recording": false,
+    "numbers": [
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "gaps_in_stimulus": {
+      "6": true,
+      "7": true,
+      "8": true,
+      "9": true,
+      "10": true
+    },
+    "page_scrolls_sideways": false,
+    "errors": [],
+    "screenshot": "reading-sentence-completion-check-b-1440.png"
+  },
+  {
+    "exercise": "listening-sentence-completion-guided",
+    "width": 390,
+    "sheet": true,
+    "sheet_beside_recording": true,
+    "numbers": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "gaps_in_stimulus": {
+      "1": true,
+      "2": true,
+      "3": true,
+      "4": true,
+      "5": true
+    },
+    "page_scrolls_sideways": false,
+    "errors": [],
+    "screenshot": "listening-sentence-completion-guided-390.png"
+  },
+  {
+    "exercise": "listening-table-completion-check-a",
+    "width": 390,
+    "sheet": true,
+    "sheet_beside_recording": true,
+    "numbers": [
+      27,
+      28,
+      29,
+      30
+    ],
+    "gaps_in_stimulus": {
+      "27": true,
+      "28": true,
+      "29": true,
+      "30": true
+    },
+    "page_scrolls_sideways": false,
+    "errors": [],
+    "screenshot": "listening-table-completion-check-a-390.png"
+  }
+]
