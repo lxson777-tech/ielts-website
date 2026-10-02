@@ -1521,7 +1521,7 @@ export default function LiveExaminer({
                 { name: EXAMINER_NAME },
               )
             : t(
-                "Three parts, about 12 minutes. Speak with {name} and get feedback after your interview.",
+                "Three parts, 11 to 14 minutes. Speak with {name} and get feedback after your interview.",
                 { name: EXAMINER_NAME },
               )}
         </p>

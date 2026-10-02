@@ -447,7 +447,7 @@ export const MISTAKE_REASONS: Readonly<Record<MistakeReasonListId, readonly Mist
     {
       id: 'assumed-once-only',
       label: 'I assumed each option could only be used once',
-      diagnosis: 'assuming an option could only be used once when the instructions did not say that',
+      diagnosis: 'assuming each option could only be used once without checking the instructions and how many options there were',
     },
     {
       id: 'lost-place',

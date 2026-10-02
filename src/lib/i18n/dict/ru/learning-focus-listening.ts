@@ -176,8 +176,8 @@ export const strings: Record<string, string> = {
   'relying on the first mention rather than what the speaker settled on':
     'опора на первое упоминание, а не на то, на чём остановился говорящий',
   'I assumed each option could only be used once': 'Показалось, что каждый вариант можно использовать только один раз',
-  'assuming an option could only be used once when the instructions did not say that':
-    'предположение, что вариант можно использовать только один раз, хотя в инструкции это не было сказано',
+  'assuming each option could only be used once without checking the instructions and how many options there were':
+    'предположение, что каждый вариант можно использовать только один раз, без проверки инструкции и количества вариантов',
   'I lost my place in the list while listening': 'Потеряно место в списке во время прослушивания',
   'losing track of which item the recording had reached': 'потеря того, до какого пункта дошла запись',
   'It was too fast to match everything in time': 'Было слишком быстро, чтобы успеть всё сопоставить',

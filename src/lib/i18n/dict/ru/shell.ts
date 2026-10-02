@@ -86,7 +86,7 @@ export const strings: Record<string, string> = {
   "Practise one recording at a time. Build your listening skills with instant scoring.": "Тренируйтесь на одной записи за раз. Развивайте навыки аудирования с мгновенной оценкой.",
   "Choose a topic, prepare for one minute, then speak. Each card includes a model answer and follow-up questions.": "Выберите тему, подготовьтесь за минуту и говорите. У каждой карточки есть образец ответа и дополнительные вопросы.",
   "Choose one part. Speak with {name}, use the coach when needed, then review your feedback.": "Выберите один раздел. Говорите с {name}, используйте подсказки при необходимости, затем изучите отзыв.",
-  "Three parts, about 12 minutes. Speak with {name} and get feedback after your interview.": "Три раздела, около 12 минут. Говорите с {name} и получите отзыв после интервью.",
+  "Three parts, 11 to 14 minutes. Speak with {name} and get feedback after your interview.": "Три раздела, от 11 до 14 минут. Говорите с {name} и получите отзыв после интервью.",
   "A person": "Человек",
   "A place": "Место",
   "An object": "Предмет",
