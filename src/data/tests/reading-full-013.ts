@@ -52,51 +52,56 @@ const test: PracticeTest = {
       "groups": [
         {
           "title": "Questions 1-5",
-          "type": "sentence-completion",
+          "type": "sentence-endings",
           "instructionHtml": "Complete each sentence with the correct ending, A – H, below. Write the correct letter A – H in spaces 1-5 below.",
           "questions": [
             {
               "id": "q1",
               "answer": "E",
-              "before": "The agenda of current British prison systems is primarily",
-              "after": "",
+              "textHtml": "The agenda of current British prison systems is primarily …",
               "explanation": "Current UK prisons are built for security and control rather than rehabilitation.",
               "evidence": "Britain's 'new Victorian' prisons are designed for security and control rather than for the rehabilitation and education"
             },
             {
               "id": "q2",
               "answer": "B",
-              "before": "The primary role of prisons should he",
-              "after": "",
+              "textHtml": "The primary role of prisons should be …",
               "explanation": "The passage argues, through the illiteracy statistics, that prisons should focus on rehabilitation and education.",
               "evidence": "without education and skills few will be able to build meaningful lives away from crime"
             },
             {
               "id": "q3",
               "answer": "G",
-              "before": "The new prison scheme will focus on",
-              "after": "",
+              "textHtml": "The new prison scheme will focus on …",
               "explanation": "The new scheme centres on the 'Learning Prison' concept, a learning environment rather than a purely punitive one.",
               "evidence": "to support the wider concept of the 'Learning Prison'"
             },
             {
               "id": "q4",
               "answer": "C",
-              "before": "Existing prison architecture causes",
-              "after": "",
+              "textHtml": "Existing prison architecture causes …",
               "explanation": "Overcrowding caused by current prison design hampers education and lowers morale.",
               "evidence": "overcrowding is endemic, hampering opportunities for education and rehabilitation and lowering staff and prisoner morale."
             },
             {
               "id": "q5",
               "answer": "A",
-              "before": "The positive results of reducing the number of prisoners in one space include A. improved security, supervision and education. B. rehabilitation and education. C. reduced educational opportunities and morale D. reduced risk of self harm. E. security and control. F. an alternative prison model G. a learning environment rather than a punitive compound H. organisation, management and funding",
-              "after": "",
+              "textHtml": "The positive results of reducing the number of prisoners in one space include …",
               "explanation": "Smaller house groupings free up staff time for supervision and put education facilities within easy reach.",
               "evidence": "the more compact spatial organisation of the house reduces staff time spent on supervising and escorting prisoners"
             }
           ],
-          "legendHtml": "<p><span>1. The agenda of current British prison systems is primarily</span><br/>\n<span>2. The primary role of prisons should be</span><br/>\n<span>3. The new prison scheme will focus on</span><br/>\n<span>4. Existing prison architecture causes</span><br/>\n<span>5. The positive results of reducing the number of prisoners in one space include</span></p><p><span>A. improved security, supervision and education.</span><br/>\n<span>B. rehabilitation and education.</span><br/>\n<span>C. reduced educational opportunities and morale</span><br/>\n<span>D. reduced risk of self harm.</span><br/>\n<span>E. security and control.</span><br/>\n<span>F. an alternative prison model</span><br/>\n<span>G. a learning environment rather than a punitive compound</span><br/>\n<span>H. organisation, management and funding.</span></p>"
+          "legendHtml": "<p><span><strong>A</strong> improved security, supervision and education.</span><br/>\n<span><strong>B</strong> rehabilitation and education.</span><br/>\n<span><strong>C</strong> reduced educational opportunities and morale</span><br/>\n<span><strong>D</strong> reduced risk of self harm.</span><br/>\n<span><strong>E</strong> security and control.</span><br/>\n<span><strong>F</strong> an alternative prison model</span><br/>\n<span><strong>G</strong> a learning environment rather than a punitive compound</span><br/>\n<span><strong>H</strong> organisation, management and funding.</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ]
         },
         {
           "title": "Questions 6-9",
@@ -473,43 +478,47 @@ const test: PracticeTest = {
       "groups": [
         {
           "title": "Questions 27-30",
-          "type": "sentence-completion",
+          "type": "sentence-endings",
           "instructionHtml": "Complete each sentence with the correct ending, A – F, below. Write the correct letter, A – F, in the spaces below.",
           "questions": [
             {
               "id": "q27",
               "answer": "D",
-              "before": "An upward trend in violence perpetrated against non-national minority groups by radical nationals",
-              "after": "",
+              "textHtml": "An upward trend in violence perpetrated against non-national minority groups by radical nationals …",
               "explanation": "The passage says increased violence against non-nationals has been seen in many parts of the world.",
               "evidence": "there has been a marked increase in discrimination and violence directed against migrants, refugees and other non-nationals by extremist groups in many parts of the world."
             },
             {
               "id": "q28",
               "answer": "A",
-              "before": "Racism differs from xenophobia in that victims of the former",
-              "after": "",
+              "textHtml": "Racism differs from xenophobia in that victims of the former …",
               "explanation": "Racism is based on visible physical differences between victim and perpetrator.",
               "evidence": "racism generally implies distinction based on difference in physical characteristics, such as skin colour, hair type, facial features"
             },
             {
               "id": "q29",
               "answer": "F",
-              "before": "Where racism occurs, the dominant group promotes a hierarchical system in which it",
-              "after": "",
+              "textHtml": "Where racism occurs, the dominant group promotes a hierarchical system in which it …",
               "explanation": "Racism places the dominant group in a position of control over other sections of society.",
               "evidence": "Racism is an ideological construct that assigns a certain race and/or ethnic group, to a position of power over others"
             },
             {
               "id": "q30",
               "answer": "C",
-              "before": "Persons not considered to be culturally or physically distinct from the majority A. are always culturally or physically distinct from the perpetrators of the acts of wrongdoing. B. tend to share a likeness with the perpetrators of the crime C. may still find themselves the victims of xenophobic behaviour. D. has been observed in many different parts of the world. E. will eventually reach a position of total submission. F. has a controlling hand in the affairs of one or more of the other sections of society",
-              "after": "",
+              "textHtml": "Persons not considered to be culturally or physically distinct from the majority …",
               "explanation": "Xenophobia can target people who share ancestry or physical traits with the majority if they are still seen as outsiders.",
               "evidence": "manifestations of xenophobia occur against people of identical physical characteristics, even of shared ancestry, when such people arrive, return or migrate"
             }
           ],
-          "legendHtml": "<p><span>27. An upward trend in violence perpetrated against non-national minority groups by radical nationals</span><br/>\n<span>28. Racism differs from xenophobia in that victims of the former</span><br/>\n<span>29. Where racism occurs, the dominant group promotes a hierarchical system in which it</span><br/>\n<span>30. Persons not considered to be culturally or physically distinct from the majority</span></p><p><span>A. are always culturally or physically distinct from the perpetrators of the acts of wrongdoing.</span><br/>\n<span>B. tend to share a likeness with the perpetrators of the crime</span><br/>\n<span>C. may still find themselves the victims of xenophobic behaviour.</span><br/>\n<span>D. has been observed in many different parts of the world.</span><br/>\n<span>E. will eventually reach a position of total submission.</span><br/>\n<span>F. has a controlling hand in the affairs of one or more of the other sections of society.</span></p>"
+          "legendHtml": "<p><span><strong>A</strong> are always culturally or physically distinct from the perpetrators of the acts of wrongdoing.</span><br/>\n<span><strong>B</strong> tend to share a likeness with the perpetrators of the crime</span><br/>\n<span><strong>C</strong> may still find themselves the victims of xenophobic behaviour.</span><br/>\n<span><strong>D</strong> has been observed in many different parts of the world.</span><br/>\n<span><strong>E</strong> will eventually reach a position of total submission.</span><br/>\n<span><strong>F</strong> has a controlling hand in the affairs of one or more of the other sections of society.</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ]
         },
         {
           "title": "Questions 31-34",

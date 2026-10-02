@@ -466,41 +466,56 @@ const test: PracticeTest = {
         },
         {
           "title": "Questions 33-37",
-          "type": "sentence-completion",
+          "type": "matching-features",
           "instructionHtml": "Complete the summary using the list of phrases, A-H, below.",
           "questions": [
             {
               "id": "q33",
               "answer": "F",
+              "textHtml": "… wanted human umpires to shout out decisions as they had in their ______",
               "explanation": "Paragraph 2 says MLB wanted human umpires to announce calls just as they had done in the past, their former role.",
               "evidence": "Major League Baseball (MLB), who had commissioned the system, wanted human umpires to announce the calls, just as they would have done in the past."
             },
             {
               "id": "q34",
               "answer": "D",
+              "textHtml": "The umpire’s job had, at one time, required a ______ about whether a ball was a strike.",
               "explanation": "Paragraph 2 says calling a strike used to be a judgment call by the umpire, a subjective assessment.",
               "evidence": "Previously, calling a strike was a judgment call on the part of the umpire."
             },
             {
               "id": "q35",
               "answer": "H",
+              "textHtml": "… when the batter does not hit it and it crosses through a ______ extending approximately from the batter’s knee to his chest.",
               "explanation": "Paragraph 2 describes the strike zone as an imaginary zone from the knees to the chest, the perceived area a pitch must cross.",
               "evidence": "Even if the batter does not hit the ball, a pitch that passes through the ‘strike zone’ (an imaginary zone about seventeen inches wide, stretching from the batter’s knees to the middle of his chest) is considered a strike."
             },
             {
               "id": "q36",
               "answer": "B",
+              "textHtml": "In the past, ______ over strike calls were not uncommon, but today everyone accepts …",
               "explanation": "Paragraph 3 says countless arguments took place between managers and umpires over the strike zone, that is, numerous disputes.",
               "evidence": "For a hundred and fifty years or so, the strike zone has been the game’s animating force-countless arguments between a team’s manager and the umpire have taken place over its boundaries and whether a ball had crossed through it."
             },
             {
               "id": "q37",
               "answer": "G",
+              "textHtml": "… during the first game DeJesus used ABS, strike calls were met with ______",
               "explanation": "Paragraph 2 says nobody said a word when DeJesus announced the first robo-umpire calls, total silence.",
               "evidence": "Nobody said a word."
             }
           ],
-          "legendHtml": "<p><strong><span>Calls by the umpire</span></strong></p><p><span>Even after ABS was developed, MLB still wanted human umpires to shout out decisions as they had in their (33) …………… The umpire’s job had, at one time, required a (34) …………… about whether a ball was a strike. A ball is considered a strike when the batter does not hit it and it crosses through a (35) ………… extending approximately from the batter’s knee to his chest. In the past, (36) ……………. over strike calls were not uncommon, but today everyone accepts the complete ban on pushing or shoving the umpire. One difference, however, is that during the first game DeJesus used ABS, strike calls were met with (37) ……………</span></p><p><span>A. pitch boundary</span><br/>\n<span>B. numerous disputes</span><br/>\n<span>C. team tactics</span><br/>\n<span>D. subjective assessment</span><br/>\n<span>E. widespread approval</span><br/>\n<span>F. former roles</span><br/>\n<span>G. total silence</span><br/>\n<span>H. perceived area</span></p>"
+          "legendHtml": "<p><strong><span>Calls by the umpire</span></strong></p><p><span>Even after ABS was developed, MLB still wanted human umpires to shout out decisions as they had in their (33) …………… The umpire’s job had, at one time, required a (34) …………… about whether a ball was a strike. A ball is considered a strike when the batter does not hit it and it crosses through a (35) ………… extending approximately from the batter’s knee to his chest. In the past, (36) ……………. over strike calls were not uncommon, but today everyone accepts the complete ban on pushing or shoving the umpire. One difference, however, is that during the first game DeJesus used ABS, strike calls were met with (37) ……………</span></p><p><span>A. pitch boundary</span><br/>\n<span>B. numerous disputes</span><br/>\n<span>C. team tactics</span><br/>\n<span>D. subjective assessment</span><br/>\n<span>E. widespread approval</span><br/>\n<span>F. former roles</span><br/>\n<span>G. total silence</span><br/>\n<span>H. perceived area</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ]
         },
         {
           "title": "Questions 38-40",

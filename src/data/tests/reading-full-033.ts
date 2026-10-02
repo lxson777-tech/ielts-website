@@ -510,41 +510,55 @@ const test: PracticeTest = {
         },
         {
           "title": "Questions 36-40",
-          "type": "sentence-completion",
+          "type": "sentence-endings",
           "instructionHtml": "Complete each sentence with the correct ending. A-G. Write the correct letter. A-G, in boxes 36-40 on your answer sheet.",
           "questions": [
             {
               "id": "q36",
               "answer": "B",
+              "textHtml": "The traditional view of science is that …",
               "explanation": "The fourth paragraph sets out the traditional view: science is a special kind of knowledge produced by scientific methods and applied objectively by the scientific community, which matches B. Option G is the trap, because beliefs and values belong to the sociological view that challenges this picture.",
               "evidence": "The traditional view is that science is a special kind of knowledge, which is established through scientific methods and objectively applied by members of a scientific community."
             },
             {
               "id": "q37",
               "answer": "G",
+              "textHtml": "A sociological view of science argues that …",
               "explanation": "The same fourth paragraph gives the sociological challenge: scientific knowledge is worked out socially and is tied to the values of everyone involved, scientists and non-scientists alike, which is G. Option B fails because experiments are the traditional picture, not the sociological one.",
               "evidence": "scientific knowledge is socially negotiated, and inevitably linked to the values of the relevant parties, both scientists and nonscientists"
             },
             {
               "id": "q38",
               "answer": "A",
+              "textHtml": "Collins is of the opinion that …",
               "explanation": "The fifth paragraph says Collins argued that the result of an experiment cannot be understood straight away but has to be interpreted, discussed and then read again in the light of other experiments, which matches A.",
               "evidence": "the outcome of experiments was not something whose meaning could be immediately comprehended"
             },
             {
               "id": "q39",
               "answer": "D",
+              "textHtml": "The writer suggests that a supporter of fluoridation may conclude that …",
               "explanation": "In the seventh paragraph the supporter says the evidence of benefit is solid while the evidence of harm is limited and doubtful, so there is not enough proof of danger to justify holding back, which is D. Option C belongs to the opponent, who wants voluntary fluoride tablets.",
               "evidence": "The evidence for the benefits of fluoridation is quite substantial, while the evidence for harm is limited and dubious."
             },
             {
               "id": "q40",
               "answer": "C",
+              "textHtml": "The writer suggests that an opponent of fluoridation may conclude that …",
               "explanation": "The opponent in the seventh paragraph ends by opposing fluoride in the water supply but supporting fluoride tablets for those who want to take them, which is a choice for each person, so C fits. Option E is tempting because harm is mentioned, but this opponent calls the benefits substantial and the risk only a slight chance, so they never claim the damage outweighs the good.",
               "evidence": "Therefore I oppose fluoridation of water supplies and favor the voluntary use of fluoride tablets by those who want to take them."
             }
           ],
-          "legendHtml": "<p>The traditional view of science is that (36) ………………</p><p>A sociological view of science argues that (37) …………..</p><p>Collins is of the opinion that (38) ………………</p><p>The writer suggests that a supporter of fluoridation may conclude that (39) ………………</p><p>The writer suggests that an opponent of fluoridation may conclude that (40) …………….</p><p><strong>A</strong>. the results of scientific research are not always understood at first<br/>\n<strong>B</strong>. scientific knowledge is based on experiments conducted by scientists.<br/>\n<strong>C</strong>. people should be able to choose whether they want fluoride.<br/>\n<strong>D</strong>. there is insufficient proof to support a cautious approach.<br/>\n<strong>E</strong>. the serious damage fluoride causes far outweighs any positive effects.<br/>\n<strong>F</strong>. children are not the only ones who benefit from fluoridation.<br/>\n<strong>G</strong>. scientific knowledge is affected by the beliefs of everyone concerned.</p>"
+          "legendHtml": "<p><span><strong>A</strong> the results of scientific research are not always understood at first</span><br/>\n<span><strong>B</strong> scientific knowledge is based on experiments conducted by scientists.</span><br/>\n<span><strong>C</strong> people should be able to choose whether they want fluoride.</span><br/>\n<span><strong>D</strong> there is insufficient proof to support a cautious approach.</span><br/>\n<span><strong>E</strong> the serious damage fluoride causes far outweighs any positive effects.</span><br/>\n<span><strong>F</strong> children are not the only ones who benefit from fluoridation.</span><br/>\n<span><strong>G</strong> scientific knowledge is affected by the beliefs of everyone concerned.</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G"
+          ]
         }
       ]
     }

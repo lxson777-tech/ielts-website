@@ -493,9 +493,18 @@ test('a question type label substituted into a Russian catalogue sentence stays 
 });
 
 test('the "no material" unavailable reason for a phantom question type names it in English inside a Russian sentence', () => {
-  const sentenceEndings = CATALOGUE.activities.find((a) => a.id === 'practise:reading:sentence-endings');
-  assert.ok(sentenceEndings?.unavailable, 'sentence-endings should be the phantom type marked unavailable');
-  const russian = learningText('ru', sentenceEndings!.unavailable!.reason);
+  /* Since 3 October 2026 no type is a phantom: sentence endings was the only
+     one, and only because its real groups were mistyped in the papers. The
+     catalogue still writes this sentence for any type that is in no paper
+     at all (catalog.ts, `coverage.absent`), so its translation is still
+     checked, on the exact sentence the catalogue would build. */
+  assert.equal(
+    CATALOGUE.activities.filter((a) => /^No paper in the library/.test(a.unavailable?.reason ?? '')).length,
+    0,
+    'no type is missing from every paper today',
+  );
+  const english = 'No paper in the library contains a Sentence Endings question, so there is nothing real to practise here yet.';
+  const russian = learningText('ru', english);
   assert.match(russian, CYRILLIC);
   assert.ok(russian.includes('Sentence'), `the question type name should stay English inside the Russian sentence: "${russian}"`);
   assert.doesNotMatch(russian, DASHES);

@@ -768,7 +768,7 @@ test('every way a proposal can be refused has a name and a plain sentence', () =
     ['stale-index-version', { ...base, versions: { ...fresh, indexVersion: 'not-the-index' }, proposedActivityId: ids[0]! }],
     ['malformed-response', { ...base, versions: fresh, proposedActivityId: null }],
     ['unknown-activity', { ...base, versions: fresh, proposedActivityId: 'lesson:does-not-exist' }],
-    ['unavailable', { ...base, versions: fresh, proposedActivityId: 'practise:reading:sentence-endings' }],
+    ['unavailable', { ...base, versions: fresh, proposedActivityId: 'practise:listening:sentence-endings' }],
     ['not-in-shortlist', { ...base, versions: fresh, proposedActivityId: 'lesson:speaking-part3' }],
     ['blocked-under-assessment', { ...base, versions: fresh, proposedActivityId: ids[0]!, underAssessment: true }],
   ];

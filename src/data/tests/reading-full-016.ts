@@ -251,35 +251,39 @@ const test: PracticeTest = {
       "groups": [
         {
           "title": "Questions 11-13",
-          "type": "sentence-completion",
+          "type": "sentence-endings",
           "instructionHtml": "Complete each sentence with the correct ending, A-E, below.",
           "questions": [
             {
               "id": "q11",
               "answer": "C",
-              "before": "Dali displayed a precocious talent from an early age; however, he was aware",
-              "after": "",
+              "textHtml": "Dali displayed a precocious talent from an early age; however, he was aware …",
               "explanation": "Paragraph 3 says Dali left the Academy for Paris because he believed his tutors 'were not adequate to impart' enough knowledge, so his studies needed supplementing there, matching ending C.",
               "evidence": "were not adequate to impart"
             },
             {
               "id": "q12",
               "answer": "E",
-              "before": "Encountering the French Surrealist painters in Paris",
-              "after": "",
+              "textHtml": "Encountering the French Surrealist painters in Paris …",
               "explanation": "Paragraph 4 says Dali watched the French Surrealists paint Freud's ideas, and this world of the unconscious 'was to become the content of these artists' work and later that of Dali's, too', matching ending E.",
               "evidence": "later that of Dali's, too"
             },
             {
               "id": "q13",
               "answer": "D",
-              "before": "Dali’s artistic legacy is secure although",
-              "after": "",
+              "textHtml": "Dali’s artistic legacy is secure although …",
               "explanation": "Paragraph 8 contrasts critics' 'lukewarm reception' with public popularity that 'never declined', matching ending D: some critics rate him lower than the public does.",
               "evidence": "Despite a lukewarm reception from critics"
             }
           ],
-          "legendHtml": "<p><span><strong>A</strong> of certain limitations in his artistic skills that became evident in his later works.</span><br/>\n<span><strong>B</strong> Introduced Dali to the psychoanalytic movement for the first time</span><br/>\n<span><strong>C</strong> his artistic studies needed to be supplemented by going to Paris to meet the Surrealist artists.</span><br/>\n<span><strong>D</strong> some art critics are less impressed with his work than the general public.</span><br/>\n<span><strong>E</strong> inspired Dali to focus on the psychoanalytic content of his artwork.</span></p><p><span>11. Dali displayed a precocious talent from an early age; however, he was aware</span><br/>\n<span>12. Encountering the French Surrealist painters in Paris</span><br/>\n<span>13. Dali’s artistic legacy is secure although</span></p>"
+          "legendHtml": "<p><span><strong>A</strong> of certain limitations in his artistic skills that became evident in his later works.</span><br/>\n<span><strong>B</strong> Introduced Dali to the psychoanalytic movement for the first time</span><br/>\n<span><strong>C</strong> his artistic studies needed to be supplemented by going to Paris to meet the Surrealist artists.</span><br/>\n<span><strong>D</strong> some art critics are less impressed with his work than the general public.</span><br/>\n<span><strong>E</strong> inspired Dali to focus on the psychoanalytic content of his artwork.</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E"
+          ]
         },
         {
           "title": "Questions 14-16",

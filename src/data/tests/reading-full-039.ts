@@ -464,43 +464,47 @@ const test: PracticeTest = {
         },
         {
           "title": "Questions 36-39",
-          "type": "sentence-completion",
+          "type": "sentence-endings",
           "instructionHtml": "Complete each sentence with the correct ending, A-F, below. Write the correct letter, A-F, in box 36-39 on your answer sheet.",
           "questions": [
             {
               "id": "q36",
               "answer": "A",
-              "before": "More working time is often connected with:",
-              "after": "",
+              "textHtml": "More working time is often connected with: …",
               "explanation": "Paragraph G says that working longer hours normally goes with more stress and tension at home, which is ending A. Ending B, consumption of goods, is tempting because the paragraph mentions domestic activities, but the passage links extra hours to pressure, not to spending.",
               "evidence": "More time working is usually associated with increased stress, domestic tension and other factors that reduce the quality of life."
             },
             {
               "id": "q37",
               "answer": "C",
-              "before": "Oracle’s Functional idea aims to improve:",
-              "after": "",
+              "textHtml": "Oracle’s Functional idea aims to improve: …",
               "explanation": "Paragraph F says the FUNctional offices were Oracle's answer to the loss of teamwork among teleworkers and were built to increase communication and face-to-face contact, which is ending C. Ending A is tempting because the paragraph also mentions quality of life, but the offices were designed to bring people together, not to cut stress.",
               "evidence": "Designed to increase communication and interaction when people are at the office, they are bright and focused around a central cafe to stimulate ideas and face-to-face contact."
             },
             {
               "id": "q38",
               "answer": "F",
-              "before": "When you work at office equipment such as computers and printers are maintained by:",
-              "after": "",
+              "textHtml": "When you work at office equipment such as computers and printers are maintained by: …",
               "explanation": "Paragraph H says that in an office you can call the IT man and that all your equipment is looked after by technical staff, which matches ending F. Ending D is tempting because the same paragraph is full of broken equipment, but the breakdowns belong to working at home, not at the office.",
               "evidence": "In fact, all of the equipment that you use at the office is supported by technical staff."
             },
             {
               "id": "q39",
               "answer": "D",
-              "before": "When work from home using hardware and software:",
-              "after": "",
+              "textHtml": "When work from home using hardware and software: …",
               "explanation": "Paragraph H says that at home you will certainly meet technical problems and asks where you will then find help, which is ending D. Ending F is tempting because technical staff appear in the same paragraph, but they support the office, and at home there is nobody to call.",
               "evidence": "you’ll surely encounter technical problems and when you do, where do you get the support and help you need?"
             }
           ],
-          "legendHtml": "<p><strong>A</strong> stress and tension<br/>\n<strong>B</strong> consumption of goods.<br/>\n<strong>C</strong> the problem of less communication with colleagues.<br/>\n<strong>D</strong> many problems when equipment doesn’t work<br/>\n<strong>E</strong> transport equipment such as automobiles<br/>\n<strong>F</strong> technical supporters.</p><p>36. More working time is often connected with:<br/>\n37. Oracle’s Functional idea aims to improve:<br/>\n38. When you work at office equipment such as computers and printers are maintained by:<br/>\n39. When work from home using hardware and software:</p>"
+          "legendHtml": "<p><span><strong>A</strong> stress and tension</span><br/>\n<span><strong>B</strong> consumption of goods.</span><br/>\n<span><strong>C</strong> the problem of less communication with colleagues.</span><br/>\n<span><strong>D</strong> many problems when equipment doesn’t work</span><br/>\n<span><strong>E</strong> transport equipment such as automobiles</span><br/>\n<span><strong>F</strong> technical supporters.</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ]
         },
         {
           "title": "Question 40",

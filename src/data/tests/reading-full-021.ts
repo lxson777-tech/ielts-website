@@ -82,51 +82,52 @@ const test: PracticeTest = {
         },
         {
           "title": "Questions 3-7",
-          "type": "sentence-completion",
+          "type": "matching-features",
           "instructionHtml": "Choose the type of music from the list A-D below which corresponds to the findings of the study. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q3",
               "answer": "C",
-              "before": "music preferred by men",
-              "after": "",
+              "textHtml": "music preferred by men",
               "explanation": "The seventh paragraph says classical music produced the most positive reactions among males, so classical is the men’s favourite. Light jazz is the tempting choice, but that was the music women reacted best to.",
               "evidence": "In general, classical music evoked the most positive reactions among males"
             },
             {
               "id": "q4",
               "answer": "D",
-              "before": "longest waiting time estimate (both sexes)",
-              "after": "",
+              "textHtml": "longest waiting time estimate (both sexes)",
               "explanation": "The seventh paragraph says rock produced the longest waiting time estimates and was the least liked by both men and women, so it fits ‘both sexes’.",
               "evidence": "Rock was the least preferred across both gender groups and produced the longest waiting time estimates."
             },
             {
               "id": "q5",
               "answer": "D",
-              "before": "music to avoid on telephone hold",
-              "after": "",
+              "textHtml": "music to avoid on telephone hold",
               "explanation": "The seventh paragraph quotes Kellaris saying rock music annoys people who are already calling with a problem, so it is the music a company should keep off its hold line.",
               "evidence": "The rock music’s driving beat kind of aggravates people calling customer assistance with a problem"
             },
             {
               "id": "q6",
               "answer": "A",
-              "before": "music to use if clients are mostly women",
-              "after": "",
+              "textHtml": "music to use if clients are mostly women",
               "explanation": "The seventh paragraph says light jazz gave women the most positive reactions and the shortest waiting time estimates, so it suits a mostly female client base. Classical is the trap here, because for women the wait seemed longest with classical.",
               "evidence": "light jazz evoked the most positive reactions (and shortest waiting time estimates) among females"
             },
             {
               "id": "q7",
               "answer": "B",
-              "before": "best choice of ‘on-hold’ music overall",
-              "after": "",
+              "textHtml": "best choice of ‘on-hold’ music overall",
               "explanation": "The fifth paragraph says alternative is probably the best choice because it did not push reactions strongly either way and men and women reacted to it in similar ways, which makes it the safest music overall.",
               "evidence": "males and females were less polarised in their reactions to this type of music"
             }
           ],
-          "legendHtml": "<p><span>A. light jazz</span><br/>\n<span>B. alternative</span><br/>\n<span>C. classical</span><br/>\n<span>D. rock</span></p><p><span>3. music preferred by men</span><br/>\n<span>4. longest waiting time estimate (both sexes)</span><br/>\n<span>5. music to avoid on telephone hold</span><br/>\n<span>6. music to use if clients are mostly women</span><br/>\n<span>7. best choice of ‘on-hold’ music overall</span></p>"
+          "legendHtml": "<p><span><strong>A</strong> light jazz</span><br/>\n<span><strong>B</strong> alternative</span><br/>\n<span><strong>C</strong> classical</span><br/>\n<span><strong>D</strong> rock</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ]
         },
         {
           "title": "Questions 8-13",
@@ -516,35 +517,42 @@ const test: PracticeTest = {
         },
         {
           "title": "Questions 38-40",
-          "type": "sentence-completion",
+          "type": "sentence-endings",
           "instructionHtml": "Choose one phrase from the list of phrases A-H below to complete each of the following sentences.",
           "questions": [
             {
               "id": "q38",
               "answer": "D",
-              "before": "Students’ work is assessed",
-              "after": "",
+              "textHtml": "Students’ work is assessed …",
               "explanation": "The sixth paragraph says grades combine team performance with peer evaluation, and the eighth adds individual assessment tests, so all three kinds of marking apply. Option B is the trap, because individual tests are only one part of the picture.",
               "evidence": "student grades are a combination of overall team performance and peer evaluation of individual team members"
             },
             {
               "id": "q39",
               "answer": "F",
-              "before": "The teams make a joint presentation",
-              "after": "",
+              "textHtml": "The teams make a joint presentation …",
               "explanation": "The eighth paragraph says team presentations build cohesion and share the job of presenting and persuading, which is group work, and the seventh says exercises apply theory to real world problems. Option C is tempting, but the team persuades an outside audience together rather than competing inside the group.",
               "evidence": "allow the team to focus and build cohesion, with team members sharing the responsibility for presenting"
             },
             {
               "id": "q40",
               "answer": "E",
-              "before": "The need to achieve consensus assists A. to compete with other teams as judged by the facilitator. B. by individual tests and exams. C. to see who has the strongest point of view in the group. D. individually, by their peers and as a team. E. in the development of communication skills. F. to practise working as a group while putting theory into practice. G. to assist international and non-traditional students. H. in getting to know new friends and colleagues",
-              "after": "",
+              "textHtml": "The need to achieve consensus assists …",
               "explanation": "The eighth paragraph says the team tests require consensus and that this helps students learn critical communication skills, which matches option E directly.",
               "evidence": "require consensus, helping students learn critical communication skills"
             }
           ],
-          "legendHtml": "<p><span>38. Students’ work is assessed</span><br/>\n<span>39. The teams make a joint presentation</span><br/>\n<span>40. The need to achieve consensus assists</span></p><p><span>A. to compete with other teams as judged by the facilitator.</span><br/>\n<span>B. by individual tests and exams.</span><br/>\n<span>C. to see who has the strongest point of view in the group.</span><br/>\n<span>D. individually, by their peers and as a team.</span><br/>\n<span>E. in the development of communication skills.</span><br/>\n<span>F. to practise working as a group while putting theory into practice.</span><br/>\n<span>G. to assist international and non-traditional students.</span><br/>\n<span>H. in getting to know new friends and colleagues.</span></p>"
+          "legendHtml": "<p><span><strong>A</strong> to compete with other teams as judged by the facilitator.</span><br/>\n<span><strong>B</strong> by individual tests and exams.</span><br/>\n<span><strong>C</strong> to see who has the strongest point of view in the group.</span><br/>\n<span><strong>D</strong> individually, by their peers and as a team.</span><br/>\n<span><strong>E</strong> in the development of communication skills.</span><br/>\n<span><strong>F</strong> to practise working as a group while putting theory into practice.</span><br/>\n<span><strong>G</strong> to assist international and non-traditional students.</span><br/>\n<span><strong>H</strong> in getting to know new friends and colleagues.</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ]
         }
       ]
     }

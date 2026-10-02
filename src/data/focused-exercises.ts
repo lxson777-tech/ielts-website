@@ -432,7 +432,8 @@ export interface AuthoredPassage {
 }
 
 /** A small, hand-written practice set for a question type no real paper in
- *  the library contains (today: only sentence endings, lead decision Q1).
+ *  the library contains (none today: sentence endings, lead decision Q1,
+ *  was the only one and has used a real paper since 3 October 2026).
  *  Deliberately its own sibling of FocusedExercise rather than an optional
  *  `source`, for the same reason WrittenFocusedTask is not a FocusedExercise
  *  with optional fields: pretending an authored set has a `testId` is how a
@@ -588,6 +589,9 @@ export const FOCUSED_EXERCISES: readonly FocusedExercise[] = [
   ...READING_TABLE_COMPLETION,
   ...READING_MULTIPLE_ANSWER,
   ...READING_CATEGORISATION,
+  /* Real material since 3 October 2026 (it used to be the one authored
+     set below; see the header of ./focused/reading-sentence-endings.ts). */
+  ...READING_SENTENCE_ENDINGS,
   ...LISTENING_SENTENCE_COMPLETION,
   ...LISTENING_MULTIPLE_CHOICE,
   ...LISTENING_TABLE_COMPLETION,
@@ -634,8 +638,13 @@ export const WRITTEN_FOCUSED_TASKS: readonly WrittenFocusedTask[] = [
     SPOKEN_FOCUSED_TASKS below: the SOURCE is different (nothing to
     resolve against ALL_TESTS), so it is never mixed into FOCUSED_EXERCISES
     itself, which is what RESERVED_CHECK_PAPER_IDS below is computed from.
-    An authored set has no paper to reserve. */
-export const AUTHORED_FOCUSED_EXERCISES: readonly AuthoredFocusedExercise[] = [...READING_SENTENCE_ENDINGS];
+    An authored set has no paper to reserve.
+
+    Empty since 3 October 2026: its only entry (sentence endings, lead
+    decision Q1) moved onto a real paper once the papers' own sentence
+    endings groups were typed correctly. The kind stays, so a future type
+    with genuinely no real material has somewhere honest to go. */
+export const AUTHORED_FOCUSED_EXERCISES: readonly AuthoredFocusedExercise[] = [];
 
 /** Every kind together. tools/generate-learning-index.mjs reads this export
     by name; the catalogue is built from the index it writes, never from

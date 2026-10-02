@@ -26,9 +26,9 @@
  *
  * WHAT IT REFUSES TO DO
  * It never links to material that does not exist. `practisePath()` will
- * happily build /trainers/listening?type=tfng, a filter no drill matches,
- * and `sentence-endings` has a lesson, a label and a strategy but zero
- * questions in any of the 70 papers. Those activities are kept, marked
+ * happily build /trainers/listening?type=tfng, a filter no drill matches
+ * (and until 3 October 2026 `sentence-endings` had zero questions in any
+ * paper, because its real groups were mistyped). Those activities are kept, marked
  * unavailable, and given a sentence saying why, because a student clicking
  * into an empty screen is worse than being told there is nothing there yet.
  *

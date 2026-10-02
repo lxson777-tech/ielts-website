@@ -435,43 +435,47 @@ const test: PracticeTest = {
         },
         {
           "title": "Questions 31-34",
-          "type": "sentence-completion",
+          "type": "sentence-endings",
           "instructionHtml": "Complete each sentence with the correct ending, A-F, below. Write the correct letter, A-F, in boxes 31-34 on your answer sheet.",
           "questions": [
             {
               "id": "q31",
               "answer": "C",
-              "before": "Speech translation methods are developing fast in Japan",
-              "after": "",
+              "textHtml": "Speech translation methods are developing fast in Japan …",
               "explanation": "The paragraph on Asian countries says voice translation has really taken off in places such as Japan, but then adds straight away that there is still a long way to go, which matches ending C. Ending E is tempting, but the same paragraph says systems still need to become simultaneous, so translation is not yet immediate.",
               "evidence": "There is still a long way to go, though."
             },
             {
               "id": "q32",
               "answer": "E",
-              "before": "TV interviews that use translation voiceover methods are successful",
-              "after": "",
+              "textHtml": "TV interviews that use translation voiceover methods are successful …",
               "explanation": "The same paragraph uses the TV interview as the model to copy: the translator’s voice runs over the politician instead of making everyone stop and wait, so it works because the translation comes at once.",
               "evidence": "A translation system needs to be simultaneous, like the translator’s voice speaking over the foreign politician being interviewed on the TV"
             },
             {
               "id": "q33",
               "answer": "F",
-              "before": "Future translation systems should address people appropriately",
-              "after": "",
+              "textHtml": "Future translation systems should address people appropriately …",
               "explanation": "The paragraph on social awareness says systems must address people in the right way and respect politeness rules such as academic titles, which matches ending F about good manners. Ending D is tempting because noise appears in the same sentence, but noise is listed as a separate physical problem, not a contrast.",
               "evidence": "Systems not only need to cope with physical challenges such as noise, they will also need to be socially aware by addressing people in the right way."
             },
             {
               "id": "q34",
               "answer": "B",
-              "before": "Users may be able to maintain their local customs A but there are concerns about this. B as systems do not need to conform to standard practices. C but they are far from perfect. D despite the noise issues. E because translation is immediate. F and have an awareness of good manners",
-              "after": "",
+              "textHtml": "Users may be able to maintain their local customs …",
               "explanation": "The same paragraph says etiquette-aware translators might protect local customs by slowing the spread of international English habits, so they would not have to follow that common standard. Ending A is tempting, but the writer treats this as a benefit and raises no concerns about it.",
               "evidence": "they might help to preserve local customs, slowing the spread of habits associated with international English"
             }
           ],
-          "legendHtml": "<p>31. Speech translation methods are developing fast in Japan<br/>\n32. TV interviews that use translation voiceover methods are successful<br/>\n33. Future translation systems should address people appropriately<br/>\n34. Users may be able to maintain their local customs</p><p><strong>A</strong> but there are concerns about this.<br/>\n<strong>B</strong> as systems do not need to conform to standard practices.<br/>\n<strong>C</strong> but they are far from perfect.<br/>\n<strong>D</strong> despite the noise issues.<br/>\n<strong>E</strong> because translation is immediate.<br/>\n<strong>F</strong> and have an awareness of good manners.</p>"
+          "legendHtml": "<p><span><strong>A</strong> but there are concerns about this.</span><br/>\n<span><strong>B</strong> as systems do not need to conform to standard practices.</span><br/>\n<span><strong>C</strong> but they are far from perfect.</span><br/>\n<span><strong>D</strong> despite the noise issues.</span><br/>\n<span><strong>E</strong> because translation is immediate.</span><br/>\n<span><strong>F</strong> and have an awareness of good manners.</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ]
         },
         {
           "title": "Questions 35-40",

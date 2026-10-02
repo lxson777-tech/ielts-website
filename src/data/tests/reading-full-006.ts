@@ -506,32 +506,35 @@ const test: PracticeTest = {
         },
         {
           "title": "Questions 34-36",
-          "type": "sentence-completion",
+          "type": "sentence-endings",
           "instructionHtml": "Complete each sentence with the correct ending, A-D, below.",
           "questions": [
             {
               "id": "q34",
               "answer": "C",
-              "before": "Richardson and Rees express similar views regarding the ethical aspect of",
-              "after": "",
+              "textHtml": "Richardson and Rees express similar views regarding the ethical aspect of …",
               "explanation": "Both experts raise ethical worries about changing other planets for human benefit, Rees wanting a protected status and Richardson calling colonisation morally dubious."
             },
             {
               "id": "q35",
               "answer": "B",
-              "before": "Rees and Wolpert share an opinion about the extent of",
-              "after": "",
+              "textHtml": "Rees and Wolpert share an opinion about the extent of …",
               "explanation": "Both Rees and Wolpert describe machine intelligence as advanced only in narrow, limited ways so far, agreeing on how far progress has really come."
             },
             {
               "id": "q36",
               "answer": "D",
-              "before": "Wolpert disagrees with Richardson on the question of A. robots to explore outer space. B. advances made in machine intelligence so far. C. changes made to other planets for our own benefit. D. the harm already done by artificial intelligence",
-              "after": "",
+              "textHtml": "Wolpert disagrees with Richardson on the question of …",
               "explanation": "Wolpert says artificial intelligence has already caused damage through computer viruses, while Richardson says robots have never actually threatened humans, so the two disagree here."
             }
           ],
-          "legendHtml": "<p><span>34. Richardson and Rees express similar views regarding the ethical aspect of</span><br/>\n<span>35. Rees and Wolpert share an opinion about the extent of</span><br/>\n<span>36. Wolpert disagrees with Richardson on the question of</span></p><p><span>A. robots to explore outer space.</span><br/>\n<span>B. advances made in machine intelligence so far.</span><br/>\n<span>C. changes made to other planets for our own benefit.</span><br/>\n<span>D. the harm already done by artificial intelligence.</span></p>"
+          "legendHtml": "<p><span><strong>A</strong> robots to explore outer space.</span><br/>\n<span><strong>B</strong> advances made in machine intelligence so far.</span><br/>\n<span><strong>C</strong> changes made to other planets for our own benefit.</span><br/>\n<span><strong>D</strong> the harm already done by artificial intelligence.</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ]
         },
         {
           "title": "Questions 37-40",

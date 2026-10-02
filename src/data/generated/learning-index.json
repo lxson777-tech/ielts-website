@@ -1,7 +1,7 @@
 {
   "version": 1,
   "format": 3,
-  "indexVersion": "afbacdc2ea156417",
+  "indexVersion": "bb9f1ae71de21a6a",
   "tests": [
     {
       "id": "listening-full-001",
@@ -286,7 +286,7 @@
       "id": "reading-full-002",
       "skill": "reading",
       "title": "Academic Reading Test 2",
-      "byType": { "multiple-choice": 4, "sentence-completion": 19, "tfng": 11, "yes-no-notgiven": 6 },
+      "byType": { "multiple-choice": 4, "sentence-completion": 15, "sentence-endings": 4, "tfng": 11, "yes-no-notgiven": 6 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -322,7 +322,7 @@
       "id": "reading-full-006",
       "skill": "reading",
       "title": "Academic Reading Test 6",
-      "byType": { "matching-features": 7, "matching-headings": 6, "multiple-answer": 4, "multiple-choice": 4, "sentence-completion": 13, "tfng": 6 },
+      "byType": { "matching-features": 7, "matching-headings": 6, "multiple-answer": 4, "multiple-choice": 4, "sentence-completion": 10, "sentence-endings": 3, "tfng": 6 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -331,7 +331,7 @@
       "id": "reading-full-007",
       "skill": "reading",
       "title": "Academic Reading Test 7",
-      "byType": { "multiple-answer": 4, "multiple-choice": 3, "paragraph-matching": 3, "sentence-completion": 17, "tfng": 7, "yes-no-notgiven": 6 },
+      "byType": { "matching-features": 5, "multiple-answer": 4, "multiple-choice": 3, "paragraph-matching": 3, "sentence-completion": 12, "tfng": 7, "yes-no-notgiven": 6 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -340,7 +340,7 @@
       "id": "reading-full-008",
       "skill": "reading",
       "title": "Academic Reading Test 8",
-      "byType": { "matching-features": 5, "multiple-choice": 4, "paragraph-matching": 5, "sentence-completion": 15, "tfng": 6, "yes-no-notgiven": 5 },
+      "byType": { "matching-features": 5, "multiple-choice": 4, "paragraph-matching": 5, "sentence-completion": 10, "sentence-endings": 5, "tfng": 6, "yes-no-notgiven": 5 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -385,7 +385,7 @@
       "id": "reading-full-013",
       "skill": "reading",
       "title": "Academic Reading Test 13",
-      "byType": { "multiple-answer": 3, "multiple-choice": 11, "sentence-completion": 13, "tfng": 13 },
+      "byType": { "multiple-answer": 3, "multiple-choice": 11, "sentence-completion": 4, "sentence-endings": 9, "tfng": 13 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -412,7 +412,7 @@
       "id": "reading-full-016",
       "skill": "reading",
       "title": "Academic Reading Test 16",
-      "byType": { "matching-features": 3, "multiple-answer": 2, "multiple-choice": 6, "sentence-completion": 12, "table-completion": 10, "tfng": 7 },
+      "byType": { "matching-features": 3, "multiple-answer": 2, "multiple-choice": 6, "sentence-completion": 9, "sentence-endings": 3, "table-completion": 10, "tfng": 7 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -448,7 +448,7 @@
       "id": "reading-full-020",
       "skill": "reading",
       "title": "Academic Reading Test 20",
-      "byType": { "categorisation": 6, "matching-features": 9, "matching-headings": 6, "multiple-choice": 4, "sentence-completion": 10, "yes-no-notgiven": 5 },
+      "byType": { "categorisation": 6, "matching-features": 9, "matching-headings": 6, "multiple-choice": 4, "sentence-completion": 7, "sentence-endings": 3, "yes-no-notgiven": 5 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -457,7 +457,7 @@
       "id": "reading-full-021",
       "skill": "reading",
       "title": "Academic Reading Test 21",
-      "byType": { "matching-headings": 5, "multiple-choice": 5, "sentence-completion": 15, "table-completion": 4, "yes-no-notgiven": 11 },
+      "byType": { "matching-features": 5, "matching-headings": 5, "multiple-choice": 5, "sentence-completion": 7, "sentence-endings": 3, "table-completion": 4, "yes-no-notgiven": 11 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -484,7 +484,7 @@
       "id": "reading-full-024",
       "skill": "reading",
       "title": "Academic Reading Test 24",
-      "byType": { "matching-features": 4, "multiple-choice": 4, "paragraph-matching": 4, "sentence-completion": 15, "tfng": 7, "yes-no-notgiven": 6 },
+      "byType": { "matching-features": 4, "multiple-choice": 4, "paragraph-matching": 4, "sentence-completion": 11, "sentence-endings": 4, "tfng": 7, "yes-no-notgiven": 6 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -493,7 +493,7 @@
       "id": "reading-full-025",
       "skill": "reading",
       "title": "Academic Reading Test 25",
-      "byType": { "multiple-answer": 4, "multiple-choice": 3, "paragraph-matching": 5, "sentence-completion": 17, "tfng": 6, "yes-no-notgiven": 5 },
+      "byType": { "matching-features": 6, "multiple-answer": 4, "multiple-choice": 3, "paragraph-matching": 5, "sentence-completion": 11, "tfng": 6, "yes-no-notgiven": 5 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -502,7 +502,7 @@
       "id": "reading-full-026",
       "skill": "reading",
       "title": "Academic Reading Test 26",
-      "byType": { "multiple-answer": 4, "multiple-choice": 4, "paragraph-matching": 6, "sentence-completion": 15, "tfng": 7, "yes-no-notgiven": 4 },
+      "byType": { "matching-features": 6, "multiple-answer": 4, "multiple-choice": 4, "paragraph-matching": 6, "sentence-completion": 9, "tfng": 7, "yes-no-notgiven": 4 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -520,7 +520,7 @@
       "id": "reading-full-028",
       "skill": "reading",
       "title": "Academic Reading Test 28",
-      "byType": { "categorisation": 6, "matching-features": 4, "matching-headings": 5, "multiple-choice": 1, "paragraph-matching": 5, "sentence-completion": 11, "tfng": 8 },
+      "byType": { "categorisation": 6, "matching-features": 4, "matching-headings": 5, "multiple-choice": 1, "paragraph-matching": 5, "sentence-completion": 7, "sentence-endings": 4, "tfng": 8 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -547,7 +547,7 @@
       "id": "reading-full-031",
       "skill": "reading",
       "title": "Academic Reading Test 31",
-      "byType": { "matching-headings": 6, "multiple-answer": 2, "multiple-choice": 8, "paragraph-matching": 6, "sentence-completion": 13, "yes-no-notgiven": 5 },
+      "byType": { "matching-headings": 6, "multiple-answer": 2, "multiple-choice": 8, "paragraph-matching": 6, "sentence-completion": 9, "sentence-endings": 4, "yes-no-notgiven": 5 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -565,7 +565,7 @@
       "id": "reading-full-033",
       "skill": "reading",
       "title": "Academic Reading Test 33",
-      "byType": { "matching-features": 4, "multiple-choice": 8, "sentence-completion": 11, "table-completion": 6, "tfng": 7, "yes-no-notgiven": 4 },
+      "byType": { "matching-features": 4, "multiple-choice": 8, "sentence-completion": 6, "sentence-endings": 5, "table-completion": 6, "tfng": 7, "yes-no-notgiven": 4 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -583,7 +583,7 @@
       "id": "reading-full-035",
       "skill": "reading",
       "title": "Academic Reading Test 35",
-      "byType": { "matching-features": 6, "multiple-answer": 4, "multiple-choice": 2, "sentence-completion": 17, "tfng": 7, "yes-no-notgiven": 4 },
+      "byType": { "matching-features": 6, "multiple-answer": 4, "multiple-choice": 2, "sentence-completion": 9, "sentence-endings": 8, "tfng": 7, "yes-no-notgiven": 4 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -619,7 +619,7 @@
       "id": "reading-full-039",
       "skill": "reading",
       "title": "Academic Reading Test 39",
-      "byType": { "matching-features": 16, "multiple-choice": 2, "paragraph-matching": 6, "sentence-completion": 4, "tfng": 12 },
+      "byType": { "matching-features": 16, "multiple-choice": 2, "paragraph-matching": 6, "sentence-endings": 4, "tfng": 12 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -1639,7 +1639,7 @@
       "sourceTestId": "reading-full-002",
       "partNumber": 3,
       "title": "Passage 3 Drill: Rethinking the Past",
-      "byType": { "multiple-choice": 4, "sentence-completion": 4, "yes-no-notgiven": 6 },
+      "byType": { "multiple-choice": 4, "sentence-endings": 4, "yes-no-notgiven": 6 },
       "questions": [27, 40],
       "durationMinutes": 20
     },
@@ -1735,7 +1735,7 @@
       "sourceTestId": "reading-full-006",
       "partNumber": 3,
       "title": "Passage 3 Drill: Robots and us",
-      "byType": { "matching-features": 7, "multiple-choice": 4, "sentence-completion": 3 },
+      "byType": { "matching-features": 7, "multiple-choice": 4, "sentence-endings": 3 },
       "questions": [27, 40],
       "durationMinutes": 20
     },
@@ -1759,7 +1759,7 @@
       "sourceTestId": "reading-full-007",
       "partNumber": 3,
       "title": "Passage 3 Drill: Invasion of the Robot Umpires",
-      "byType": { "multiple-choice": 3, "sentence-completion": 5, "yes-no-notgiven": 6 },
+      "byType": { "matching-features": 5, "multiple-choice": 3, "yes-no-notgiven": 6 },
       "questions": [27, 40],
       "durationMinutes": 20
     },
@@ -1783,7 +1783,7 @@
       "sourceTestId": "reading-full-008",
       "partNumber": 3,
       "title": "Passage 3 Drill: How stress affects our judgement",
-      "byType": { "multiple-choice": 4, "sentence-completion": 5, "yes-no-notgiven": 5 },
+      "byType": { "multiple-choice": 4, "sentence-endings": 5, "yes-no-notgiven": 5 },
       "questions": [27, 40],
       "durationMinutes": 20
     },
@@ -1887,7 +1887,7 @@
       "sourceTestId": "reading-full-013",
       "partNumber": 1,
       "title": "Passage 1 Drill: PROJECT: Reform Of The Prison System In The UK",
-      "byType": { "multiple-choice": 4, "sentence-completion": 9 },
+      "byType": { "multiple-choice": 4, "sentence-completion": 4, "sentence-endings": 5 },
       "questions": [1, 13],
       "durationMinutes": 20
     },
@@ -1903,7 +1903,7 @@
       "sourceTestId": "reading-full-013",
       "partNumber": 3,
       "title": "Passage 3 Drill: Migrants and Refugees: Racial Discrimination and Xenophobia",
-      "byType": { "multiple-choice": 4, "sentence-completion": 4, "tfng": 6 },
+      "byType": { "multiple-choice": 4, "sentence-endings": 4, "tfng": 6 },
       "questions": [27, 40],
       "durationMinutes": 20
     },
@@ -1967,7 +1967,7 @@
       "sourceTestId": "reading-full-016",
       "partNumber": 2,
       "title": "Passage 2 Drill: Salvador Dali",
-      "byType": { "multiple-answer": 2, "multiple-choice": 6, "sentence-completion": 8 },
+      "byType": { "multiple-answer": 2, "multiple-choice": 6, "sentence-completion": 5, "sentence-endings": 3 },
       "questions": [11, 26],
       "durationMinutes": 20
     },
@@ -2055,7 +2055,7 @@
       "sourceTestId": "reading-full-020",
       "partNumber": 1,
       "title": "Passage 1 Drill: Sleeping on the job",
-      "byType": { "multiple-choice": 3, "sentence-completion": 5, "yes-no-notgiven": 5 },
+      "byType": { "multiple-choice": 3, "sentence-completion": 2, "sentence-endings": 3, "yes-no-notgiven": 5 },
       "questions": [1, 13],
       "durationMinutes": 20
     },
@@ -2079,7 +2079,7 @@
       "sourceTestId": "reading-full-021",
       "partNumber": 1,
       "title": "Passage 1 Drill: Please hold the line",
-      "byType": { "multiple-choice": 2, "sentence-completion": 5, "yes-no-notgiven": 6 },
+      "byType": { "matching-features": 5, "multiple-choice": 2, "yes-no-notgiven": 6 },
       "questions": [1, 13],
       "durationMinutes": 20
     },
@@ -2095,7 +2095,7 @@
       "sourceTestId": "reading-full-021",
       "partNumber": 3,
       "title": "Passage 3 Drill: Team based learning",
-      "byType": { "sentence-completion": 10, "yes-no-notgiven": 5 },
+      "byType": { "sentence-completion": 7, "sentence-endings": 3, "yes-no-notgiven": 5 },
       "questions": [26, 40],
       "durationMinutes": 20
     },
@@ -2167,7 +2167,7 @@
       "sourceTestId": "reading-full-024",
       "partNumber": 3,
       "title": "Passage 3 Drill: Is the era of artificial speech translation upon us?",
-      "byType": { "multiple-choice": 4, "sentence-completion": 4, "yes-no-notgiven": 6 },
+      "byType": { "multiple-choice": 4, "sentence-endings": 4, "yes-no-notgiven": 6 },
       "questions": [27, 40],
       "durationMinutes": 20
     },
@@ -2191,7 +2191,7 @@
       "sourceTestId": "reading-full-025",
       "partNumber": 3,
       "title": "Passage 3 Drill: An inquiry into the existence of the gifted child",
-      "byType": { "multiple-choice": 3, "sentence-completion": 6, "yes-no-notgiven": 5 },
+      "byType": { "matching-features": 6, "multiple-choice": 3, "yes-no-notgiven": 5 },
       "questions": [27, 40],
       "durationMinutes": 20
     },
@@ -2215,7 +2215,7 @@
       "sourceTestId": "reading-full-026",
       "partNumber": 3,
       "title": "Passage 3 Drill: The persistence and peril of misinformation",
-      "byType": { "multiple-choice": 4, "sentence-completion": 6, "yes-no-notgiven": 4 },
+      "byType": { "matching-features": 6, "multiple-choice": 4, "yes-no-notgiven": 4 },
       "questions": [27, 40],
       "durationMinutes": 20
     },
@@ -2255,7 +2255,7 @@
       "sourceTestId": "reading-full-028",
       "partNumber": 2,
       "title": "Passage 2 Drill: Developmental Tasks of Normal Adolescence",
-      "byType": { "categorisation": 6, "sentence-completion": 4, "tfng": 3 },
+      "byType": { "categorisation": 6, "sentence-endings": 4, "tfng": 3 },
       "questions": [15, 27],
       "durationMinutes": 20
     },
@@ -2319,7 +2319,7 @@
       "sourceTestId": "reading-full-031",
       "partNumber": 1,
       "title": "Passage 1 Drill: Marketing And Mind Control",
-      "byType": { "multiple-choice": 5, "sentence-completion": 4, "yes-no-notgiven": 5 },
+      "byType": { "multiple-choice": 5, "sentence-endings": 4, "yes-no-notgiven": 5 },
       "questions": [1, 14],
       "durationMinutes": 20
     },
@@ -2383,7 +2383,7 @@
       "sourceTestId": "reading-full-033",
       "partNumber": 3,
       "title": "Passage 3 Drill: The fluoridation controversy",
-      "byType": { "multiple-choice": 5, "sentence-completion": 5, "yes-no-notgiven": 4 },
+      "byType": { "multiple-choice": 5, "sentence-endings": 5, "yes-no-notgiven": 4 },
       "questions": [27, 40],
       "durationMinutes": 20
     },
@@ -2415,7 +2415,7 @@
       "sourceTestId": "reading-full-035",
       "partNumber": 1,
       "title": "Passage 1 Drill: Nature works for Nature Work PLA",
-      "byType": { "multiple-answer": 4, "multiple-choice": 2, "sentence-completion": 8 },
+      "byType": { "multiple-answer": 4, "multiple-choice": 2, "sentence-completion": 4, "sentence-endings": 4 },
       "questions": [1, 14],
       "durationMinutes": 20
     },
@@ -2431,7 +2431,7 @@
       "sourceTestId": "reading-full-035",
       "partNumber": 3,
       "title": "Passage 3 Drill: How Fair is Fair Trade?",
-      "byType": { "sentence-completion": 9, "yes-no-notgiven": 4 },
+      "byType": { "sentence-completion": 5, "sentence-endings": 4, "yes-no-notgiven": 4 },
       "questions": [28, 40],
       "durationMinutes": 20
     },
@@ -2527,7 +2527,7 @@
       "sourceTestId": "reading-full-039",
       "partNumber": 3,
       "title": "Passage 3 Drill: Tele-working",
-      "byType": { "matching-features": 8, "multiple-choice": 1, "sentence-completion": 4 },
+      "byType": { "matching-features": 8, "multiple-choice": 1, "sentence-endings": 4 },
       "questions": [28, 40],
       "durationMinutes": 20
     },
@@ -2807,13 +2807,13 @@
         {
           "paper": "reading-full-008",
           "firstQuestion": 31,
-          "types": ["sentence-completion"],
+          "types": ["sentence-endings"],
           "versions": ["ed3588117dffc383", "8eeb4fb8e0bca08e", "29e4ab493f1d0c98", "b4a2c8ec1ca1a4ac", "5f308698f196e98e"]
         },
         {
           "paper": "reading-full-013",
           "firstQuestion": 1,
-          "types": ["sentence-completion"],
+          "types": ["sentence-endings"],
           "versions": ["6f074f35d1fbfa1a", "55bec091e154d6a3", "b1c97c050e62a346", "64730fd6685305a1", "ac64b68d533ad2a8"]
         }
       ]
@@ -3726,13 +3726,14 @@
       "subskill": "sentence-endings",
       "paper": "reading",
       "expectedMinutes": 9,
-      "provenance": "project-authored",
-      "kind": "authored-practice",
+      "provenance": "imported-paper",
       "role": "guided-practice",
       "objective": "Complete a sentence with the ending the passage actually supports, not just one that fits grammatically.",
       "lessonKey": "reading-matching-sentence-endings",
       "lessonBlockId": "b3-7c2142a1",
-      "itemIds": ["authored:reading-sentence-endings-authored:q1", "authored:reading-sentence-endings-authored:q2", "authored:reading-sentence-endings-authored:q3", "authored:reading-sentence-endings-authored:q4", "authored:reading-sentence-endings-authored:q5"]
+      "paperId": "reading-full-033",
+      "questions": [36, 40],
+      "drillPart": 3
     },
     {
       "id": "reading-table-completion-check-a",
@@ -4711,7 +4712,7 @@
     {
       "type": "matching-features",
       "absent": false,
-      "reading": { "questions": 210, "papers": 28, "drills": 40 },
+      "reading": { "questions": 232, "papers": 32, "drills": 44 },
       "listening": { "questions": 63, "papers": 11, "drills": 12 }
     },
     {
@@ -4741,13 +4742,13 @@
     {
       "type": "sentence-completion",
       "absent": false,
-      "reading": { "questions": 429, "papers": 38, "drills": 80 },
+      "reading": { "questions": 348, "papers": 37, "drills": 67 },
       "listening": { "questions": 629, "papers": 30, "drills": 94 }
     },
     {
       "type": "sentence-endings",
-      "absent": true,
-      "reading": { "questions": 0, "papers": 0, "drills": 0 },
+      "absent": false,
+      "reading": { "questions": 59, "papers": 13, "drills": 15 },
       "listening": { "questions": 0, "papers": 0, "drills": 0 }
     },
     {

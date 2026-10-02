@@ -162,43 +162,48 @@ const test: PracticeTest = {
         },
         {
           "title": "Questions 11-14",
-          "type": "sentence-completion",
+          "type": "sentence-endings",
           "instructionHtml": "Complete each sentence with the correct ending A-G, below. Write the correct letter, A-G , in boxes 11-14 on your answer sheet.",
           "questions": [
             {
               "id": "q11",
               "answer": "F",
-              "before": "The behaviour of the monkeys on the island of Koshima showed that",
-              "after": "",
+              "textHtml": "The behaviour of the monkeys on the island of Koshima showed that …",
               "explanation": "The fourth paragraph describes one monkey washing her sweet potatoes, other monkeys copying her after watching, and the habit spreading until most of the colony did it, which is a new habit learned by observation. Option B is tempting because it also talks about animals copying, but the passage never mentions the age of the monkeys.",
               "evidence": "Potato washing then spread from monkey to monkey and, over the course of a few years, most monkeys were eating clean potatoes."
             },
             {
               "id": "q12",
               "answer": "C",
-              "before": "Primatologist Frans de Waal found that",
-              "after": "",
+              "textHtml": "Primatologist Frans de Waal found that …",
               "explanation": "The seventh paragraph says de Waal saw chimpanzees copying in a preferential way, and his example is a group whose injured dominant male was copied, so the animal being imitated was the one with the highest status. Option D is tempting because it also concerns imitation over time, but that option is about sportspeople, not about animals.",
               "evidence": "Primatologist Frans de Waal provides anecdotal evidence of preferential imitation among chimpanzees."
             },
             {
               "id": "q13",
               "answer": "A",
-              "before": "Dick Fosbury is mentioned in order to show that",
-              "after": "",
+              "textHtml": "Dick Fosbury is mentioned in order to show that …",
               "explanation": "The last paragraph says that when Fosbury changed the high jump, people copied the jumping style that made him win and not his shoes, so they copied the behaviour that was actually linked to his success. Option D is tempting because the 1968 date is given, but the writer's point is what was copied, not how long copying has gone on.",
               "evidence": "imitators obviously copied his jumping style, not his brand of sports shoes"
             },
             {
               "id": "q14",
               "answer": "E",
-              "before": "A feature of some modern marketing campaigns is that A . people imitated behaviour that was linked with success B . younger animals of a certain species are more likely to imitate each other. C . an animal would imitate another that had higher status D . imitation of popular sportspeople has occurred for many decades E . products are marketed to potential consumers who are unaware that marketing is occurring F . animals can develop new habits by observation. G . incentives are provided for consumers who behave in a certain way",
-              "after": "",
+              "textHtml": "A feature of some modern marketing campaigns is that …",
               "explanation": "The last paragraph describes stealth marketing, where people are paid to go to bars or websites and promote products secretly, so the consumer does not realise marketing is happening. Option G is tempting because it also describes a modern technique, but the passage never mentions rewards being given to consumers.",
               "evidence": "Today, companies engage in stealth marketing campaigns in which people are paid to frequent bars or websites to covertly promote certain products"
             }
           ],
-          "legendHtml": "<p>11. The behaviour of the monkeys on the island of Koshima showed that<br/>\n12. Primatologist Frans de Waal found that<br/>\n13. Dick Fosbury is mentioned in order to show that<br/>\n14. A feature of some modern marketing campaigns is that</p><p><strong>A</strong>. people imitated behaviour that was linked with success<br/>\n<strong>B</strong>. younger animals of a certain species are more likely to imitate each other.<br/>\n<strong>C</strong>. an animal would imitate another that had higher status<br/>\n<strong>D</strong>. imitation of popular sportspeople has occurred for many decades<br/>\n<strong>E</strong>. products are marketed to potential consumers who are unaware that marketing is occurring<br/>\n<strong>F</strong>. animals can develop new habits by observation.<br/>\n<strong>G</strong>. incentives are provided for consumers who behave in a certain way</p>"
+          "legendHtml": "<p><span><strong>A</strong> people imitated behaviour that was linked with success</span><br/>\n<span><strong>B</strong> younger animals of a certain species are more likely to imitate each other.</span><br/>\n<span><strong>C</strong> an animal would imitate another that had higher status</span><br/>\n<span><strong>D</strong> imitation of popular sportspeople has occurred for many decades</span><br/>\n<span><strong>E</strong> products are marketed to potential consumers who are unaware that marketing is occurring</span><br/>\n<span><strong>F</strong> animals can develop new habits by observation.</span><br/>\n<span><strong>G</strong> incentives are provided for consumers who behave in a certain way</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G"
+          ]
         }
       ]
     },

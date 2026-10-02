@@ -25,8 +25,9 @@
 
     The nine unprefixed ids below `matching-headings` are WP18a's addition
     (2026-09-22), one per Reading question type with real material beyond
-    Pilot A, plus `sentence-endings` for the one small authored set (no real
-    Reading paper contains that type at all). Unprefixed, the same
+    Pilot A, plus `sentence-endings` (first for a small authored set; since
+    3 October 2026 for the real sentence-endings groups, which had been
+    mistyped as Sentence Completion until then). Unprefixed, the same
     convention as `matching-headings` itself: Reading gets the plain name,
     Listening gets `listening-` in front, because the two fail differently
     (a Reading student can reread; a Listening student cannot), so a shared

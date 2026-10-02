@@ -423,50 +423,54 @@ const test: PracticeTest = {
         },
         {
           "title": "Questions 31-35",
-          "type": "sentence-completion",
+          "type": "sentence-endings",
           "instructionHtml": "Complete each sentence with the correct ending, A-G, below.",
           "questions": [
             {
               "id": "q31",
               "answer": "B",
-              "before": "At times when they were relaxed, the firefighters usually",
-              "after": "",
+              "textHtml": "At times when they were relaxed, the firefighters usually …",
               "explanation": "Paragraph 5 says relaxed people normally ignore bad news, taking little notice of it.",
               "evidence": "People are normally quite optimistic – they will ignore bad news and embrace the good."
             },
             {
               "id": "q32",
               "answer": "G",
-              "before": "The researchers noted that when the firefighters were stressed, they",
-              "after": "",
+              "textHtml": "The researchers noted that when the firefighters were stressed, they …",
               "explanation": "Paragraph 5 says stressed firefighters became hyper vigilant to bad news and revised their estimates upward, thinking something bad was more likely.",
               "evidence": "Under these conditions, they became hyper-vigilant to bad news, even when it had nothing to do with their job (such as learning that the likelihood of card fraud was higher than they’d thought), and altered their beliefs in response."
             },
             {
               "id": "q33",
               "answer": "F",
-              "before": "When the firefighters were told good news, they always",
-              "after": "",
+              "textHtml": "When the firefighters were told good news, they always …",
               "explanation": "Paragraph 5 says stress did not change how firefighters responded to good news, so their behaviour stayed the same regardless of conditions.",
               "evidence": "In contrast, stress didn’t change how they responded to good news (such as learning that the likelihood of card fraud was lower than they’d thought)."
             },
             {
               "id": "q34",
               "answer": "E",
-              "before": "The students’ cortisol levels and heart rates were affected when the researchers",
-              "after": "",
+              "textHtml": "The students’ cortisol levels and heart rates were affected when the researchers …",
               "explanation": "Paragraph 6 says students told they had to give a surprise public speech showed spiked cortisol and heart rate, since the speech put them under stress.",
               "evidence": "Back in our lab, we observed the same pattern in students who were told they had to give a surprise public speech, which would be judged by a panel, recorded and posted online."
             },
             {
               "id": "q35",
               "answer": "D",
-              "before": "In both experiments, negative information was processed better when the subjects A. made them feel optimistic. B. took relatively little notice of bad news. C. responded to negative and positive information in the same way. D. were feeling under stress. E. put them in a stressful situation. F. behaved in a similar manner, regardless of the circumstances. G. thought it more likely that they would experience something bad",
-              "after": "",
+              "textHtml": "In both experiments, negative information was processed better when the subjects …",
               "explanation": "In both experiments, negative information was processed better while the subjects were under stress, as the firefighter and student studies both show."
             }
           ],
-          "legendHtml": "<p><span>31. At times when they were relaxed, the firefighters usually</span><br/>\n<span>32. The researchers noted that when the firefighters were stressed, they</span><br/>\n<span>33. When the firefighters were told good news, they always</span><br/>\n<span>34. The students’ cortisol levels and heart rates were affected when the researchers</span><br/>\n<span>35. In both experiments, negative information was processed better when the subjects</span></p><p><span>A. made them feel optimistic.</span><br/>\n<span>B. took relatively little notice of bad news.</span><br/>\n<span>C. responded to negative and positive information in the same way.</span><br/>\n<span>D. were feeling under stress.</span><br/>\n<span>E. put them in a stressful situation.</span><br/>\n<span>F. behaved in a similar manner, regardless of the circumstances.</span><br/>\n<span>G. thought it more likely that they would experience something bad.</span></p>"
+          "legendHtml": "<p><span><strong>A</strong> made them feel optimistic.</span><br/>\n<span><strong>B</strong> took relatively little notice of bad news.</span><br/>\n<span><strong>C</strong> responded to negative and positive information in the same way.</span><br/>\n<span><strong>D</strong> were feeling under stress.</span><br/>\n<span><strong>E</strong> put them in a stressful situation.</span><br/>\n<span><strong>F</strong> behaved in a similar manner, regardless of the circumstances.</span><br/>\n<span><strong>G</strong> thought it more likely that they would experience something bad.</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G"
+          ]
         },
         {
           "title": "Questions 36-40",

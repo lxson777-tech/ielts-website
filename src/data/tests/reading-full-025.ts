@@ -435,47 +435,66 @@ const test: PracticeTest = {
       "groups": [
         {
           "title": "Questions 27-32",
-          "type": "sentence-completion",
+          "type": "matching-features",
           "instructionHtml": "Complete the summary using the list of phrases, A-K, below. Write the correct letter, A-K, in boxes 27-32 on your answer sheet.",
           "questions": [
             {
               "id": "q27",
               "answer": "H",
+              "textHtml": "Maryam Mirzakhani is regarded as ______ in the field of mathematics because she was the only …",
               "explanation": "The first paragraph says Mirzakhani was the only woman ever to win the Fields Medal, so in the world of mathematics she was unique.",
               "evidence": "She was the only woman to win the Fields Medal"
             },
             {
               "id": "q28",
               "answer": "A",
+              "textHtml": "However, maths held little ______ for her as a child and in fact her performance …",
               "explanation": "The first paragraph says that at school her interest was reading and not maths, so as a child maths held little appeal for her.",
               "evidence": "maths wasn’t her interest"
             },
             {
               "id": "q29",
               "answer": "C",
+              "textHtml": "… child and in fact her performance was below average until she was ______ by a difficult puzzle that one of her siblings showed her.",
               "explanation": "The first paragraph says her elder brother showed her a famous maths problem from a magazine that fascinated her, and to be fascinated by something is to be intrigued by it.",
               "evidence": "He shared a famous maths problem from a magazine that fascinated her"
             },
             {
               "id": "q30",
               "answer": "B",
+              "textHtml": "… professional mathematician, she had an inquiring mind and proved herself to be ______ when things did not go smoothly.",
               "explanation": "The second paragraph describes her as resolute when she met setbacks, which is the same as being determined when things did not go smoothly.",
               "evidence": "she was curious, excited by what she did and also resolute in the face of setbacks"
             },
             {
               "id": "q31",
               "answer": "J",
+              "textHtml": "She said she got the greatest ______ from making ground-breaking discoveries and in fact she was responsible …",
               "explanation": "The second paragraph quotes her saying the most rewarding part of her work was the moment of discovery and the enjoyment of understanding something new, so discoveries gave her the greatest satisfaction.",
               "evidence": "the most rewarding part is the “Aha” moment, the excitement of discovery and enjoyment of understanding something new"
             },
             {
               "id": "q32",
               "answer": "I",
+              "textHtml": "… from making ground-breaking discoveries and in fact she was responsible for some extremely ______ mathematical studies.",
               "explanation": "The second paragraph says her work took her to the heights of original research in mathematics, and research that is original is innovative.",
               "evidence": "That trail took her to the heights of original research into mathematics."
             }
           ],
-          "legendHtml": "<p><strong>Maryam Mirzakhani</strong></p><p>Maryam Mirzakhani is regarded as (27) …………… in the field of mathematics because she was the only female holder of the prestigious Fields Medal – a record that she retained at the time of her death. However, maths held little (28) ……………… for her as a child and in fact her performance was below average until she was (29) …………….by a difficult puzzle that one of her siblings showed her. Later, as a professional mathematician, she had an inquiring mind and proved herself to be (30) ……………… when things did not go smoothly. She said she got the greatest (31) ……………… from making ground-breaking discoveries and in fact she was responsible for some extremely (32) ……………… mathematical studies.</p><p><strong>A</strong> appeal<br/>\n<strong>B</strong> determined<br/>\n<strong>C</strong> intrigued<br/>\n<strong>D</strong> single<br/>\n<strong>E</strong> achievement<br/>\n<strong>F</strong> devoted<br/>\n<strong>G</strong> involved<br/>\n<strong>H</strong> unique<br/>\n<strong>I</strong> innovative<br/>\n<strong>J</strong> satisfaction<br/>\n<strong>K</strong> intent</p>"
+          "legendHtml": "<p><strong>Maryam Mirzakhani</strong></p><p>Maryam Mirzakhani is regarded as (27) …………… in the field of mathematics because she was the only female holder of the prestigious Fields Medal – a record that she retained at the time of her death. However, maths held little (28) ……………… for her as a child and in fact her performance was below average until she was (29) …………….by a difficult puzzle that one of her siblings showed her. Later, as a professional mathematician, she had an inquiring mind and proved herself to be (30) ……………… when things did not go smoothly. She said she got the greatest (31) ……………… from making ground-breaking discoveries and in fact she was responsible for some extremely (32) ……………… mathematical studies.</p><p><strong>A</strong> appeal<br/>\n<strong>B</strong> determined<br/>\n<strong>C</strong> intrigued<br/>\n<strong>D</strong> single<br/>\n<strong>E</strong> achievement<br/>\n<strong>F</strong> devoted<br/>\n<strong>G</strong> involved<br/>\n<strong>H</strong> unique<br/>\n<strong>I</strong> innovative<br/>\n<strong>J</strong> satisfaction<br/>\n<strong>K</strong> intent</p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K"
+          ]
         },
         {
           "title": "Questions 33-37",

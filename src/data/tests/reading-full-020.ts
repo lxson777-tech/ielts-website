@@ -102,35 +102,40 @@ const test: PracticeTest = {
         },
         {
           "title": "Questions 7-9",
-          "type": "sentence-completion",
+          "type": "sentence-endings",
           "instructionHtml": "Choose one phrase from the list in the box (A-F) to complete each of the following sentences.",
           "questions": [
             {
               "id": "q7",
               "answer": "F",
-              "before": "Humans are biologically programmed to",
-              "after": "",
+              "textHtml": "Humans are biologically programmed to …",
               "explanation": "The passage describes 'a biologically-based tendency to fall asleep in mid-afternoon', matching option F.",
               "evidence": "a biologically-based tendency to fall asleep in mid-afternoon"
             },
             {
               "id": "q8",
               "answer": "B",
-              "before": "Employees of some progressive companies are encouraged to",
-              "after": "",
+              "textHtml": "Employees of some progressive companies are encouraged to …",
               "explanation": "Professor Anthony's message is that 'people should be allowed to nap at their breaks', matching option B.",
               "evidence": "People should be allowed to nap at their breaks"
             },
             {
               "id": "q9",
               "answer": "E",
-              "before": "Traditional employers are likely to A. drink coffee to stay awake during the afternoon B. have a nap during breaks C. fall asleep when they are bored D. sneak naps without permission E. resist the trend toward napping F. fall asleep in the afternoon",
-              "after": "",
+              "textHtml": "Traditional employers are likely to …",
               "explanation": "Anthony predicts you 'won't see napping at traditional types of operations', showing such employers resist the trend, matching option E.",
               "evidence": "not going to see napping at traditional types of operations"
             }
           ],
-          "legendHtml": "<p><span>7. Humans are biologically programmed to</span><br/>\n<span>8. Employees of some progressive companies are encouraged to</span><br/>\n<span>9. Traditional employers are likely to</span></p><p><span>A. drink coffee to stay awake during the afternoon</span><br/>\n<span>B. have a nap during breaks</span><br/>\n<span>C. fall asleep when they are bored</span><br/>\n<span>D. sneak naps without permission</span><br/>\n<span>E. resist the trend toward napping</span><br/>\n<span>F. fall asleep in the afternoon</span></p>"
+          "legendHtml": "<p><span><strong>A</strong> drink coffee to stay awake during the afternoon</span><br/>\n<span><strong>B</strong> have a nap during breaks</span><br/>\n<span><strong>C</strong> fall asleep when they are bored</span><br/>\n<span><strong>D</strong> sneak naps without permission</span><br/>\n<span><strong>E</strong> resist the trend toward napping</span><br/>\n<span><strong>F</strong> fall asleep in the afternoon</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ]
         },
         {
           "title": "Questions 10-11",

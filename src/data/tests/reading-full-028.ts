@@ -300,22 +300,20 @@ const test: PracticeTest = {
         },
         {
           "title": "Questions 21-24",
-          "type": "sentence-completion",
+          "type": "sentence-endings",
           "instructionHtml": "Complete each sentence with the correct ending, A-E, below. Write the correct letter, A-E in boxes 21-24 on your answer sheet.",
           "questions": [
             {
               "id": "q21",
               "answer": "A",
-              "before": "Havighurst proposed a set of tasks which",
-              "after": "",
+              "textHtml": "Havighurst proposed a set of tasks which …",
               "explanation": "The opening paragraph says each of Havighurst's tasks can be seen as part of the overall sense of self that young people build as they move into adulthood, which matches ending A about an emerging self-perception. Ending D is tempting, but forming personal moral beliefs is only one of the ten tasks, not what the whole set is about.",
               "evidence": "Each of the Havighurst tasks can also be seen as elements of the overall sense of self that adolescents carry with them as they move towards and into young adulthood."
             },
             {
               "id": "q22",
               "answer": "C",
-              "before": "A course of study at high school",
-              "after": "",
+              "textHtml": "A course of study at high school …",
               "explanation": "The paragraph on cognitive demands at school says school courses are full of more abstract and demanding material, whether or not students are ready for it, so the course of study is built to get harder, which is ending C. Ending B is tempting because concrete examples are mentioned nearby, but that describes children before adolescence, not the curriculum.",
               "evidence": "School curricula are frequently dominated by the inclusion of more abstract, demanding material, regardless of whether the adolescents have achieved formal thought."
             },
@@ -325,8 +323,7 @@ const test: PracticeTest = {
                 "E",
                 "D"
               ],
-              "before": "The speed of development of thinking ability during adolescence",
-              "after": "",
+              "textHtml": "The speed of development of thinking ability during adolescence …",
               "explanation": "The paragraph on cognitive demands at school says young people do not all make the move to abstract thinking at the same speed, so the rate of development differs from one adolescent to another, which is ending E. Note that ending E has been printed with the same wording as ending D by mistake, so match by position in the list, and ending C does not fit because it describes the course, not the thinker.",
               "evidence": "Since not all adolescents make the intellectual transition at the same rate, demands for abstract thinking prior to the achievement of that ability may be frustrating."
             },
@@ -336,13 +333,19 @@ const test: PracticeTest = {
                 "D",
                 "E"
               ],
-              "before": "Adolescence is a time when the young person",
-              "after": "",
+              "textHtml": "Adolescence is a time when the young person …",
               "explanation": "The paragraph on a personal value system says the adolescent weighs their parents' values against those of friends and society and rebuilds them into a personal ideology, which is ending D about forming a personal set of moral beliefs. Ending A is tempting, but that phrase describes Havighurst's tasks as a whole in question 21.",
               "evidence": "To reconcile differences, the adolescent restructures those beliefs into a personal ideology."
             }
           ],
-          "legendHtml": "<p><strong>A</strong>. reflects an adolescent’s emerging self-perception.<br/>\n<strong>B</strong>. cannot solve a problem without an example<br/>\n<strong>C</strong>. is designed to become more challenging.<br/>\n<strong>D</strong>. formulates a personal set of moral beliefs and values.<br/>\n<strong>E</strong>. formulates a personal set of moral beliefs and values.</p><p>21. Havighurst proposed a set of tasks which<br/>\n22. A course of study at high school<br/>\n23. The speed of development of thinking ability during adolescence<br/>\n24. Adolescence is a time when the young person</p>"
+          "legendHtml": "<p><span><strong>A</strong> reflects an adolescent’s emerging self-perception.</span><br/>\n<span><strong>B</strong> cannot solve a problem without an example</span><br/>\n<span><strong>C</strong> is designed to become more challenging.</span><br/>\n<span><strong>D</strong> formulates a personal set of moral beliefs and values.</span><br/>\n<span><strong>E</strong> formulates a personal set of moral beliefs and values.</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E"
+          ]
         },
         {
           "title": "Questions 25-27",

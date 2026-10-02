@@ -61,43 +61,47 @@ const test: PracticeTest = {
       "groups": [
         {
           "title": "Questions 1-4",
-          "type": "sentence-completion",
+          "type": "sentence-endings",
           "instructionHtml": "Write the letters A-F in boxes 1-4 on your answer sheet.",
           "questions": [
             {
               "id": "q1",
               "answer": "B",
-              "before": "Scientists manage to",
-              "after": "",
+              "textHtml": "Scientists manage to …",
               "explanation": "Paragraph A says the Cargill scientists worked out how to turn lactic acid made from corn into plastic, so what they managed to do was make plastic from a plant. Option D is tempting because fermentation is mentioned, but that is one step in the method rather than what they achieved.",
               "evidence": "scientists at Cargill got the idea of converting lactic acid made from corn into plastic"
             },
             {
               "id": "q2",
               "answer": "C",
-              "before": "Cargill needs to have contacts with",
-              "after": "",
+              "textHtml": "Cargill needs to have contacts with …",
               "explanation": "Paragraph B says Cargill needed a partner that could reach the plastics markets, which is why it went to Dow, so the contacts it needed were for selling plastic. Option B is tempting, but Cargill could already make plastic from plants on its own.",
               "evidence": "The company needed a partner with access to plastics markets and polymerization capabilities"
             },
             {
               "id": "q3",
               "answer": "A",
-              "before": "Nature work is used for",
-              "after": "",
+              "textHtml": "Nature work is used for …",
               "explanation": "Paragraph C says the material reaches the shopper in clothes, cups, packaging and other products, so Nature Works is used to make everyday things like clothes. Option F is tempting because packaging is on that list, but the ending has to cover the whole range of products, not only wrapping.",
               "evidence": "a more environmentally friendly material that reaches the consumer in clothes, cups, packaging and other products"
             },
             {
               "id": "q4",
               "answer": "A",
-              "before": "Ingeo is used to",
-              "after": "",
+              "textHtml": "Ingeo is used to …",
               "explanation": "Ingeo is the brand name of the same Nature Works PLA, and Paragraph G says its fibre uses include clothing, blankets and wipes, so it is used to make things like clothes. Option E is tempting because drape fabrics appear in Paragraph H, but that is one narrow example rather than the general use.",
               "evidence": "Fiber and non-woven applications include clothing, fiberfill, blankets and wipes."
             }
           ],
-          "legendHtml": "<p>A. make things like clothes<br/>\nB. produce plastic from plant<br/>\nC. selling plastic in market<br/>\nD. fermentation process<br/>\nE. drape fabrics<br/>\nF. wrapping products</p><p>1. Scientists manage to<br/>\n2. Cargill needs to have contacts with<br/>\n3. Nature work is used for<br/>\n4. Ingeo is used to</p>"
+          "legendHtml": "<p><span><strong>A</strong> make things like clothes</span><br/>\n<span><strong>B</strong> produce plastic from plant</span><br/>\n<span><strong>C</strong> selling plastic in market</span><br/>\n<span><strong>D</strong> fermentation process</span><br/>\n<span><strong>E</strong> drape fabrics</span><br/>\n<span><strong>F</strong> wrapping products</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ]
         },
         {
           "title": "Questions 5-8",
@@ -552,43 +556,49 @@ const test: PracticeTest = {
         },
         {
           "title": "Questions 33-36",
-          "type": "sentence-completion",
+          "type": "sentence-endings",
           "instructionHtml": "Complete each sentence with the correct ending, A-H, below. Write the correct letter A-H, in boxes 33-36 on your answer sheet.",
           "questions": [
             {
               "id": "q33",
               "answer": "D",
-              "before": "Consumers of fair-trade products are happy",
-              "after": "",
+              "textHtml": "Consumers of fair-trade products are happy …",
               "explanation": "The fifth paragraph says shoppers in rich countries will pay slightly more when they know the producers have been paid fairly, so consumers are happy to pay more for what they see as ethical goods. Ending C is tempting because fair trade does bring social benefits, but this sentence is about the price shoppers accept, not about community gains.",
               "evidence": "developed-world consumers will pay slightly more for end products in the knowledge that developing-world producers have been equitably remunerated"
             },
             {
               "id": "q34",
               "answer": "A",
-              "before": "The fair-trade system may include",
-              "after": "",
+              "textHtml": "The fair-trade system may include …",
               "explanation": "The fifth paragraph says buyers of fair-trade goods may help with crop pre-financing or with training for producers and workers, so the system may include loans or training. Ending G is tempting if you remember the criticisms later on, but profit-taking is described as a fault of the system, not as part of what it offers.",
               "evidence": "purchasers of fair-trade products may assist with crop pre-financing or with the training of producers and workers"
             },
             {
               "id": "q35",
               "answer": "H",
-              "before": "Some fair-trade practices",
-              "after": "",
+              "textHtml": "Some fair-trade practices …",
               "explanation": "The fifth paragraph says research shows non-fair-trade farmers copy some fair-trade farming practices, which is ending H. Ending E says something very similar, but its verb has fits a singular subject such as the system, while the plural subject some fair-trade practices needs have been adopted.",
               "evidence": "Research has shown that non-fair-trade farmers copy some fair-trade farming practices"
             },
             {
               "id": "q36",
               "answer": "B",
-              "before": "Fair-trade producers must adopt international employment standards",
-              "after": "",
+              "textHtml": "Fair-trade producers must adopt international employment standards …",
               "explanation": "The fifth paragraph says producers agree to follow the United Nations Charter on Human Rights and to provide safe workplaces even though these rules are not legally binding at home, which is ending B. Ending F is tempting because the United Nations is named, but the passage stresses that nothing legally forces the producers to do it.",
               "evidence": "despite these not being legally binding in their own countries"
             }
           ],
-          "legendHtml": "<p>A. loans or training for producers and employees.<br/>\nB. although they may not be obliged to do so in their own country<br/>\nC. for the various social benefits fair trade brings.<br/>\nD. to pay more for what they see as ethical products.<br/>\nE. has influenced non-fair-trade producers.<br/>\nF. because these are United Nations obligations.<br/>\nG. too much corruption.<br/>\nH. have been adopted by non-fair-trade producers.</p><p>33. Consumers of fair-trade products are happy<br/>\n34. The fair-trade system may include<br/>\n35. Some fair-trade practices<br/>\n36. Fair-trade producers must adopt international employment standards</p>"
+          "legendHtml": "<p><span><strong>A</strong> loans or training for producers and employees.</span><br/>\n<span><strong>B</strong> although they may not be obliged to do so in their own country</span><br/>\n<span><strong>C</strong> for the various social benefits fair trade brings.</span><br/>\n<span><strong>D</strong> to pay more for what they see as ethical products.</span><br/>\n<span><strong>E</strong> has influenced non-fair-trade producers.</span><br/>\n<span><strong>F</strong> because these are United Nations obligations.</span><br/>\n<span><strong>G</strong> too much corruption.</span><br/>\n<span><strong>H</strong> have been adopted by non-fair-trade producers.</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ]
         },
         {
           "title": "Questions 37-40",

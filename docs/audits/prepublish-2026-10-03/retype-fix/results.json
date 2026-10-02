@@ -1,0 +1,120 @@
+{
+  "cases": [
+    {
+      "shot": "01-test02-q31-34-sentence-endings.png",
+      "test": "reading-full-002",
+      "group": "Questions 31-34",
+      "instruction": "Complete each sentence with the correct ending, A-F, below. Write the correct letter, A-F, in boxes 31-34 on your answer sheet.",
+      "selects": [
+        ",A,B,C,D,E,F",
+        ",A,B,C,D,E,F",
+        ",A,B,C,D,E,F",
+        ",A,B,C,D,E,F"
+      ],
+      "textInputs": 0,
+      "checkboxes": 0,
+      "text": "Questions 31-34\n\nComplete each sentence with the correct ending, A-F, below. Write the correct letter, A-F, in boxes 31-34 on your answer sheet.\n\nA Homo sapiens emerged at an earlier point in time than experts previously believed.\nB previous assumptions about who had power in the prehistoric world were inaccurate.\nC gender roles in extinct hominin species were different from those in Homo sapiens societies.\nD experts may have been mistaken about who looked for food in early human communities.\nE Homo sapiens was probably not the only species capable of sophisticated workmanship.\nF other species"
+    },
+    {
+      "shot": "02-test13-q1-5-sentence-endings.png",
+      "test": "reading-full-013",
+      "group": "Questions 1-5",
+      "instruction": "Complete each sentence with the correct ending, A – H, below. Write the correct letter A – H in spaces 1-5 below.",
+      "selects": [
+        ",A,B,C,D,E,F,G,H",
+        ",A,B,C,D,E,F,G,H",
+        ",A,B,C,D,E,F,G,H",
+        ",A,B,C,D,E,F,G,H",
+        ",A,B,C,D,E,F,G,H"
+      ],
+      "textInputs": 0,
+      "checkboxes": 0,
+      "text": "Questions 1-5\n\nComplete each sentence with the correct ending, A – H, below. Write the correct letter A – H in spaces 1-5 below.\n\nA improved security, supervision and education.\nB rehabilitation and education.\nC reduced educational opportunities and morale\nD reduced risk of self harm.\nE security and control.\nF an alternative prison model\nG a learning environment rather than a punitive compound\nH organisation, management and funding.\n\n🚩\n(blank)\nA\nB\nC\nD\nE\nF\nG\nH\n\n1.The agenda of current British prison systems is primarily …\n\n🚩\n(blank)\nA\nB\nC\nD\nE\nF\nG\nH\n\n2.The primary role of prisons should be …\n\n"
+    },
+    {
+      "shot": "03-test33-q36-40-sentence-endings.png",
+      "test": "reading-full-033",
+      "group": "Questions 36-40",
+      "instruction": "Complete each sentence with the correct ending. A-G. Write the correct letter. A-G, in boxes 36-40 on your answer sheet.",
+      "selects": [
+        ",A,B,C,D,E,F,G",
+        ",A,B,C,D,E,F,G",
+        ",A,B,C,D,E,F,G",
+        ",A,B,C,D,E,F,G",
+        ",A,B,C,D,E,F,G"
+      ],
+      "textInputs": 0,
+      "checkboxes": 0,
+      "text": "Questions 36-40\n\nComplete each sentence with the correct ending. A-G. Write the correct letter. A-G, in boxes 36-40 on your answer sheet.\n\nA the results of scientific research are not always understood at first\nB scientific knowledge is based on experiments conducted by scientists.\nC people should be able to choose whether they want fluoride.\nD there is insufficient proof to support a cautious approach.\nE the serious damage fluoride causes far outweighs any positive effects.\nF children are not the only ones who benefit from fluoridation.\nG scientific knowledge is affected by the beliefs of eve"
+    },
+    {
+      "shot": "04-test21-q3-7-matching-features.png",
+      "test": "reading-full-021",
+      "group": "Questions 3-7",
+      "instruction": "Choose the type of music from the list A-D below which corresponds to the findings of the study. NB You may use any letter more than once.",
+      "selects": [
+        ",A,B,C,D",
+        ",A,B,C,D",
+        ",A,B,C,D",
+        ",A,B,C,D",
+        ",A,B,C,D"
+      ],
+      "textInputs": 0,
+      "checkboxes": 0,
+      "text": "Questions 3-7\n\nChoose the type of music from the list A-D below which corresponds to the findings of the study. NB You may use any letter more than once.\n\nA light jazz\nB alternative\nC classical\nD rock\n\n🚩\n(blank)\nA\nB\nC\nD\n\n3.music preferred by men\n\n🚩\n(blank)\nA\nB\nC\nD\n\n4.longest waiting time estimate (both sexes)\n\n🚩\n(blank)\nA\nB\nC\nD\n\n5.music to avoid on telephone hold\n\n🚩\n(blank)\nA\nB\nC\nD\n\n6.music to use if clients are mostly women\n\n🚩\n(blank)\nA\nB\nC\nD\n\n7.best choice of ‘on-hold’ music overall"
+    },
+    {
+      "shot": "05-test25-q27-32-summary-box.png",
+      "test": "reading-full-025",
+      "group": "Questions 27-32",
+      "instruction": "Complete the summary using the list of phrases, A-K, below. Write the correct letter, A-K, in boxes 27-32 on your answer sheet.",
+      "selects": [
+        ",A,B,C,D,E,F,G,H,I,J,K",
+        ",A,B,C,D,E,F,G,H,I,J,K",
+        ",A,B,C,D,E,F,G,H,I,J,K",
+        ",A,B,C,D,E,F,G,H,I,J,K",
+        ",A,B,C,D,E,F,G,H,I,J,K",
+        ",A,B,C,D,E,F,G,H,I,J,K"
+      ],
+      "textInputs": 0,
+      "checkboxes": 0,
+      "text": "Questions 27-32\n\nComplete the summary using the list of phrases, A-K, below. Write the correct letter, A-K, in boxes 27-32 on your answer sheet.\n\nMaryam Mirzakhani\n\nMaryam Mirzakhani is regarded as (27) …………… in the field of mathematics because she was the only female holder of the prestigious Fields Medal – a record that she retained at the time of her death. However, maths held little (28) ……………… for her as a child and in fact her performance was below average until she was (29) …………….by a difficult puzzle that one of her siblings showed her. Later, as a professional mathematician, she had a"
+    },
+    {
+      "shot": "06-test15-q39-40-restored-stem.png",
+      "test": "reading-full-015",
+      "group": "Questions 39-40",
+      "instruction": "Which TWO of the following statements are true, according to the passage? Choose two letters, A-E.",
+      "selects": [],
+      "textInputs": 0,
+      "checkboxes": 5,
+      "text": "Questions 39-40\n\nWhich TWO of the following statements are true, according to the passage? Choose two letters, A-E.\n\nSelected 0 of 2\n\nALimited forensic knowledge probably affected the outcome of the Ripper case\nBThe Ripper murders convinced the police of a need for more sophisticated investigative methods\nCDisagreement existed amongst the police as to what information should be released to the Press\nDWhilst rivalry existed amongst the police, they were united in their dislike of the Press\nEThe police investigating the Ripper murders made good use of what techniques were available to them at th"
+    },
+    {
+      "shot": "07-listening07-q16-18-stem.png",
+      "test": "listening-full-007",
+      "group": "Questions 16-18",
+      "instruction": "Which THREE things can students have with them in the museum? Choose THREE letters A-G.",
+      "selects": [],
+      "textInputs": 0,
+      "checkboxes": 7,
+      "text": "Questions 16-18\n\nWhich THREE things can students have with them in the museum? Choose THREE letters A-G.\n\nSelected 0 of 3\n\nAfood\nBwater\nCcameras\nDbooks\nEbags\nFpens\nGworksheets"
+    },
+    {
+      "shot": "08-listening10-q5-7-stem.png",
+      "test": "listening-full-010",
+      "group": "Questions 5-7",
+      "instruction": "Which THREE places will the caller visit? Choose THREE letters, A-G.",
+      "selects": [],
+      "textInputs": 0,
+      "checkboxes": 7,
+      "text": "Questions 5-7\n\nWhich THREE places will the caller visit? Choose THREE letters, A-G.\n\nSelected 0 of 3\n\nAart museum\nBscience museum\nCshopping mall\nDmonument\nEpost office\nFrestaurant\nGpark"
+    },
+    {
+      "shot": "09-focused-sentence-endings.png",
+      "page": "/trainers/focused/reading-sentence-endings-authored",
+      "text": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nKZ\nSkip to content\n\nGUIDED PRACTICE · 9 MIN\n\nSentence Endings: guided practice\n\nComplete a sentence with the ending the passage actually supports, not just one that fits grammatically.\n\nReal exam material. Academic Reading Test 33, Passage 3, Questions 36 to 40.\n\nREADING PASSAGE 3\n\nThe fluoridation controversy\nThe long-standing debate about whether to fluoridate our drinking water continues Fluoridation is the addition of fluorine to public water supplies with the aim of reducing tooth decay. The fluorine, when mixed with water, becomes fluoride and the desired concentration of fluoride in public water is approximately one part per million, depending on the regional temperature and hence the amount of water people are likely to drink. Many studies, such as those by McClure in 1970 through to Burt in 1983, have shown that when children drink fluoridated water, their average rate of tooth decay seems greatly reduced. A typical figure claimed is 50 percent reduction. This apparently enormous benefit for children’s teeth is the major argument in favor of fluoridation.\nThree main grounds for opposition to fluoridation have been expressed. First, opponents claim the benefits are exaggerated or not established. Second, there are claims of health risks to pans of the population, for example, allergic reactions. It is also accepted that high levels of fluoride can cause discoloration of otherwise healthy teeth. Proponents do not"
+    }
+  ],
+  "consoleErrors": []
+}

@@ -491,47 +491,65 @@ const test: PracticeTest = {
         },
         {
           "title": "Questions 31-36",
-          "type": "sentence-completion",
+          "type": "matching-features",
           "instructionHtml": "Complete the summary using the list of phrases, A-J, below. Write the correct letter, A-J, in boxes 31-36 on your answer sheet.",
           "questions": [
             {
               "id": "q31",
               "answer": "G",
+              "textHtml": "Although people have ______ to misinformation, there is debate about precisely how and when …",
               "explanation": "The paragraph on Descartes and Spinoza begins by saying it is quite normal for people to meet false information, which matches frequent exposure (G). Extreme distrust (F) fails because the passage says people tend to believe what they meet, not doubt it.",
               "evidence": "it is fairly routine for individuals to come across information that is false"
             },
             {
               "id": "q32",
               "answer": "J",
+              "textHtml": "The philosophers Descartes and Spinoza had ______ about how people engage with information.",
               "explanation": "The same paragraph sets the two philosophers against each other and says their predictions conflicted, so they had different ideas (J) about how people deal with information.",
               "evidence": "with conflicting predictions that only recently have been empirically tested in robust ways"
             },
             {
               "id": "q33",
               "answer": "H",
+              "textHtml": "Moreover, Spinoza believed that a distinct ______ is involved in these stages.",
               "explanation": "Spinoza's view is that people first take information in as true and only later check it, using a separate cognitive process, and a mental operation (H) is the plain way to say that.",
               "evidence": "people accept all encountered information (or misinformation) by default and then subsequently verify or reject it through a separate cognitive process"
             },
             {
               "id": "q34",
               "answer": "B",
+              "textHtml": "Recent research has provided ______ for Spinoza’s theory and it would appear that people accept …",
               "explanation": "The passage says research teams at Chicago and Harvard have produced findings that back Spinoza's account, so the gap needs additional evidence (B). Experimental subjects (D) does not fit, because it is the findings, not the people tested, that support the theory.",
               "evidence": "empirical evidence from the research teams of Erik Asp of the University of Chicago and Daniel Gilbert at Harvard University"
             },
             {
               "id": "q35",
               "answer": "E",
+              "textHtml": "… as if it were true, even if this is for an extremely ______ and do not label the information as true or false …",
               "explanation": "The passage says people treat new information as true even if only momentarily, and momentarily means for a short period (E).",
               "evidence": "people appear to encode all new information as if it were true, even if only momentarily"
             },
             {
               "id": "q36",
               "answer": "C",
+              "textHtml": "… resources for scepticism and the resources for perceiving and encoding are in ______ in the brain.",
               "explanation": "The end of that paragraph says the brain handles scepticism in a different part from the part used for perceiving and taking information in, which is different locations (C). Constant conflict (A) fails because the passage describes two separate places, not a struggle between them.",
               "evidence": "mental resources for skepticism physically reside in a different part of the brain than the resources used in perceiving and encoding"
             }
           ],
-          "legendHtml": "<p><span><strong>What happens when people encounter misinformation?</strong></span></p><p><span>Although people have (31) …………… to misinformation, there is debate about precisely how and when we label something as true or untrue. The philosophers Descartes and Spinoza had (32) …………… about how people engage with information. While Descartes believed that people accept or reject information after considering whether it is true or not, Spinoza argued that people accepted all information they encountered (and by default misinformation) and did not verify or reject it until afterwards. Moreover, Spinoza believed that a distinct (33) …………… is involved in these stages. Recent research has provided (34) …………….for Spinoza’s theory and it would appear that people accept all encountered information as if it were true, even if this is for an extremely (35) …………………..and do not label the information as true or false until later, This is consistent with the fact that the resources for scepticism and the resources for perceiving and encoding are in (36) ……………….in the brain.</span></p><p><span><strong>A</strong> constant conflict</span><br/>\n<span><strong>B</strong> additional evidence</span><br/>\n<span><strong>C</strong> different locations</span><br/>\n<span><strong>D</strong> experimental subjects</span><br/>\n<span><strong>E</strong> short period</span><br/>\n<span><strong>F</strong> extreme distrust</span><br/>\n<span><strong>G</strong> frequent exposure</span><br/>\n<span><strong>H</strong> mental operation</span><br/>\n<span><strong>I</strong> dubious reason</span><br/>\n<span><strong>J</strong> different ideas</span></p>"
+          "legendHtml": "<p><span><strong>What happens when people encounter misinformation?</strong></span></p><p><span>Although people have (31) …………… to misinformation, there is debate about precisely how and when we label something as true or untrue. The philosophers Descartes and Spinoza had (32) …………… about how people engage with information. While Descartes believed that people accept or reject information after considering whether it is true or not, Spinoza argued that people accepted all information they encountered (and by default misinformation) and did not verify or reject it until afterwards. Moreover, Spinoza believed that a distinct (33) …………… is involved in these stages. Recent research has provided (34) …………….for Spinoza’s theory and it would appear that people accept all encountered information as if it were true, even if this is for an extremely (35) …………………..and do not label the information as true or false until later, This is consistent with the fact that the resources for scepticism and the resources for perceiving and encoding are in (36) ……………….in the brain.</span></p><p><span><strong>A</strong> constant conflict</span><br/>\n<span><strong>B</strong> additional evidence</span><br/>\n<span><strong>C</strong> different locations</span><br/>\n<span><strong>D</strong> experimental subjects</span><br/>\n<span><strong>E</strong> short period</span><br/>\n<span><strong>F</strong> extreme distrust</span><br/>\n<span><strong>G</strong> frequent exposure</span><br/>\n<span><strong>H</strong> mental operation</span><br/>\n<span><strong>I</strong> dubious reason</span><br/>\n<span><strong>J</strong> different ideas</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J"
+          ]
         },
         {
           "title": "Questions 37-40",

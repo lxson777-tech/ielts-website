@@ -17,9 +17,10 @@
  *      uses anything BUT a reserved paper.
  *   3. No item id is shared between a guided exercise and a check (a
  *      repeat would be a repeat of "unseen" material).
- *   4. The authored sentence endings set is guided-only in fact, not just
- *      in the field: the catalogue cannot offer it as a check, and it
- *      never crowds out a real independent check for the same subskill.
+ *   4. Sentence endings (an authored stand-in until 3 October 2026, real
+ *      papers since) draws on a real group, keeps its stored id, is
+ *      offered as guided practice and never as a check, and every real
+ *      sentence-endings group has the shape the select layout reads.
  *   5. Every teaching block this package points at is really in the lesson
  *      it names, in both stated block heading and lesson key.
  *   6. Expected minutes are sane, and the reason lists carry no dash and
@@ -53,7 +54,7 @@ const CATALOGUE = learningCatalogue();
 
 /** The nine Reading types this package added real material for, and the
     lesson each one's exercises point at. sentence-endings is checked on
-    its own further down: it has one authored guided set and no check. */
+    its own further down: it has one real guided set and no check yet. */
 const READING_TYPES: { subskill: string; lessonKey: string }[] = [
   { subskill: 'tfng', lessonKey: 'reading-tfng' },
   { subskill: 'yes-no-notgiven', lessonKey: 'reading-ynng' },
@@ -88,18 +89,87 @@ test('every WP18a Reading type has at least two guided exercises, two independen
   }
 });
 
-test('sentence endings has exactly one authored guided set, and no Reading paper contains the type at all', () => {
-  const authoredSentenceEndings = AUTHORED_FOCUSED_EXERCISES.filter((entry) => entry.subskill === 'sentence-endings');
-  assert.equal(authoredSentenceEndings.length, 1);
-  assert.equal(authoredSentenceEndings[0]!.role, 'guided-practice');
-  assert.equal(authoredSentenceEndings[0]!.provenance, 'project-authored');
-  assert.equal(readingExercisesFor('sentence-endings').length, 0, 'no real Reading group of this type exists to use');
+/** The plain text of each lettered ending in a legend. */
+function endingTexts(legendHtml: string): string[] {
+  return [...legendHtml.matchAll(/<strong>[A-Z]<\/strong>\s*([^<]+)/g)].map((match) => match[1]!.trim()).filter((text) => text.length > 8);
+}
 
+/** Every real sentence-endings group in the Reading papers. */
+function sentenceEndingsGroups() {
+  const found: { paperId: string; partIndex: number; groupIndex: number; group: (typeof ALL_TESTS)[number]['parts'][number]['groups'][number] }[] = [];
   for (const paper of ALL_TESTS) {
     if (paper.skill !== 'reading') continue;
-    for (const part of paper.parts) {
-      for (const group of part.groups) {
-        assert.notEqual(group.type, 'sentence-endings', `${paper.id} actually has a sentence-endings group; the authored set should be replaced`);
+    paper.parts.forEach((part, partIndex) =>
+      part.groups.forEach((group, groupIndex) => {
+        if (group.type === 'sentence-endings') found.push({ paperId: paper.id, partIndex, groupIndex, group });
+      }),
+    );
+  }
+  return found;
+}
+
+test('sentence endings uses real papers: fifteen real groups, and its guided set draws on one of them', () => {
+  /* CHANGED 3 October 2026. This test used to assert the opposite (no
+     Reading paper contains the type, so one authored set stands in for it,
+     lead decision Q1). That was a typing mistake in the papers: fifteen
+     real "Complete each sentence with the correct ending" groups had been
+     imported as Sentence Completion. With them typed correctly, the
+     authored stand-in is retired and the set draws on a real group. */
+  const groups = sentenceEndingsGroups();
+  assert.equal(groups.length, 15, 'fifteen real sentence-endings groups');
+
+  assert.equal(
+    AUTHORED_FOCUSED_EXERCISES.filter((entry) => entry.subskill === 'sentence-endings').length,
+    0,
+    'no authored stand-in remains once real material exists',
+  );
+
+  const exercises = readingExercisesFor('sentence-endings');
+  assert.ok(exercises.length >= 1, 'at least one real sentence-endings exercise');
+  /* The id is kept from the authored days so stored progress still finds it. */
+  assert.ok(exercises.some((entry) => entry.id === 'reading-sentence-endings-authored'));
+  for (const entry of exercises) {
+    assert.equal(entry.provenance, 'imported-paper', `${entry.id} is real publisher material`);
+    assert.equal(entry.reasons, 'sentence-endings', `${entry.id} uses its own reason list`);
+    assert.ok(
+      groups.some((g) => g.paperId === entry.source.testId && g.partIndex === entry.source.partIndex && g.groupIndex === entry.source.groupIndex),
+      `${entry.id} names a real sentence-endings group`,
+    );
+    const reserved = RESERVED_CHECK_PAPER_IDS.includes(entry.source.testId);
+    assert.equal(reserved, entry.role === 'independent-check', `${entry.id}: guided practice never spends a reserved paper`);
+    assert.ok(entry.expectedMinutes >= 3 && entry.expectedMinutes <= 13, `${entry.id}: ${entry.expectedMinutes} minutes is not sane`);
+  }
+
+  /* Its paper is not spent anywhere else: no other focused exercise uses
+     it, so a student meets these questions fresh. */
+  for (const entry of exercises) {
+    const others = FOCUSED_EXERCISES.filter((other) => other.id !== entry.id && other.source.testId === entry.source.testId);
+    assert.deepEqual(others.map((other) => other.id), [], `${entry.source.testId} is used by another focused exercise too`);
+  }
+});
+
+test('every real sentence-endings group renders as a choice from its endings, with nothing glued on', () => {
+  /* The shape the select layout reads (TestPlayer, focused-views): the
+     letters as `options`, the endings in `legendHtml`, each beginning in
+     `textHtml`, and no free-text `before`/`after` left over from the old
+     Sentence Completion typing. */
+  for (const { paperId, group } of sentenceEndingsGroups()) {
+    const where = `${paperId} ${group.title}`;
+    assert.ok(group.options && group.options.length > group.questions.length - 1, `${where}: needs its letters as options`);
+    for (const letter of group.options!) assert.match(letter, /^[A-Z]$/, `${where}: options are letters`);
+    assert.ok(group.legendHtml, `${where}: needs the list of endings`);
+    for (const letter of group.options!) {
+      assert.ok(group.legendHtml!.includes(`<strong>${letter}</strong>`), `${where}: ending ${letter} is missing from the legend`);
+    }
+    for (const question of group.questions) {
+      assert.equal(question.before, undefined, `${where} ${question.id}: free-text "before" left over`);
+      assert.equal(question.after, undefined, `${where} ${question.id}: free-text "after" left over`);
+      assert.ok((question.textHtml ?? '').length > 5, `${where} ${question.id}: the sentence beginning is missing`);
+      for (const ending of endingTexts(group.legendHtml!)) {
+        assert.ok(!(question.textHtml ?? '').includes(ending), `${where} ${question.id}: an ending is glued onto the beginning`);
+      }
+      for (const answer of Array.isArray(question.answer) ? question.answer : [question.answer]) {
+        assert.ok(group.options!.includes(answer), `${where} ${question.id}: answer ${answer} is not one of the options`);
       }
     }
   }
@@ -158,21 +228,23 @@ test('no item id is answered by both a guided exercise and a check, anywhere in 
 /* 3. The authored set can never become a check                       */
 /* ------------------------------------------------------------------ */
 
-test('the authored sentence endings set is offered as practice, never as an independent check', () => {
-  const authored = AUTHORED_FOCUSED_EXERCISES.find((entry) => entry.subskill === 'sentence-endings')!;
-  const activityId = focusedActivityId(authored.id);
+test('the sentence endings guided set keeps its id, is schedulable practice, and is never offered as a check', () => {
+  /* The id is the one stored against students' progress since the
+     authored days, so it must still resolve, now as verified real material. */
+  const activityId = focusedActivityId('reading-sentence-endings-authored');
 
   const practice = practiceForSubskill('sentence-endings', 60, CATALOGUE).map((activity) => activity.id);
-  assert.ok(practice.includes(activityId), 'unverified guided practice should still be schedulable');
+  assert.ok(practice.includes(activityId), 'the guided set is schedulable practice');
 
+  /* Guided practice is never an independent check, whatever its source. */
   const checks = checksForSubskill('sentence-endings', CATALOGUE);
-  assert.equal(checks.length, 0, 'there is no real check for this type, and the authored set must not become one');
   assert.ok(!checks.some((entry) => entry.activity.id === activityId));
 
   const activity = findActivity(activityId, CATALOGUE);
-  assert.ok(activity, 'the authored set is in the catalogue');
-  assert.equal(activity!.verified, false, 'unverified authored material is never presented as verified');
-  assert.equal(activity!.unavailable, undefined, 'guided practice is not blocked by being unverified (lead decision Q1)');
+  assert.ok(activity, 'the guided set is in the catalogue under its old id');
+  assert.equal(activity!.verified, true, 'real publisher material is verified by its source');
+  assert.equal(activity!.provenance, 'imported-paper');
+  assert.equal(activity!.unavailable, undefined);
 });
 
 /* ------------------------------------------------------------------ */
@@ -207,8 +279,9 @@ test('expected minutes are honest and bounded for every WP18a exercise', () => {
       assert.ok(entry.expectedMinutes >= 3 && entry.expectedMinutes <= 13, `${entry.id}: ${entry.expectedMinutes} minutes is not sane`);
     }
   }
-  const authored = AUTHORED_FOCUSED_EXERCISES.find((entry) => entry.subskill === 'sentence-endings')!;
-  assert.ok(authored.expectedMinutes >= 3 && authored.expectedMinutes <= 13);
+  for (const entry of readingExercisesFor('sentence-endings')) {
+    assert.ok(entry.expectedMinutes >= 3 && entry.expectedMinutes <= 13, `${entry.id}: ${entry.expectedMinutes} minutes is not sane`);
+  }
 });
 
 const NEW_REASON_LISTS = [
@@ -242,18 +315,17 @@ test('every WP18a reason list offers a real choice, with no repeated id and at l
   }
 });
 
-test('the authored passage and its explanations contain no em dash or en dash', () => {
-  const authored = AUTHORED_FOCUSED_EXERCISES.find((entry) => entry.subskill === 'sentence-endings')!;
-  const text = [
-    authored.title,
-    authored.objective,
-    authored.attribution,
-    authored.instructionHtml,
-    ...authored.passage.paragraphs.map((p) => p.html),
-    ...authored.options,
-    ...authored.items.flatMap((item) => [item.label, item.answer, item.explanation]),
-  ].join('\n');
-  assert.ok(!/[–—]/.test(text), 'no dashes anywhere in the authored set');
+test('the sentence endings set and the beginnings and endings it shows contain no em dash or en dash', () => {
+  /* Was "the authored passage ...": the passage is now the publisher's,
+     so what is checked is the text this site wrote or re-laid out. */
+  for (const entry of readingExercisesFor('sentence-endings')) {
+    const text = [entry.title, entry.objective, entry.source.attribution].join('\n');
+    assert.ok(!/[–—]/.test(text), `${entry.id}: no dashes in its title, objective or attribution`);
+  }
+  for (const { paperId, group } of sentenceEndingsGroups()) {
+    const text = [group.legendHtml ?? '', ...group.questions.map((question) => question.textHtml ?? '')].join('\n');
+    assert.ok(!/[–—]/.test(text), `${paperId} ${group.title}: no dashes in the beginnings or endings`);
+  }
 });
 
 /* ------------------------------------------------------------------ */

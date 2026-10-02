@@ -310,7 +310,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 25-26",
           "type": "multiple-answer",
-          "instructionHtml": "Choose two letters, A-E.",
+          "instructionHtml": "Which TWO of the following statements are true, according to the passage? Choose two letters, A-E.",
           "questions": [
             {
               "id": "q25",
@@ -493,7 +493,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 39-40",
           "type": "multiple-answer",
-          "instructionHtml": "Choose two letters, A-E.",
+          "instructionHtml": "Which TWO of the following statements are true, according to the passage? Choose two letters, A-E.",
           "questions": [
             {
               "id": "q39",

@@ -463,50 +463,58 @@ test('every question type the papers really contain can be learnt and practised'
   }
 });
 
-test('a question type with no questions is marked unavailable and says so plainly', () => {
+test('every question type in the schema occurs in a real paper, so none is a phantom any more', () => {
+  /* CHANGED 3 October 2026. This test used to assert that sentence endings
+     was the one "phantom" type: in the schema, with a lesson, and in no
+     paper at all. That was a typing mistake in the papers, not a fact
+     about them. Fifteen real "Complete each sentence with the correct
+     ending" groups had been imported as Sentence Completion; once they
+     were retyped, the type is measured in Reading like any other. */
   const absent = (LEARNING_INDEX.questionTypes as QuestionTypeCoverage[]).filter((t) => t.absent);
-  assert.deepEqual(absent.map((t) => t.type), ['sentence-endings'], 'the phantom type, measured not assumed');
+  assert.deepEqual(absent.map((t) => t.type), [], 'no type is missing from every paper');
 
-  for (const skill of ['reading', 'listening'] as const) {
-    const hub = findActivity(practiseActivityId(skill, 'sentence-endings')) as CatalogueActivity;
-    assert.ok(hub, 'the id still resolves, because it is already stored in Supabase');
-    assert.equal(hub.unavailable?.code, 'no-material');
-    assert.match(hub.unavailable?.reason ?? '', /no paper in the library/i);
-    assert.ok(!/[–—]/.test(hub.unavailable?.reason ?? ''), 'no dashes in anything a student reads');
-  }
+  const endings = (LEARNING_INDEX.questionTypes as QuestionTypeCoverage[]).find((t) => t.type === 'sentence-endings')!;
+  assert.ok(endings.reading.papers >= 13, `sentence endings is in ${endings.reading.papers} Reading papers`);
 
-  /* The lesson stays: lead decision Q1 keeps it and has a focused set
-     authored later. What it must NOT do is point at unrelated work. */
+  /* Reading now has drills to practise it on; Listening still has none, and
+     its hub says so in a plain sentence rather than linking to nothing. */
+  const readingHub = findActivity(practiseActivityId('reading', 'sentence-endings')) as CatalogueActivity;
+  assert.equal(readingHub.unavailable, undefined, 'real Reading drills contain sentence endings');
+  const listeningHub = findActivity(practiseActivityId('listening', 'sentence-endings')) as CatalogueActivity;
+  assert.ok(listeningHub, 'the id still resolves, because it is already stored in Supabase');
+  assert.equal(listeningHub.unavailable?.code, 'no-material');
+  assert.ok(!/[–—]/.test(listeningHub.unavailable?.reason ?? ''), 'no dashes in anything a student reads');
+
   const lesson = findActivity('lesson:reading-matching-sentence-endings') as CatalogueActivity;
   assert.ok(lesson, 'the lesson is kept');
   assert.equal(lesson.unavailable, undefined);
 
   const material = subskillMaterial('sentence-endings');
-  assert.ok(material.teach.length > 0, 'there is still somewhere to learn it');
+  assert.ok(material.teach.length > 0, 'there is somewhere to learn it');
 
-  /* CHANGED 22 September 2026, and the change is the point of lead decision
-     Q1. This used to read `practise.length === 0`, because the only honest
-     answer then was "nothing". WP18a authored the small practice set Q1
-     asked for, so there is now somewhere to work on this type, and the
-     expectation that there is not is simply out of date.
-     What Q1 does NOT allow is the set being passed off as the real thing:
-     it is project-authored, no teacher has verified it, and it is tagged
-     guided-only, so it may be worked through WITH help and may never be an
-     independent demonstration. That is what is asserted instead. */
-  assert.ok(material.practise.length > 0, 'the authored set from lead decision Q1 gives it somewhere to practise');
-  for (const activity of material.practise) {
-    assert.equal(activity.verified, false, `${activity.id} has not been verified by a teacher`);
-    assert.notEqual(activity.provenance, 'imported-paper', `${activity.id} is not from a real paper`);
-    assert.ok(activity.tags?.includes('guided-only'), `${activity.id} is guided practice only`);
+  /* The focused set lead decision Q1 asked for now draws on a real paper
+     (Test 33, Passage 3), so its practice is publisher material, verified
+     by its source, like every other Reading type's. */
+  assert.ok(material.practise.length > 0, 'there is somewhere to practise it');
+  const focused = material.practise.filter((activity) => activity.kind === 'focused-exercise');
+  assert.ok(focused.length > 0, 'the focused guided set is offered');
+  for (const activity of focused) {
+    assert.equal(activity.verified, true, `${activity.id} is real publisher material`);
+    assert.equal(activity.provenance, 'imported-paper', `${activity.id} comes from a real paper`);
   }
-  assert.equal(material.unavailable, null, 'so there is no "nothing to practise" notice any more');
+  assert.equal(material.unavailable, null, 'so there is no "nothing to practise" notice');
 
-  assert.equal(material.checks.length, 0, 'and it can never be an independent check');
-  assert.ok(
-    (material.checksUnavailable ?? '').length > 20,
-    'and the catalogue still says in a sentence why it can never be checked on its own',
-  );
-  assert.ok(!/[–—]/.test(material.checksUnavailable ?? ''), 'no dashes in anything a student reads');
+  /* It can now be checked on real, unseen material too: the lesson check
+     and the drills and papers that contain the type. The focused guided
+     set is never one of them. (No focused independent check has been built
+     for this type yet; one would reserve a paper, and Tests 21 and 39 have
+     unused groups for it.) */
+  assert.ok(material.checks.length > 0, 'real material can check it');
+  assert.equal(material.checksUnavailable, null);
+  for (const check of material.checks) {
+    assert.notEqual(check.activity.kind, 'focused-exercise', `${check.activity.id}: guided practice is never a check`);
+    assert.equal(check.activity.verified, true, `${check.activity.id} is real material`);
+  }
 });
 
 test('a practise link only exists where a real drill contains that type', () => {
@@ -864,7 +872,9 @@ test('nothing a student reads contains a dash', () => {
   }
 });
 
-test('the unavailable list is exactly the seven dead practise filters', () => {
+test('the unavailable list is exactly the six dead practise filters', () => {
+  /* Seven until 3 October 2026: practise:reading:sentence-endings left the
+     list when the papers' own sentence endings groups were typed correctly. */
   const blocked = unavailableActivities();
   assert.deepEqual(
     blocked.map((a) => a.id).sort(),
@@ -875,7 +885,6 @@ test('the unavailable list is exactly the seven dead practise filters', () => {
       'practise:listening:tfng',
       'practise:listening:yes-no-notgiven',
       'practise:reading:diagram-labelling',
-      'practise:reading:sentence-endings',
     ],
     'these are the filters that would have matched nothing',
   );
@@ -998,9 +1007,12 @@ test('the whole catalogue is the size the report says it is', () => {
      src/data/focused-exercises.ts). Every one of the twenty two is tagged
      guided-only in the catalogue and none is ever offered as an
      independent check in the sense checksForSubskill's verified filter
-     means for Reading, Listening or Writing (see GUIDED_ONLY_TAG). */
+     means for Reading, Listening or Writing (see GUIDED_ONLY_TAG).
+     Twenty one since 3 October 2026: the sentence endings set moved onto a
+     real paper (Test 33) once the papers' own sentence endings groups were
+     typed correctly, so it is publisher material, verified by its source. */
   const unverifiedFocused = byKind('focused-exercise').filter((activity) => !activity.verified);
-  assert.equal(unverifiedFocused.length, 22);
+  assert.equal(unverifiedFocused.length, 21);
   for (const activity of unverifiedFocused) {
     assert.equal(activity.provenance, 'project-authored', `${activity.id} is unverified because it is authored here`);
   }

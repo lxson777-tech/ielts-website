@@ -391,43 +391,47 @@ const test: PracticeTest = {
         },
         {
           "title": "Questions 31-34",
-          "type": "sentence-completion",
+          "type": "sentence-endings",
           "instructionHtml": "Complete each sentence with the correct ending, A-F, below. Write the correct letter, A-F, in boxes 31-34 on your answer sheet.",
           "questions": [
             {
               "id": "q31",
               "answer": "E",
-              "before": "The findings at Kalambo Falls revealed that",
-              "after": "",
+              "textHtml": "The findings at Kalambo Falls revealed that …",
               "explanation": "The Kalambo Falls logs were deliberately shaped and interlocked by a pre-Homo sapiens hominin, showing sophisticated workmanship existed before our species, matching ending E.",
               "evidence": "researchers found buried logs that had been shaped with stone tools so that they interlocked"
             },
             {
               "id": "q32",
               "answer": "F",
-              "before": "Evidence from high-altitude regions suggests that",
-              "after": "",
+              "textHtml": "Evidence from high-altitude regions suggests that …",
               "explanation": "The passage says Denisovans lived on high-altitude heights long before modern humans were thought to settle such places, matching ending F.",
               "evidence": "extinct hominins such as the Denisovans lived on the frozen heights of high-altitude regions"
             },
             {
               "id": "q33",
               "answer": "D",
-              "before": "An academic publication from June 2023 shows that",
-              "after": "",
+              "textHtml": "An academic publication from June 2023 shows that …",
               "explanation": "The June 2023 meta-analysis found ‘women hunted in 80 per cent’ of foraging societies, overturning the old ‘Man the Hunter’ idea about who found food, matching ending D.",
               "evidence": "a meta-analysis published in June 2023 compiled data on several dozen foraging societies and found women hunted in 80 per cent of them"
             },
             {
               "id": "q34",
               "answer": "B",
-              "before": "Analysis of a 4000-year-old Iberian leader indicates that 70 A Homo sapiens emerged at an earlier point in time than experts previously believed. B previous assumptions about who had power in the prehistoric world were inaccurate. C gender roles in extinct hominin species were different from those in Homo sapiens societies. D experts may have been mistaken about who looked for food in early human communities. E Homo sapiens was probably not the only species capable of sophisticated workmanship. F other species managed to survive in harsh environments before the arrival of Homo sapiens",
-              "after": "",
+              "textHtml": "Analysis of a 4000-year-old Iberian leader indicates that …",
               "explanation": "The Iberian leader long assumed male turned out to be female, showing earlier assumptions about prehistoric power-holders were wrong, matching ending B.",
               "evidence": "an Iberian leader from around 4000 years ago turned out to be female, not male as many had assumed"
             }
           ],
-          "legendHtml": "<p><span>31. The findings at Kalambo Falls revealed that</span><br/>\n<span>32. Evidence from high-altitude regions suggests that</span><br/>\n<span>33. An academic publication from June 2023 shows that</span><br/>\n<span>34. Analysis of a 4000-year-old Iberian leader indicates that 70</span></p><p><span><strong>A</strong> Homo sapiens emerged at an earlier point in time than experts previously believed.</span><br/>\n<span><strong>B</strong> previous assumptions about who had power in the prehistoric world were inaccurate.</span><br/>\n<span><strong>C</strong> gender roles in extinct hominin species were different from those in Homo sapiens societies.</span><br/>\n<span><strong>D</strong> experts may have been mistaken about who looked for food in early human communities.</span><br/>\n<span><strong>E</strong> Homo sapiens was probably not the only species capable of sophisticated workmanship.</span><br/>\n<span><strong>F</strong> other species managed to survive in harsh environments before the arrival of Homo sapiens.</span></p>"
+          "legendHtml": "<p><span><strong>A</strong> Homo sapiens emerged at an earlier point in time than experts previously believed.</span><br/>\n<span><strong>B</strong> previous assumptions about who had power in the prehistoric world were inaccurate.</span><br/>\n<span><strong>C</strong> gender roles in extinct hominin species were different from those in Homo sapiens societies.</span><br/>\n<span><strong>D</strong> experts may have been mistaken about who looked for food in early human communities.</span><br/>\n<span><strong>E</strong> Homo sapiens was probably not the only species capable of sophisticated workmanship.</span><br/>\n<span><strong>F</strong> other species managed to survive in harsh environments before the arrival of Homo sapiens.</span></p>",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ]
         },
         {
           "title": "Questions 35-40",

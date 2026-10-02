@@ -285,14 +285,14 @@ test('every lesson check in the index is a real exercise set, item for item', ()
 
 test('a lesson check is typed from the paper it quotes, not from the lesson it sits on', () => {
   /* The matching-sentence-endings lesson's own check is built from ten real
-     questions that the papers label `sentence-completion`, because no paper
-     contains a sentence-endings group at all (see the coverage test below).
-     Reading the type off the lesson would have recorded ten pieces of
-     evidence about a type the student has never actually met. */
+     questions (Test 8 Q31-35 and Test 13 Q1-5). Until 3 October 2026 the
+     papers mistyped those groups as `sentence-completion`, and this test
+     pinned that the index followed the PAPER, not the lesson. The papers
+     are now typed correctly, so the same rule gives `sentence-endings`. */
   const endings = index.lessonChecks.find((c: { id: string }) => c.id === 'practice-reading-matching-sentence-endings');
   assert.ok(endings, 'the matching-sentence-endings lesson check is missing');
   assert.ok(endings.items.length > 0);
-  for (const item of endings.items) assert.notEqual(item.type, 'sentence-endings');
+  for (const item of endings.items) assert.equal(item.type, 'sentence-endings');
 
   /* Every quoted item carries the type its own paper gives that question,
      including a unit that quotes its paper question by question. */
@@ -550,19 +550,23 @@ test('a type with no drill cannot be offered as practice, and the index says whi
   }
 });
 
-test('sentence-endings has no questions in any of the 70 papers, and is marked absent', () => {
-  /* Verified from the data, not taken on trust: the architecture's section
-     6.2 expected zero and zero is what the papers contain. The type is in
-     the schema union, it has a label, a strategy, a lesson page and a tutor
-     catalogue entry, and nothing to practise. */
+test('sentence-endings is measured in the Reading papers, and no type is absent any more', () => {
+  /* CHANGED 3 October 2026. This used to assert zero sentence-endings
+     questions in all 70 papers, and zero was what the DATA said: fifteen
+     real "Complete each sentence with the correct ending" groups had been
+     imported typed as Sentence Completion. They are typed correctly now
+     (Tests 2, 6, 8, 13 twice, 16, 20, 21, 24, 28, 31, 33, 35 twice, 39),
+     so the index sees them. Listening papers still have none. */
   const endings = index.questionTypes.find((t: { type: string }) => t.type === 'sentence-endings');
   assert.ok(endings, 'sentence-endings is missing from the index');
-  assert.equal(endings.absent, true);
-  assert.deepEqual(endings.reading, { questions: 0, papers: 0, drills: 0 });
+  assert.equal(endings.absent, false);
+  assert.equal(endings.reading.papers, 13, 'thirteen Reading papers (Tests 13 and 35 have two groups each)');
+  assert.equal(endings.reading.questions, 59, 'fifteen groups, 59 questions');
+  assert.ok(endings.reading.drills > 0, 'and real drills to practise them on');
   assert.deepEqual(endings.listening, { questions: 0, papers: 0, drills: 0 });
 
   const absent = index.questionTypes.filter((t: { absent: boolean }) => t.absent).map((t: { type: string }) => t.type);
-  assert.deepEqual(absent, ['sentence-endings'], 'the list of types with no material anywhere has changed');
+  assert.deepEqual(absent, [], 'the list of types with no material anywhere has changed');
 });
 
 test('a type absent from one skill is still marked present overall', () => {
