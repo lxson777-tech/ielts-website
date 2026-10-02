@@ -82,10 +82,6 @@ test('the reported Listening exercises now carry their own section of the questi
     'listening-table-completion-check-a': /<table/,
     'listening-table-completion-check-b': /<table/,
     'listening-matching-features-check-a': /Making a steam pit[\s\S]*listening-source-legend|listening-source-legend[\s\S]*Making a steam pit/,
-    /* A map task currently typed as matching-features in listening-full-002;
-       it renders because the rule is "the group has no wording of its own",
-       never the group's type, so retyping it keeps the map. */
-    'listening-matching-features-guided-2': /<img\b[^>]*\/pics\/listening\/imported\/test-002\.png/,
     'listening-multiple-answer-check-a': /bamboo oven/,
     'listening-multiple-answer-check-b': /wild fungi/,
   };
@@ -95,6 +91,49 @@ test('the reported Listening exercises now carry their own section of the questi
     assert.match(entry.view.legendHtml ?? '', pattern, id);
     assert.match(entry.view.legendHtml ?? '', /class="listening-question-paper focused-source-sheet"/, id);
   }
+});
+
+/* Every Listening "label the map" or diagram group in the library, whether a
+   focused exercise uses it today or not: built the way a focused page
+   would build it, it shows the picture and a gap for every question, and
+   keeps the letters it is answered with. Covers the map tasks retyped from
+   matching-features on 3 October 2026 (Test 2 Q17-20, Test 4 Q14-20,
+   Test 15 Q19-20). */
+test('every Listening map or diagram group would render with its picture and every gap', () => {
+  let checked = 0;
+  for (const paper of ALL_TESTS) {
+    if (paper.skill !== 'listening') continue;
+    let first = 1;
+    for (const part of paper.parts) {
+      for (const group of part.groups) {
+        const start = first;
+        first += group.questions.length;
+        if (group.type !== 'diagram-labelling' || part.stimulus.kind !== 'audio') continue;
+        const support = focusedSourceSupport(part.stimulus.questionHtml ?? '', start, group);
+        const where = `${paper.id} Q${start}-${first - 1}`;
+        assert.match(support.legendHtml ?? '', /<img\b[^>]*src="[^"]*\/pics\//, where);
+        if (group.questions.every(isPlaceholderQuestion)) {
+          for (let n = start; n < first; n++) assert.ok(stimulusHasGap(support.legendHtml ?? '', n), `${where}: no gap ${n}`);
+        }
+        if (group.options?.length) {
+          assert.equal(support.freeText, false, where);
+          assert.deepEqual(support.options, group.options, where);
+        }
+        checked++;
+      }
+    }
+  }
+  for (const [id, start] of [['listening-full-002', 17], ['listening-full-004', 14], ['listening-full-015', 19]] as const) {
+    const paper = ALL_TESTS.find((candidate) => candidate.id === id)!;
+    let first = 1;
+    let found = false;
+    for (const part of paper.parts) for (const group of part.groups) {
+      if (first === start) found = group.type === 'diagram-labelling';
+      first += group.questions.length;
+    }
+    assert.ok(found, `${id} Q${start} is typed as a map task`);
+  }
+  assert.ok(checked >= 7, `checked ${checked}`);
 });
 
 test('the sheet passed to a focused page never reaches past its own group', () => {

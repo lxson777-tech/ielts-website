@@ -71,19 +71,21 @@
   {
     "exercise": "listening-matching-features-guided-2",
     "width": 1440,
-    "sheet": true,
-    "sheet_beside_recording": true,
+    "sheet": false,
+    "sheet_beside_recording": false,
     "numbers": [
+      16,
       17,
       18,
       19,
       20
     ],
     "gaps_in_stimulus": {
-      "17": true,
-      "18": true,
-      "19": true,
-      "20": true
+      "16": false,
+      "17": false,
+      "18": false,
+      "19": false,
+      "20": false
     },
     "page_scrolls_sideways": false,
     "errors": [],

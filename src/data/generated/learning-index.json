@@ -1,7 +1,7 @@
 {
   "version": 1,
   "format": 3,
-  "indexVersion": "0f44ece5accf8aef",
+  "indexVersion": "afbacdc2ea156417",
   "tests": [
     {
       "id": "listening-full-001",
@@ -16,7 +16,7 @@
       "id": "listening-full-002",
       "skill": "listening",
       "title": "IELTS Listening Test 2",
-      "byType": { "matching-features": 4, "multiple-choice": 7, "sentence-completion": 29 },
+      "byType": { "diagram-labelling": 4, "multiple-choice": 7, "sentence-completion": 29 },
       "questionCount": 40,
       "durationMinutes": 40,
       "provenance": "imported-paper"
@@ -34,7 +34,7 @@
       "id": "listening-full-004",
       "skill": "listening",
       "title": "IELTS Listening Test 4",
-      "byType": { "matching-features": 13, "multiple-answer": 4, "multiple-choice": 5, "sentence-completion": 18 },
+      "byType": { "diagram-labelling": 7, "matching-features": 6, "multiple-answer": 4, "multiple-choice": 5, "sentence-completion": 18 },
       "questionCount": 40,
       "durationMinutes": 40,
       "provenance": "imported-paper"
@@ -133,7 +133,7 @@
       "id": "listening-full-015",
       "skill": "listening",
       "title": "IELTS Listening Test 15",
-      "byType": { "matching-features": 7, "multiple-choice": 8, "sentence-completion": 20, "table-completion": 5 },
+      "byType": { "diagram-labelling": 2, "matching-features": 5, "multiple-choice": 8, "sentence-completion": 20, "table-completion": 5 },
       "questionCount": 40,
       "durationMinutes": 40,
       "provenance": "imported-paper"
@@ -679,7 +679,7 @@
       "sourceTestId": "listening-full-002",
       "partNumber": 2,
       "title": "Test 2 · Part 2",
-      "byType": { "matching-features": 4, "multiple-choice": 3, "sentence-completion": 3 },
+      "byType": { "diagram-labelling": 4, "multiple-choice": 3, "sentence-completion": 3 },
       "questions": [11, 20],
       "durationMinutes": 8
     },
@@ -743,7 +743,7 @@
       "sourceTestId": "listening-full-004",
       "partNumber": 2,
       "title": "Test 4 · Part 2",
-      "byType": { "matching-features": 7, "multiple-choice": 3 },
+      "byType": { "diagram-labelling": 7, "multiple-choice": 3 },
       "questions": [11, 20],
       "durationMinutes": 8
     },
@@ -1095,7 +1095,7 @@
       "sourceTestId": "listening-full-015",
       "partNumber": 2,
       "title": "Test 15 · Part 2",
-      "byType": { "matching-features": 2, "multiple-choice": 3, "sentence-completion": 5 },
+      "byType": { "diagram-labelling": 2, "multiple-choice": 3, "sentence-completion": 5 },
       "questions": [11, 20],
       "durationMinutes": 9
     },
@@ -2590,7 +2590,7 @@
         {
           "paper": "listening-full-002",
           "firstQuestion": 17,
-          "types": ["matching-features"],
+          "types": ["diagram-labelling"],
           "versions": ["67f5039c3631b757", "4046b7e59e743482", "26f6401e8b593fb5", "432edfb5573f6549"]
         }
       ]
@@ -3115,8 +3115,8 @@
       "objective": "Match each item to the person, place or service the speaker actually settles on, not the first one mentioned.",
       "lessonKey": "listening-matching",
       "lessonBlockId": "b3-be48685a",
-      "paperId": "listening-full-002",
-      "questions": [17, 20],
+      "paperId": "listening-full-021",
+      "questions": [16, 20],
       "drillPart": 2
     },
     {
@@ -4706,13 +4706,13 @@
       "type": "diagram-labelling",
       "absent": false,
       "reading": { "questions": 0, "papers": 0, "drills": 0 },
-      "listening": { "questions": 23, "papers": 7, "drills": 7 }
+      "listening": { "questions": 36, "papers": 10, "drills": 10 }
     },
     {
       "type": "matching-features",
       "absent": false,
       "reading": { "questions": 210, "papers": 28, "drills": 40 },
-      "listening": { "questions": 76, "papers": 12, "drills": 15 }
+      "listening": { "questions": 63, "papers": 11, "drills": 12 }
     },
     {
       "type": "matching-headings",
