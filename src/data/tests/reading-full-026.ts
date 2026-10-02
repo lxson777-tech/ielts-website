@@ -156,7 +156,7 @@ const test: PracticeTest = {
               "evidence": "replaced the original grips of his rackets with something thinner"
             }
           ],
-          "legendHtml": "<p><span><strong>The tennis racket and how it has changed</strong></span></p><p><span>• Mike and Bob Bryan made changes to the types of (8) ………………. used on their racket frames.</span><br/>\n<span>• Players were not allowed to use the spaghetti-strung racket because of the amount of (9) ……………. it created.</span><br/>\n<span>• Changes to rackets can be regarded as being as important as players’ diets or the (10) ……………. they do.</span><br/>\n<span>• All rackets used to have natural strings made from the (11) ………………. of animals.</span><br/>\n<span>• Pete Sampras had metal (12) ………………. put into the frames of his rackets.</span><br/>\n<span>• Gongalo Oliveira changed the (13) ………………… on his racket handles.</span></p><p><span></span><br/>\n<ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><span><strong>The tennis racket and how it has changed</strong></span></p><p><span>• Mike and Bob Bryan made changes to the types of (8) ………………. used on their racket frames.</span><br/>\n<span>• Players were not allowed to use the spaghetti-strung racket because of the amount of (9) ……………. it created.</span><br/>\n<span>• Changes to rackets can be regarded as being as important as players’ diets or the (10) ……………. they do.</span><br/>\n<span>• All rackets used to have natural strings made from the (11) ………………. of animals.</span><br/>\n<span>• Pete Sampras had metal (12) ………………. put into the frames of his rackets.</span><br/>\n<span>• Gonçalo Oliveira changed the (13) ………………… on his racket handles.</span></p><p><span></span><br/>\n</p>",
           "wordLimit": 1
         }
       ]
@@ -384,7 +384,7 @@ const test: PracticeTest = {
               "evidence": "emboldened pirates kidnapped prominent Roman dignitaries, asking for a large ransom to be paid"
             }
           ],
-          "legendHtml": "<p><span><strong>Ancient Rome and piracy</strong></span></p><p><span>Piracy was an issue ancient Rome had to deal with, but it also brought some benefits for Rome. For example, pirates supplied slaves that were important for Rome’s industries. However, attacks on vessels transporting (24) ………………….to Rome resulted in calls for (25) ………………. for the pirates responsible. Nevertheless, piracy continued, with some pirates demanding a (26) ………………. for the return of the Roman officials they captured.</span></p><p><span></span><br/>\n<ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><span><strong>Ancient Rome and piracy</strong></span></p><p><span>Piracy was an issue ancient Rome had to deal with, but it also brought some benefits for Rome. For example, pirates supplied slaves that were important for Rome’s industries. However, attacks on vessels transporting (24) ………………….to Rome resulted in calls for (25) ………………. for the pirates responsible. Nevertheless, piracy continued, with some pirates demanding a (26) ………………. for the return of the Roman officials they captured.</span></p><p><span></span><br/>\n</p>",
           "wordLimit": 1
         }
       ]
@@ -565,7 +565,7 @@ const test: PracticeTest = {
               "explanation": "The passage discusses how misinformation spreads and how hard it is to correct, but it never comments on how much people need to keep up with new information, or on whether that need is overstated."
             }
           ],
-          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the claims of the writer</dd><dt>NO</dt><dd>if the statement contradicts the claims of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl><p><span></span><br/>\n<ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the claims of the writer</dd><dt>NO</dt><dd>if the statement contradicts the claims of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl><p><span></span><br/>\n</p>"
         }
       ]
     }

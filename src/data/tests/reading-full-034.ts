@@ -189,7 +189,7 @@ const test: PracticeTest = {
               "evidence": "but further investment is needed"
             }
           ],
-          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         }
       ]
     },
@@ -277,7 +277,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 19-27",
           "type": "matching-headings",
-          "instructionHtml": "Read reading passage and from the list of headings below, select the best heading for each paragraph A-I. Write the appropriate number i-ix, in the spaces numbered 6-14 on the answer sheet. Use each heading ONCE only.",
+          "instructionHtml": "Read reading passage and from the list of headings below, select the best heading for each paragraph A-I. Write the appropriate number i-ix, in the spaces numbered 19-27 on the answer sheet. Use each heading ONCE only.",
           "questions": [
             {
               "id": "q19",
@@ -343,7 +343,7 @@ const test: PracticeTest = {
               "evidence": "he suggests that anyone who suffers from heart disease should take it easy on Monday mornings and leave potentially stressful meetings until midweek"
             }
           ],
-          "legendHtml": "<p>i. Exact cause of heart attacks<br/>\nii. The safest day<br/>\niii. Breathless, sweaty and crushed<br/>\niv. Reducing heart attack hazard<br/>\nv. High-risk Monday<br/>\nvi. Mondays: riskier than food and way of life<br/>\nvii. Jobless but safer<br/>\nviii. Elderly also at risk<br/>\nix. Bodily adaptations</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>i. Exact cause of heart attacks<br/>\nii. The safest day<br/>\niii. Breathless, sweaty and crushed<br/>\niv. Reducing heart attack hazard<br/>\nv. High-risk Monday<br/>\nvi. Mondays: riskier than food and way of life<br/>\nvii. Jobless but safer<br/>\nviii. Elderly also at risk<br/>\nix. Bodily adaptations</p>",
           "options": [
             "i",
             "ii",
@@ -367,22 +367,22 @@ const test: PracticeTest = {
         "instructionHtml": "You should spend about 20 minutes on this passage and its questions.",
         "paragraphs": [
           {
-            "html": "It has long been known that the first one thousand days of life are the most critical in ensuring a person’s healthy future; precisely what happens during this period to any individual has been less well documented. To allocate resources appropriately, public health and education policies need to be based upon quantifiable data, so the New Zealand Ministry of Social Development began a longitudinal study of these early days, with the view to extending it for two decades. Born between March 2009 and May 20I0, the 6,846 babies recruited came from a densely populated area of New Zealand, and it is hoped they will be followed until they reach the age of 21."
+            "html": "It has long been known that the first one thousand days of life are the most critical in ensuring a person’s healthy future; precisely what happens during this period to any individual has been less well documented. To allocate resources appropriately, public health and education policies need to be based upon quantifiable data, so the New Zealand Ministry of Social Development began a longitudinal study of these early days, with the view to extending it for two decades. Born between March 2009 and May 2010, the 6,846 babies recruited came from a densely populated area of New Zealand, and it is hoped they will be followed until they reach the age of 21."
           },
           {
-            "html": "By 2014, fur reports, collectively known as Growing Up in New Zealand (GUiNZ), had been published, showing New Zealand to be a complex, changing country, with the participants and their families’ being markedly diﬀerent from those of previous generations."
+            "html": "By 2014, four reports, collectively known as Growing Up in New Zealand (GUiNZ), had been published, showing New Zealand to be a complex, changing country, with the participants and their families’ being markedly diﬀerent from those of previous generations."
           },
           {
             "html": "Of the 6,846 babies, the majority were identified as European New Zealanders, but one quarter was Maori (indigenous New Zealanders), 20% were Pacific (originating in islands in the Pacific), and one in six were Asian. Almost 50% of the children had more than one ethnicity."
           },
           {
-            "html": "The first three reports of GUiNZ ae descriptive, portraying the cohort before birth, at nine months, and at two years of age. Already, the first report, Before we are born, has made history as it contains interviews with the children’s mothers and fathers. The fourth report, which is more analytical, explores the definition of vulnerability for children in their first one thousand days."
+            "html": "The first three reports of GUiNZ are descriptive, portraying the cohort before birth, at nine months, and at two years of age. Already, the first report, Before we are born, has made history as it contains interviews with the children’s mothers and fathers. The fourth report, which is more analytical, explores the definition of vulnerability for children in their first one thousand days."
           },
           {
             "html": "Before we are born, published in 2010, describes the hopes, dreams, and realities that prospective parents have. It shows that the average age of both parents having a child was 30, and around two-thirds of parents were in legally binding relationships. However, one-third of the children were born to either a mother or a father who did not grow up in New Zealand – a significant diﬀerence from previous longitudinal studies in which a vast majority of parents were New Zealanders born and bred. Around 60% of the births in the cohort were planned, and most families hoped to have two or three children. During pregnancy, some women changed their behaviour, with regard to smoking, alcohol, and exercise, but many did not. Such information will be useful for public health campaigns."
           },
           {
-            "html": "Now we are born is the second report. Fifty-two percent of its babies were male and 48% female, with nearly a quarter delivered by caesarean section. The World Health Organisation and New Zealand guidelines recommend babies be breastfed exclusively for six months, but the median age for this in the GUiNZ cohort was fur months since almost one-third of mothers had returned to full-time work. By nine months, the babies were all eating solid food. While 54% of them were living in accommodation their families owned, their parents had almost all experienced a drop in income, sometimes a steep one, mostly due to mothers’ not working. Over 90% of the babies were immunised, and almost all were in very good health. Of the mothers, however, 11% had experienced post-natal depression – an alarming statistic, perhaps, but, once again, useful for mental health campaigns. Many of the babies were put in childcare while their mothers worked or studied, and the providers varied by ethnicity: children who were Maori or Pacific were more likely to be looked after by grandparents; European New Zealanders tended to be sent to daycare."
+            "html": "Now we are born is the second report. Fifty-two percent of its babies were male and 48% female, with nearly a quarter delivered by caesarean section. The World Health Organisation and New Zealand guidelines recommend babies be breastfed exclusively for six months, but the median age for this in the GUiNZ cohort was four months since almost one-third of mothers had returned to full-time work. By nine months, the babies were all eating solid food. While 54% of them were living in accommodation their families owned, their parents had almost all experienced a drop in income, sometimes a steep one, mostly due to mothers’ not working. Over 90% of the babies were immunised, and almost all were in very good health. Of the mothers, however, 11% had experienced post-natal depression – an alarming statistic, perhaps, but, once again, useful for mental health campaigns. Many of the babies were put in childcare while their mothers worked or studied, and the providers varied by ethnicity: children who were Maori or Pacific were more likely to be looked after by grandparents; European New Zealanders tended to be sent to daycare."
           },
           {
             "html": "Now we are two, the third report, provides more insights into the children’s development – physically, emotionally, behaviourally, and cognitively. Major changes in home environments are documented, like the socio-economic situation, and childcare arrangements. Information was collected both from direct observations of the children and from parental interviews. Once again, a high proportion of New Zealand two-year-olds were in very good health. Two-thirds of the children knew their gender, and used their own name or expressed independence in some way. The most common first word was a variation on ‘Mum’, and the most common favourite first food was a banana. Bilingual or multi-lingual children were in a large minority of 40%. Digital exposure was high: one in seven two-year-olds had used a laptop or a children’s computer, and 80% watched TV or DVDs daily; by contrast, 66% had books read to them each day."
@@ -502,7 +502,7 @@ const test: PracticeTest = {
               "evidence": "The factors include: being born to an adolescent mother"
             }
           ],
-          "legendHtml": "<p>Write the correct letter A, B, C, or D, in boxes 34-40 on your answer sheet.</p><p><strong>A</strong>. Report 1<br/>\n<strong>B</strong>. Report 2<br/>\n<strong>C</strong>. Report 3<br/>\n<strong>D</strong>. Report 4</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>Write the correct letter A, B, C, or D, in boxes 34-40 on your answer sheet.</p><p><strong>A</strong>. Report 1<br/>\n<strong>B</strong>. Report 2<br/>\n<strong>C</strong>. Report 3<br/>\n<strong>D</strong>. Report 4</p>",
           "options": [
             "A",
             "B",

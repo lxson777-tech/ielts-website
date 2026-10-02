@@ -65,7 +65,7 @@ const test: PracticeTest = {
               "id": "q1",
               "answer": "Benefits",
               "explanation": "The opening notes gap follows \"societal ___\", matching the passage's list of benefit types.",
-              "evidence": "they also provide numerous environmental, economic and social benefits."
+              "evidence": "Street trees are not only a key component of the urban landscape, but also provide numerous environmental, economic and social benefits."
             },
             {
               "id": "q2",
@@ -75,15 +75,15 @@ const test: PracticeTest = {
             },
             {
               "id": "q3",
-              "answer": "Surfaces",
-              "explanation": "Hard surfaces like concrete and asphalt store solar heat, causing the urban heat island effect.",
+              "answer": "Heat",
+              "explanation": "The gap follows ‘absorbing and retaining solar’, and the passage says the urban heat island effect is caused by hard surfaces such as concrete and asphalt ‘storing heat from the sun’, so the word is heat.",
               "evidence": "caused by hard surfaces such as concrete and asphalt storing heat from the sun."
             },
             {
               "id": "q4",
               "answer": "Water",
               "explanation": "Street trees improve water quality and reduce flooding, matching the gap \"___ quality and mitigate flooding\".",
-              "evidence": "they also improve water quality, reduce flooding"
+              "evidence": "They also improve water quality, reduce flooding"
             },
             {
               "id": "q5",

@@ -94,39 +94,29 @@ const test: PracticeTest = {
           "table": {
             "rows": [
               [
-                "……………… · similar brain patterns were observed when active and sleeping indicative of dreaming Pigeons · when sleeping, pigeons displayed activity in parts of the brain that deal with",
                 {
                   "questionId": "q1"
-                },
-                ""
+                }
               ],
               [
-                "…………. input may have been dreaming of flying Whales and dolphins · still have",
                 {
                   "questionId": "q2"
-                },
-                ""
+                }
               ],
               [
-                "………..their brain awake when they sleep · don’t experience REM sleep, as this could affect their sensitivity to",
                 {
                   "questionId": "q3"
-                },
-                ""
+                }
               ],
               [
-                "… their dreams are probably not very",
                 {
                   "questionId": "q4"
-                },
-                ""
+                }
               ],
               [
-                "…………",
                 {
                   "questionId": "q5"
-                },
-                ""
+                }
               ]
             ]
           }
@@ -168,7 +158,7 @@ const test: PracticeTest = {
               "answer": "True",
               "textHtml": "Scheel believes more research into octopuses’ dreams should be carried out",
               "explanation": "Scheel says brain imaging ‘is needed to show that the octopuses are replaying sequences… in dreams’, implying he believes more research is required.",
-              "evidence": "he argues that as well as outward behaviour, brain imaging is needed to show that the octopuses are replaying sequences of activities from their waking lives in dreams"
+              "evidence": "He argues that as well as outward behaviour, brain imaging is needed to show that the octopuses are replaying sequences of activities from their waking lives in dreams"
             },
             {
               "id": "q11",
@@ -437,10 +427,10 @@ const test: PracticeTest = {
               "answer": "B",
               "textHtml": "What is the writer doing in the first paragraph?",
               "options": [
-                "predicting the future impact of Al",
-                "describing a public perception of Al",
-                "outlining some possible benefits of Al",
-                "highlighting the breadth of the influence of Al"
+                "predicting the future impact of AI",
+                "describing a public perception of AI",
+                "outlining some possible benefits of AI",
+                "highlighting the breadth of the influence of AI"
               ],
               "explanation": "The first paragraph describes ‘hysteria about the future of artificial intelligence’ and sensationalist headlines, matching option B, describing a public perception of AI.",
               "evidence": "hysteria about the future of artificial intelligence (AI) is everywhere"
@@ -448,7 +438,7 @@ const test: PracticeTest = {
             {
               "id": "q28",
               "answer": "A",
-              "textHtml": "When discussing Al solutionism in the second paragraph, the writer",
+              "textHtml": "When discussing AI solutionism in the second paragraph, the writer",
               "options": [
                 "points out a risk involved",
                 "specifies its probable origins",
@@ -463,13 +453,13 @@ const test: PracticeTest = {
               "answer": "C",
               "textHtml": "In the fourth paragraph, the writer suggests that many politicians may",
               "options": [
-                "have failed to appreciate the true potential of Al initiatives",
+                "have failed to appreciate the true potential of AI initiatives",
                 "have misunderstood the function of the machine-learning sector",
-                "be unaware of the challenges of implementing national Al initiatives",
+                "be unaware of the challenges of implementing national AI initiatives",
                 "be too keen to enter the race to dominate the machine-learning sector"
               ],
-              "explanation": "The fourth paragraph says politicians ‘do not understand’ that adding a neural network will not automatically solve a problem, matching option C, being unaware of implementation challenges.",
-              "evidence": "what many politicians do not understand is that simply adding a neural network to a problem will not automatically mean that you’ll find a solution"
+              "explanation": "The fourth paragraph says that while many politicians proclaim the transformative effects of the coming AI revolution, ‘they fail to realise the complexity around deploying advanced machine learning systems in the real world’, matching option C, being unaware of the challenges of implementing national AI initiatives.",
+              "evidence": "they fail to realise the complexity around deploying advanced machine learning systems in the real world"
             }
           ]
         },
@@ -488,7 +478,7 @@ const test: PracticeTest = {
             {
               "id": "q31",
               "answer": "G",
-              "textHtml": "……………. to manage the huge amount of data required to enable Al to function. Complex bureaucracy is another issue, as each person involved needs",
+              "textHtml": "……………. to manage the huge amount of data required to enable AI to function. Complex bureaucracy is another issue, as each person involved needs",
               "explanation": "The passage says the public sector ‘does not have the appropriate data infrastructure’, matching option G, ‘framework’.",
               "evidence": "the public sector typically does not have the appropriate data infrastructure to support advanced machine learning"
             },
@@ -502,7 +492,7 @@ const test: PracticeTest = {
             {
               "id": "q33",
               "answer": "C",
-              "textHtml": "………………………………. to take full advantage of machine intelligence. The medical profession experimented with an Al programme, but their experts had little faith in its",
+              "textHtml": "………………………………. to take full advantage of machine intelligence. The medical profession experimented with an AI programme, but their experts had little faith in its",
               "explanation": "The passage says the public sector ‘lacks the human talent with the right technological capabilities’, matching option C, ‘skills’.",
               "evidence": "lacks the human talent with the right technological capabilities to fully reap the benefits of machine intelligence"
             },
@@ -521,7 +511,7 @@ const test: PracticeTest = {
               "evidence": "The system was found to amplify structural racial discrimination"
             }
           ],
-          "legendHtml": "<p><strong><span>AS in government, medicine and the law</span></strong></p><p><span>Neural networks are a promising area of A! technology for governments. However, many politicians overestimate their capabilities, believing that the mere addition of a neural network will produce solutions and promote (30) ………………</span></p><p><span>Most public sector organisations have not set up the necessary (31) ……………. to manage the huge amount of data required to enable Al to function. Complex bureaucracy is another issue, as each person involved needs (32) ………………………………. to access the relevant data, which is often spread across different departments. But the main problem is that few public sector employees have the (33) ………………………………. to take full advantage of machine intelligence.</span></p><p><span>The medical profession experimented with an Al programme, but their experts had little faith in its (34) ………… , and the programme was abandoned. US courts also abandoned the use of algorithms when it was found that these reflected and magnified the existing (35) …………….. within the legal profession.</span></p><p><span><strong>A</strong> reliability</span><br/>\n<span><strong>B</strong> funding</span><br/>\n<span><strong>C</strong> skills</span><br/>\n<span><strong>D</strong> prejudices</span><br/>\n<span><strong>E</strong> computers</span><br/>\n<span><strong>F</strong> equality</span><br/>\n<span><strong>G</strong> framework</span><br/>\n<span><strong>H</strong> confidentiality</span><br/>\n<span><strong>I</strong> approval</span></p>",
+          "legendHtml": "<p><strong><span>AI in government, medicine and the law</span></strong></p><p><span>Neural networks are a promising area of AI technology for governments. However, many politicians overestimate their capabilities, believing that the mere addition of a neural network will produce solutions and promote (30) ………………</span></p><p><span>Most public sector organisations have not set up the necessary (31) ……………. to manage the huge amount of data required to enable AI to function. Complex bureaucracy is another issue, as each person involved needs (32) ………………………………. to access the relevant data, which is often spread across different departments. But the main problem is that few public sector employees have the (33) ………………………………. to take full advantage of machine intelligence.</span></p><p><span>The medical profession experimented with an AI programme, but their experts had little faith in its (34) ………… , and the programme was abandoned. US courts also abandoned the use of algorithms when it was found that these reflected and magnified the existing (35) …………….. within the legal profession.</span></p><p><span><strong>A</strong> reliability</span><br/>\n<span><strong>B</strong> funding</span><br/>\n<span><strong>C</strong> skills</span><br/>\n<span><strong>D</strong> prejudices</span><br/>\n<span><strong>E</strong> computers</span><br/>\n<span><strong>F</strong> equality</span><br/>\n<span><strong>G</strong> framework</span><br/>\n<span><strong>H</strong> confidentiality</span><br/>\n<span><strong>I</strong> approval</span></p>",
           "options": [
             "A",
             "B",
@@ -542,27 +532,27 @@ const test: PracticeTest = {
             {
               "id": "q36",
               "answer": "No",
-              "textHtml": "Stuart Russell’s proposals regarding the use of Al are impractical",
+              "textHtml": "Stuart Russell’s proposals regarding the use of AI are impractical",
               "explanation": "Russell is described as advocating ‘a more sensible and realistic approach that focuses on simple everyday applications’, the opposite of impractical, contradicting the statement.",
               "evidence": "advocated a more sensible and realistic approach that focuses on simple everyday applications of AI"
             },
             {
               "id": "q37",
               "answer": "Not given",
-              "textHtml": "Rodney Brooks’ view has attracted unfair criticism from supporters of Al",
+              "textHtml": "Rodney Brooks’ view has attracted unfair criticism from supporters of AI",
               "explanation": "The passage quotes Brooks’ view but never mentions any unfair criticism directed at him, so this is not given."
             },
             {
               "id": "q38",
               "answer": "No",
-              "textHtml": "Nowadays, the need to protect Al systems is always taken into account when they are set up",
+              "textHtml": "Nowadays, the need to protect AI systems is always taken into account when they are set up",
               "explanation": "The passage says AI security ‘remains an often overlooked topic when machine learning systems are installed’, contradicting the claim that protection is always considered.",
               "evidence": "AI security remains an often overlooked topic when machine learning systems are installed"
             },
             {
               "id": "q39",
               "answer": "Yes",
-              "textHtml": "In order to benefit from Al and minimise the harms, we have to explore people’s concerns about its use",
+              "textHtml": "In order to benefit from AI and minimise the harms, we have to explore people’s concerns about its use",
               "explanation": "The passage says ‘we need to have a discussion about AI ethics and the distrust that many people have towards machine learning’, confirming the statement.",
               "evidence": "we need to have a discussion about AI ethics and the distrust that many people have towards machine learning"
             }
@@ -579,10 +569,10 @@ const test: PracticeTest = {
               "answer": "B",
               "textHtml": "What would be a suitable subtitle for reading passage?",
               "options": [
-                "How to make the most of what Al has to offer",
-                "Why Al may not be the answer to our problems",
-                "Why governments should not invest in Al systems",
-                "How Al could improve the efficiency of the public sector"
+                "How to make the most of what AI has to offer",
+                "Why AI may not be the answer to our problems",
+                "Why governments should not invest in AI systems",
+                "How AI could improve the efficiency of the public sector"
               ],
               "explanation": "The final paragraph concludes ‘there is no AI solution for everything’, matching option B, that AI may not be the answer to our problems.",
               "evidence": "there is no AI solution for everything"

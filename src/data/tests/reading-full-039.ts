@@ -173,7 +173,7 @@ const test: PracticeTest = {
               "explanation": "In Paragraph D, Chris Stringer only asks for the work to be repeated in other laboratories before anyone draws firm conclusions. The passage never says that the Australian method was called old-fashioned or out of date, so that part of the statement is not covered."
             }
           ],
-          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         }
       ]
     },
@@ -516,7 +516,7 @@ const test: PracticeTest = {
               "evidence": "the SUSTEL research found that most survey respondents felt that teleworking gave them a better quality of life and work-life balance"
             }
           ],
-          "legendHtml": "<p>40. Implied in the passage, what is the author’s attitude toward Telework?<br/>\n<strong>A</strong> surprised by its fast growth<br/>\n<strong>B</strong> unconcerned about the future pattern<br/>\n<strong>C</strong> believe it is generally positive and encouraging<br/>\n<strong>D</strong> worried in the economical problems arise</p><p><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<p>40. Implied in the passage, what is the author’s attitude toward Telework?<br/>\n<strong>A</strong> surprised by its fast growth<br/>\n<strong>B</strong> unconcerned about the future pattern<br/>\n<strong>C</strong> believe it is generally positive and encouraging<br/>\n<strong>D</strong> worried in the economical problems arise</p>"
         }
       ]
     }

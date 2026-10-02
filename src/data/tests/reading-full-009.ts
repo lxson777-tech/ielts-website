@@ -154,53 +154,39 @@ const test: PracticeTest = {
           "table": {
             "rows": [
               [
-                "………….. words 8th-11th centuries AD The Vikings invaded England The English adopted some",
                 {
                   "questionId": "q7"
-                },
-                ""
+                }
               ],
               [
-                "…………… 11th century AD The Normans invaded England English spelling changed, e.g., “cwene” became",
                 {
                   "questionId": "q8"
-                },
-                ""
+                }
               ],
               [
-                "…………… English adopted different words for",
                 {
                   "questionId": "q9"
-                },
-                ""
+                }
               ],
               [
-                "…………… and the meats they produced, such as pork from French “porc” 14th century AD Geoffrey Chaucer wrote The Canterbury Tales Chaucer proved that English was a",
                 {
                   "questionId": "q10"
-                },
-                ""
+                }
               ],
               [
-                "……….. language 15th century AD William Caxton introduced the printing press The English language became more",
                 {
                   "questionId": "q11"
-                },
-                ""
+                }
               ],
               [
-                "……….. 16th century AD The English Renaissance The English language gained many",
                 {
                   "questionId": "q12"
-                },
-                ""
+                }
               ],
               [
-                "……….. words",
                 {
                   "questionId": "q13"
-                },
-                ""
+                }
               ]
             ]
           }
@@ -358,13 +344,19 @@ const test: PracticeTest = {
             },
             {
               "id": "q25",
-              "answer": "Transition",
+              "answer": [
+                "Transition",
+                "Shift"
+              ],
               "explanation": "Paragraph I says the transition to self-driving cars will reshape urban landscapes and needs careful planning.",
               "evidence": "The transition to self-driving cars will reshape urban landscapes and redefine parking needs."
             },
             {
               "id": "q26",
-              "answer": "Cities",
+              "answer": [
+                "Cities",
+                "Municipalities"
+              ],
               "explanation": "Paragraph I says cities must adopt proactive policies to balance technology with sustainable design.",
               "evidence": "To ensure a smooth shift, cities must adopt proactive policies that balance technology with sustainable urban design."
             }
@@ -374,32 +366,24 @@ const test: PracticeTest = {
           "table": {
             "rows": [
               [
-                "………………. of parking or by limiting the number of spaces. Additionally, urban planners should modify infrastructure to support autonomous vehicles by incorporating",
                 {
                   "questionId": "q23"
-                },
-                ""
+                }
               ],
               [
-                "……………. for electric cars and designing adaptable parking zones. The",
                 {
                   "questionId": "q24"
-                },
-                ""
+                }
               ],
               [
-                "………………. from conventional cars to self-driving vehicles will require strategic planning. Cities must implement policies that ensure minimal disruption during this process. Long-term urban development should prioritize integrating self-driving technology by establishing suitable road networks and smart traffic systems. In the future,",
                 {
                   "questionId": "q25"
-                },
-                ""
+                }
               ],
               [
-                "……………… must rethink their policies to create sustainable and efficient urban environments",
                 {
                   "questionId": "q26"
-                },
-                ""
+                }
               ]
             ]
           }

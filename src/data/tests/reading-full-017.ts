@@ -24,7 +24,7 @@ const test: PracticeTest = {
             "html": "<span><strong>A</strong> Beneath the white blanket of Antarctica lies half a continent of virtually uncharted territory – an area so completely hidden that scientists have little clue what riches await discovery. Recently, Russian and British glaciologists identified an immense lake – one of Earth’s largest and deepest – buried beneath 4,000 meters of ice immediately below Russia’s Vostok Station.</span>"
           },
           {
-            "html": "<span><strong>B</strong> As details have emerged, a growing number of scientists are showing interest, with dozens of investigators keen to explore the feature, known as Lake Vostok. A thick layer of sediment at the bottom of the lake could hold novel dues to the planet’s climate going back tens of millions of years. By looking at the ratio of different oxygen isotopes, scientists should be able to trace how Earth’s temperature changed over the millennia. NASA has expressed interest in Lake Vostok because of its similarity to Europa. This moon of Jupiter appears to have a water ocean covered by a thick ice sheet, measuring perhaps tens of kilometers in depth. If hydrothermal vents existed beneath the ice, chemical reactions on Europa could have created the molecular building blocks for life, if not life itself. Vostok would be an ideal testing ground for technology that would eventually fly to Europa or places even more distant, say many scientists. Though cheap compared with a Europan mission, any expedition to Vostok would represent a significant investment.</span>"
+            "html": "<span><strong>B</strong> As details have emerged, a growing number of scientists are showing interest, with dozens of investigators keen to explore the feature, known as Lake Vostok. A thick layer of sediment at the bottom of the lake could hold novel clues to the planet’s climate going back tens of millions of years. By looking at the ratio of different oxygen isotopes, scientists should be able to trace how Earth’s temperature changed over the millennia. NASA has expressed interest in Lake Vostok because of its similarity to Europa. This moon of Jupiter appears to have a water ocean covered by a thick ice sheet, measuring perhaps tens of kilometers in depth. If hydrothermal vents existed beneath the ice, chemical reactions on Europa could have created the molecular building blocks for life, if not life itself. Vostok would be an ideal testing ground for technology that would eventually fly to Europa or places even more distant, say many scientists. Though cheap compared with a Europan mission, any expedition to Vostok would represent a significant investment.</span>"
           },
           {
             "html": "<span><strong>C</strong> Vostok Station holds the uncomfortable distinction of having recorded the coldest temperature on Earth. Thermometers there measured in July 1983, and the average temperature hovers around -55ºC. It’s the thick ice, strangely, that enables a lake to survive in such a frozen environment. The 4 kilometers of ice acts effectively as an insulating blanket protecting the bedrock underneath the ice from the cold temperatures above. Geothermal heat coming from the planet’s interior keeps the lake from freezing and warms the lowest layers of ice. The tremendous weight of the ice sheet also plays a role in maintaining the lake. Beneath 4 kilometers of glacier, the pressure is intense enough to melt ice at a temperature of -4°C. These factors have helped lakes develop across much of the thickly blanketed East Antarctica. More than 70 hidden lakes have been detected in the small portion of the continent to date. Lake Vostok is the largest of these, stretching 280km from south to north and some 60 km from east to west. At Vostok station, which sits at the southern end of the lake, the water depth appears to be 500m according to seismic experiments carried out by Russian researchers.</span>"
@@ -108,7 +108,7 @@ const test: PracticeTest = {
               "textHtml": "Lake Vostok does not freeze because …",
               "options": [
                 "a thick ice cover provides insulation",
-                "it is waned by heat from the earth’s surface",
+                "it is warmed by heat from the earth’s surface",
                 "low pressure prevents freezing",
                 "an underwater volcano erupted recently"
               ],
@@ -190,7 +190,7 @@ const test: PracticeTest = {
             "html": "<span>In the mid-1980s, fishermen in North Carolina, on the eastern coast of the United States, began complaining about mysterious fish kills. They were convinced that pollution was responsible but nobody would listen. That changed in 1988 after an accident at a research center. Tank after tank of fish suddenly died. Researchers spotted an unknown microorganism in the water. It was later named pfiesteria.</span>"
           },
           {
-            "html": "<span>Pfiesteria belongs to a prehistoric group of algae that are part plant, part animal. They are called dinoflagellates after the liny whips or flagella that propel them through the wafer. Magnified a thousand limes they are some of the strangest and most beautiful creatures in the sea. They are at the bottom of the food chain but, to deter fish from swallowing them, some have evolved powerful toxins.</span>"
+            "html": "<span>Pfiesteria belongs to a prehistoric group of algae that are part plant, part animal. They are called dinoflagellates after the tiny whips or flagella that propel them through the water. Magnified a thousand times they are some of the strangest and most beautiful creatures in the sea. They are at the bottom of the food chain but, to deter fish from swallowing them, some have evolved powerful toxins.</span>"
           },
           {
             "html": "<span>As the researchers were to discover, pfiesteria doesn’t just discourage fish. It actively hunts them, then eats them. Fish are one of its preferred foods but one of the intriguing things about pfiesteria is that it will eat everything from bacteria to dead plant and animal remains all the way up to mammalian tissues. So its food spans the entire food web of an estuary. Gradually the researchers realised that nothing in the water was safe from pfiesteria. It could harm humans too. A misdirected air-conditioning duct from a room containing the toxins nearly killed one of the researchers. He suffered a host of symptoms ranging from profuse sweating, tingling hands and feet, to liver and kidney problems, as well as memory loss.</span>"
@@ -202,7 +202,7 @@ const test: PracticeTest = {
             "html": "<span>Initially scientists believed this was part of a natural cycle, but on closer examination, it seemed pollution was to blame. When the water containing the biggest fish kills was analysed, scientists found high levels of pollution. But this is just one of the factors that can boost the transformation in pfiesteria. Others include large numbers of fish travelling together which feed in poorly flushed places with a lot of algae to eat and other rich food sources. That is the perfect habitat for pfiesteria.</span>"
           },
           {
-            "html": "<span>But pfiesteria is not the only concern. In the oceans all around the world similar kinds of algae are now materialising and turning toxic. In the last decade these algal blooms¹ have poisoned sea-lions in California, caused catastrophic fish kills in the Pacific, the Mediterranean and the North Sea, and devastated the shellfish industry in New Zealand. Researchers from forty-seven nations met recently to share the latest information about harmful algal blooms. They heard about new kinds of toxins and discussed possible links between algae and whale standings. But what dominated the proceedings was news that toxic algae are spreading to new shores in ballast water carried by ships.</span>"
+            "html": "<span>But pfiesteria is not the only concern. In the oceans all around the world similar kinds of algae are now materialising and turning toxic. In the last decade these algal blooms¹ have poisoned sea-lions in California, caused catastrophic fish kills in the Pacific, the Mediterranean and the North Sea, and devastated the shellfish industry in New Zealand. Researchers from forty-seven nations met recently to share the latest information about harmful algal blooms. They heard about new kinds of toxins and discussed possible links between algae and whale strandings. But what dominated the proceedings was news that toxic algae are spreading to new shores in ballast water carried by ships.</span>"
           },
           {
             "html": "<span>That may have already happened in Australian waters. A tuna kill in 1996 cost fish farmers an estimated $45 million. The official explanation was that a storm was to blame. But there were also reports of orange-brown streaks in the water. When a water sample was examined, it was found to be teeming with an alga never before seen in Australia, called chattonella. The same chattonella killed half a billion dollars’ worth of fish in Japan in 1972.</span>"
@@ -470,15 +470,15 @@ const test: PracticeTest = {
               "id": "q35",
               "answer": "No",
               "textHtml": "There is proof that tobacco was grown in Ancient Egypt",
-              "explanation": "The passage never claims tobacco was grown in Egypt, only that a tobacco fragment was found on a mummy, which suggested an imported plant, not a local crop.",
-              "evidence": "a New World plant had been found on an Old World mummy"
+              "explanation": "The first paragraph says ‘It is generally accepted that these two plants, native to the Americas, did not exist on other continents prior to European exploration’, and the tobacco found on Ramses II is called ‘a New World plant’. So the writer treats tobacco as a plant that did not grow in Egypt, which contradicts the claim of proof that it was grown there.",
+              "evidence": "It is generally accepted that these two plants, native to the Americas, did not exist on other continents prior to European exploration."
             },
             {
               "id": "q36",
               "answer": "Yes",
               "textHtml": "Trade routes across the Atlantic Ocean may have existed thousands of years ago",
               "explanation": "The final paragraphs state 'it is no longer possible to exclude the hypothesis of transoceanic trade in ancient times'.",
-              "evidence": "it is no longer possible to exclude the hypothesis of transoceanic trade"
+              "evidence": "It is no longer possible to exclude the hypothesis of transoceanic trade"
             },
             {
               "id": "q37",

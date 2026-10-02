@@ -146,7 +146,7 @@ const test: PracticeTest = {
               "evidence": "The Maori language is also seen as important by many of those receiving treatment."
             }
           ],
-          "legendHtml": "<p><strong>A short history of Maori healing</strong></p><p><strong>Pre-European arrival</strong><br/>\n• Maori were using plant based remedies, as well as treatment including massage<br/>\n• Diseases sent from the gods were thought to be caused by disobeying a spiritual (7) ……………..<br/>\n• Sickness could be attributed to eating food from a sacred (8) ………………. or burning sacred wood</p><p><strong>After European arrival</strong></p><p>1800s<br/>\n• The inability of Maori healers to cure new diseases meant the Maori people lost (9) ……………….. in them.<br/>\n• Eventually the (10) ………………. for Maori healing began shutting down 1970s<br/>\n• Published (11) ………………….. showed that Maori were not as healthy as Europeans</p><p>2000s<br/>\n• Maori healers can be seen working with Western doctors in (12) ……………….. in cities<br/>\n• Many patients appreciate the fact that the Maoris (13) ………………. in used by healers</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A short history of Maori healing</strong></p><p><strong>Pre-European arrival</strong><br/>\n• Maori were using plant based remedies, as well as treatment including massage<br/>\n• Diseases sent from the gods were thought to be caused by disobeying a spiritual (7) ……………..<br/>\n• Sickness could be attributed to eating food from a sacred (8) ………………. or burning sacred wood</p><p><strong>After European arrival</strong></p><p>1800s<br/>\n• The inability of Maori healers to cure new diseases meant the Maori people lost (9) ……………….. in them.<br/>\n• Eventually the (10) ………………. for Maori healing began shutting down 1970s<br/>\n• Published (11) ………………….. showed that Maori were not as healthy as Europeans</p><p>2000s<br/>\n• Maori healers can be seen working with Western doctors in (12) ……………….. in cities<br/>\n• Many patients appreciate the fact that the Maoris (13) ………………. in used by healers</p>",
           "wordLimit": 1
         }
       ]
@@ -303,7 +303,7 @@ const test: PracticeTest = {
               "evidence": "Greenpeace has been campaigning for the three Antarctic sanctuaries that it would establish to offer protection to many of the colonies surveyed."
             }
           ],
-          "legendHtml": "<p>The Greenpeace ship has been used to:<br/>\n• record the (24) ……………… to marine life over the world.<br/>\n• carry the (25) ………………….. overseas.<br/>\n• Build (26) …………………. to protect many surveyed colonies.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>The Greenpeace ship has been used to:<br/>\n• record the (24) ……………… to marine life over the world.<br/>\n• carry the (25) ………………….. overseas.<br/>\n• Build (26) …………………. to protect many surveyed colonies.</p>",
           "wordLimit": 1
         }
       ]
@@ -434,7 +434,7 @@ const test: PracticeTest = {
               "evidence": "In 2009, la bise was temporarily paused as swine flu became a concern."
             }
           ],
-          "legendHtml": "<p><strong>The history of cheek kissing</strong></p><p>In the past, Christian used cheek kisses in (34) ………………….. In the Middle Age, the kiss-as-greeting was used to show (35) …………….. or used in making agreements. At present, it is a norm for people almost all over the world to greet each other. In Rome, people named different types of kisses in different ways. It is common for people in Paris to exchange (36) ………………….. The standard is three in Provence and four in the Lore Valley. A kiss on the cheek is also popular among people of Egypt, Latin America and the Philippines. People believe that in the 14th century, the cheek kiss might have been paused and it remained so for (37) …………………. In 2009, due to (38) ………………….. cheek kisses were also stopped for a while.</p>",
+          "legendHtml": "<p><strong>The history of cheek kissing</strong></p><p>In the past, Christian used cheek kisses in (34) ………………….. In the Middle Age, the kiss-as-greeting was used to show (35) …………….. or used in making agreements. At present, it is a norm for people almost all over the world to greet each other. In Rome, people named different types of kisses in different ways. It is common for people in Paris to exchange (36) ………………….. The standard is three in Provence and four in the Loire Valley. A kiss on the cheek is also popular among people of Egypt, Latin America and the Philippines. People believe that in the 14th century, the cheek kiss might have been paused and it remained so for (37) …………………. In 2009, due to (38) ………………….. cheek kisses were also stopped for a while.</p>",
           "wordLimit": 3
         },
         {
@@ -455,8 +455,7 @@ const test: PracticeTest = {
               "answer": [
                 "Germs",
                 "Bacteria",
-                "Bacterial transfer",
-                "Germs or bacteria"
+                "Bacterial transfer"
               ],
               "before": "What can be transferred from a handshake?",
               "after": "",
@@ -464,7 +463,7 @@ const test: PracticeTest = {
               "evidence": "are agents of bacterial transfer"
             }
           ],
-          "legendHtml": "<p>39. What did French Health Minister advise people to avoid to prevent the spread of coronavirus?<br/>\n40. What can be transferred from a handshake?</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>39. What did French Health Minister advise people to avoid to prevent the spread of coronavirus?<br/>\n40. What can be transferred from a handshake?</p>",
           "wordLimit": 2
         }
       ]

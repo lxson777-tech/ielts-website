@@ -103,53 +103,39 @@ const test: PracticeTest = {
           "table": {
             "rows": [
               [
-                "………….. than to their incarceration. Closure of prisons in the Netherlands",
                 {
                   "questionId": "q1"
-                },
-                ""
+                }
               ],
               [
-                "………………. at an unprecedented rate over recent years. Against",
                 {
                   "questionId": "q2"
-                },
-                ""
+                }
               ],
               [
-                "……………… , the Netherlands are seeing a drop in crime along with the closure of prisons. Since statistics do not support the argument for incarceration this has made many",
                 {
                   "questionId": "q3"
-                },
-                ""
+                }
               ],
               [
-                "………………. of such a practice. In fact, incarceration may serve to fuel rather",
                 {
                   "questionId": "q4"
-                },
-                ""
+                }
               ],
               [
-                "……………… crime, thereby defeating the purpose of such a punishment. In recognition of the fact that custodial sentences achieve little, less costly and",
                 {
                   "questionId": "q5"
-                },
-                ""
+                }
               ],
               [
-                "……….. were put forward by the Conservatives in 1990. Crime is not only down to individual behaviour but is also a result of",
                 {
                   "questionId": "q6"
-                },
-                ""
+                }
               ],
               [
-                "………………. influences",
                 {
                   "questionId": "q7"
-                },
-                ""
+                }
               ]
             ]
           }
@@ -403,7 +389,7 @@ const test: PracticeTest = {
             "html": "<span>Another more serious criticism that has been levelled at the investigative police at the time is their deliberate tampering with evidence. It is well-known that a semi-illiterate message was scrawled above one of the Ripper’s victims. However, before it could be properly analysed, the investigating officer ordered that it be removed as it was thought to implicate the Jews and racial repercussions were feared. the motive was well-intended but this action may have destroyed vital clues.</span>"
           },
           {
-            "html": "<span>A final problem was the lack of co-operation that existed not just between the Press and the police but also between law enforcement agencies themselves. With regard to the former problem, police distrust if the Press led to limited information being released to the newspapers. This was due to a fear that information made public could alert a suspect or waste time in throwing up false leads. Unfortunately, if information had been circulated in the public arena, important information might have been uncovered and would have led to the arrest of the Ripper. As regards the law enforcement agencies, in-fighting and rivalry between the City and Metropolitan Police Forces served to delay exchange of information and so further hinder proceedings.</span>"
+            "html": "<span>A final problem was the lack of co-operation that existed not just between the Press and the police but also between law enforcement agencies themselves. With regard to the former problem, police distrust of the Press led to limited information being released to the newspapers. This was due to a fear that information made public could alert a suspect or waste time in throwing up false leads. Unfortunately, if information had been circulated in the public arena, important information might have been uncovered and would have led to the arrest of the Ripper. As regards the law enforcement agencies, in-fighting and rivalry between the City and Metropolitan Police Forces served to delay exchange of information and so further hinder proceedings.</span>"
           }
         ]
       },
@@ -518,7 +504,7 @@ const test: PracticeTest = {
               "textHtml": "",
               "answerPairId": "reading-303-q39-q40",
               "explanation": "Limited forensic knowledge likely affected the case's outcome, and despite rivalry between police forces, they were united in distrusting the Press.",
-              "evidence": "police distrust if the Press led to limited information being released to the newspapers."
+              "evidence": "police distrust of the Press led to limited information being released to the newspapers."
             },
             {
               "id": "q40",

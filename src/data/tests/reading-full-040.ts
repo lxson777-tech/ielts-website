@@ -320,10 +320,7 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q14",
-              "answer": [
-                "Persian wars",
-                "the Persian wars"
-              ],
+              "answer": "Persian wars",
               "explanation": "Paragraph B says the Greek historian Herodotus travelled in Egypt and Anatolia while researching the history of the Persian wars, so that is the information he was after.",
               "evidence": "The Greek historian Herodotus reported on his travels in Egypt and Anatolia in researching the history of the Persian wars."
             },
@@ -385,60 +382,44 @@ const test: PracticeTest = {
           "table": {
             "rows": [
               [
-                "…………….. 1 st century BC Central Asia Zhang Qian To seek",
                 {
                   "questionId": "q14"
-                },
-                ""
+                }
               ],
               [
-                "……… Roman Empire Mediterranean Ptolemy, Strabo Pliny the Elder To gather",
                 {
                   "questionId": "q15"
-                },
-                ""
+                }
               ],
               [
-                "……… Post-classical era Eastern Hemisphere Muslims For business and",
                 {
                   "questionId": "q16"
-                },
-                ""
+                }
               ],
               [
-                "……….. 5 th to 9 th centuries CE India Asian Buddhists To study with",
                 {
                   "questionId": "q17"
-                },
-                ""
+                }
               ],
               [
-                "…… Early modern era Distant places of the globe The Europeans To meet the public’s expectation for the outside 19 th century Asia, Africa Colonial administrator To provide information on the",
                 {
                   "questionId": "q18"
-                },
-                ""
+                }
               ],
               [
-                "……… they conquer By the mid-century of the 1800s Europe and the United States Sun Yat-sen, Fukuzawa Yukichi To learn",
                 {
                   "questionId": "q19"
-                },
-                ""
+                }
               ],
               [
-                "…………. for the reorganization of their societies 20 th century Mass tourism People from",
                 {
                   "questionId": "q20"
-                },
-                ""
+                }
               ],
               [
-                "…….. Countries For entertainment",
                 {
                   "questionId": "q21"
-                },
-                ""
+                }
               ]
             ]
           }
@@ -702,7 +683,7 @@ const test: PracticeTest = {
               "evidence": "Harvard’s Allan Hobson, who believes that dreams are essentially random"
             }
           ],
-          "legendHtml": "<p><strong>List of people</strong><br/>\n<strong>A</strong> Sigmund Freud<br/>\n<strong>B</strong> Allan Hobson (Harvard)<br/>\n<strong>C</strong> Robert McCarley<br/>\n<strong>D</strong> Eric Nofzinger<br/>\n<strong>E</strong> Jerry Siegel<br/>\n<strong>F</strong> Clara Hill<br/>\n<strong>G</strong> Rosalind Cartwright</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>List of people</strong><br/>\n<strong>A</strong> Sigmund Freud<br/>\n<strong>B</strong> Allan Hobson (Harvard)<br/>\n<strong>C</strong> Robert McCarley<br/>\n<strong>D</strong> Eric Nofzinger<br/>\n<strong>E</strong> Jerry Siegel<br/>\n<strong>F</strong> Clara Hill<br/>\n<strong>G</strong> Rosalind Cartwright</p>",
           "options": [
             "A",
             "B",

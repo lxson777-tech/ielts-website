@@ -33,7 +33,7 @@ const test: PracticeTest = {
             "html": "<span>According to the Encyclopedia of Sleep and Dreaming: ‘There is a biologically-based tendency to fall asleep in mid-afternoon just as there is a tendency to fall asleep at night. Moreover, if sleep the night before is reduced or disturbed for any reason, a nap the subsequent afternoon is not only more likely to occur, but it can also relieve sleepiness and increase alertness.’ The nap zone, documented in numerous studies, is typically between noon and 3:00 pm. Some people power through this natural slowdown with caffeine or sugar but if employers allowed naps, the benefits would be improvements in mood and performance, especially in mid-afternoon. Workers would concentrate better and persevere in tasks longer. Workers commonly sneak naps even without permission but some companies have begun encouraging naps as part of their policies on boosting production. One US distributor is opening a 2,000-square-foot nap facility that provides beds for up to 20 of its 225 workers at a time. A company in Japan sets up tents in business offices, provides eyeshades and ear plugs, and encourages employees to snooze in the middle of the work day. According to Professor Anthony, ‘You’re not going to see napping at traditional types of operations … but in 21st century-style operations, this isn’t going to be a perk. It’s going to have more to do with productivity. Smart employers are understanding that their employees need rest to do their best.’</span>"
           },
           {
-            "html": "<span>Some suspect that corporate naptime, like other perks, is just a way to keep people at the office longer. On the other hand, growing flexibility in hours, for some workers, is allowing nap times to become more common. With eleven million Americans telecommuting and another forty million winking out of their bonus full- or part-time, office hours are basically as long as you can stay awake. One thing is sure: longer commutes, more intense, stressful workday and higher production demands are taking a toll. So, with Americans sleeping less and working longer hours, some employers are warming up to the idea that a little nap in the middle of the day can be good for business.</span>"
+            "html": "<span>Some suspect that corporate naptime, like other perks, is just a way to keep people at the office longer. On the other hand, growing flexibility in hours, for some workers, is allowing nap times to become more common. With eleven million Americans telecommuting and another forty million working out of their homes full- or part-time, office hours are basically as long as you can stay awake. One thing is sure: longer commutes, more intense, stressful workday and higher production demands are taking a toll. So, with Americans sleeping less and working longer hours, some employers are warming up to the idea that a little nap in the middle of the day can be good for business.</span>"
           }
         ]
       },
@@ -119,7 +119,7 @@ const test: PracticeTest = {
               "before": "Employees of some progressive companies are encouraged to",
               "after": "",
               "explanation": "Professor Anthony's message is that 'people should be allowed to nap at their breaks', matching option B.",
-              "evidence": "people should be allowed to nap at their breaks"
+              "evidence": "People should be allowed to nap at their breaks"
             },
             {
               "id": "q9",
@@ -338,14 +338,25 @@ const test: PracticeTest = {
             {
               "id": "q26",
               "answer": "Side effects",
-              "textHtml": "……………… List of words Cheaper Cure Heal itself Illness Treatments Getting better Control symptoms More expensive Side effects Stronger Healthy Patients",
+              "textHtml": "………………",
               "explanation": "The passage highlights 'the rarity of adverse reactions' as an advantage, matching 'Side effects'.",
               "evidence": "the rarity of adverse reactions"
             }
           ],
           "legendHtml": "<p><span>Homeopathy differs from conventional medicine in a number of ways. Conventional medicine views symptoms as an indication of something wrong in the body whereas homeopathy sees them as signs that the body is attempting to (23) ……………. The uses of medication differ also. Many types of conventional medication (24) ……………. but if the medicine is taken away, the illness returns. The intention of homeopathy is to bring about a complete cure. Homeopathic remedies are (25) ……………… than conventional medicine and have fewer (26) ………………</span></p><p><strong><span>List of words</span></strong></p><table><tbody><tr><td width=\"119\"><span>Cheaper</span></td><td width=\"119\"><span>Cure</span></td><td width=\"119\"><span>Heal itself</span></td><td width=\"119\"><span>Illness</span></td><td width=\"119\"><span>Treatments</span></td></tr><tr><td width=\"119\"><span>Getting better</span></td><td width=\"119\"><span>Control symptoms</span></td><td width=\"119\"><span>More expensive</span></td><td width=\"119\"><span>Side effects</span></td><td width=\"119\"><span>Stronger</span></td></tr><tr><td width=\"119\"><span>Healthy</span></td><td width=\"119\"><span>Patients</span></td><td width=\"119\"></td><td width=\"119\"></td><td width=\"119\"></td></tr></tbody></table>",
           "options": [
-            "A"
+            "Cheaper",
+            "Cure",
+            "Heal itself",
+            "Illness",
+            "Treatments",
+            "Getting better",
+            "Control symptoms",
+            "More expensive",
+            "Side effects",
+            "Stronger",
+            "Healthy",
+            "Patients"
           ]
         }
       ]
@@ -426,7 +437,7 @@ const test: PracticeTest = {
               "evidence": "the Marijuana Prohibition took effect"
             }
           ],
-          "legendHtml": "<p><span>A. Timber and petro-chemical industries threatened</span><br/>\n<span>B. Articles praise hemp as a potential billion dollar crop</span><br/>\n<span>C. Widespread cultivation of hemp (Example)</span><br/>\n<span>D. Prohibition of marijuana</span><br/>\n<span>E. Newspaper articles link hemp to violent crime</span><br/>\n<span>F. Development of stripping machines</span></p><p><span>The first one has been done for you as an example.</span></p><p><span>Example: C</span><br/>\n<span>(28) …….</span><br/>\n<span>(29) …….</span><br/>\n<span>(30) …….</span></p>",
+          "legendHtml": "<p><span>A. Timber and petro-chemical industries threatened</span><br/>\n<span>B. Articles praise hemp as a potential billion dollar crop</span><br/>\n<span>C. Widespread cultivation of hemp (Example)</span><br/>\n<span>D. Prohibition of marijuana</span><br/>\n<span>E. Newspaper articles link hemp to violent crime</span><br/>\n<span>F. Development of stripping machines</span></p><p><span>The first one has been done for you as an example.</span></p><p><span>Example: C</span><br/>\n<span>(27) …….</span><br/>\n<span>(28) …….</span><br/>\n<span>(29) …….</span><br/>\n<span>(30) …….</span><br/>\n<span>(31) …….</span></p>",
           "options": [
             "A",
             "B",

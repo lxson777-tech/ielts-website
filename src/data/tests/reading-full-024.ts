@@ -147,7 +147,7 @@ const test: PracticeTest = {
               "evidence": "used by people involved in the historic trade in spices between the Maluku islands and the rest of the world"
             }
           ],
-          "legendHtml": "<p><strong>Archaeological findings on Obi</strong></p><p>Excavations of rock shelters inside (8) ………………… near the village of Kelo revealed:</p><p>• axes from around 14,000 years ago, probably used to make canoes<br/>\n• axes made out of (9) ………… .dating from around 11,700 years ago<br/>\n• (10) ………………… of an animal: evidence of what ancient islanders ate<br/>\n• evidence of travel between islands:<br/>\n– obsidian: a material that is not found naturally on Obi<br/>\n– (11) ………………. which resembled ones found on other islands.</p><p>It is thought that from 8,000 years ago, Obi islanders:<br/>\n• may have switched from hunting to fishing<br/>\n• had (12) …………………… as well as items made out of metal<br/>\n• probably took part in the production and sale of (13) ……………</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>Archaeological findings on Obi</strong></p><p>Excavations of rock shelters inside (8) ………………… near the village of Kelo revealed:</p><p>• axes from around 14,000 years ago, probably used to make canoes<br/>\n• axes made out of (9) ………… .dating from around 11,700 years ago<br/>\n• (10) ………………… of an animal: evidence of what ancient islanders ate<br/>\n• evidence of travel between islands:<br/>\n– obsidian: a material that is not found naturally on Obi<br/>\n– (11) ………………. which resembled ones found on other islands.</p><p>It is thought that from 8,000 years ago, Obi islanders:<br/>\n• may have switched from hunting to fishing<br/>\n• had (12) …………………… as well as items made out of metal<br/>\n• probably took part in the production and sale of (13) ……………</p>",
           "wordLimit": 1
         }
       ]
@@ -323,7 +323,7 @@ const test: PracticeTest = {
               "evidence": "It can be as simple as planting a few trees per hectare to create shade and substantially change a microclimate"
             }
           ],
-          "legendHtml": "<p><strong>A</strong> Matthew McCartney<br/>\n<strong>B</strong> Pieter van Eijk<br/>\n<strong>C</strong> Marcel Silvius<br/>\n<strong>D</strong> Dave Tickner</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A</strong> Matthew McCartney<br/>\n<strong>B</strong> Pieter van Eijk<br/>\n<strong>C</strong> Marcel Silvius<br/>\n<strong>D</strong> Dave Tickner</p>",
           "options": [
             "A",
             "B",
@@ -519,7 +519,7 @@ const test: PracticeTest = {
               "evidence": "Though the practical need for a common language will diminish, the social value of sharing one will persist."
             }
           ],
-          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         }
       ]
     }

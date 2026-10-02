@@ -45,7 +45,7 @@ const test: PracticeTest = {
             "html": "<span>The project is testing whether biogas can provide an effective alternative to firewood and charcoal in rural Kenyan communities. Results indicate that the programme seems to be working. The women who smoke the lake fish are already getting sick less often. Besides, they don’t have to devote a lot of time every day to gathering firewood, which is a great relief. As a result, they’re able to make more money for their families from other enterprises.</span>"
           },
           {
-            "html": "<span>Kanyiva Muindi is an epidemiologist and air pollution research fellow at the African Population and Health Research Centre in Nairobi. She says families who switch to the smokeless cooking method could expect fewer respiratory diseases. Women, young girls and children are particularly vulnerable because they are the ones who cook in the kitchen or outside overfires. </span><span>How much better the biogas stoves will be for the community’s health still needs more research, says Dominic Kahumbu Wanjihia, Biogas International’s chief executive. But unless the price of the machines drops, it’s pretty clear that most communities will never be able to afford any, since they sell for about $750.</span>"
+            "html": "<span>Kanyiva Muindi is an epidemiologist and air pollution research fellow at the African Population and Health Research Centre in Nairobi. She says families who switch to the smokeless cooking method could expect fewer respiratory diseases. Women, young girls and children are particularly vulnerable because they are the ones who cook in the kitchen or outside over fires. </span><span>How much better the biogas stoves will be for the community’s health still needs more research, says Dominic Kahumbu Wanjihia, Biogas International’s chief executive. But unless the price of the machines drops, it’s pretty clear that most communities will never be able to afford any, since they sell for about $750.</span>"
           },
           {
             "html": "<span>Kanyiva says affordability is a challenge worth addressing, given the huge health and environmental dangers posed by ‘dirty’ fuels such as wood, charcoal and kerosene. If biogas could become affordable on a large scale, she says it ‘would be life-changing for millions on the African continent and beyond’.</span>"
@@ -82,7 +82,7 @@ const test: PracticeTest = {
             {
               "id": "q4",
               "answer": "Not given",
-              "textHtml": "Chemicals produced by the water hyacinth plants are affecting the numbers offish in Lake Victoria",
+              "textHtml": "Chemicals produced by the water hyacinth plants are affecting the numbers of fish in Lake Victoria",
               "explanation": "The passage explains hyacinth blocks fishing routes and shelters mosquitoes, but it never mentions any chemicals released by the plant harming fish numbers, so there is no information on this."
             },
             {
@@ -234,7 +234,7 @@ const test: PracticeTest = {
             {
               "id": "q17",
               "answer": "B",
-              "textHtml": "………………. A team of researchers led by Professor lanthi Tsimpli of Cambridge University is collecting data on primary-age schoolchildren in Delhi and other Indian cities. The",
+              "textHtml": "………………. A team of researchers led by Professor Ianthi Tsimpli of Cambridge University is collecting data on primary-age schoolchildren in Delhi and other Indian cities. The",
               "explanation": "The passage says people came ‘in the hope of gaining better jobs and a better life’, matching option B, ‘employment opportunities’.",
               "evidence": "in the hope of gaining better jobs and a better life"
             },
@@ -253,7 +253,7 @@ const test: PracticeTest = {
               "evidence": "the many benefits of speaking more than one language, observed in schools in Europe for instance, do not apply to many of India’s schoolchildren"
             }
           ],
-          "legendHtml": "<p><strong><span>Question 14-19</span></strong></p><p><strong><span>Multilingualism in Delhi</span></strong></p><p><span>The city of Delhi has a (14) ………………… and as you walk through its streets you hear people speaking a variety of languages. Some of them have spent their entire life in Delhi, while others are (15) ……………….. Whether they have come from a (16) ……………….. or have travelled from the other side of India, they have all come in search of things such as improved (17) ……………….</span></p><p><span>A team of researchers led by Professor lanthi Tsimpli of Cambridge University is collecting data on primary-age schoolchildren in Delhi and other Indian cities. The (18) ………………. of the research is to discover why multilingual Indian schoolchildren do not experience (19) ………………….. to those that multilingual schoolchildren in Europe experience.</span></p><p><span><strong>A</strong> basic outlook</span><br/>\n<span><strong>B</strong> employment opportunities</span><br/>\n<span><strong>C</strong> wealthy visitors</span><br/>\n<span><strong>D</strong> distant country</span><br/>\n<span><strong>E</strong> primary objective</span><br/>\n<span><strong>F</strong> similar advantages</span><br/>\n<span><strong>G</strong> thriving economy</span><br/>\n<span><strong>J</strong> new immigrants</span><br/>\n<span><strong>H</strong> nearby district</span><br/>\n<span><strong>I</strong> dense population</span></p>",
+          "legendHtml": "<p><strong><span>Question 14-19</span></strong></p><p><strong><span>Multilingualism in Delhi</span></strong></p><p><span>The city of Delhi has a (14) ………………… and as you walk through its streets you hear people speaking a variety of languages. Some of them have spent their entire life in Delhi, while others are (15) ……………….. Whether they have come from a (16) ……………….. or have travelled from the other side of India, they have all come in search of things such as improved (17) ……………….</span></p><p><span>A team of researchers led by Professor Ianthi Tsimpli of Cambridge University is collecting data on primary-age schoolchildren in Delhi and other Indian cities. The (18) ………………. of the research is to discover why multilingual Indian schoolchildren do not experience (19) ………………….. to those that multilingual schoolchildren in Europe experience.</span></p><p><span><strong>A</strong> basic outlook</span><br/>\n<span><strong>B</strong> employment opportunities</span><br/>\n<span><strong>C</strong> wealthy visitors</span><br/>\n<span><strong>D</strong> distant country</span><br/>\n<span><strong>E</strong> primary objective</span><br/>\n<span><strong>F</strong> similar advantages</span><br/>\n<span><strong>G</strong> thriving economy</span><br/>\n<span><strong>J</strong> new immigrants</span><br/>\n<span><strong>H</strong> nearby district</span><br/>\n<span><strong>I</strong> dense population</span></p>",
           "options": [
             "A",
             "B",
@@ -297,7 +297,7 @@ const test: PracticeTest = {
               "answer": "No",
               "textHtml": "The researchers have decided against investigating the impact teaching methodology may have on learning outcomes",
               "explanation": "The fifth paragraph says the team will look ‘also at variables such as… the teaching practices themselves’, so they have not ruled out studying teaching methods, contradicting the statement.",
-              "evidence": "they intend to look not only at test results, but also at variables such as the standard of schooling, the environment and the teaching practices themselves"
+              "evidence": "They intend to look not only at test results, but also at variables such as the standard of schooling, the environment and the teaching practices themselves"
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the claims of the writer</dd><dt>NO</dt><dd>if the statement contradicts the claims of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
