@@ -92,6 +92,9 @@ def sign_up(page, email):
     page.locator("#signup-password").fill(PASSWORD)
     if page.locator("#signup-confirm").count():
         page.locator("#signup-confirm").fill(PASSWORD)
+    # Since 2 October sign-up needs the consent tick (src/lib/legal/consent.ts).
+    if page.locator("#signup-consent").count():
+        page.locator("#signup-consent").check(force=True)
     page.locator("button.auth-button[type=submit]").click()
     page.wait_for_selector("#profile-firstName", timeout=40000)
     page.locator("#profile-firstName").fill("Synthetic")
