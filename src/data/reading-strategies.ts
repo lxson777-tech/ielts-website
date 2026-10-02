@@ -38,7 +38,9 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
     label: 'True / False / Not Given',
     steps: [
       nt('Read each statement carefully and identify keywords.'),
-      nt('Scan the passage to locate the relevant section (answers appear in order).'),
+      nt(
+        'Scan the passage for the part that deals with the statement. These answers usually run in passage order, so starting near the last one you found saves time, but treat that as a guide only.',
+      ),
       nt('Read that section and the sentences around it. Not just one line.'),
       nt('Focus on meaning, not just word-matching. The passage will paraphrase the statement.'),
       nt('Be especially careful with NOT GIVEN. Ask: "does the passage give any information about this at all?"'),
@@ -80,6 +82,7 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
     traps: [
       nt('choosing a heading that matches one detail, not the whole paragraph'),
       nt('headings with similar wording. Look at meaning, not just words'),
+      nt('using the same heading for two paragraphs. Each heading can be used only once'),
     ],
   },
   'matching-information': {
@@ -115,7 +118,7 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
     ],
   },
   diagram: {
-    label: 'Diagram / Table Labelling',
+    label: 'Diagram Label Completion',
     steps: [
       nt('Study the diagram first. What is it showing? What parts are labelled and what are blank?'),
       nt('Read the passage and identify the section that describes it.'),
@@ -136,7 +139,7 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
       nt('Skim the passage to identify which section refers to each option.'),
       nt('Read each statement and identify keywords.'),
       nt('Locate the relevant passage section and decide which option the information belongs to.'),
-      nt("Don't panic if the same letter appears several times. That's normal."),
+      nt("Don't panic if the same letter appears several times. That's normal, as long as the instructions allow it."),
     ],
     traps: [nt('using general knowledge. Rely only on the passage'), nt('assuming each option is used only once')],
   },
@@ -144,7 +147,9 @@ export const READING_STRATEGIES: Record<StrategyKey, ReadingStrategy> = {
     label: 'Yes / No / Not Given',
     steps: [
       nt('Underline words in the statement that show it is about an opinion, not a fact.'),
-      nt('Scan for the matching part of the passage. Answers come in the same order as the passage.'),
+      nt(
+        'Scan for the matching part of the passage. These answers usually run in passage order, but treat that as a guide for where to start, never as proof of an answer.',
+      ),
       nt(
         "Check whose opinion is being reported. A view the writer only quotes from someone else is not automatically the writer's own.",
       ),

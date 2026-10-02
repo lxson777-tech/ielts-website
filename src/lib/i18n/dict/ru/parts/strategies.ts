@@ -15,8 +15,8 @@ export const strings: Record<string, string> = {
   /* ---- Reading: True / False / Not Given ---- */
   'Read each statement carefully and identify keywords.':
     'Внимательно прочитайте каждое утверждение и выделите ключевые слова.',
-  'Scan the passage to locate the relevant section (answers appear in order).':
-    'Просмотрите текст и найдите нужный фрагмент (ответы идут по порядку).',
+  'Scan the passage for the part that deals with the statement. These answers usually run in passage order, so starting near the last one you found saves time, but treat that as a guide only.':
+    'Найдите в тексте место, где говорится именно об этом утверждении. Ответы обычно идут в порядке текста, поэтому начинать удобно рядом с предыдущим найденным местом, но считайте это только подсказкой.',
   'Read that section and the sentences around it. Not just one line.':
     'Прочитайте этот фрагмент вместе с соседними предложениями, а не одну строку.',
   'Focus on meaning, not just word-matching. The passage will paraphrase the statement.':
@@ -63,6 +63,8 @@ export const strings: Record<string, string> = {
     'взять заголовок, который подходит к одной детали, а не ко всему абзацу',
   'headings with similar wording. Look at meaning, not just words':
     'заголовки с похожими формулировками: смотрите на смысл, а не на слова',
+  'using the same heading for two paragraphs. Each heading can be used only once':
+    'поставить один и тот же заголовок к двум абзацам: каждый заголовок можно использовать только один раз',
 
   /* ---- Reading: Matching Information ---- */
   'Read all the statements first and identify keywords and paraphrases.':
@@ -98,7 +100,7 @@ export const strings: Record<string, string> = {
   'ignoring grammar. The completed sentence must make grammatical sense':
     'не следить за грамматикой: готовое предложение должно быть грамматически верным',
 
-  /* ---- Reading: Diagram / Table Labelling ---- */
+  /* ---- Reading: Diagram Label Completion ---- */
   'Study the diagram first. What is it showing? What parts are labelled and what are blank?':
     'Сначала разберитесь в схеме: что на ней показано, какие части подписаны, а какие пустые?',
   'Read the passage and identify the section that describes it.':
@@ -121,8 +123,8 @@ export const strings: Record<string, string> = {
     'Прочитайте каждое утверждение и выделите ключевые слова.',
   'Locate the relevant passage section and decide which option the information belongs to.':
     'Найдите нужный фрагмент и решите, к какому варианту относится эта информация.',
-  "Don't panic if the same letter appears several times. That's normal.":
-    'Не пугайтесь, если одна и та же буква встречается несколько раз. Это нормально.',
+  "Don't panic if the same letter appears several times. That's normal, as long as the instructions allow it.":
+    'Не пугайтесь, если одна и та же буква встречается несколько раз. Это нормально, если инструкция это разрешает.',
   'using general knowledge. Rely only on the passage':
     'опираться на общие знания: полагайтесь только на текст',
   'assuming each option is used only once': 'считать, что каждый вариант используется только один раз',
@@ -130,8 +132,8 @@ export const strings: Record<string, string> = {
   /* ---- Reading: Yes / No / Not Given ---- */
   'Underline words in the statement that show it is about an opinion, not a fact.':
     'Подчеркните в утверждении слова, которые показывают, что речь о мнении, а не о факте.',
-  'Scan for the matching part of the passage. Answers come in the same order as the passage.':
-    'Найдите соответствующее место в тексте: ответы идут в том же порядке, что и текст.',
+  'Scan for the matching part of the passage. These answers usually run in passage order, but treat that as a guide for where to start, never as proof of an answer.':
+    'Найдите соответствующее место в тексте. Ответы обычно идут в порядке текста, но пользуйтесь этим только как подсказкой, откуда начинать, и никогда как доказательством ответа.',
   "Check whose opinion is being reported. A view the writer only quotes from someone else is not automatically the writer's own.":
     'Проверьте, чьё мнение изложено. Взгляд, который автор просто цитирует, не становится автоматически его собственным.',
   "Compare the statement's strength to the writer's: an absolute claim is NO if the writer only hints at something weaker.":
