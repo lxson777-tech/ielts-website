@@ -3088,6 +3088,16 @@ Source file: `src/lib/i18n/dict/kk/auth.ts`
 
 Source file: `src/lib/i18n/dict/kk/help.ts`
 
+582a. **EN:** Can I use the platform in Russian or Kazakh?
+   - **RU:** Можно ли пользоваться платформой на русском или казахском?
+   - **KK:** Платформаны орыс немесе қазақ тілінде қолдануға бола ма?
+   - **Correction:**
+
+582b. **EN:** Yes. Choose EN, RU or KZ at the top of the page. In Russian the interface and the explanations change language; in Kazakh the prices, the agreement, the privacy notice and the buying pages are in Kazakh and the rest is in Russian. Passages, recordings, questions and model answers stay in English, as in the real exam.
+   - **RU:** Да. Выберите EN, RU или KZ вверху страницы. На русском меняется язык интерфейса и объяснений; на казахском цены, договор, уведомление о персональных данных и страницы покупки показаны на казахском, а остальное на русском. Тексты, записи, вопросы и образцы ответов остаются на английском, как на настоящем экзамене.
+   - **KK:** Иә. Беттің жоғарғы жағынан EN, RU немесе KZ таңдаңыз. Орыс тілінде интерфейс пен түсіндірмелер аударылады; қазақ тілінде бағалар, шарт, дербес деректер туралы хабарлама және сатып алу беттері қазақша, қалғаны орысша көрсетіледі. Мәтіндер, жазбалар, сұрақтар мен үлгі жауаптар нақты емтихандағыдай ағылшын тілінде қалады.
+   - **Correction:**
+
 583. **EN:** What is free, and what is paid?
    - **RU:** Что бесплатно, а что платно?
    - **KK:** Не тегін, не ақылы?

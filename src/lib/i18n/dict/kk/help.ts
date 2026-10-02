@@ -4,6 +4,9 @@
    information, and reads Russian for a Kazakh reader.
    To be checked by a native speaker (docs/legal/KAZAKH-REVIEW.md). */
 export const strings: Record<string, string> = {
+  'Can I use the platform in Russian or Kazakh?': 'Платформаны орыс немесе қазақ тілінде қолдануға бола ма?',
+  'Yes. Choose EN, RU or KZ at the top of the page. In Russian the interface and the explanations change language; in Kazakh the prices, the agreement, the privacy notice and the buying pages are in Kazakh and the rest is in Russian. Passages, recordings, questions and model answers stay in English, as in the real exam.':
+    'Иә. Беттің жоғарғы жағынан EN, RU немесе KZ таңдаңыз. Орыс тілінде интерфейс пен түсіндірмелер аударылады; қазақ тілінде бағалар, шарт, дербес деректер туралы хабарлама және сатып алу беттері қазақша, қалғаны орысша көрсетіледі. Мәтіндер, жазбалар, сұрақтар мен үлгі жауаптар нақты емтихандағыдай ағылшын тілінде қалады.',
   'What is free, and what is paid?': 'Не тегін, не ақылы?',
   'Every lesson is free with an account: the explanations, worked examples, each lesson’s own short quiz and the vocabulary lists.':
     'Аккаунтпен барлық сабақ тегін: түсіндірмелер, талданған мысалдар, әр сабақтың қысқа тесті және сөздік тізімдері.',

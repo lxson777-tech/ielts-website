@@ -25,6 +25,7 @@ export const strings: Record<string, string> = {
   "Delete my account and all my data": "Удалить аккаунт и все мои данные",
   "Sign in to delete your account.": "Войдите, чтобы удалить аккаунт.",
   "Back to the home page": "Вернуться на главную",
+  "Can I use the platform in Russian or Kazakh?": "Можно ли пользоваться платформой на русском или казахском?",
   "Your account has been deleted": "Ваш аккаунт удалён",
   "Your account and all your data have been removed. Thank you for studying with us.": "Ваш аккаунт и все ваши данные удалены. Спасибо, что занимались с нами.",
   "You can create a new account at any time. It will start empty.": "Вы можете в любой момент создать новый аккаунт. Он начнётся с чистого листа.",
