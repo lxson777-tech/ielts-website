@@ -19,7 +19,7 @@ export const listeningFull008: PracticeTest = {
         "kind": "audio",
         "label": "Part 1",
         "src": "/audio/listening/test-008.mp3",
-        "questionHtml": "<section class=\"listening-source-group\" data-question-start=\"1\" data-question-end=\"6\" data-question-type=\"sentence-completion\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 1-6</p><p class=\"listening-source-instruction\">Complete the form below. Write NO MORE THAN THREE WORDS OR A NUMBER.</p></header><div class=\"listening-source-question-list\" role=\"list\"><p class=\"listening-source-title\"><strong>HOMESTAY APPLICATION</strong></p><p class=\"listening-source-title\">Surname: Yuichini</p><div class=\"listening-source-question-row\" data-question-row=\"1\" role=\"listitem\">First name:  <span aria-label=\"Blank for question 1\" class=\"listening-answer-blank\" data-question=\"1\" role=\"img\"><span class=\"listening-answer-number\">(1)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-support-row\">Sex: female Nationality: Japanese</div><div class=\"listening-source-question-row\" data-question-row=\"2\" role=\"listitem\">Passport number:  <span aria-label=\"Blank for question 2\" class=\"listening-answer-blank\" data-question=\"2\" role=\"img\"><span class=\"listening-answer-number\">(2)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-support-row\">Age: 28 years</div><div class=\"listening-source-support-row\">Present address: Room 21C, Willow College</div><div class=\"listening-source-question-row\" data-question-row=\"3\" role=\"listitem\">Length of homestay: approx.  <span aria-label=\"Blank for question 3\" class=\"listening-answer-blank\" data-question=\"3\" role=\"img\"><span class=\"listening-answer-number\">(3)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"4\" role=\"listitem\">Couse enrolled in:  <span aria-label=\"Blank for question 4\" class=\"listening-answer-blank\" data-question=\"4\" role=\"img\"><span class=\"listening-answer-number\">(4)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"5\" role=\"listitem\">Family preferences: no  <span aria-label=\"Blank for question 5\" class=\"listening-answer-blank\" data-question=\"5\" role=\"img\"><span class=\"listening-answer-number\">(5)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> and no objection to  <span aria-label=\"Blank for question 6\" class=\"listening-answer-blank\" data-question=\"6\" role=\"img\"><span class=\"listening-answer-number\">(6)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div></div></section><section class=\"listening-source-group\" data-question-start=\"7\" data-question-end=\"10\" data-question-type=\"sentence-completion\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 7-10</p><p class=\"listening-source-instruction\">Answer the questions below. Write NO MORE THAN TWO WORDS.</p></header><div class=\"listening-source-question-list\" role=\"list\"><div class=\"listening-source-question-row\" data-question-row=\"7\" role=\"listitem\">What does the student particularly like to eat? <span aria-label=\"Blank for question 7\" class=\"listening-answer-blank\" data-question=\"7\" role=\"img\"><span class=\"listening-answer-number\">(7)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"8\" role=\"listitem\">What sport does the student play? <span aria-label=\"Blank for question 8\" class=\"listening-answer-blank\" data-question=\"8\" role=\"img\"><span class=\"listening-answer-number\">(8)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"9\" role=\"listitem\">What mode of transport does the student prefer? <span aria-label=\"Blank for question 9\" class=\"listening-answer-blank\" data-question=\"9\" role=\"img\"><span class=\"listening-answer-number\">(9)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"10\" role=\"listitem\">When will the student find out her homestay address? <span aria-label=\"Blank for question 10\" class=\"listening-answer-blank\" data-question=\"10\" role=\"img\"><span class=\"listening-answer-number\">(10)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div></div></section>",
+        "questionHtml": "<section class=\"listening-source-group\" data-question-start=\"1\" data-question-end=\"6\" data-question-type=\"sentence-completion\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 1-6</p><p class=\"listening-source-instruction\">Complete the form below. Write NO MORE THAN THREE WORDS OR A NUMBER.</p></header><div class=\"listening-source-question-list\" role=\"list\"><p class=\"listening-source-title\"><strong>HOMESTAY APPLICATION</strong></p><p class=\"listening-source-title\">Surname: Yuichini</p><div class=\"listening-source-question-row\" data-question-row=\"1\" role=\"listitem\">First name:  <span aria-label=\"Blank for question 1\" class=\"listening-answer-blank\" data-question=\"1\" role=\"img\"><span class=\"listening-answer-number\">(1)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-support-row\">Sex: female Nationality: Japanese</div><div class=\"listening-source-question-row\" data-question-row=\"2\" role=\"listitem\">Passport number:  <span aria-label=\"Blank for question 2\" class=\"listening-answer-blank\" data-question=\"2\" role=\"img\"><span class=\"listening-answer-number\">(2)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-support-row\">Age: 28 years</div><div class=\"listening-source-support-row\">Present address: Room 21C, Willow College</div><div class=\"listening-source-question-row\" data-question-row=\"3\" role=\"listitem\">Length of homestay: approx.  <span aria-label=\"Blank for question 3\" class=\"listening-answer-blank\" data-question=\"3\" role=\"img\"><span class=\"listening-answer-number\">(3)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"4\" role=\"listitem\">Course enrolled in:  <span aria-label=\"Blank for question 4\" class=\"listening-answer-blank\" data-question=\"4\" role=\"img\"><span class=\"listening-answer-number\">(4)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"5\" role=\"listitem\">Family preferences: no  <span aria-label=\"Blank for question 5\" class=\"listening-answer-blank\" data-question=\"5\" role=\"img\"><span class=\"listening-answer-number\">(5)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span> and no objection to  <span aria-label=\"Blank for question 6\" class=\"listening-answer-blank\" data-question=\"6\" role=\"img\"><span class=\"listening-answer-number\">(6)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div></div></section><section class=\"listening-source-group\" data-question-start=\"7\" data-question-end=\"10\" data-question-type=\"sentence-completion\"><header class=\"listening-source-header\"><p class=\"listening-source-range\">Questions 7-10</p><p class=\"listening-source-instruction\">Answer the questions below. Write NO MORE THAN TWO WORDS.</p></header><div class=\"listening-source-question-list\" role=\"list\"><div class=\"listening-source-question-row\" data-question-row=\"7\" role=\"listitem\">What does the student particularly like to eat? <span aria-label=\"Blank for question 7\" class=\"listening-answer-blank\" data-question=\"7\" role=\"img\"><span class=\"listening-answer-number\">(7)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"8\" role=\"listitem\">What sport does the student play? <span aria-label=\"Blank for question 8\" class=\"listening-answer-blank\" data-question=\"8\" role=\"img\"><span class=\"listening-answer-number\">(8)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"9\" role=\"listitem\">What mode of transport does the student prefer? <span aria-label=\"Blank for question 9\" class=\"listening-answer-blank\" data-question=\"9\" role=\"img\"><span class=\"listening-answer-number\">(9)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div><div class=\"listening-source-question-row\" data-question-row=\"10\" role=\"listitem\">When will the student find out her homestay address? <span aria-label=\"Blank for question 10\" class=\"listening-answer-blank\" data-question=\"10\" role=\"img\"><span class=\"listening-answer-number\">(10)</span><span aria-hidden=\"true\" class=\"listening-answer-line\"> </span></span></div></div></section>",
         "startSeconds": 0.0,
         "endSeconds": 329.3,
         "transcriptHtml": "<p class=\"transcript-note\">Automatic transcript. It may contain small recognition errors; the answer key is authoritative.</p><p><span class=\"ts\">[00:00]</span> Test 4. You will hear a number of different recordings and you will have to answer questions on what you hear. There will be time for you to read the instructions and questions and you will have a chance to check your work. All the recordings will be played once only. The test is in four sections. At the end of the test you will be given ten minutes to</p><p><span class=\"ts\">[00:27]</span> transfer your answers to an answer sheet. Now turn to section one. Section one. You will hear a student talking to a housing officer about living with a home stay family. First you have some time to look at questions one to six. Now we shall begin. You should answer the questions as you listen because you will not hear the recording a second time. Listen</p><p><span class=\"ts\">[01:29]</span> carefully and answer questions one to six. Yes, what can I do for you? My friend is in homestay and she really enjoys it so I&#x27;d like to join a family as well. Okay, so let me get some details. What&#x27;s your name? My name is Keiko Yucchini. Could you spell your family name for me? It&#x27;s Yucchini. That&#x27;s Y-U-I-C-H-I-N-I. And your first name? It&#x27;s Keiko. K-E-I-K-O.</p><p><span class=\"ts\">[02:13]</span> That&#x27;s Keiko Yucchini. Okay. And your female. And your nationality? I&#x27;m Japanese. Right. And could I see your passport please? Here it is. Okay. Your passport number is J-O-6-3-7. And you&#x27;re how old? I&#x27;m 28 years old. Now you live at one of the colleges. Which one? Willow College. Room 21-C. Right. 21-C Willow College. And how long are you planning on staying with</p><p><span class=\"ts\">[02:50]</span> homestay? About four months. Longer if I like it. And what course are you enrolled in? Well, I&#x27;ve enrolled for 20 weeks in the advanced English studies because I need help with my writing. And I&#x27;m nearly at the end of my first five week course. Okay. Do you have any preference for a family with children or without children? I prefer. I mean, I like young children. But</p><p><span class=\"ts\">[03:23]</span> I&#x27;d like to be with older people. You know, adults, someone around my age. Okay. And what about pets? I am a veterinarian so that&#x27;s fine. The more the better. Before you hear the rest of the conversation, you have some time to look at questions seven to ten. Now listen and answer questions seven to ten. All right. Now, what about you? Are you a vegetarian or do you have</p><p><span class=\"ts\">[04:18]</span> any special food requirements? No, I am not a vegetarian. But I don&#x27;t eat a lot of meat. I really like seafood. And what are your hobbies? I like reading and going to the movies. Do you play any sports? Yes. I joined the handball team. But I didn&#x27;t like that. So I stopped playing. Now I play tennis on the weekend with my friends. All right. Let&#x27;s see. Name, age, now the location.</p><p><span class=\"ts\">[04:50]</span> Are you familiar with the public transport system? No. I&#x27;m not really because I have been living on campus. I&#x27;ve been to the city a few times on the bus. But they are always late. What about the trains? I like catching the train. They are much faster. Now let me go check on the computer and see who I&#x27;ve got. Listen, leave it with me. I&#x27;ll check my records and I&#x27;ll give you details this</p><p><span class=\"ts\">[05:17]</span> afternoon. Thank you for helping me. It&#x27;s a pleasure. Bye. Bye. That is the end of section one. You now</p>"
@@ -41,14 +41,17 @@ export const listeningFull008: PracticeTest = {
               "id": "q2",
               "textHtml": "Question 2",
               "answer": "JO6337",
-              "explanation": "At 02:13 the officer reads back the passport number as J-O-6-3-7.",
+              "explanation": "At 02:13 the officer reads back the passport number, JO6337. The automatic transcript drops one of the digits (\"J-O-6-3-7\"), so trust the key here.",
               "evidence": "Your passport number is J-O-6-3-7"
             },
             {
               "id": "q3",
               "textHtml": "Question 3",
-              "answer": "4 months",
-              "explanation": "At 02:13 the student says she plans to stay with the homestay family for about four months.",
+              "answer": [
+                "4 months",
+                "four months"
+              ],
+              "explanation": "At 02:50 the student says she plans to stay with the homestay family for about four months.",
               "evidence": "About four months. Longer if I like it"
             },
             {
@@ -56,9 +59,11 @@ export const listeningFull008: PracticeTest = {
               "textHtml": "Question 4",
               "answer": [
                 "English",
-                "English studies"
+                "English studies",
+                "advanced English studies",
+                "advanced English"
               ],
-              "explanation": "At 02:13 the student says she is enrolled in the advanced English studies course.",
+              "explanation": "At 02:50 the student says she is enrolled in the advanced English studies course.",
               "evidence": "enrolled for 20 weeks in the advanced English studies"
             },
             {
@@ -103,14 +108,20 @@ export const listeningFull008: PracticeTest = {
             {
               "id": "q9",
               "textHtml": "What mode of transport does the student prefer?",
-              "answer": "trains",
+              "answer": [
+                "trains",
+                "train"
+              ],
               "explanation": "At 04:50 the student says she prefers trains to buses because they are faster.",
               "evidence": "I like catching the train. They are much faster"
             },
             {
               "id": "q10",
               "textHtml": "When will the student find out her homestay address?",
-              "answer": "that afternoon",
+              "answer": [
+                "that afternoon",
+                "this afternoon"
+              ],
               "explanation": "At 04:50 the officer says he will give the student her homestay address that afternoon.",
               "evidence": "I'll give you details this afternoon"
             }
@@ -157,7 +168,7 @@ export const listeningFull008: PracticeTest = {
                 "B",
                 "C"
               ],
-              "explanation": "At 07:09 Sally says the park space was originally warehouses and storehouses, industrial buildings.",
+              "explanation": "At 07:35 Sally says the park space was originally warehouses and storehouses, industrial buildings.",
               "evidence": "was originally warehouses and storehouses"
             },
             {
@@ -230,7 +241,10 @@ export const listeningFull008: PracticeTest = {
             {
               "id": "q19",
               "textHtml": "Question 19",
-              "answer": "biology lesson",
+              "answer": [
+                "biology lesson",
+                "biology lessons"
+              ],
               "explanation": "At 10:55 Sally says the outdoor classroom by the frog pond is mainly used by primary schools for biology lessons.",
               "evidence": "used by primary schools for biology lessons"
             },
@@ -266,7 +280,10 @@ export const listeningFull008: PracticeTest = {
             {
               "id": "q21",
               "textHtml": "Question 21",
-              "answer": "5",
+              "answer": [
+                "5",
+                "five"
+              ],
               "explanation": "At 13:30 they confirm the 15 minute presentation is followed by five minutes for questions.",
               "evidence": "And five minutes for questions"
             },
@@ -426,16 +443,24 @@ export const listeningFull008: PracticeTest = {
             {
               "id": "q35",
               "textHtml": "Question 35",
-              "answer": "meat",
+              "answer": [
+                "meat",
+                "cheese"
+              ],
               "explanation": "At 20:51 the lecturer says glutamate occurs naturally in protein foods such as meat and cheese.",
-              "evidence": "food such as meat and cheese"
+              "evidence": "food such as meat and cheese",
+              "answerPairId": "test8-q35-q36"
             },
             {
               "id": "q36",
               "textHtml": "Question 36",
-              "answer": "cheese",
+              "answer": [
+                "meat",
+                "cheese"
+              ],
               "explanation": "At 20:51 the lecturer lists cheese, alongside meat, as a food naturally containing glutamate.",
-              "evidence": "food such as meat and cheese"
+              "evidence": "food such as meat and cheese",
+              "answerPairId": "test8-q35-q36"
             },
             {
               "id": "q37",

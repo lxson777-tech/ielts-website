@@ -4,7 +4,7 @@
   "entries": {
     "q1": {
       "sha": "4d2cc8337f86f4e0",
-      "ru": "На 01:51 позвонившая узнаёт, что работа \"is answering the phone\", а не мытьё посуды или обслуживание столов."
+      "ru": "На 01:51 позвонивший узнаёт, что работа \"is answering the phone\", а не мытьё посуды или обслуживание столов."
     },
     "q2": {
       "sha": "e6fe46d8d0e951aa",
@@ -43,28 +43,28 @@
       "ru": "На 05:36 она диктует фамилию по буквам: \"Samira Manuja... M-A-N-U-J-A.\""
     },
     "q11": {
-      "sha": "d47a913a1f064e4f",
-      "ru": "На 07:35 ведущий говорит, что Sports World это \"the branch of a Danish sports goods company\", который снова открывается."
+      "sha": "54e107f7222a643e",
+      "ru": "На 07:35 ведущий говорит, что Sports World это \"the branch of a Danish sports goods company\", то есть новый филиал, который открывается в городе."
     },
     "q12": {
-      "sha": "425945cda0f28854",
-      "ru": "На 07:35 новый филиал находится \"in the shopping centre to the west of Bradcaster\"."
+      "sha": "4800b385e541a987",
+      "ru": "На 08:00 новый филиал находится \"in the shopping centre to the west of Bradcaster\"."
     },
     "q13": {
-      "sha": "abf943c46fcae070",
-      "ru": "На 08:00 на первых трёх этажах представлен \"a huge range of sports clothing as well as equipment\"."
+      "sha": "4ac89d8503441962",
+      "ru": "На 08:24 на первых трёх этажах представлен \"a huge range of sports clothing as well as equipment\"."
     },
     "q14": {
-      "sha": "dc24152d590d71d8",
-      "ru": "На 08:00 обещают \"promise to get it for you in 10 days\", если товара нет в наличии."
+      "sha": "9ee92a45a74a8bc8",
+      "ru": "На 08:24 обещают \"promise to get it for you in 10 days\", если товара нет в наличии."
     },
     "q15": {
-      "sha": "d17148c8f88530b7",
-      "ru": "На 08:24 магазин \"particularly focus[es] on running\" и заявляет, что предлагает самый широкий выбор снаряжения."
+      "sha": "ab094b4f0ea96540",
+      "ru": "На 08:49 магазин \"particularly focus[es] on running\" и заявляет, что предлагает самый широкий выбор снаряжения."
     },
     "q16": {
-      "sha": "25a62228c3fd9e2b",
-      "ru": "На 08:24 говорят, что \"a whole section of the third floor is devoted to sports bags\"."
+      "sha": "9a7bbd8cacc7900a",
+      "ru": "На 08:49 говорят, что \"a whole section of the third floor is devoted to sports bags\"."
     },
     "q17": {
       "sha": "c5b20facc95838e1",
@@ -103,24 +103,24 @@
       "ru": "На 14:56 Spiros говорит: \"I am not so pleased with my actual performance right now in tutorials\". Это вариант A."
     },
     "q25": {
-      "sha": "7384ed1cf3cfedb6",
-      "ru": "На 15:18 Spiros говорит, что другие студенты \"are very familiar with each other\", поэтому легко пускают друг друга в разговор. Это вариант C."
+      "sha": "f5eb637e75e564c0",
+      "ru": "На 15:41 Spiros говорит, что другие студенты \"are very familiar with each other\", поэтому легко пускают друг друга в разговор. Это вариант C."
     },
     "q26": {
       "sha": "231189ee020499c7",
       "ru": "На 16:31 Hiroko говорит, что она \"been trying to speak up more and I just jump in\". Это вариант B."
     },
     "q27": {
-      "sha": "d1cc2d9bbe35ab70",
-      "ru": "На 16:56 Hiroko говорит, что ей пришлось \"to turn to the books and journals\", чтобы разобраться в лекциях. Это вариант A."
+      "sha": "355037b6d0dba716",
+      "ru": "На 17:21 Hiroko говорит, что ей пришлось \"to turn to the books and journals\", чтобы разобраться в лекциях. Это вариант A."
     },
     "q28": {
-      "sha": "e56e9659584a51ed",
-      "ru": "На 17:21 Spiros говорит: \"my reading speed is still quite slow\". Это вариант B."
+      "sha": "8f25cfb4551c0160",
+      "ru": "На 17:47 Spiros говорит: \"my reading speed is still quite slow\". Это вариант B."
     },
     "q29": {
-      "sha": "313f5ba67a1d3026",
-      "ru": "На 18:12 Hiroko говорит: \"we didn't read anything about engineering\", а это как раз её специальность. Это вариант C."
+      "sha": "83c2bb938dea058e",
+      "ru": "На 18:36 Hiroko говорит: \"we didn't read anything about engineering\", а это как раз её специальность. Это вариант C."
     },
     "q30": {
       "sha": "bdb1535851c46e4c",

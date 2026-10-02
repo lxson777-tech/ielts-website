@@ -40,38 +40,47 @@ const importedListeningAnswerHashes = [
      "written reviw", "airlines" for "airliners", the American "color" against
      a speaker saying "colour", "pin-pong tables", an en dash inside an opening
      time no student would type, and about twenty singular or digit forms where
-     the speaker says a plural or a word. Re-run tools/refresh_listening_hashes.mjs
+     the speaker says a plural or a word.
+
+     Refreshed again 2026-10-03 for the pre-publishing review
+     (docs/audits/content-review-2026-10-03/listening-tests.md): keys that
+     contradicted their own recording (Test 6 "Petterson" spelled with a
+     double S, Test 18 Q22 phone not video games, "car parking", "sea" for
+     "sea level", "southsea", "after 11'o clock"), over-limit forms removed,
+     and accepted variants added that IELTS also marks right (numbers as
+     words, date orders, heard plurals, British and American spellings
+     the marker does not fold). Re-run tools/refresh_listening_hashes.mjs
      only after deciding a key change is right, and say here why. */
-  'aea3178c89ec70541617ae872308f757ced63e0191491f3bd907dad17d6cf86f',
-  '7340117d6f6a403b7081660021a3c4bbf7227fce4103ea570061c3a9f2912d54',
-  '4b6e196cf04ea2dae9cdd836cd36c4b307ba4a2c6921305b4e0ecda5f12e545b',
-  'f53d7db088f307574e283aa1d357b98d4e6339653dd8958300f08d35bdfdfd65',
-  '3992c4ec296a2e579fea6007ee9c2623d78ecb4cbf8f2d9d6bdb2fadd0382cfd',
-  '36c45f2696dfca000ad7720548a3d13d9e52e3bf498f4ad433a7bba239a3e8b6',
-  '0fd58f67b51727a5cafec564ca88ba61d35a167238001056f9872e1c8e3b7891',
-  '63f3e27048a98c91d59ebfdc95b524ae76d884da9c9cf1315909d86346897619',
-  '4786e6635d64592832c6812d4084c92825ae49400efb3aea1e604b5ff919f82d',
-  '9316a528e71ceb388a34478b73ae0b2c88d49b1c1a6535ee0e430443ce5bbe8f',
-  '7babfba4c9c1f6d1308ee4ca8193cdd726bf9c9982672056619d89a6cd3dfde4',
-  '70bfdccbec4911dbd6d615b263a5b7cede5ac750ba62a1254f3fe201b197195c',
-  '4a0c21f1fe7379606a0950e0622c8274b7bcc5870bfccc9c94b042d9e39e1f80',
-  'af5048cd1c8b56931a2af4c5f13f8a244952cd95f26edf01ed9db22b61968b0a',
-  '6c5105ae8b72bd25ae9443b314a4d4e03661a53e335437445f9dae9a26612c8c',
+  'da3127400675e0a464aa2d9419106be496bea586d91eb90a6cb6e858a554a378',
+  'a818e372b77fc3af187f0621ee44e9a779d7c8e917f577fc159f01dc09e49c59',
+  'bcdc0d7539ab9e7b74e7cc3cdf2d9ace16aa8a4915b1ea4c47a5274049492506',
+  '49572c358c5c00df061edf9caa19700f0bb50b1b844d4431881b20ca5d8b3fc7',
+  '5bac25f509707740b581a6b1dba530d63a25cc114ccc2636470af7d1aa891357',
+  '44ae052d79d206cc38e6e066c58b2d3b5e480a4aff6aca0f64a6865023787e05',
+  '379f8e628d5848cd242bd77345c1d9eff05405c65fb8d0118345da207453ad98',
+  'ac7afd8131509d64216501ccc2020b3bc3b21feded3ef8a85ddfeaf2a2a2e217',
+  '316f8c594f3c8f0f5f2a1cac6b5235efa807dfeda71ae9c50404bfac8f834184',
+  '94118700a5532a18f2fc505326fb4c06bdff8cf335066e63f0bcfff76562a0f8',
+  '1f71423243867022785276f12d81ae9700c80d432301fbcf6dc748e83c8dbd03',
+  '753e503eefdac8e4bd17599af1cdb08eac2084f43f5f1b10e5e9e360a55b28c5',
+  'd3dbd34b809863b480500b68aa85aab4077ade87e1487eb35caae48b71b2e49f',
+  '8a0894debb8933f3634644e08bef17915318eac1325bed91fe91bfc93392a664',
+  'b6015188e058aef16d23540da7e580554db59d04b2da124d247eccde7b9e9d32',
   'afcbf244fdbc956ef8d482f4c4551fec20e0df563f225b532f0ff3f156178af3',
   '6e9a5d24ce6984c07c8dc7ff85de70361b2d33b6213f20946a2ab87f377283ce',
-  '511c8af8e5ddefdd89b4b2139e42ace6b13ba79d313485843b30d5964fc160bd',
-  'c987b1c2ae6927ac3993a09f2f67c1eca2a3cd5f94bac08111133785015a0c9a',
-  '317844606ddd90d6f1551f2ecae1ddd72c65e69cf0e7f0fb3bdec9af5840d383',
+  '50b1875c7150aec701431dfcafc761895068b1ba9b8d3e569d065e794a1df7fa',
+  '77cefb96fc74a932280b6f898c1100adf34216c9cc5d115c349a4fc7d739741b',
+  '9dcde742c68c726b47e1208926601628f5f6a3323f3d54ad2a98570ce00eb721',
   '5b01cd377b1c3bafcfefdd2856e8cf177dee0c308941688b6c6d2c73703d7c07',
-  '06326189af900a605274e8ecb9d2f602861c436334de90a483c98848836b02b8',
-  'cf2c73a94318861535d84b9df756404c05a9f46e8b3bdac2dc8c4d96b04e27f6',
-  '6dff2e7df8ab59e265cdca149cf9d2b126ebd4aa59572cc5a3fbb3a0863c83ff',
-  'ac272a215183f36e9185a951fa831ed8aefcb77661ece61b56c9bb24b9f82baf',
-  '8e5d19eeac85c0ae79756052e79e1a7d036f0ce08948e258d469663b80fff9e7',
-  '6669dd7a9fa9a1bcce42c93bb58c4497d7af5f780397002eaf16984ae0c522f7',
-  '69cc97d2a583d44915df02d950380933473fda2aa57ce99be7e06c2c1acc3e49',
-  'e37400583524335d356aa7d37de291abbf2946fc5e10ec140e52b1e411a340db',
-  '47b4592723730e6ca57a972d7c74a0cc1bb542e82ad5bbccad202ad5f72cd1c2',
+  'a4eb14a8b2f1aebd295310f11bfa4158c909a3bdda431f28f60cd6318fcef413',
+  '5e89afa81ec938a99ba5d324d43972d9d31f9ffde957adf5ba30833a3adecbfc',
+  '9df10d9fa4a06a1a1c43f416ca241928459f27965c166aa18f450c79246f4ccb',
+  '8cbbee493a91dfff17539c1c2191fd4a6cefbd71d192b0e0b4a9b579a79ed625',
+  'f49c0042b3facb2da20d4682549dc112920fc1ba415042bafc6ce68fea4f1018',
+  '755f4006a8b461d2919f18fa12c47ad8c74a398fb0a81c788111bc5f7b8de6f1',
+  '37aa60c419ca94525a630070d1bcf7547b5c91cd52ac2d7dfdc5c0d75c147c1b',
+  '07bc482913652121d7cbbf996f2cb4e7cf217cf0e86f1bf2a7e03135249f3e82',
+  'a3612d3222e114182d8bbd08b5f82ca48123fc8a47a616cd96a7ef1f67594bec',
 ];
 
 test('catalog contains only authentic (sourced) reading tests and thirty distinct listening tests', () => {

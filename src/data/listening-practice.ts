@@ -359,7 +359,7 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
             "explanation": "At 12:37 Simon says Duncan took over \"the area of construction\", i.e. building."
           },
           {
-            "prompt": "Judith   Area of work",
+            "prompt": "Judith",
             "kind": "select",
             "options": [
               {
@@ -405,7 +405,7 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
             "explanation": "At 13:23 Simon gives the go-kart arena's size as \"120 square metres in area\"."
           },
           {
-            "prompt": "_____ yaer olds",
+            "prompt": "_____ year olds",
             "kind": "text",
             "answer": "5-12",
             "explanation": "At 13:49 Simon says they \"wanted to enable 5 to 12 year olds to use the go-karts\"."
@@ -478,13 +478,19 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
           {
             "prompt": "Read all notes _____",
             "kind": "text",
-            "answer": "3 times",
+            "answer": [
+              "3 times",
+              "three times"
+            ],
             "explanation": "At 18:58 the tutor advises \"read everything three times\" to fix notes in mind."
           },
           {
             "prompt": "Next tutorial date: _____",
             "kind": "text",
-            "answer": "25",
+            "answer": [
+              "25",
+              "25th"
+            ],
             "explanation": "At 20:00 they agree on the date: \"We'll go for the 25th then.\""
           }
         ]
@@ -592,7 +598,10 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
           {
             "prompt": "• But the house will have paid its ‘environmental debt’ within _____",
             "kind": "text",
-            "answer": "15 years",
+            "answer": [
+              "15 years",
+              "fifteen years"
+            ],
             "explanation": "At 26:32 the lecturer says the environmental debt \"will only take 15 years\" to clear."
           }
         ]
@@ -710,7 +719,7 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
               }
             ],
             "answer": "C",
-            "explanation": "At 15:18 Spiros says the other students \"are very familiar with each other\", so they let each other into discussion."
+            "explanation": "At 15:41 Spiros says the other students \"are very familiar with each other\", so they let each other into discussion."
           },
           {
             "prompt": "Why is Hiroko feeling more positive about tutorials now?",
@@ -750,7 +759,7 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
               }
             ],
             "answer": "A",
-            "explanation": "At 16:56 Hiroko says she had \"to turn to the books and journals\" to understand lectures."
+            "explanation": "At 17:21 Hiroko says she had \"to turn to the books and journals\" to understand lectures."
           },
           {
             "prompt": "What does Spiros think of his reading skills?",
@@ -770,7 +779,7 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
               }
             ],
             "answer": "B",
-            "explanation": "At 17:21 Spiros says \"my reading speed is still quite slow\"."
+            "explanation": "At 17:47 Spiros says \"my reading speed is still quite slow\"."
           },
           {
             "prompt": "What is Hiroko’s subject area?",
@@ -790,7 +799,7 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
               }
             ],
             "answer": "C",
-            "explanation": "At 18:12 Hiroko says \"we didn't read anything about engineering\", her own subject."
+            "explanation": "At 18:36 Hiroko says \"we didn't read anything about engineering\", her own subject."
           },
           {
             "prompt": "Hiroko thinks that in the reading classes the students should",
@@ -881,7 +890,7 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
               }
             ],
             "answer": "A",
-            "explanation": "At 14:19 he says of the farm project \"I never really knew whether I'd be needed or not\", wanting \"more of a proper structure\"."
+            "explanation": "At 14:19 he says of the tourism project he chose \"I never really knew whether I'd be needed or not\", wanting \"more of a proper structure\"."
           },
           {
             "prompt": "In the village community, he learnt how important it was to",
@@ -1381,7 +1390,10 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
           {
             "prompt": "Label point (31) on the diagram above.",
             "kind": "text",
-            "answer": "ear drum",
+            "answer": [
+              "ear drum",
+              "eardrum"
+            ],
             "explanation": "At 23:22 the lecturer describes sound reaching the eardrum, labelled in image one."
           },
           {
@@ -1406,36 +1418,194 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
       },
       {
         "segment": {
-          "src": "/audio/listening/test-008.mp3",
-          "startSeconds": 329.3,
-          "endSeconds": 712.44,
-          "source": "Listening Test 8, Part 2, Questions 15 to 17",
-          "transcriptHtml": "<p class=\"transcript-note\">Automatic transcript. It may contain small recognition errors; the answer key is authoritative.</p><p><span class=\"ts\">[05:29]</span> have half a minute to check your answers. Now turn to section two. Section two. You will hear a guide giving a tour of a park. First, you have some time to look at questions 11 to 14. Now listen carefully and answer questions 11 to 14. Welcome to all of you. Can everybody see and hear me? Good. I&#x27;m Sally, your guide for this tour of the Bicentennial Park. I hope that you&#x27;re all</p><p><span class=\"ts\">[07:09]</span> wearing your most comfortable shoes and that you can keep up the pace. So let&#x27;s get underway on our tour around this wonderful park. I&#x27;ll start today with some general background information. There used to be a lot of factories in this area until the 1960s. Creating the park required the demolition of lots of derelict buildings on the site. So most of the exciting park space all around you</p><p><span class=\"ts\">[07:35]</span> was originally warehouses and storehouses. The idea of building a public park here was first discussed when a property developer proposed a high-rise housing development, but the local community wasn&#x27;t happy. If the land was to be cleaned up, they wanted to use the site for recreation. Residents wanted open space for outdoor activities rather than housing or even an indoor sports</p><p><span class=\"ts\">[08:02]</span> complex. Now, to the Bicentennial Park itself, it has two areas, a nature reserve and a formal park with man-made features and gardens. The tall blue and white building in front of us is called the Tower and is the centre point for the formal gardens. It stands 12 metres high, so follow me up the stairs to where we can take advantage of the fantastic views. Before you hear the rest of</p><p><span class=\"ts\">[08:35]</span> the tour, you have some time to look at questions 15 to 20. Now listen and answer questions 15 to 20. Well, here we are at the top of the tower and we&#x27;re going to look at the view from each direction out to the east. The large buildings about a kilometre away are on the Olympic site. There&#x27;s an indoor arena for gymnastics, a stadium, a track and field and a swimming pool for races and</p><p><span class=\"ts\">[09:39]</span> synchronised swimming and also diving. If you look carefully down there, you can see the train lines. The Olympic site has its own station to encourage the use of public transport. There is also a car park but it only holds a limited number of cars. The formal park has some specially created water features. If you look out here to the south, you can see a circular ornamental pond</p><p><span class=\"ts\">[10:06]</span> and around to the west you can relax and sit on a bench to smell the flowers and the rose garden and finally up to the north. If you look in front of you now, there&#x27;s a lake with a small island in the centre. You can hire rowing boats at the boat shed which you can&#x27;t see from here but if you look through the trees, you can see the cafe which has lovely views across the water. Okay,</p><p><span class=\"ts\">[10:32]</span> let&#x27;s climb down now. We will go now and have a look at the nature reserve section of the park which has opened up natural wetland to the public. The mangroves have been made more accessible to visitors by the boardwalk built during the park&#x27;s upgrade. You&#x27;d think that people would come here to look at the unusual plant life of the area but in fact it&#x27;s more often used for cycling and</p><p><span class=\"ts\">[10:55]</span> is very popular with the local clubs. This is the far end of the park and over there you can see the frog pond, a natural feature here long before the park was designed. Just next to it we have our outdoor classroom, a favourite spot for school parties. The area is now most often used by primary schools for biology lessons. And finally let&#x27;s pass by the waterbird refuge. This area is in a</p><p><span class=\"ts\">[11:22]</span> sheltered part of the estuary. That&#x27;s why the park&#x27;s viewing shelter is a favourite spot for bird watchers who can use it to spy through binoculars. You can watch a variety of waterbirds but most visitors expect to see black swans when they come to the shelter. You might spot one yourself right now. Well here we are back at our starting point, the visitors. That is the end of section</p>",
+          "src": "/audio/listening/test-002.mp3",
+          "startSeconds": 391.9,
+          "endSeconds": 763.59,
+          "source": "Listening Test 2, Part 2, Questions 17 to 20",
+          "transcriptHtml": "<p class=\"transcript-note\">Automatic transcript. It may contain small recognition errors; the answer key is authoritative.</p><p><span class=\"ts\">[06:31]</span> Section two. You will hear a man giving a talk to new members of a wildlife club in the south of England. First, you have some time to look at questions 11 to 13. Now listen carefully and answer questions 11 to 13.</p><p><span class=\"ts\">[07:15]</span> Hello. I&#x27;m delighted to welcome you to our wildlife club and very pleased that you&#x27;re interested in the countryside and the plants and creatures of this area. I think you&#x27;ll be surprised at the variety we have here, even though we&#x27;re not far from London. I&#x27;ll start by telling you about some of the parks and open spaces nearby.</p><p><span class=\"ts\">[07:37]</span> One very pleasant place is Holland Common. This has been public land for hundreds of years and what you&#x27;ll find interesting is that the river ooze which flows into the sea 80 kilometers away has its source in the common. There&#x27;s an information board about the plants and animals you can see here</p><p><span class=\"ts\">[07:57]</span> and by the way the common is accessible 24 hours a day. Then there&#x27;s Holt Island, which is noted for its great range of trees. In the past willows were grown here commercially for basket making and this ancient craft has recently been reintroduced.</p><p><span class=\"ts\">[08:17]</span> The island is only open to the public from Friday to Sunday because it&#x27;s quite small and if there were people around every day much of the wildlife would keep away. From there it&#x27;s just a short walk across the bridge to Longfield Country Park. Longfield has a modern replica of a farm from over 2000 years ago.</p><p><span class=\"ts\">[08:40]</span> Children&#x27;s activities are often arranged there like bread making and face painting. The park is only open during daylight hours so bear that in mind if you decide to go there. Before you hear the rest of the talk you have some time to look at questions 14 to 20. Now listen and answer questions 14 to 20.</p><p><span class=\"ts\">[09:41]</span> Longfield Park has a program of activities throughout the year and to give you a sample this is what&#x27;s happening in the next few days. On Monday you can learn about herbs and how they&#x27;ve been used over the centuries. You&#x27;ll start with a tour of our herb garden,</p><p><span class=\"ts\">[09:58]</span> practice the technique of using them as coloured eyes for cloth and listen to an illustrated talk about their use in cooking and medicine. Then on Wednesday you can join local experts to discover the variety of insects and birds that appear in the evening. We keep to a small number of people in the group so if you want to go</p><p><span class=\"ts\">[10:22]</span> you&#x27;ll need to phone the park ranger a few days ahead. There&#x27;s a small charge which you should pay when you turn up. I&#x27;m sure you&#x27;re all keen to help with the practical task of looking after the park so on Saturday you can join a working party. You&#x27;ll have a choice of all sorts of activities from planting hedges to picking up litter so you&#x27;ll be able to change from one to another when you</p><p><span class=\"ts\">[10:47]</span> feel like it. The rangers will be hard at work all day but do come and join in even for just a short while. One thing though is to make sure you&#x27;re wearing something that you don&#x27;t mind getting dirty or torn. And finally I&#x27;d like to tell you about our new wildlife area Hinchingbrook Park which will be opened to the public next month. This slide doesn&#x27;t really indicate how big it is</p><p><span class=\"ts\">[11:16]</span> but anyway you can see the two gates into the park and the main paths. As you can see there&#x27;s a lake in the northwest of the park with a bird hide to the west of it at the end of a path so it&#x27;ll be a nice quiet place for watching the birds on the lake. Fairly close to where refreshments are available there&#x27;s a dog walking area in the southern part</p><p><span class=\"ts\">[11:40]</span> of the park leading off from the path and if you just want to sit and relax you can go to the flower garden that&#x27;s the circular area on the map surrounded by paths. And finally there&#x27;s a wooded area in the western section of the park between two paths. Okay that&#x27;s enough from me so let&#x27;s get on and have a look. That is the end of section two. You now have half a minute to check your answers.</p>",
           "images": [
             {
-              "src": "/pics/listening/imported/test-008.png",
-              "alt": "Diagram for Listening Test 8, Part 2, Questions 15 to 17"
+              "src": "/pics/listening/imported/test-002.png",
+              "alt": "Diagram for Listening Test 2, Part 2, Questions 17 to 20"
             }
           ]
         },
         "questions": [
           {
-            "prompt": "Label point (15) on the diagram above.",
-            "kind": "text",
-            "answer": "car park",
-            "explanation": "At 09:39 Sally points out the car park near the Olympic site train lines, matching this label on the plan."
+            "prompt": "Bird hide",
+            "kind": "select",
+            "options": [
+              {
+                "value": "A",
+                "label": "A"
+              },
+              {
+                "value": "B",
+                "label": "B"
+              },
+              {
+                "value": "C",
+                "label": "C"
+              },
+              {
+                "value": "D",
+                "label": "D"
+              },
+              {
+                "value": "E",
+                "label": "E"
+              },
+              {
+                "value": "F",
+                "label": "F"
+              },
+              {
+                "value": "G",
+                "label": "G"
+              },
+              {
+                "value": "H",
+                "label": "H"
+              },
+              {
+                "value": "I",
+                "label": "I"
+              }
+            ],
+            "answer": "A",
+            "explanation": "At 11:16 he places \"a bird hide to the west of\" the lake, at the end of a path."
           },
           {
-            "prompt": "Label point (16) on the diagram above.",
-            "kind": "text",
-            "answer": "rose garden",
-            "explanation": "At 10:06 Sally points out the rose garden to the west of the Tower."
+            "prompt": "Dog-walking area",
+            "kind": "select",
+            "options": [
+              {
+                "value": "A",
+                "label": "A"
+              },
+              {
+                "value": "B",
+                "label": "B"
+              },
+              {
+                "value": "C",
+                "label": "C"
+              },
+              {
+                "value": "D",
+                "label": "D"
+              },
+              {
+                "value": "E",
+                "label": "E"
+              },
+              {
+                "value": "F",
+                "label": "F"
+              },
+              {
+                "value": "G",
+                "label": "G"
+              },
+              {
+                "value": "H",
+                "label": "H"
+              },
+              {
+                "value": "I",
+                "label": "I"
+              }
+            ],
+            "answer": "I",
+            "explanation": "At 11:16 he says \"there's a dog walking area in the southern part\" of the park."
           },
           {
-            "prompt": "Label point (17) on the diagram above.",
-            "kind": "text",
-            "answer": "cafe",
-            "explanation": "At 10:06 Sally points out the cafe near the lake, visible through the trees."
+            "prompt": "Flower garden",
+            "kind": "select",
+            "options": [
+              {
+                "value": "A",
+                "label": "A"
+              },
+              {
+                "value": "B",
+                "label": "B"
+              },
+              {
+                "value": "C",
+                "label": "C"
+              },
+              {
+                "value": "D",
+                "label": "D"
+              },
+              {
+                "value": "E",
+                "label": "E"
+              },
+              {
+                "value": "F",
+                "label": "F"
+              },
+              {
+                "value": "G",
+                "label": "G"
+              },
+              {
+                "value": "H",
+                "label": "H"
+              },
+              {
+                "value": "I",
+                "label": "I"
+              }
+            ],
+            "answer": "F",
+            "explanation": "At 11:40 he says the flower garden is \"the circular area on the map surrounded by paths\"."
+          },
+          {
+            "prompt": "Wooded area",
+            "kind": "select",
+            "options": [
+              {
+                "value": "A",
+                "label": "A"
+              },
+              {
+                "value": "B",
+                "label": "B"
+              },
+              {
+                "value": "C",
+                "label": "C"
+              },
+              {
+                "value": "D",
+                "label": "D"
+              },
+              {
+                "value": "E",
+                "label": "E"
+              },
+              {
+                "value": "F",
+                "label": "F"
+              },
+              {
+                "value": "G",
+                "label": "G"
+              },
+              {
+                "value": "H",
+                "label": "H"
+              },
+              {
+                "value": "I",
+                "label": "I"
+              }
+            ],
+            "answer": "E",
+            "explanation": "At 11:40 he places \"a wooded area in the western section of the park between two paths\"."
           }
         ]
       }
@@ -1487,7 +1657,10 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
           {
             "prompt": "Time at current job: _____",
             "kind": "text",
-            "answer": "nine years",
+            "answer": [
+              "nine years",
+              "9 years"
+            ],
             "explanation": "At 02:23 Harold first says eight years, then corrects himself to nine years."
           },
           {
@@ -1534,7 +1707,10 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
           {
             "prompt": "Postcode: _____",
             "kind": "text",
-            "answer": "WS62YH",
+            "answer": [
+              "WS62YH",
+              "WS6 2YH"
+            ],
             "explanation": "At 02:37 Nina reads the postcode letter by letter: W-S-6-2-Y-H."
           },
           {
@@ -1544,7 +1720,7 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
             "explanation": "At 03:55 George reads out his phone number; the automatic transcript cuts off partway through the digits, but the answer key gives the full number as 01674553242."
           },
           {
-            "prompt": "Singer (price includes _____ in the garden",
+            "prompt": "17 June: Singer (price includes _____ in the garden)",
             "kind": "text",
             "answer": [
               "drinks",
@@ -1553,7 +1729,7 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
             "explanation": "At 04:26 George reads that the singer's ticket price includes drinks in the garden."
           },
           {
-            "prompt": "_____ Anna Ventura",
+            "prompt": "22 June: _____ Anna Ventura",
             "kind": "text",
             "answer": [
               "pianist",
@@ -1562,13 +1738,13 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
             "explanation": "At 04:26 Nina asks about the pianist performing on 22 June, filling the table's event column."
           },
           {
-            "prompt": "June: _____ £",
+            "prompt": "23 June, Spanish dance and guitar concert. Price per ticket: £ _____",
             "kind": "text",
             "answer": "10.50",
             "explanation": "At 04:53 Nina reads the ticket price for the Spanish dance and guitar concert as 10 pounds 50."
           },
           {
-            "prompt": "June: _____",
+            "prompt": "23 June, Spanish dance and guitar concert. Number of tickets: _____",
             "kind": "text",
             "answer": "4",
             "explanation": "At 04:53 they agree to book four tickets for the Spanish dance and guitar concert."
@@ -1647,13 +1823,19 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
           {
             "prompt": "Read all notes _____",
             "kind": "text",
-            "answer": "3 times",
+            "answer": [
+              "3 times",
+              "three times"
+            ],
             "explanation": "At 18:58 the tutor advises \"read everything three times\" to fix notes in mind."
           },
           {
             "prompt": "Next tutorial date: _____",
             "kind": "text",
-            "answer": "25",
+            "answer": [
+              "25",
+              "25th"
+            ],
             "explanation": "At 20:00 they agree on the date: \"We'll go for the 25th then.\""
           }
         ]
@@ -1676,7 +1858,12 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
           {
             "prompt": "Date of birth: _____",
             "kind": "text",
-            "answer": "31 March",
+            "answer": [
+              "31 March",
+              "31st March",
+              "March 31",
+              "March 31st"
+            ],
             "explanation": "At 01:56 she gives her date of birth as \"31st of March, 1972\"."
           },
           {
@@ -1688,7 +1875,10 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
           {
             "prompt": "Number of years planned in hall: _____",
             "kind": "text",
-            "answer": "2",
+            "answer": [
+              "2",
+              "two"
+            ],
             "explanation": "At 01:56 she says the course is three years but \"I'd only like to stay in Hall for two.\""
           },
           {
@@ -1700,7 +1890,10 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
           {
             "prompt": "Preferred room type: a single _____",
             "kind": "text",
-            "answer": "bedsit",
+            "answer": [
+              "bedsit",
+              "bed-sit"
+            ],
             "explanation": "At 03:57 she decides \"the bed sit sounds the best option.\""
           },
           {
@@ -1740,36 +1933,44 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
     "units": [
       {
         "segment": {
-          "src": "/audio/listening/test-008.mp3",
-          "startSeconds": 0.0,
-          "endSeconds": 329.3,
-          "source": "Listening Test 8, Part 1, Questions 7 to 10",
-          "transcriptHtml": "<p class=\"transcript-note\">Automatic transcript. It may contain small recognition errors; the answer key is authoritative.</p><p><span class=\"ts\">[00:00]</span> Test 4. You will hear a number of different recordings and you will have to answer questions on what you hear. There will be time for you to read the instructions and questions and you will have a chance to check your work. All the recordings will be played once only. The test is in four sections. At the end of the test you will be given ten minutes to</p><p><span class=\"ts\">[00:27]</span> transfer your answers to an answer sheet. Now turn to section one. Section one. You will hear a student talking to a housing officer about living with a home stay family. First you have some time to look at questions one to six. Now we shall begin. You should answer the questions as you listen because you will not hear the recording a second time. Listen</p><p><span class=\"ts\">[01:29]</span> carefully and answer questions one to six. Yes, what can I do for you? My friend is in homestay and she really enjoys it so I&#x27;d like to join a family as well. Okay, so let me get some details. What&#x27;s your name? My name is Keiko Yucchini. Could you spell your family name for me? It&#x27;s Yucchini. That&#x27;s Y-U-I-C-H-I-N-I. And your first name? It&#x27;s Keiko. K-E-I-K-O.</p><p><span class=\"ts\">[02:13]</span> That&#x27;s Keiko Yucchini. Okay. And your female. And your nationality? I&#x27;m Japanese. Right. And could I see your passport please? Here it is. Okay. Your passport number is J-O-6-3-7. And you&#x27;re how old? I&#x27;m 28 years old. Now you live at one of the colleges. Which one? Willow College. Room 21-C. Right. 21-C Willow College. And how long are you planning on staying with</p><p><span class=\"ts\">[02:50]</span> homestay? About four months. Longer if I like it. And what course are you enrolled in? Well, I&#x27;ve enrolled for 20 weeks in the advanced English studies because I need help with my writing. And I&#x27;m nearly at the end of my first five week course. Okay. Do you have any preference for a family with children or without children? I prefer. I mean, I like young children. But</p><p><span class=\"ts\">[03:23]</span> I&#x27;d like to be with older people. You know, adults, someone around my age. Okay. And what about pets? I am a veterinarian so that&#x27;s fine. The more the better. Before you hear the rest of the conversation, you have some time to look at questions seven to ten. Now listen and answer questions seven to ten. All right. Now, what about you? Are you a vegetarian or do you have</p><p><span class=\"ts\">[04:18]</span> any special food requirements? No, I am not a vegetarian. But I don&#x27;t eat a lot of meat. I really like seafood. And what are your hobbies? I like reading and going to the movies. Do you play any sports? Yes. I joined the handball team. But I didn&#x27;t like that. So I stopped playing. Now I play tennis on the weekend with my friends. All right. Let&#x27;s see. Name, age, now the location.</p><p><span class=\"ts\">[04:50]</span> Are you familiar with the public transport system? No. I&#x27;m not really because I have been living on campus. I&#x27;ve been to the city a few times on the bus. But they are always late. What about the trains? I like catching the train. They are much faster. Now let me go check on the computer and see who I&#x27;ve got. Listen, leave it with me. I&#x27;ll check my records and I&#x27;ll give you details this</p><p><span class=\"ts\">[05:17]</span> afternoon. Thank you for helping me. It&#x27;s a pleasure. Bye. Bye. That is the end of section one. You now</p>"
+          "src": "/audio/listening/test-010.mp3",
+          "startSeconds": 476.25,
+          "endSeconds": 716.34,
+          "source": "Listening Test 10, Part 3, Questions 21 to 23",
+          "transcriptHtml": "<p class=\"transcript-note\">Automatic transcript. It may contain small recognition errors; the answer key is authoritative.</p><p><span class=\"ts\">[07:56]</span> Section three. You will hear a conversation between two students planning a research project. First, you have some time to look at questions 21 to 23. As you listen to the first part of the conversation, answer questions 21 to 23. We&#x27;d better start planning our research project, because we don&#x27;t have much time left before it&#x27;s due. I know, only three more weeks. Is that</p><p><span class=\"ts\">[08:46]</span> all? I thought we had more time than that. Well, let&#x27;s get to work then. Okay, so we agreed we&#x27;re going to interview shoppers about their spending habits. Did we decide to conduct our interviews at the department store? We haven&#x27;t decided anything definitely yet, but I think the shopping mall would be a better place. We&#x27;d get more of a variety</p><p><span class=\"ts\">[09:08]</span> of shoppers there. Yes, that&#x27;s a good point. So let&#x27;s do that. How many interviews did the professor say we had to complete? She said at least 30. That sounds like a lot, doesn&#x27;t it? Yes, but if we divide it up between the two of us, that&#x27;s just 15 each. That&#x27;s not so bad. Now listen and answer questions 24 to 30. Okay, so I guess we&#x27;d better start designing our</p><p><span class=\"ts\">[10:09]</span> questionnaire. Well, we have to do some reading first, don&#x27;t we? Didn&#x27;t we say we were going to compare our results to the results of a government study? Right, the government study about how the economic crisis has changed people&#x27;s spending habits. We want to see if we get similar results. Yes, so we&#x27;d better read that first and then design our questionnaire. Then I guess</p><p><span class=\"ts\">[10:32]</span> we&#x27;ll be ready to go out and interview shoppers. No, don&#x27;t you remember? The professor said she had to approve our questionnaire first before we actually conducted the interviews. All right, so we&#x27;ll get her approval and then conduct the interviews. I think it&#x27;s Saturday would be the best day for the interviews because everyone&#x27;s out shopping then. Right, we&#x27;ll do it on a Saturday</p><p><span class=\"ts\">[10:53]</span> then. And let&#x27;s also plan to get together the next day to analyze the results. It&#x27;s best to do that while everything&#x27;s fresh in our minds, don&#x27;t you think? Sure, that sounds like a good idea. Okay, so then we&#x27;re going to have to present our results to the class. Do you have any ideas for that? It&#x27;s an important part of our grade, so I think we should plan it well. Well, I think the obvious</p><p><span class=\"ts\">[11:19]</span> thing is to prepare some charts showing our results and how they compare with the government study. That will help make the information a lot clearer to the class. Right. Okay, so we&#x27;ll draw up some charts of the results. And then that&#x27;s it. All that will be left to do is give the class presentation. Do you think we can be ready on time? I sure hope so. Let&#x27;s get started now.</p><p><span class=\"ts\">[11:46]</span> That is the end of section three. You now have half a minute to check your answers.</p>"
         },
         "questions": [
           {
-            "prompt": "What does the student particularly like to eat? _____",
+            "prompt": "When is the research project due? _____",
             "kind": "text",
-            "answer": "seafood",
-            "explanation": "At 04:18 the student says she particularly likes seafood."
+            "answer": [
+              "in three weeks",
+              "three weeks",
+              "3 weeks",
+              "in 3 weeks"
+            ],
+            "explanation": "At 07:56 the students say the research project is due in three weeks."
           },
           {
-            "prompt": "What sport does the student play? _____",
+            "prompt": "Where will the students conduct the interviews? _____",
             "kind": "text",
-            "answer": "tennis",
-            "explanation": "At 04:18 the student says she now plays tennis at weekends, having given up handball."
+            "answer": [
+              "a shopping mall",
+              "shopping mall",
+              "the shopping mall"
+            ],
+            "explanation": "At 08:46 they agree to interview shoppers at the shopping mall rather than the department store."
           },
           {
-            "prompt": "What mode of transport does the student prefer? _____",
+            "prompt": "How many interviews will they complete all together? _____",
             "kind": "text",
-            "answer": "trains",
-            "explanation": "At 04:50 the student says she prefers trains to buses because they are faster."
-          },
-          {
-            "prompt": "When will the student find out her homestay address? _____",
-            "kind": "text",
-            "answer": "that afternoon",
-            "explanation": "At 04:50 the officer says he will give the student her homestay address that afternoon."
+            "answer": [
+              "thirty",
+              "at least 30",
+              "at least thirty",
+              "30"
+            ],
+            "explanation": "At 09:08 they confirm the professor requires at least 30 interviews in total."
           }
         ]
       },
@@ -1789,7 +1990,7 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
             "explanation": "At 17:21 the tutor says \"each video is a television version of a podcast\" when describing homemade videos."
           },
           {
-            "prompt": "What is the title of Mrs Jone’s lecture? _____",
+            "prompt": "What is the title of Mrs Jones’s lecture? _____",
             "kind": "text",
             "answer": "culture and society",
             "explanation": "At 17:31 the tutor says Mrs Jones \"is giving a lecture on culture and society\", giving the lecture's title."
@@ -1803,7 +2004,14 @@ export const LISTENING_PRACTICE: Record<string, PracticeSet> = {
           {
             "prompt": "When is the final date for the assignment? _____",
             "kind": "text",
-            "answer": "4 July",
+            "answer": [
+              "4 July",
+              "4th July",
+              "July 4",
+              "July 4th",
+              "4th of July",
+              "the 4th of July"
+            ],
             "explanation": "At 18:13 the tutor says to \"finish the assignment by the 4th of July\"."
           }
         ]

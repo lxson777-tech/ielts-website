@@ -19,20 +19,20 @@
       "ru": "На 02:21 Rebecca предлагает \"nine a.m. Thursday\", это же время подтверждают снова на 03:12. Отсюда час: девять."
     },
     "q5": {
-      "sha": "3b445762c954f0ad",
-      "ru": "На 02:21 и снова на 03:12 встречу подтверждают на \"nine a.m. Thursday\"."
+      "sha": "780ecfbbdcc1bf81",
+      "ru": "На 03:12 и снова на 03:12 встречу подтверждают на \"nine a.m. Thursday\"."
     },
     "q6": {
-      "sha": "79045fd2325dc4a2",
-      "ru": "На 03:36 Rebecca перечисляет, что нужно для Blue Cross, включая \"blood pressure, standard blood and urine tests... ECG\". В ключе ответов принимаются давление (blood pressure), моча (urine) и ECG как три анализа."
+      "sha": "badd977a9b2bb827",
+      "ru": "На 03:36 Rebecca перечисляет, что нужно для Blue Cross, включая \"blood pressure, standard blood and urine tests... ECG\". Принимаются любые три из названных анализов: blood pressure, blood test, urine test, cholesterol, ECG, diabetes или heart disease."
     },
     "q7": {
-      "sha": "79045fd2325dc4a2",
-      "ru": "На 03:36 Rebecca перечисляет, что нужно для Blue Cross, включая \"blood pressure, standard blood and urine tests... ECG\". В ключе ответов принимаются давление (blood pressure), моча (urine) и ECG как три анализа."
+      "sha": "badd977a9b2bb827",
+      "ru": "На 03:36 Rebecca перечисляет, что нужно для Blue Cross, включая \"blood pressure, standard blood and urine tests... ECG\". Принимаются любые три из названных анализов: blood pressure, blood test, urine test, cholesterol, ECG, diabetes или heart disease."
     },
     "q8": {
-      "sha": "79045fd2325dc4a2",
-      "ru": "На 03:36 Rebecca перечисляет, что нужно для Blue Cross, включая \"blood pressure, standard blood and urine tests... ECG\". В ключе ответов принимаются давление (blood pressure), моча (urine) и ECG как три анализа."
+      "sha": "badd977a9b2bb827",
+      "ru": "На 03:36 Rebecca перечисляет, что нужно для Blue Cross, включая \"blood pressure, standard blood and urine tests... ECG\". Принимаются любые три из названных анализов: blood pressure, blood test, urine test, cholesterol, ECG, diabetes или heart disease."
     },
     "q9": {
       "sha": "9e9bea95e38c5dc6",
@@ -67,8 +67,8 @@
       "ru": "На 10:20 Rick говорит, что после олимпийского комплекса \"we'll take a cruise down the Parramatta River... into Sydney Harbour\", то есть группа возвращается на лодке. Это вариант B."
     },
     "q17": {
-      "sha": "bf34930596653762",
-      "ru": "На 10:34 Rick говорит, что вид на Bondi Beach открывается \"from 500 feet in the air\"."
+      "sha": "8139d949b368a680",
+      "ru": "На 10:34 Rick говорит, что с гидросамолёта виден Bondi Beach \"from 500 feet in the air\". По лимиту подходит только число, поэтому пишите 500 без слова feet."
     },
     "q18": {
       "sha": "5f797f42671eaa95",
@@ -95,8 +95,8 @@
       "ru": "На 13:56 Ann объясняет: \"we can't afford to employ someone to help her\" (C) и \"the neighbours are all too busy\" (D), а ещё её мама болеет (A). Совет врача (B) и компьютерные игры (E) не входят в её причины."
     },
     "group:q21": {
-      "sha": "e09de9b83c22f8f6",
-      "ru": "<p>На 13:56 Ann говорит: “we can't afford to employ someone to help her” (C) и “the neighbours are all too busy” (D), а ещё её мама болеет (A). Совет врача (B) и компьютерные игры (E) относятся к другой части разговора, поэтому верные буквы это A, C и D.</p>"
+      "sha": "5cf24d91c2ff52ea",
+      "ru": "<p>На 13:56 Ann говорит: “we can't afford to employ someone to help her” (C) и “the neighbours are all too busy” (D), а ещё её мама болеет (A). Врач сказал, что готовить и убирать должен кто-то другой, а не сама Ann (B), а компьютерные игры (E) это отговорка Bill, а не Ann, поэтому верные буквы это A, C и D.</p>"
     },
     "q24": {
       "sha": "230ce13353e21434",
