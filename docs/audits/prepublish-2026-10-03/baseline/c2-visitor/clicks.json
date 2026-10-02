@@ -1,0 +1,3790 @@
+{
+ "tier": "visitor",
+ "lang": "en",
+ "size": "1440x900",
+ "email": null,
+ "pages": [
+  {
+   "route": "/dashboard",
+   "controls": [
+    {
+     "control": "IELTS is EZ workspace",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Today",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Course",
+     "kind": "link",
+     "href": "/ielts-website/start",
+     "outcome": "clicked",
+     "went": "/ielts-website/start"
+    },
+    {
+     "control": "Practice",
+     "kind": "link",
+     "href": "/ielts-website/trainers",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers"
+    },
+    {
+     "control": "Tests",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "Vocabulary",
+     "kind": "link",
+     "href": "/ielts-website/review",
+     "outcome": "clicked",
+     "went": "/ielts-website/review"
+    },
+    {
+     "control": "English",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "lang": "en"
+    },
+    {
+     "control": "Русский",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "lang": "ru"
+    },
+    {
+     "control": "Қазақша",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Log in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Fdashboard"
+    },
+    {
+     "control": "Lessons library",
+     "kind": "link",
+     "href": "/ielts-website/learn",
+     "outcome": "clicked",
+     "went": "/ielts-website/learn"
+    },
+    {
+     "control": "Create a free account",
+     "kind": "link",
+     "href": "/ielts-website/sign-up?next=%2Fdashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-up?next=%2Fdashboard"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Fdashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Fdashboard"
+    },
+    {
+     "control": "Reading Passages, question types and timed practice tests. 0 of 13 done",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "1 Reading Overview 8 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading-task1",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading-task1"
+    },
+    {
+     "control": "2 Spotting Paraphrase 20 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/paraphrase",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/paraphrase"
+    },
+    {
+     "control": "3 Short-answer Questions 10 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/short-answer",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/short-answer"
+    },
+    {
+     "control": "4 Sentence Completion 10 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/sentence",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/sentence"
+    },
+    {
+     "control": "5 Summary, Note, Table & Flow-chart Completion 13 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/summary-completion",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/summary-completion"
+    },
+    {
+     "control": "6 Diagram Label Completion 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/diagram",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/diagram"
+    },
+    {
+     "control": "7 Multiple Choice 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/mc",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/mc"
+    },
+    {
+     "control": "8 True / False / Not Given 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/tfng",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/tfng"
+    },
+    {
+     "control": "9 Yes / No / Not Given 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/ynng",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/ynng"
+    },
+    {
+     "control": "10 Matching Headings 14 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/headings",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/headings"
+    },
+    {
+     "control": "11 Matching Information 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/matching-information",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/matching-information"
+    },
+    {
+     "control": "12 Matching Features 13 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/matching-features",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/matching-features"
+    },
+    {
+     "control": "13 Matching Sentence Endings 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/matching-sentence-endings",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/matching-sentence-endings"
+    },
+    {
+     "control": "Writing Task 1 reports and Task 2 essays with model answers. 0 of 11 done",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "1 Writing Overview 8 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing"
+    },
+    {
+     "control": "2 How to Answer Task 1 25 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/method",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/method"
+    },
+    {
+     "control": "3 Charts, Graphs & Tables 20 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/charts",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/charts"
+    },
+    {
+     "control": "4 Process Diagrams 18 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/process",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/process"
+    },
+    {
+     "control": "5 Maps & Plans 18 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/maps",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/maps"
+    },
+    {
+     "control": "6 How to Answer Task 2 25 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/task2-method",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/task2-method"
+    },
+    {
+     "control": "7 Opinion Essays 18 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/opinion",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/opinion"
+    },
+    {
+     "control": "8 Discussion Essays 18 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/discussion",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/discussion"
+    },
+    {
+     "control": "9 Advantages & Disadvantages Essays 18 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/advantages",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/advantages"
+    },
+    {
+     "control": "10 Problem & Solution Essays 18 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/problem",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/problem"
+    },
+    {
+     "control": "11 Two-Part Questions 16 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/twopart",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/twopart"
+    },
+    {
+     "control": "Speaking All three parts of the interview, with sample responses. 0 of 4 done",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "1 Speaking Overview 8 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking"
+    },
+    {
+     "control": "2 Part 1 Interview 20 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking/part1",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking/part1"
+    },
+    {
+     "control": "3 Part 2 Cue Card 25 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking/part2",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking/part2"
+    },
+    {
+     "control": "4 Part 3 Discussion 30 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking/part3",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking/part3"
+    },
+    {
+     "control": "Listening Part-by-part strategies for the listening paper. 0 of 11 done",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "1 Listening Overview 8 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening"
+    },
+    {
+     "control": "2 Part 1. Everyday Conversation 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/part1",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/part1"
+    },
+    {
+     "control": "3 Form, Note, Table & Flow-chart Completion 11 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/form-completion",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/form-completion"
+    },
+    {
+     "control": "4 Short-answer Questions 10 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/short-answer",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/short-answer"
+    },
+    {
+     "control": "5 Sentence Completion 10 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/sentence-completion",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/sentence-completion"
+    },
+    {
+     "control": "6 Part 2. Monologue & Maps 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/part2",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/part2"
+    },
+    {
+     "control": "7 Plan, Map & Diagram Labelling 14 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/map-labelling",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/map-labelling"
+    },
+    {
+     "control": "8 Part 3. Academic Discussion 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/part3",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/part3"
+    },
+    {
+     "control": "9 Multiple Choice 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/multiple-choice",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/multiple-choice"
+    },
+    {
+     "control": "10 Matching 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/matching",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/matching"
+    },
+    {
+     "control": "11 Part 4. Academic Lecture 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/part4",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/part4"
+    },
+    {
+     "control": "Vocabulary High-value academic words with an interactive quiz. 0 of 37 done",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "1 Vocabulary Overview 8 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary"
+    },
+    {
+     "control": "2 Family & Relationships 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/family",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/family"
+    },
+    {
+     "control": "3 Education & Learning 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/education",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/education"
+    },
+    {
+     "control": "4 Work & Employment 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/work",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/work"
+    },
+    {
+     "control": "5 Leisure & Entertainment 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/leisure",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/leisure"
+    },
+    {
+     "control": "6 People & Personality 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/people",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/people"
+    },
+    {
+     "control": "7 Hometown & Describing Places 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/places",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/places"
+    },
+    {
+     "control": "8 Childhood & Growing Up 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/childhood",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/childhood"
+    },
+    {
+     "control": "9 Travel & Tourism 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/travel",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/travel"
+    },
+    {
+     "control": "10 Transport & Traffic 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/transport",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/transport"
+    },
+    {
+     "control": "11 Weather, Seasons & Nature 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/weather",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/weather"
+    },
+    {
+     "control": "12 Health & Wellbeing 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/health",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/health"
+    },
+    {
+     "control": "13 Food & Diet 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/food",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/food"
+    },
+    {
+     "control": "14 Environment & Ecology 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/environment",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/environment"
+    },
+    {
+     "control": "15 Books & Reading 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/books",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/books"
+    },
+    {
+     "control": "16 Conjunctions & Linking Words 10 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/conjunctions",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/conjunctions"
+    },
+    {
+     "control": "17 Housing & Urban Life 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/housing",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/housing"
+    },
+    {
+     "control": "18 Sport & Fitness 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/sport",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/sport"
+    },
+    {
+     "control": "19 Music, Film & Television 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/music-film",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/music-film"
+    },
+    {
+     "control": "20 Technology & Society 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/technology",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/technology"
+    },
+    {
+     "control": "21 Social Media & Digital Life 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/social-media",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/social-media"
+    },
+    {
+     "control": "22 Media & Advertising 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/media",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/media"
+    },
+    {
+     "control": "23 Fashion & Clothing 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/fashion",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/fashion"
+    },
+    {
+     "control": "24 Success, Goals & Ambition 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/success",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/success"
+    },
+    {
+     "control": "25 Society, Culture & Globalisation 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/society",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/society"
+    },
+    {
+     "control": "26 Crime & Law 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/crime",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/crime"
+    },
+    {
+     "control": "27 Money & Consumerism 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/money",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/money"
+    },
+    {
+     "control": "28 Language & Communication 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/language",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/language"
+    },
+    {
+     "control": "29 Traditions, Festivals & Customs 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/traditions",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/traditions"
+    },
+    {
+     "control": "30 Volunteering & Community 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/volunteering",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/volunteering"
+    },
+    {
+     "control": "31 Government & Economy 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/government",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/government"
+    },
+    {
+     "control": "32 Artificial Intelligence 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/ai",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/ai"
+    },
+    {
+     "control": "33 Arts & Culture 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/arts",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/arts"
+    },
+    {
+     "control": "34 Science & Space 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/science",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/science"
+    },
+    {
+     "control": "35 Animals & Wildlife 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/animals",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/animals"
+    },
+    {
+     "control": "36 Business & Entrepreneurship 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/business",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/business"
+    },
+    {
+     "control": "37 Ageing & Retirement 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/ageing",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/ageing"
+    },
+    {
+     "control": "Help",
+     "kind": "link",
+     "href": "/ielts-website/help",
+     "outcome": "clicked",
+     "went": "/ielts-website/help"
+    },
+    {
+     "control": "Report a problem",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=footer",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=footer"
+    },
+    {
+     "control": "Privacy",
+     "kind": "link",
+     "href": "/ielts-website/privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/privacy"
+    },
+    {
+     "control": "Public offer",
+     "kind": "link",
+     "href": "/ielts-website/terms",
+     "outcome": "clicked",
+     "went": "/ielts-website/terms"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/start",
+   "controls": [
+    {
+     "control": "Lessons library",
+     "kind": "link",
+     "href": "/ielts-website/learn",
+     "outcome": "clicked",
+     "went": "/ielts-website/learn"
+    },
+    {
+     "control": "Create a free account",
+     "kind": "link",
+     "href": "/ielts-website/sign-up?next=%2Fstart",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-up?next=%2Fstart"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Fstart",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Fstart"
+    },
+    {
+     "control": "Reading Passages, question types and timed practice tests. 0 of 13 done",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "1 Reading Overview 8 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading-task1",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading-task1"
+    },
+    {
+     "control": "2 Spotting Paraphrase 20 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/paraphrase",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/paraphrase"
+    },
+    {
+     "control": "3 Short-answer Questions 10 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/short-answer",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/short-answer"
+    },
+    {
+     "control": "4 Sentence Completion 10 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/sentence",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/sentence"
+    },
+    {
+     "control": "5 Summary, Note, Table & Flow-chart Completion 13 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/summary-completion",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/summary-completion"
+    },
+    {
+     "control": "6 Diagram Label Completion 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/diagram",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/diagram"
+    },
+    {
+     "control": "7 Multiple Choice 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/mc",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/mc"
+    },
+    {
+     "control": "8 True / False / Not Given 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/tfng",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/tfng"
+    },
+    {
+     "control": "9 Yes / No / Not Given 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/ynng",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/ynng"
+    },
+    {
+     "control": "10 Matching Headings 14 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/headings",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/headings"
+    },
+    {
+     "control": "11 Matching Information 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/matching-information",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/matching-information"
+    },
+    {
+     "control": "12 Matching Features 13 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/matching-features",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/matching-features"
+    },
+    {
+     "control": "13 Matching Sentence Endings 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/matching-sentence-endings",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/matching-sentence-endings"
+    },
+    {
+     "control": "Writing Task 1 reports and Task 2 essays with model answers. 0 of 11 done",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "1 Writing Overview 8 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing"
+    },
+    {
+     "control": "2 How to Answer Task 1 25 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/method",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/method"
+    },
+    {
+     "control": "3 Charts, Graphs & Tables 20 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/charts",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/charts"
+    },
+    {
+     "control": "4 Process Diagrams 18 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/process",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/process"
+    },
+    {
+     "control": "5 Maps & Plans 18 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/maps",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/maps"
+    },
+    {
+     "control": "6 How to Answer Task 2 25 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/task2-method",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/task2-method"
+    },
+    {
+     "control": "7 Opinion Essays 18 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/opinion",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/opinion"
+    },
+    {
+     "control": "8 Discussion Essays 18 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/discussion",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/discussion"
+    },
+    {
+     "control": "9 Advantages & Disadvantages Essays 18 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/advantages",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/advantages"
+    },
+    {
+     "control": "10 Problem & Solution Essays 18 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/problem",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/problem"
+    },
+    {
+     "control": "11 Two-Part Questions 16 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/twopart",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/twopart"
+    },
+    {
+     "control": "Speaking All three parts of the interview, with sample responses. 0 of 4 done",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "1 Speaking Overview 8 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking"
+    },
+    {
+     "control": "2 Part 1 Interview 20 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking/part1",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking/part1"
+    },
+    {
+     "control": "3 Part 2 Cue Card 25 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking/part2",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking/part2"
+    },
+    {
+     "control": "4 Part 3 Discussion 30 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking/part3",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking/part3"
+    },
+    {
+     "control": "Listening Part-by-part strategies for the listening paper. 0 of 11 done",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "1 Listening Overview 8 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening"
+    },
+    {
+     "control": "2 Part 1. Everyday Conversation 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/part1",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/part1"
+    },
+    {
+     "control": "3 Form, Note, Table & Flow-chart Completion 11 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/form-completion",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/form-completion"
+    },
+    {
+     "control": "4 Short-answer Questions 10 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/short-answer",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/short-answer"
+    },
+    {
+     "control": "5 Sentence Completion 10 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/sentence-completion",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/sentence-completion"
+    },
+    {
+     "control": "6 Part 2. Monologue & Maps 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/part2",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/part2"
+    },
+    {
+     "control": "7 Plan, Map & Diagram Labelling 14 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/map-labelling",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/map-labelling"
+    },
+    {
+     "control": "8 Part 3. Academic Discussion 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/part3",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/part3"
+    },
+    {
+     "control": "9 Multiple Choice 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/multiple-choice",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/multiple-choice"
+    },
+    {
+     "control": "10 Matching 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/matching",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/matching"
+    },
+    {
+     "control": "11 Part 4. Academic Lecture 12 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/part4",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/part4"
+    },
+    {
+     "control": "Vocabulary High-value academic words with an interactive quiz. 0 of 37 done",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "1 Vocabulary Overview 8 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary"
+    },
+    {
+     "control": "2 Family & Relationships 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/family",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/family"
+    },
+    {
+     "control": "3 Education & Learning 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/education",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/education"
+    },
+    {
+     "control": "4 Work & Employment 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/work",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/work"
+    },
+    {
+     "control": "5 Leisure & Entertainment 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/leisure",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/leisure"
+    },
+    {
+     "control": "6 People & Personality 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/people",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/people"
+    },
+    {
+     "control": "7 Hometown & Describing Places 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/places",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/places"
+    },
+    {
+     "control": "8 Childhood & Growing Up 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/childhood",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/childhood"
+    },
+    {
+     "control": "9 Travel & Tourism 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/travel",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/travel"
+    },
+    {
+     "control": "10 Transport & Traffic 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/transport",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/transport"
+    },
+    {
+     "control": "11 Weather, Seasons & Nature 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/weather",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/weather"
+    },
+    {
+     "control": "12 Health & Wellbeing 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/health",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/health"
+    },
+    {
+     "control": "13 Food & Diet 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/food",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/food"
+    },
+    {
+     "control": "14 Environment & Ecology 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/environment",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/environment"
+    },
+    {
+     "control": "15 Books & Reading 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/books",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/books"
+    },
+    {
+     "control": "16 Conjunctions & Linking Words 10 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/conjunctions",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/conjunctions"
+    },
+    {
+     "control": "17 Housing & Urban Life 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/housing",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/housing"
+    },
+    {
+     "control": "18 Sport & Fitness 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/sport",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/sport"
+    },
+    {
+     "control": "19 Music, Film & Television 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/music-film",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/music-film"
+    },
+    {
+     "control": "20 Technology & Society 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/technology",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/technology"
+    },
+    {
+     "control": "21 Social Media & Digital Life 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/social-media",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/social-media"
+    },
+    {
+     "control": "22 Media & Advertising 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/media",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/media"
+    },
+    {
+     "control": "23 Fashion & Clothing 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/fashion",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/fashion"
+    },
+    {
+     "control": "24 Success, Goals & Ambition 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/success",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/success"
+    },
+    {
+     "control": "25 Society, Culture & Globalisation 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/society",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/society"
+    },
+    {
+     "control": "26 Crime & Law 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/crime",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/crime"
+    },
+    {
+     "control": "27 Money & Consumerism 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/money",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/money"
+    },
+    {
+     "control": "28 Language & Communication 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/language",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/language"
+    },
+    {
+     "control": "29 Traditions, Festivals & Customs 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/traditions",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/traditions"
+    },
+    {
+     "control": "30 Volunteering & Community 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/volunteering",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/volunteering"
+    },
+    {
+     "control": "31 Government & Economy 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/government",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/government"
+    },
+    {
+     "control": "32 Artificial Intelligence 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/ai",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/ai"
+    },
+    {
+     "control": "33 Arts & Culture 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/arts",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/arts"
+    },
+    {
+     "control": "34 Science & Space 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/science",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/science"
+    },
+    {
+     "control": "35 Animals & Wildlife 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/animals",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/animals"
+    },
+    {
+     "control": "36 Business & Entrepreneurship 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/business",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/business"
+    },
+    {
+     "control": "37 Ageing & Retirement 15 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/ageing",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/ageing"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/learn",
+   "controls": [
+    {
+     "control": "Create a free account",
+     "kind": "link",
+     "href": "/ielts-website/sign-up?next=%2Flearn",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-up?next=%2Flearn"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Flearn",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Flearn"
+    },
+    {
+     "control": "All",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Reading",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/learn?skill=reading"
+    },
+    {
+     "control": "Writing",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/learn?skill=writing"
+    },
+    {
+     "control": "Speaking",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/learn?skill=speaking"
+    },
+    {
+     "control": "Listening",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/learn?skill=listening"
+    },
+    {
+     "control": "Vocabulary",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/learn?skill=vocabulary"
+    },
+    {
+     "control": "Reading · Overview Reading Overview How the test works, the band score table, an",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading-task1",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading-task1"
+    },
+    {
+     "control": "Writing · Overview Writing Overview How the test works, how examiners mark it, a",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing"
+    },
+    {
+     "control": "Speaking · Overview Speaking Overview How the interview works, how examiners mar",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking"
+    },
+    {
+     "control": "Listening · Overview Listening Overview How the test works, how it is scored, an",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening"
+    },
+    {
+     "control": "Vocabulary · Overview Vocabulary Overview Why vocabulary decides your band, a le",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary"
+    },
+    {
+     "control": "Speaking Part 1 Interview Handle the warm-up interview questions with natural, e",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking/part1",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking/part1"
+    },
+    {
+     "control": "Vocabulary Family & Relationships Family structure, childcare and generational c",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/family",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/family"
+    },
+    {
+     "control": "Vocabulary Education & Learning Schools, universities and lifelong learning. A S",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/education",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/education"
+    },
+    {
+     "control": "Vocabulary Work & Employment The gig economy, redundancy and the four-day week. ",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/work",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/work"
+    },
+    {
+     "control": "Vocabulary Leisure & Entertainment Hobbies, films, music and books. The everyday",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/leisure",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/leisure"
+    },
+    {
+     "control": "Vocabulary People & Personality The words to describe character. Speaking Part 2",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/people",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/people"
+    },
+    {
+     "control": "Vocabulary Hometown & Describing Places Every Speaking test opens with your home",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/places",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/places"
+    },
+    {
+     "control": "Show more lessons",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/learn/bands",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  The band-by-band guide comes with practice and guidance.  The full practice library, and timed tests with band "
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Flearn%2Fbands",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Flearn%2Fbands"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Flearn%2Fbands"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/report",
+   "controls": [
+    {
+     "control": "account page",
+     "kind": "link",
+     "href": "/ielts-website/account",
+     "outcome": "clicked",
+     "went": "/ielts-website/account"
+    },
+    {
+     "control": "Go to today’s plan",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/plan-settings",
+   "controls": [
+    {
+     "control": "6.5",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "7.0",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "7.5",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "8.0",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "8.5",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "9.0",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Set a different minimum for each section",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Choose a date",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "October 2026  Mon\tTue\tWed\tThu\tFri\tSat\tSun \t\t\t1\t2\t3\t4 5\t6\t7\t8\t9\t10\t11 12\t13\t14\t15\t16\t17\t18 19\t20\t21\t22\t23\t24\t25 26\t27\t28\t29\t30\t31\t \t\t\t\t\t\t Go to today Close"
+    },
+    {
+     "control": "I do not have a date yet",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "daily",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "alternate",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "weekdays",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "custom",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "60",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "25",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "15",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Yes, I can commit to this",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Let's be realistic",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Learning preferences",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "en",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "ru",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "reading",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "listening",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "writing",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "speaking",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "October 2026  Mon\tTue\tWed\tThu\tFri\tSat\tSun \t\t\t1\t2\t3\t4 5\t6\t7\t8\t9\t10\t11 12\t13\t14\t15\t16\t17\t18 19\t20\t21\t22\t23\t24\t25 26\t27\t28\t29\t30\t31\t \t\t\t\t\t\t Go to today Close"
+    },
+    {
+     "control": "Save changes",
+     "kind": "button",
+     "href": null,
+     "outcome": "could not click",
+     "why": "Locator.click: Timeout 6000ms exceeded."
+    },
+    {
+     "control": "What Mr EZ remembers",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "link",
+     "href": "/ielts-website/report",
+     "outcome": "clicked",
+     "went": "/ielts-website/report"
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/account",
+   "controls": [
+    {
+     "control": "Log in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Faccount",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Faccount"
+    },
+    {
+     "control": "Create a free account",
+     "kind": "link",
+     "href": "/ielts-website/sign-up?next=%2Faccount",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-up?next=%2Faccount"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/profile",
+   "controls": [
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Fprofile",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Fprofile"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/plans",
+   "controls": [
+    {
+     "control": "Sign in to buy",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Fplans",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Fplans"
+    },
+    {
+     "control": "How refunds work",
+     "kind": "link",
+     "href": "/ielts-website/terms#refunds",
+     "outcome": "clicked",
+     "went": "/ielts-website/terms#refunds"
+    },
+    {
+     "control": "Public offer",
+     "kind": "link",
+     "href": "/ielts-website/terms",
+     "outcome": "clicked",
+     "went": "/ielts-website/terms"
+    },
+    {
+     "control": "Privacy",
+     "kind": "link",
+     "href": "/ielts-website/privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/privacy"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=plans",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=plans&from=%2Fplans"
+    },
+    {
+     "control": "Back to Today",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers",
+   "controls": [
+    {
+     "control": "Start a drill ↗",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Practice drills come with practice and guidance.  The full practice library, and timed tests with band estimate"
+    },
+    {
+     "control": "Start a drill ↗",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Practice drills come with practice and guidance.  The full practice library, and timed tests with band estimate"
+    },
+    {
+     "control": "Start a part ↗",
+     "kind": "link",
+     "href": "/ielts-website/trainers/speaking",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  The trainers come with practice and guidance.  The full practice library, and timed tests with band estimates 1"
+    },
+    {
+     "control": "Start writing ↗",
+     "kind": "link",
+     "href": "/ielts-website/trainers/writing",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  The trainers come with practice and guidance.  The full practice library, and timed tests with band estimates 1"
+    },
+    {
+     "control": "Model answers",
+     "kind": "link",
+     "href": "/ielts-website/writing/models",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  The model answer bank comes with practice and guidance.  The full practice library, and timed tests with band e"
+    },
+    {
+     "control": "Cue cards",
+     "kind": "link",
+     "href": "/ielts-website/speaking/cue-cards",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  The cue card bank comes with practice and guidance.  The full practice library, and timed tests with band estim"
+    },
+    {
+     "control": "What's the difference between Practice and Tests?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "Looking for a full timed exam instead?",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/reading",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Practice drills come with practice and guidance.  The full practice library, and timed tests with band estimate"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Ftrainers%2Freading",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Ftrainers%2Freading"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Ftrainers%2Freading"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/listening",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Practice drills come with practice and guidance.  The full practice library, and timed tests with band estimate"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Ftrainers%2Flistening",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Ftrainers%2Flistening"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Ftrainers%2Flistening"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/writing",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  The trainers come with practice and guidance.  The full practice library, and timed tests with band estimates 1"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Ftrainers%2Fwriting",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Ftrainers%2Fwriting"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Ftrainers%2Fwriting"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/speaking",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  The trainers come with practice and guidance.  The full practice library, and timed tests with band estimates 1"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Ftrainers%2Fspeaking",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Ftrainers%2Fspeaking"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Ftrainers%2Fspeaking"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/reading/reading-full-001-drill-p1",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Practice drills come with practice and guidance.  The full practice library, and timed tests with band estimate"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Ftrainers%2Freading%2Freading-full-001-drill-p1",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Ftrainers%2Freading%2Freading-full-001-drill-p1"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Ftrainers%2Freading%2Freading-full-001-drill-p1"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/listening/listening-full-001-drill-p1",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Practice drills come with practice and guidance.  The full practice library, and timed tests with band estimate"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Ftrainers%2Flistening%2Flistening-full-001-drill-p1",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Ftrainers%2Flistening%2Flistening-full-001-drill-p1"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Ftrainers%2Flistening%2Flistening-full-001-drill-p1"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/focused/listening-categorisation-check-a",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Focused exercises on your weak question types come with practice and guidance.  The full practice library, and "
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Ftrainers%2Ffocused%2Flistening-categorisation-check-a",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Ftrainers%2Ffocused%2Flistening-categorisation-check-a"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Ftrainers%2Ffocused%2Flistening-categorisation-check-a"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/speaking-focus/speaking-fluency-repair",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Focused exercises on your weak question types come with practice and guidance.  The full practice library, and "
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Ftrainers%2Fspeaking-focus%2Fspeaking-fluency-repair",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Ftrainers%2Fspeaking-focus%2Fspeaking-fluency-repair"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Ftrainers%2Fspeaking-focus%2Fspeaking-fluency-repair"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/tests",
+   "controls": [
+    {
+     "control": "What each band needs",
+     "kind": "link",
+     "href": "/ielts-website/learn/bands",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  The band-by-band guide comes with practice and guidance.  The full practice library, and timed tests with band "
+    },
+    {
+     "control": "Start a test",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "Only have 20 minutes? Try the Reading Trainer",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Practice drills come with practice and guidance.  The full practice library, and timed tests with band estimate"
+    },
+    {
+     "control": "Start a listening test",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "Learn the four Listening parts first",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening"
+    },
+    {
+     "control": "Start writing",
+     "kind": "link",
+     "href": "/ielts-website/writing/checker",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Essay feedback against the official criteria comes with practice and guidance.  The full practice library, and "
+    },
+    {
+     "control": "Want structures and phrases while you write? Try the Writing Trainer",
+     "kind": "link",
+     "href": "/ielts-website/trainers/writing",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  The trainers come with practice and guidance.  The full practice library, and timed tests with band estimates 1"
+    },
+    {
+     "control": "Start the interview",
+     "kind": "link",
+     "href": "/ielts-website/speaking/examiner",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Live interviews with the AI examiner come with practice and guidance.  The full practice library, and timed tes"
+    },
+    {
+     "control": "Want to practice one part at a time instead?",
+     "kind": "link",
+     "href": "/ielts-website/trainers/speaking",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  The trainers come with practice and guidance.  The full practice library, and timed tests with band estimates 1"
+    },
+    {
+     "control": "Mock Exam Day One chained sitting: Listening, then Reading, then Writing, then S",
+     "kind": "link",
+     "href": "/ielts-website/tests/mock",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Full mock exams come with practice and guidance.  The full practice library, and timed tests with band estimate"
+    },
+    {
+     "control": "What's the difference between Practice and Tests?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "link",
+     "href": "/ielts-website/trainers",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers"
+    },
+    {
+     "control": "Open Exam readiness",
+     "kind": "link",
+     "href": "/ielts-website/start#exam-readiness",
+     "outcome": "clicked",
+     "went": "/ielts-website/start#exam-readiness"
+    },
+    {
+     "control": "01 Academic Reading Test 1 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-001",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "02 Academic Reading Test 2 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-002",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "03 Academic Reading Test 3 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-003",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "04 Academic Reading Test 4 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-004",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "05 Academic Reading Test 5 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-005",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "06 Academic Reading Test 6 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-006",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "07 Academic Reading Test 7 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-007",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "08 Academic Reading Test 8 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-008",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "09 Academic Reading Test 9 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-009",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "10 Academic Reading Test 10 40 questions",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-010",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "11 Academic Reading Test 11 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-011",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "12 Academic Reading Test 12 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-012",
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "Show more",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [
+    "https://practicepteonline.com/listening-ielts-tests/"
+   ],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/tests/drills",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Practice drills come with practice and guidance.  The full practice library, and timed tests with band estimate"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Ftrainers%2Freading",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Ftrainers%2Freading"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Ftrainers%2Freading"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/tests/drills/reading-full-001-drill-p1",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Practice drills come with practice and guidance.  The full practice library, and timed tests with band estimate"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Ftrainers%2Freading%2Freading-full-001-drill-p1",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Ftrainers%2Freading%2Freading-full-001-drill-p1"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Ftrainers%2Freading%2Freading-full-001-drill-p1"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/tests/reading-full-001",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Ftests%2Freading-full-001",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Ftests%2Freading-full-001"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Ftests%2Freading-full-001"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/tests/listening-full-001",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Timed practice tests with a band estimate come with practice and guidance.  The full practice library, and time"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Ftests%2Flistening-full-001",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Ftests%2Flistening-full-001"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Ftests%2Flistening-full-001"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/tests/mock",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Full mock exams come with practice and guidance.  The full practice library, and timed tests with band estimate"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Ftests%2Fmock",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Ftests%2Fmock"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Ftests%2Fmock"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/placement",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  The placement test, which builds your plan from your real level, comes with practice and guidance.  The full pr"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Fplacement",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Fplacement"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Fplacement"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/review",
+   "controls": [
+    {
+     "control": "Create a free account",
+     "kind": "link",
+     "href": "/ielts-website/sign-up?next=%2Freview",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-up?next=%2Freview"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Freview",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Freview"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/writing/checker",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Essay feedback against the official criteria comes with practice and guidance.  The full practice library, and "
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Fwriting%2Fchecker",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Fwriting%2Fchecker"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Fwriting%2Fchecker"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/writing/models",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  The model answer bank comes with practice and guidance.  The full practice library, and timed tests with band e"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Fwriting%2Fmodels",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Fwriting%2Fmodels"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Fwriting%2Fmodels"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/speaking/examiner",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Live interviews with the AI examiner come with practice and guidance.  The full practice library, and timed tes"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Fspeaking%2Fexaminer",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Fspeaking%2Fexaminer"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Fspeaking%2Fexaminer"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/speaking/cue-cards",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  The cue card bank comes with practice and guidance.  The full practice library, and timed tests with band estim"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Fspeaking%2Fcue-cards",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Fspeaking%2Fcue-cards"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Fspeaking%2Fcue-cards"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/speaking/recorded",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Speaking feedback on your recordings comes with practice and guidance.  The full practice library, and timed te"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Fspeaking%2Frecorded",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Fspeaking%2Frecorded"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Fspeaking%2Frecorded"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/speaking/checker",
+   "controls": [
+    {
+     "control": "See what practice and guidance adds",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Live interviews with the AI examiner come with practice and guidance.  The full practice library, and timed tes"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Fspeaking%2Fexaminer",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Fspeaking%2Fexaminer"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=locked",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=locked&from=%2Fspeaking%2Fexaminer"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/lessons/reading-task1",
+   "controls": [
+    {
+     "control": "Create a free account to read this lesson",
+     "kind": "link",
+     "href": "/ielts-website/sign-up?next=%2Flessons%2Freading-task1",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-up?next=%2Flessons%2Freading-task1"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Flessons%2Freading-task1",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Flessons%2Freading-task1"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/lessons/reading/tfng",
+   "controls": [
+    {
+     "control": "Create a free account to read this lesson",
+     "kind": "link",
+     "href": "/ielts-website/sign-up?next=%2Flessons%2Freading%2Ftfng",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-up?next=%2Flessons%2Freading%2Ftfng"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Flessons%2Freading%2Ftfng",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Flessons%2Freading%2Ftfng"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/lessons/listening/part1",
+   "controls": [
+    {
+     "control": "Create a free account to read this lesson",
+     "kind": "link",
+     "href": "/ielts-website/sign-up?next=%2Flessons%2Flistening%2Fpart1",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-up?next=%2Flessons%2Flistening%2Fpart1"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Flessons%2Flistening%2Fpart1",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Flessons%2Flistening%2Fpart1"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/lessons/writing/opinion",
+   "controls": [
+    {
+     "control": "Create a free account to read this lesson",
+     "kind": "link",
+     "href": "/ielts-website/sign-up?next=%2Flessons%2Fwriting%2Fopinion",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-up?next=%2Flessons%2Fwriting%2Fopinion"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Flessons%2Fwriting%2Fopinion",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Flessons%2Fwriting%2Fopinion"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/lessons/speaking/part2",
+   "controls": [
+    {
+     "control": "Create a free account to read this lesson",
+     "kind": "link",
+     "href": "/ielts-website/sign-up?next=%2Flessons%2Fspeaking%2Fpart2",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-up?next=%2Flessons%2Fspeaking%2Fpart2"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Flessons%2Fspeaking%2Fpart2",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Flessons%2Fspeaking%2Fpart2"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/lessons/vocabulary/environment",
+   "controls": [
+    {
+     "control": "Create a free account to read this lesson",
+     "kind": "link",
+     "href": "/ielts-website/sign-up?next=%2Flessons%2Fvocabulary%2Fenvironment",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-up?next=%2Flessons%2Fvocabulary%2Fenvironment"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Flessons%2Fvocabulary%2Fenvironment",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Flessons%2Fvocabulary%2Fenvironment"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/help",
+   "controls": [
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=help",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=help"
+    },
+    {
+     "control": "What is free, and what is paid?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Can I get a refund?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "How do I get practice and guidance?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Where do I start?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "What is the difference between a lesson, practice and a test?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "What happens if I refresh or close the page during a test?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Is my score an official IELTS band?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Where is my progress saved?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "What can Mr EZ do?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Can I use the platform in Russian or Kazakh?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Go to today's session",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Privacy",
+     "kind": "link",
+     "href": "/ielts-website/privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/privacy"
+    },
+    {
+     "control": "Public offer",
+     "kind": "link",
+     "href": "/ielts-website/terms",
+     "outcome": "clicked",
+     "went": "/ielts-website/terms"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/support",
+   "controls": [
+    {
+     "control": "problem",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "question",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "account",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "other",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Fsupport",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Fsupport"
+    },
+    {
+     "control": "Send to a person",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "How we handle your information",
+     "kind": "link",
+     "href": "/ielts-website/privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/privacy"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/privacy",
+   "controls": [
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=privacy"
+    },
+    {
+     "control": "Ask for a review",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=ai-review",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=ai-review"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=privacy"
+    },
+    {
+     "control": "Public offer",
+     "kind": "link",
+     "href": "/ielts-website/terms",
+     "outcome": "clicked",
+     "went": "/ielts-website/terms"
+    },
+    {
+     "control": "How the platform works",
+     "kind": "link",
+     "href": "/ielts-website/help",
+     "outcome": "clicked",
+     "went": "/ielts-website/help"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/terms",
+   "controls": [
+    {
+     "control": "ask for a refund",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=refund",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=refund"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=terms",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=terms&from=%2Fterms"
+    },
+    {
+     "control": "Ask for a review",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=ai-review",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=ai-review"
+    },
+    {
+     "control": "How we handle your information",
+     "kind": "link",
+     "href": "/ielts-website/privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/privacy"
+    },
+    {
+     "control": "How the platform works",
+     "kind": "link",
+     "href": "/ielts-website/help",
+     "outcome": "clicked",
+     "went": "/ielts-website/help"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Practice and guidance Add practice and guidance  Mr EZ, your personal tutor, comes with practice and guidance.  The full practice library, and timed tests with "
+    }
+   ],
+   "skipped": [],
+   "external": [
+    "https://www.gov.kz/memleket/entities/mti-kzpp"
+   ],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/sign-in",
+   "controls": [
+    {
+     "control": "Forgot password?",
+     "kind": "link",
+     "href": "/ielts-website/forgot-password?next=%2Fdashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/forgot-password?next=%2Fdashboard"
+    },
+    {
+     "control": "Show",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Sign in",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Continue with Google",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/profile?next=%2Fdashboard#"
+    },
+    {
+     "control": "Create an account",
+     "kind": "link",
+     "href": "/ielts-website/sign-up?next=%2Fdashboard",
+     "outcome": "not on screen from a fresh start"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/sign-up",
+   "controls": [
+    {
+     "control": "Open menu",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Continue",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/profile?next=%2Fdashboard"
+    }
+   ],
+   "skipped": [
+    "Sign out"
+   ],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/forgot-password",
+   "controls": [
+    {
+     "control": "Back to sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Fdashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Fdashboard"
+    }
+   ],
+   "skipped": [
+    "Send reset link"
+   ],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/",
+   "controls": [
+    {
+     "control": "IELTS is EZ home",
+     "kind": "link",
+     "href": "#main",
+     "outcome": "clicked"
+    },
+    {
+     "control": "AI tutor",
+     "kind": "link",
+     "href": "#meet-mr-ez",
+     "outcome": "clicked"
+    },
+    {
+     "control": "AI feedback",
+     "kind": "link",
+     "href": "#feedback",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Your plan",
+     "kind": "link",
+     "href": "#your-plan",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Pricing",
+     "kind": "link",
+     "href": "#pricing",
+     "outcome": "clicked"
+    },
+    {
+     "control": "EN",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "lang": "en"
+    },
+    {
+     "control": "RU",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "lang": "ru"
+    },
+    {
+     "control": "KZ",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in"
+    },
+    {
+     "control": "Create a free account",
+     "kind": "link",
+     "href": "/ielts-website/sign-up",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-up"
+    },
+    {
+     "control": "Practise speaking",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Get a little guidance",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Learn the method",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "View full-size screenshot: Speaking trainer showing a Part 2 cue card, notes and",
+     "kind": "link",
+     "href": "/ielts-website/pics/next-chapter/platform-speaking-inside.png",
+     "problem": "link did not lead anywhere",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Just exploring? Take a look inside",
+     "kind": "link",
+     "href": "#your-classroom",
+     "outcome": "clicked"
+    },
+    {
+     "control": "7",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "7.5",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "8",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "speaking",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "writing",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "reading",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "listening",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "method",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "confidence",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "15",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "30",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "60",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Find my starting point",
+     "kind": "link",
+     "href": "#journey-band",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Reading",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Listening",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Writing",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Speaking",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Official criteria. Transparent practice estimates. See what your writing and spe",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Create a free account",
+     "kind": "link",
+     "href": "/ielts-website/sign-up",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Get practice and guidance",
+     "kind": "link",
+     "href": "/ielts-website/plans",
+     "outcome": "clicked",
+     "went": "/ielts-website/profile?next=%2Fplans"
+    },
+    {
+     "control": "See the plans",
+     "kind": "link",
+     "href": "/ielts-website/plans",
+     "outcome": "clicked",
+     "went": "/ielts-website/profile?next=%2Fplans",
+     "errors": [
+      {
+       "kind": "console",
+       "text": "TypeError: Failed to fetch\n    at http://localhost:4441/ielts-website/_astro/supabase.CfBe4DWb.js:13:2946\n    at In (http://localhost:4441/ielts-website/_astro/supabase.CfBe4DWb.js:13:9672)\n    at w (http://localhost:4441/ielts-website/_astro/supabase.CfBe4DWb.js:13:9471)\n    at http://localhost:444",
+       "url": "http://localhost:4441/ielts-website/plans"
+      }
+     ]
+    },
+    {
+     "control": "What is free? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "What is paid, and why? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "How much do practice and guidance cost? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Does it renew automatically? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Can I get a refund? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Is AI practice unlimited? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Do I need an account to read the lessons? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Which IELTS is it for? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Is the AI feedback an official IELTS score? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Can I practise under exam conditions? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Can I use it on my phone? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "How quickly will I get feedback? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Create a free account",
+     "kind": "link",
+     "href": "/ielts-website/sign-up",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Already have an account? Sign in.",
+     "kind": "link",
+     "href": "/ielts-website/sign-in",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in"
+    },
+    {
+     "control": "IELTS is EZ home",
+     "kind": "link",
+     "href": "#main",
+     "outcome": "clicked"
+    },
+    {
+     "control": "How we teach",
+     "kind": "link",
+     "href": "#your-classroom",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Meet Mr EZ",
+     "kind": "link",
+     "href": "#meet-mr-ez",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Pricing",
+     "kind": "link",
+     "href": "#pricing",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Questions",
+     "kind": "link",
+     "href": "#questions",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Terms",
+     "kind": "link",
+     "href": "/ielts-website/terms",
+     "outcome": "clicked",
+     "went": "/ielts-website/profile?next=%2Fterms"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=footer",
+     "outcome": "clicked",
+     "went": "/ielts-website/profile?next=%2Fsupport%3Freason%3Dfooter"
+    },
+    {
+     "control": "Back to top",
+     "kind": "link",
+     "href": "#main",
+     "outcome": "clicked"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  }
+ ]
+}

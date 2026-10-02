@@ -1,0 +1,91 @@
+RUN {'lang': 'en', 'size': '1440x900', 'state': 'signed-out', 'mode': 'plain'}: 52 visits, 0 with an error, 5 nav clicks
+RUN FAILED en 1440 free plain Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN FAILED en 1440 paid plain Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN FAILED en 1440 complimentary plain Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN {'lang': 'ru', 'size': '1440x900', 'state': 'signed-out', 'mode': 'plain'}: 52 visits, 0 with an error, 5 nav clicks
+RUN FAILED ru 1440 free plain Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN FAILED ru 1440 paid plain Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN FAILED ru 1440 complimentary plain Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN {'lang': 'en', 'size': '390x844', 'state': 'signed-out', 'mode': 'plain'}: 52 visits, 0 with an error, 5 nav clicks
+RUN FAILED en 390 free plain Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN FAILED en 390 paid plain Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN FAILED en 390 complimentary plain Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN {'lang': 'ru', 'size': '390x844', 'state': 'signed-out', 'mode': 'plain'}: 52 visits, 0 with an error, 5 nav clicks
+RUN FAILED ru 390 free plain Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN FAILED ru 390 paid plain Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN FAILED ru 390 complimentary plain Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN {'lang': 'en', 'size': '1440x900', 'state': 'signed-out', 'mode': 'stress'}: 52 visits, 0 with an error, 5 nav clicks
+RUN FAILED en 1440 free stress Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN FAILED en 1440 paid stress Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN FAILED en 1440 complimentary stress Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN {'lang': 'ru', 'size': '1440x900', 'state': 'signed-out', 'mode': 'stress'}: 52 visits, 0 with an error, 5 nav clicks
+RUN FAILED ru 1440 free stress Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN FAILED ru 1440 paid stress Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN FAILED ru 1440 complimentary stress Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN {'lang': 'en', 'size': '390x844', 'state': 'signed-out', 'mode': 'stress'}: 52 visits, 0 with an error, 5 nav clicks
+RUN FAILED en 390 free stress Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN FAILED en 390 paid stress Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+
+RUN FAILED en 390 complimentary stress Page.wait_for_selector: Timeout 40000ms exceeded.
+Call log:
+  - waiting for locator("#profile-firstName") to be visible
+

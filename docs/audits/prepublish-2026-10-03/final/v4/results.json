@@ -1,0 +1,331 @@
+{
+ "base": "http://localhost:4441/ielts-website",
+ "visits": 385,
+ "withErrors": 21,
+ "summary": [
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "visits": 52,
+   "withErrors": 0,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 0
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "plain",
+   "visits": 52,
+   "withErrors": 0,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 0
+  },
+  {
+   "lang": "en",
+   "size": "390x844",
+   "state": "signed-out",
+   "mode": "plain",
+   "visits": 52,
+   "withErrors": 0,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 0
+  },
+  {
+   "lang": "ru",
+   "size": "390x844",
+   "state": "signed-out",
+   "mode": "plain",
+   "visits": 52,
+   "withErrors": 0,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 0
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "visits": 52,
+   "withErrors": 0,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 11
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "signed-out",
+   "mode": "stress",
+   "visits": 52,
+   "withErrors": 0,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 11
+  },
+  {
+   "lang": "en",
+   "size": "390x844",
+   "state": "signed-out",
+   "mode": "stress",
+   "visits": 52,
+   "withErrors": 0,
+   "navClicks": 5,
+   "islandsDelayedOnLastPage": 11
+  }
+ ],
+ "errors": [
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "free",
+   "mode": "plain",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "complimentary",
+   "mode": "plain",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "free",
+   "mode": "plain",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "complimentary",
+   "mode": "plain",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "390x844",
+   "state": "free",
+   "mode": "plain",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "390x844",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "390x844",
+   "state": "complimentary",
+   "mode": "plain",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "390x844",
+   "state": "free",
+   "mode": "plain",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "390x844",
+   "state": "paid",
+   "mode": "plain",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "390x844",
+   "state": "complimentary",
+   "mode": "plain",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "free",
+   "mode": "stress",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "1440x900",
+   "state": "complimentary",
+   "mode": "stress",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "free",
+   "mode": "stress",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "ru",
+   "size": "1440x900",
+   "state": "complimentary",
+   "mode": "stress",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "390x844",
+   "state": "free",
+   "mode": "stress",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "390x844",
+   "state": "paid",
+   "mode": "stress",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  },
+  {
+   "lang": "en",
+   "size": "390x844",
+   "state": "complimentary",
+   "mode": "stress",
+   "kind": "setup",
+   "path": "",
+   "pageErrors": [
+    "run did not complete: Page.wait_for_selector: Timeout 40000ms exceeded.\nCall log:\n  - waiting for locator(\"#profile-firstName\") to be visible\n"
+   ],
+   "hydrationConsole": []
+  }
+ ]
+}

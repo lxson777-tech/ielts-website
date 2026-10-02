@@ -1,0 +1,6780 @@
+{
+ "tier": "paid",
+ "lang": "en",
+ "size": "1440x900",
+ "email": "ct-click-paid-en-1790972297@example.test",
+ "pages": [
+  {
+   "route": "/dashboard",
+   "controls": [
+    {
+     "control": "IELTS is EZ workspace",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Today",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Course",
+     "kind": "link",
+     "href": "/ielts-website/start",
+     "outcome": "clicked",
+     "went": "/ielts-website/start"
+    },
+    {
+     "control": "Practice",
+     "kind": "link",
+     "href": "/ielts-website/trainers",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers"
+    },
+    {
+     "control": "Tests",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "Vocabulary",
+     "kind": "link",
+     "href": "/ielts-website/review",
+     "outcome": "clicked",
+     "went": "/ielts-website/review"
+    },
+    {
+     "control": "English",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "lang": "en"
+    },
+    {
+     "control": "Русский",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "lang": "ru"
+    },
+    {
+     "control": "Қазақша",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Open menu",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "6.5",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "7.0",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "7.5",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "8.0",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "8.5",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "9.0",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Set a different minimum for each section",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Next",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Answer later",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Set your target band ↗",
+     "kind": "link",
+     "href": "/ielts-website/start",
+     "outcome": "clicked",
+     "went": "/ielts-website/start",
+     "errors": [
+      {
+       "kind": "request-failed",
+       "text": "GET http://127.0.0.1:8841/rest/v1/user_state?select=progress%2Cstudy_plan&user_id=eq.883c00c3-f255-4f11-bb1e-b98a6106b8b5 (net::ERR_NO_BUFFER_SPACE)",
+       "url": "http://localhost:4441/ielts-website/dashboard"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: net::ERR_NO_BUFFER_SPACE",
+       "url": "http://localhost:4441/ielts-website/dashboard"
+      }
+     ]
+    },
+    {
+     "control": "Vocabulary 36 topics, 719 words Browse topics",
+     "kind": "link",
+     "href": "/ielts-website/review",
+     "outcome": "clicked",
+     "went": "/ielts-website/review"
+    },
+    {
+     "control": "Reading, 0 of 13 lessons complete",
+     "kind": "link",
+     "href": "/ielts-website/learn?skill=reading",
+     "outcome": "clicked",
+     "went": "/ielts-website/learn?skill=reading"
+    },
+    {
+     "control": "Writing, 0 of 11 lessons complete",
+     "kind": "link",
+     "href": "/ielts-website/learn?skill=writing",
+     "outcome": "clicked",
+     "went": "/ielts-website/learn?skill=writing"
+    },
+    {
+     "control": "Speaking, 0 of 4 lessons complete",
+     "kind": "link",
+     "href": "/ielts-website/learn?skill=speaking",
+     "outcome": "clicked",
+     "went": "/ielts-website/learn?skill=speaking"
+    },
+    {
+     "control": "Listening, 0 of 11 lessons complete",
+     "kind": "link",
+     "href": "/ielts-website/learn?skill=listening",
+     "outcome": "clicked",
+     "went": "/ielts-website/learn?skill=listening"
+    },
+    {
+     "control": "Vocabulary, 0 of 37 lessons complete",
+     "kind": "link",
+     "href": "/ielts-website/learn?skill=vocabulary",
+     "outcome": "clicked",
+     "went": "/ielts-website/learn?skill=vocabulary"
+    },
+    {
+     "control": "Help",
+     "kind": "link",
+     "href": "/ielts-website/help",
+     "outcome": "clicked",
+     "went": "/ielts-website/help"
+    },
+    {
+     "control": "Report a problem",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=footer",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=footer"
+    },
+    {
+     "control": "Privacy",
+     "kind": "link",
+     "href": "/ielts-website/privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/privacy"
+    },
+    {
+     "control": "Public offer",
+     "kind": "link",
+     "href": "/ielts-website/terms",
+     "outcome": "clicked",
+     "went": "/ielts-website/terms"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/start",
+   "controls": [
+    {
+     "control": "Lessons library",
+     "kind": "link",
+     "href": "/ielts-website/learn",
+     "outcome": "clicked",
+     "went": "/ielts-website/learn"
+    },
+    {
+     "control": "Your route",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Browse all lessons",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Change",
+     "kind": "link",
+     "href": "/ielts-website/plan-settings",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "6.5",
+     "kind": "radio",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "7.0",
+     "kind": "radio",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "7.5",
+     "kind": "radio",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "8.0",
+     "kind": "radio",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "8.5",
+     "kind": "radio",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "9.0",
+     "kind": "radio",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Set a different minimum for each section",
+     "kind": "summary",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Next",
+     "kind": "button",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Answer later",
+     "kind": "button",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Saturday 3 October",
+     "kind": "button",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Sunday 4 October",
+     "kind": "button",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Monday 5 October",
+     "kind": "button",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Tuesday 6 October",
+     "kind": "button",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Wednesday 7 October",
+     "kind": "button",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Thursday 8 October",
+     "kind": "button",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Friday 9 October",
+     "kind": "button",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Reading Overview Start with what this question type actually asks you for. 8 min",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading-task1",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Sentence Completion Start with what this question type actually asks you for. 10",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/sentence#b3-63e75b6f",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Work through real questions with help available when you get stuck. 11 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/focused/reading-sentence-completion-guided",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Sentence Completion Answer a short set you have not seen, with no help, so the r",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/sentence",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Plan, Map & Diagram Labelling A short sample to find out where you are. It is to",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/map-labelling",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Go back over what you got wrong and say the rule in your own words. 5 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/focused/reading-sentence-completion-guided",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Full mock exam",
+     "kind": "link",
+     "href": "/ielts-website/tests/mock",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "All practice tests",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Your progress report",
+     "kind": "link",
+     "href": "/ielts-website/report",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/learn",
+   "controls": [
+    {
+     "control": "All",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Reading",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/learn?skill=reading"
+    },
+    {
+     "control": "Writing",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/learn?skill=writing"
+    },
+    {
+     "control": "Speaking",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/learn?skill=speaking"
+    },
+    {
+     "control": "Listening",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/learn?skill=listening"
+    },
+    {
+     "control": "Vocabulary",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/learn?skill=vocabulary"
+    },
+    {
+     "control": "Reading · Overview Reading Overview How the test works, the band score table, an",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading-task1",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading-task1"
+    },
+    {
+     "control": "Writing · Overview Writing Overview How the test works, how examiners mark it, a",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing"
+    },
+    {
+     "control": "Speaking · Overview Speaking Overview How the interview works, how examiners mar",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking"
+    },
+    {
+     "control": "Listening · Overview Listening Overview How the test works, how it is scored, an",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening"
+    },
+    {
+     "control": "Vocabulary · Overview Vocabulary Overview Why vocabulary decides your band, a le",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary"
+    },
+    {
+     "control": "Speaking Part 1 Interview Handle the warm-up interview questions with natural, e",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking/part1",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking/part1"
+    },
+    {
+     "control": "Vocabulary Family & Relationships Family structure, childcare and generational c",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/family",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/family"
+    },
+    {
+     "control": "Vocabulary Education & Learning Schools, universities and lifelong learning. A S",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/education",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/education"
+    },
+    {
+     "control": "Vocabulary Work & Employment The gig economy, redundancy and the four-day week. ",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/work",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/work"
+    },
+    {
+     "control": "Vocabulary Leisure & Entertainment Hobbies, films, music and books. The everyday",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/leisure",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/leisure"
+    },
+    {
+     "control": "Vocabulary People & Personality The words to describe character. Speaking Part 2",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/people",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/people"
+    },
+    {
+     "control": "Vocabulary Hometown & Describing Places Every Speaking test opens with your home",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/places",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/places"
+    },
+    {
+     "control": "Show more lessons",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/learn/bands",
+   "controls": [
+    {
+     "control": "Writing",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Speaking",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Task Response / Task Achievement",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Coherence & Cohesion",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Lexical Resource",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Grammatical Range & Accuracy",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Band 4",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Band 5",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Band 6",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Band 7",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Band 8",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Band 4 to band 5 ▶",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Band 5 to band 6 ▶",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Band 6 to band 7 ▶",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Band 7 to band 8 ▶",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Band 8 to band 9 ▶",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Back to today's session →",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/report",
+   "controls": [
+    {
+     "control": "account page",
+     "kind": "link",
+     "href": "/ielts-website/account",
+     "outcome": "clicked",
+     "went": "/ielts-website/account"
+    },
+    {
+     "control": "Go to today’s plan",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/plan-settings",
+   "controls": [
+    {
+     "control": "6.5",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "7.0",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "7.5",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "8.0",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "8.5",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "9.0",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Set a different minimum for each section",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Choose a date",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "October 2026  Mon\tTue\tWed\tThu\tFri\tSat\tSun \t\t\t1\t2\t3\t4 5\t6\t7\t8\t9\t10\t11 12\t13\t14\t15\t16\t17\t18 19\t20\t21\t22\t23\t24\t25 26\t27\t28\t29\t30\t31\t \t\t\t\t\t\t Go to today Close"
+    },
+    {
+     "control": "I do not have a date yet",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "daily",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "alternate",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "weekdays",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "custom",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "60",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "25",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "15",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Yes, I can commit to this",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Let's be realistic",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Learning preferences",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "en",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "ru",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "reading",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "listening",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "writing",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "speaking",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "October 2026  Mon\tTue\tWed\tThu\tFri\tSat\tSun \t\t\t1\t2\t3\t4 5\t6\t7\t8\t9\t10\t11 12\t13\t14\t15\t16\t17\t18 19\t20\t21\t22\t23\t24\t25 26\t27\t28\t29\t30\t31\t \t\t\t\t\t\t Go to today Close"
+    },
+    {
+     "control": "Save changes",
+     "kind": "button",
+     "href": null,
+     "outcome": "could not click",
+     "why": "Locator.click: Timeout 6000ms exceeded."
+    },
+    {
+     "control": "What Mr EZ remembers",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "link",
+     "href": "/ielts-website/report",
+     "outcome": "clicked",
+     "went": "/ielts-website/report"
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Take the placement test",
+     "kind": "link",
+     "href": "/ielts-website/placement",
+     "outcome": "clicked",
+     "went": "/ielts-website/placement"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/account",
+   "controls": [
+    {
+     "control": "Profile",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Access",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Saved and results",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Edit details",
+     "kind": "link",
+     "href": "/ielts-website/profile",
+     "outcome": "clicked",
+     "went": "/ielts-website/profile"
+    },
+    {
+     "control": "Change email",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Change password",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Download my data",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [
+    "Sign out on all devices",
+    "Delete my account"
+   ],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/profile",
+   "controls": [
+    {
+     "control": "Why we ask for each one",
+     "kind": "link",
+     "href": "/ielts-website/privacy#privacy-asked",
+     "outcome": "clicked",
+     "went": "/ielts-website/privacy#privacy-asked"
+    },
+    {
+     "control": "Day",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Month",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Year",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "friend",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "instagram",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "centre",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "other",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Save details",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Back to my account",
+     "kind": "link",
+     "href": "/ielts-website/account",
+     "outcome": "clicked",
+     "went": "/ielts-website/account"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/plans",
+   "controls": [
+    {
+     "control": "Purchase history",
+     "kind": "link",
+     "href": "/ielts-website/account#access",
+     "outcome": "clicked",
+     "went": "/ielts-website/account#access"
+    },
+    {
+     "control": "Buy one month",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "http://127.0.0.1:8841/__pay/e1e9dc25-74be-4593-b204-1950d151b661?return=http%3A%2F%2Flocalhost%3A4441%2Fielts-website%2Fplans%2Freturn%3Forder%3De1e9dc25-74be-4593-b204-1950d151b661"
+    },
+    {
+     "control": "How refunds work",
+     "kind": "link",
+     "href": "/ielts-website/terms#refunds",
+     "outcome": "clicked",
+     "went": "/ielts-website/terms#refunds"
+    },
+    {
+     "control": "Public offer",
+     "kind": "link",
+     "href": "/ielts-website/terms",
+     "outcome": "clicked",
+     "went": "/ielts-website/terms"
+    },
+    {
+     "control": "Privacy",
+     "kind": "link",
+     "href": "/ielts-website/privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/privacy"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=plans",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=plans&from=%2Fplans"
+    },
+    {
+     "control": "Back to Today",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers",
+   "controls": [
+    {
+     "control": "Start a drill ↗",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading"
+    },
+    {
+     "control": "Start a drill ↗",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/listening"
+    },
+    {
+     "control": "Start a part ↗",
+     "kind": "link",
+     "href": "/ielts-website/trainers/speaking",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/speaking"
+    },
+    {
+     "control": "Start writing ↗",
+     "kind": "link",
+     "href": "/ielts-website/trainers/writing",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/writing"
+    },
+    {
+     "control": "Model answers",
+     "kind": "link",
+     "href": "/ielts-website/writing/models",
+     "outcome": "clicked",
+     "went": "/ielts-website/writing/models"
+    },
+    {
+     "control": "Cue cards",
+     "kind": "link",
+     "href": "/ielts-website/speaking/cue-cards",
+     "outcome": "clicked",
+     "went": "/ielts-website/speaking/cue-cards"
+    },
+    {
+     "control": "What's the difference between Practice and Tests?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "Looking for a full timed exam instead?",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/reading",
+   "controls": [
+    {
+     "control": "All trainers",
+     "kind": "link",
+     "href": "/ielts-website/trainers",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers"
+    },
+    {
+     "control": "All types Matching Information Sentence Completion True / False / Not Given Yes ",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Any duration Up to 15 minutes Up to 20 minutes",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Passage 1 The problems and benefits created by the spread of the water hyacinth ",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-001-drill-p1",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-001-drill-p1"
+    },
+    {
+     "control": "Passage 2 How could multilingualism benefit India’s poorest schoolchildren? 13 q",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-001-drill-p2",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-001-drill-p2"
+    },
+    {
+     "control": "Passage 3 The Globemakers: The Curious Story of an Ancient Craft 14 questions · ",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-001-drill-p3",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-001-drill-p3"
+    },
+    {
+     "control": "Passage 1 Saving the saiga 13 questions · 20 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-002-drill-p1",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-002-drill-p1"
+    },
+    {
+     "control": "Passage 2 The problems of getting around the city of Dar es Salaam 13 questions ",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-002-drill-p2",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-002-drill-p2"
+    },
+    {
+     "control": "Passage 3 Rethinking the Past 14 questions · 20 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-002-drill-p3",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-002-drill-p3"
+    },
+    {
+     "control": "Passage 1 Do animals dream? 13 questions · 20 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-003-drill-p1",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-003-drill-p1"
+    },
+    {
+     "control": "Passage 2 Mapungubwe Located in southern Africa just below the Limpopo River, th",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-003-drill-p2",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-003-drill-p2"
+    },
+    {
+     "control": "Passage 3 Artificial Intelligence 14 questions · 20 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-003-drill-p3",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-003-drill-p3"
+    },
+    {
+     "control": "Passage 1 The Davies Sisters 13 questions · 20 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-004-drill-p1",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-004-drill-p1"
+    },
+    {
+     "control": "Passage 2 Why we need silence 13 questions · 20 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-004-drill-p2",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-004-drill-p2"
+    },
+    {
+     "control": "Passage 3 Book review: The World of Sugar by Ulbe Bosma 14 questions · 20 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-004-drill-p3",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-004-drill-p3"
+    },
+    {
+     "control": "Show more",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/listening",
+   "controls": [
+    {
+     "control": "All trainers",
+     "kind": "link",
+     "href": "/ielts-website/trainers",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers"
+    },
+    {
+     "control": "All types Matching Information Sentence Completion True / False / Not Given Yes ",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Any duration Up to 15 minutes Up to 20 minutes",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Part 1 Sentence Completion 10 questions · 8 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening/listening-full-001-drill-p1",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/listening/listening-full-001-drill-p1"
+    },
+    {
+     "control": "Part 2 Multiple Choice, Matching Features, Sentence Completion 10 questions · 8 ",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening/listening-full-001-drill-p2",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/listening/listening-full-001-drill-p2"
+    },
+    {
+     "control": "Part 3 Sentence Completion 10 questions · 8 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening/listening-full-001-drill-p3",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/listening/listening-full-001-drill-p3"
+    },
+    {
+     "control": "Part 4 Multiple Choice, Sentence Completion 10 questions · 8 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening/listening-full-001-drill-p4",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/listening/listening-full-001-drill-p4"
+    },
+    {
+     "control": "Part 1 Sentence Completion 10 questions · 8 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening/listening-full-002-drill-p1",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/listening/listening-full-002-drill-p1"
+    },
+    {
+     "control": "Part 2 Sentence Completion, Multiple Choice, Matching Features 10 questions · 8 ",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening/listening-full-002-drill-p2",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/listening/listening-full-002-drill-p2"
+    },
+    {
+     "control": "Part 3 Multiple Choice, Sentence Completion 10 questions · 8 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening/listening-full-002-drill-p3",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/listening/listening-full-002-drill-p3"
+    },
+    {
+     "control": "Part 4 Sentence Completion 10 questions · 8 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening/listening-full-002-drill-p4",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/listening/listening-full-002-drill-p4"
+    },
+    {
+     "control": "Part 1 Sentence Completion 10 questions · 8 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening/listening-full-003-drill-p1",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/listening/listening-full-003-drill-p1"
+    },
+    {
+     "control": "Part 2 Sentence Completion, Multiple Choice, Multiple Answer 10 questions · 8 mi",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening/listening-full-003-drill-p2",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/listening/listening-full-003-drill-p2"
+    },
+    {
+     "control": "Part 3 Multiple Choice 10 questions · 8 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening/listening-full-003-drill-p3",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/listening/listening-full-003-drill-p3"
+    },
+    {
+     "control": "Part 4 Sentence Completion 10 questions · 8 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening/listening-full-003-drill-p4",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/listening/listening-full-003-drill-p4"
+    },
+    {
+     "control": "Show more",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/writing",
+   "controls": [
+    {
+     "control": "Task 1 · Report Describe a chart, graph, table, process or map in your own words",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/writing?task=pte-wt-111-task1"
+    },
+    {
+     "control": "Task 2 · Essay Write a discursive essay responding to an opinion, discussion or ",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/writing?task=pte-wt-112-task2"
+    },
+    {
+     "control": "Ready to write without help? Take it under exam conditions in the Writing Checke",
+     "kind": "link",
+     "href": "/ielts-website/writing/checker",
+     "outcome": "clicked",
+     "went": "/ielts-website/writing/checker"
+    },
+    {
+     "control": "Model answers A Band 8 answer for every task here, with examiner notes on all fo",
+     "kind": "link",
+     "href": "/ielts-website/writing/models",
+     "outcome": "clicked",
+     "went": "/ielts-website/writing/models"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/speaking",
+   "controls": [
+    {
+     "control": "Part 1 The Interview Short questions about your everyday life: home, work, music",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Part 2 The Long Turn One cue card, one minute to prepare with notes, then speak ",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Part 3 The Discussion Deeper follow-up questions on the cue-card theme. Give opi",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Live AI Examiner",
+     "kind": "link",
+     "href": "/ielts-website/speaking/examiner",
+     "outcome": "clicked",
+     "went": "/ielts-website/speaking/examiner"
+    },
+    {
+     "control": "Cue-card bank (for study, not a test) Read 24 Part 2 cue cards with model answer",
+     "kind": "link",
+     "href": "/ielts-website/speaking/cue-cards",
+     "outcome": "clicked",
+     "went": "/ielts-website/speaking/cue-cards"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/reading/reading-full-001-drill-p1",
+   "controls": [
+    {
+     "control": "Instructions and scoring",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Back",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading"
+    },
+    {
+     "control": "Start test",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/listening/listening-full-001-drill-p1",
+   "controls": [
+    {
+     "control": "Instructions and scoring",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Back",
+     "kind": "link",
+     "href": "/ielts-website/trainers/listening",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/listening"
+    },
+    {
+     "control": "Start test",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/focused/listening-categorisation-check-a",
+   "controls": [
+    {
+     "control": "Play the recording",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Heading for Geographical Location",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Heading for Economy",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Heading for Overview of Education System",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Heading for Role of English Language",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Invigilating: no answers until the timer stops Close Mr EZ ×  No hints, examples or answers while the clock is running. Ask me again once you submit, this"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/trainers/speaking-focus/speaking-fluency-repair",
+   "controls": [
+    {
+     "control": "Start recording",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/tests",
+   "controls": [
+    {
+     "control": "What each band needs",
+     "kind": "link",
+     "href": "/ielts-website/learn/bands",
+     "outcome": "clicked",
+     "went": "/ielts-website/learn/bands"
+    },
+    {
+     "control": "Start a test",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/reading-full-022"
+    },
+    {
+     "control": "Only have 20 minutes? Try the Reading Trainer",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading"
+    },
+    {
+     "control": "Start a listening test",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/listening-full-027"
+    },
+    {
+     "control": "Learn the four Listening parts first",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening"
+    },
+    {
+     "control": "Start writing",
+     "kind": "link",
+     "href": "/ielts-website/writing/checker",
+     "outcome": "clicked",
+     "went": "/ielts-website/writing/checker"
+    },
+    {
+     "control": "Want structures and phrases while you write? Try the Writing Trainer",
+     "kind": "link",
+     "href": "/ielts-website/trainers/writing",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/writing"
+    },
+    {
+     "control": "Start the interview",
+     "kind": "link",
+     "href": "/ielts-website/speaking/examiner",
+     "outcome": "clicked",
+     "went": "/ielts-website/speaking/examiner"
+    },
+    {
+     "control": "Want to practice one part at a time instead?",
+     "kind": "link",
+     "href": "/ielts-website/trainers/speaking",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/speaking"
+    },
+    {
+     "control": "Start this checkpoint",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-001",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/reading-full-001"
+    },
+    {
+     "control": "Start this checkpoint",
+     "kind": "link",
+     "href": "/ielts-website/tests/listening-full-001",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/listening-full-001"
+    },
+    {
+     "control": "Mock Exam Day One chained sitting: Listening, then Reading, then Writing, then S",
+     "kind": "link",
+     "href": "/ielts-website/tests/mock",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/mock"
+    },
+    {
+     "control": "What's the difference between Practice and Tests?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "link",
+     "href": "/ielts-website/trainers",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers"
+    },
+    {
+     "control": "Open Exam readiness",
+     "kind": "link",
+     "href": "/ielts-website/start#exam-readiness",
+     "outcome": "clicked",
+     "went": "/ielts-website/start#exam-readiness"
+    },
+    {
+     "control": "01 Academic Reading Test 1 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-001",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/reading-full-001"
+    },
+    {
+     "control": "02 Academic Reading Test 2 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-002",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/reading-full-002"
+    },
+    {
+     "control": "03 Academic Reading Test 3 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-003",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/reading-full-003"
+    },
+    {
+     "control": "04 Academic Reading Test 4 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-004",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/reading-full-004"
+    },
+    {
+     "control": "05 Academic Reading Test 5 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-005",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/reading-full-005"
+    },
+    {
+     "control": "06 Academic Reading Test 6 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-006",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/reading-full-006"
+    },
+    {
+     "control": "07 Academic Reading Test 7 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-007",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/reading-full-007"
+    },
+    {
+     "control": "08 Academic Reading Test 8 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-008",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/reading-full-008"
+    },
+    {
+     "control": "09 Academic Reading Test 9 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-009",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/reading-full-009"
+    },
+    {
+     "control": "10 Academic Reading Test 10 40 questions",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-010",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/reading-full-010"
+    },
+    {
+     "control": "11 Academic Reading Test 11 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-011",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/reading-full-011"
+    },
+    {
+     "control": "12 Academic Reading Test 12 40 questions Unseen",
+     "kind": "link",
+     "href": "/ielts-website/tests/reading-full-012",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests/reading-full-012"
+    },
+    {
+     "control": "Show more",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [
+    "https://practicepteonline.com/listening-ielts-tests/"
+   ],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/tests/drills",
+   "controls": [
+    {
+     "control": "All trainers",
+     "kind": "link",
+     "href": "/ielts-website/trainers",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers"
+    },
+    {
+     "control": "All types Matching Information Sentence Completion True / False / Not Given Yes ",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Any duration Up to 15 minutes Up to 20 minutes",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Passage 1 The problems and benefits created by the spread of the water hyacinth ",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-001-drill-p1",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-001-drill-p1"
+    },
+    {
+     "control": "Passage 2 How could multilingualism benefit India’s poorest schoolchildren? 13 q",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-001-drill-p2",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-001-drill-p2"
+    },
+    {
+     "control": "Passage 3 The Globemakers: The Curious Story of an Ancient Craft 14 questions · ",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-001-drill-p3",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-001-drill-p3"
+    },
+    {
+     "control": "Passage 1 Saving the saiga 13 questions · 20 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-002-drill-p1",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-002-drill-p1"
+    },
+    {
+     "control": "Passage 2 The problems of getting around the city of Dar es Salaam 13 questions ",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-002-drill-p2",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-002-drill-p2"
+    },
+    {
+     "control": "Passage 3 Rethinking the Past 14 questions · 20 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-002-drill-p3",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-002-drill-p3"
+    },
+    {
+     "control": "Passage 1 Do animals dream? 13 questions · 20 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-003-drill-p1",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-003-drill-p1"
+    },
+    {
+     "control": "Passage 2 Mapungubwe Located in southern Africa just below the Limpopo River, th",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-003-drill-p2",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-003-drill-p2"
+    },
+    {
+     "control": "Passage 3 Artificial Intelligence 14 questions · 20 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-003-drill-p3",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-003-drill-p3"
+    },
+    {
+     "control": "Passage 1 The Davies Sisters 13 questions · 20 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-004-drill-p1",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-004-drill-p1"
+    },
+    {
+     "control": "Passage 2 Why we need silence 13 questions · 20 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-004-drill-p2",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-004-drill-p2"
+    },
+    {
+     "control": "Passage 3 Book review: The World of Sugar by Ulbe Bosma 14 questions · 20 min",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading/reading-full-004-drill-p3",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading/reading-full-004-drill-p3"
+    },
+    {
+     "control": "Show more",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/tests/drills/reading-full-001-drill-p1",
+   "controls": [
+    {
+     "control": "Instructions and scoring",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Back",
+     "kind": "link",
+     "href": "/ielts-website/trainers/reading",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/reading"
+    },
+    {
+     "control": "Start test",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/tests/reading-full-001",
+   "controls": [
+    {
+     "control": "Instructions and scoring",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Back",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "Start test",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/tests/listening-full-001",
+   "controls": [
+    {
+     "control": "Instructions and scoring",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Back",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "Start test",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/tests/mock",
+   "controls": [
+    {
+     "control": "Paper details and scoring",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Listening Test 1 Listening Test 2 Listening Test 3 Listening Test 4 Listening Te",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Reading Test 1 Reading Test 2 Reading Test 3 Reading Test 4 Reading Test 5 Readi",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "Back",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "Start Mock Exam",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/placement",
+   "controls": [
+    {
+     "control": "IELTS is EZ",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Back to Today",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Start the placement test",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not now",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "not on screen from a fresh start"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/review",
+   "controls": [
+    {
+     "control": "Dashboard",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Conjunctions & Linking Words 18 words although, whereas, despite / in spite of",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/review?topic=conjunctions"
+    },
+    {
+     "control": "Environment & Ecology 20 words carbon footprint, biodiversity, deforestation",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/review?topic=environment"
+    },
+    {
+     "control": "Education & Learning 20 words curriculum, academic achievement, critical thinkin",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/review?topic=education"
+    },
+    {
+     "control": "Technology & Society 20 words artificial intelligence (AI), automation, digital ",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/review?topic=technology"
+    },
+    {
+     "control": "Work & Employment 20 words gig economy, work-life balance, job satisfaction",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/review?topic=work"
+    },
+    {
+     "control": "Health & Wellbeing 20 words obesity, sedentary lifestyle, mental health",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/review?topic=health"
+    },
+    {
+     "control": "Food & Diet 20 words balanced diet, processed food, fast food",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/review?topic=food"
+    },
+    {
+     "control": "Transport & Traffic 20 words traffic congestion, rush hour, private vehicle",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/review?topic=transport"
+    },
+    {
+     "control": "Leisure & Entertainment 20 words leisure time, pastime, unwind",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/review?topic=leisure"
+    },
+    {
+     "control": "People & Personality 20 words outgoing, reserved, hard-working",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/review?topic=people"
+    },
+    {
+     "control": "Hometown & Describing Places 20 words bustling, picturesque, run-down",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/review?topic=places"
+    },
+    {
+     "control": "Childhood & Growing Up 20 words grow up, memory, nostalgia",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/review?topic=childhood"
+    },
+    {
+     "control": "Show more",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/writing/checker",
+   "controls": [
+    {
+     "control": "Task 1 · Report Describe a chart, graph, table, process or map in your own words",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/writing/checker?task=pte-wt-109-task1"
+    },
+    {
+     "control": "Task 2 · Essay Write a discursive essay responding to an opinion, discussion or ",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "went": "/ielts-website/writing/checker?task=pte-wt-108-task2"
+    },
+    {
+     "control": "Still learning the format? Read how to answer Task 2 first",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/task2-method",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/task2-method"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/writing/models",
+   "controls": [
+    {
+     "control": "All types Task 1 Task 2",
+     "kind": "select",
+     "href": null,
+     "outcome": "picked"
+    },
+    {
+     "control": "The best way to provide enough homes",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Access to clean water is a basic human",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Consumers can go to a supermarket and buy",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "It is important for everyone, including young people",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The working week should be shorter and workers",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Around the world rural people are moving",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The most important aim of science should be",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "A growing number of people with health problems",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Many manufactured food and drink products contain high",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "In the future nobody will buy printed newspapers",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Music is a good way of bringing people",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "In the digital age, theatres and cinemas",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Competition at work, at school and in daily",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Some university students want to learn about other",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Professionals, such as doctors and engineers, should be",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Advertising is extremely successful at persuading us",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The crime rate among teenagers has increased dramatically",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "People are less fit and active nowadays",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The tradition of families having meals together",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "All university undergraduate courses should include a period",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Some people have decided to reduce the number",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "People are now living longer than ever before",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "It is important for people to take risks",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "In the future all cars, buses and trucks",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "In some cultures, children are often told",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Primary schools focus too much on formal learning",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Many aspects of the way people dress today",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Primary and secondary schools close for two months",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Some children spend hours every day",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "In their advertising, businesses nowadays usually emphasise",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "In some countries more and more people",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "In some countries owning a home rather",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Many people choose to be self-employed, rather",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Jobs in four sectors of the economy (chart)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "A public library in a town called Little Chalfont (chart)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The location and types of dance classes young people (chart)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The numbers of participants for different activities at one (chart)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The average monthly change in the prices of three (chart)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Households in the US by their annual income (chart)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Population in four Asian countries living in cities (chart)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Shops that closed and the number of new shops (chart)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "How families in one country spent their weekly income (chart)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The changes in ownership of electrical appliances and amount (chart)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Tourists visiting a particular Caribbean island between 2010 (chart)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The results of a survey about people’s coffee (chart)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Changes in the total population of New York City (table)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "How one type of desert (process)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "How fabric is manufactured from bamboo (process)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "How a biofuel called ethanol is produced (process)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The process for recycling plastic bottles (process)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The manufacturing process for making sugar from sugar cane (process)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "How instant noodles are manufactured (process)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "How electricity is generated in a hydroelectric power station (process)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "A college cafe before it was redesigned (map)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The site of a farm in 1950 (map)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "A harbour in 2000 (map)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The floor plan of a public library 20 years (map)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "An industrial area in the town of Norbiton (map)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The site of an airport now (map)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "A public park when it first opened in 1920 (map)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Library users at a university (chart and table)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The police budget for 2017 and 2018 in one (chart and table)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "What Anthropology graduates from one university did after finishing (chart and t",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "VIEW QUESTION · TASK 1 · LIBRARY USERS AT A UNIVERSITY (CHART AND TABLE)",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Band 8.0",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Write this one",
+     "kind": "link",
+     "href": "/ielts-website/trainers/writing?task=pte-wt-132-task1",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/writing?task=pte-wt-132-task1"
+    },
+    {
+     "control": "neither of which attracts any criticism at all",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "almost twice the 25% recorded for full-time postgraduates",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "the remainder is divided almost evenly between distance learners",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "a combined satisfaction rate of 90%",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "dissatisfying 20% and 19% of users respectively",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Back to today's session →",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/speaking/examiner",
+   "controls": [
+    {
+     "control": "Before you speak",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Start the interview",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Cue-card bank (for study, not a test) Read 24 Part 2 cue cards with model answer",
+     "kind": "link",
+     "href": "/ielts-website/speaking/cue-cards",
+     "outcome": "clicked",
+     "went": "/ielts-website/speaking/cue-cards"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/speaking/cue-cards",
+   "controls": [
+    {
+     "control": "All (24)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "A person (3)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "A place (3)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "An object (3)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "An event (4)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "An activity (3)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Media (3)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "A plan (2)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "A skill (3)",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Random card",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "A PERSON A family member you admire 4 points to cover",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "A PERSON A close friend 4 points to cover",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "A PERSON An influential teacher 4 points to cover",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "A PLACE A quiet place to relax 4 points to cover",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "A PLACE A city you want to visit 4 points to cover",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "A PLACE An interesting building 4 points to cover",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "AN OBJECT A useful piece of technology 4 points to cover",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "AN OBJECT A gift you liked 4 points to cover",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "AN OBJECT A favourite item of clothing 4 points to cover",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "AN EVENT A festival you enjoyed 4 points to cover",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "AN EVENT A time you helped someone 4 points to cover",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "AN EVENT A time you felt very happy 4 points to cover",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show more",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/speaking/recorded",
+   "controls": [
+    {
+     "control": "Part 1 The Interview Short questions about your everyday life: home, work, music",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Part 2 The Long Turn One cue card, one minute to prepare with notes, then speak ",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Part 3 The Discussion Deeper follow-up questions on the cue-card theme. Give opi",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/speaking/checker",
+   "controls": [
+    {
+     "control": "Before you speak",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Start the interview",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Cue-card bank (for study, not a test) Read 24 Part 2 cue cards with model answer",
+     "kind": "link",
+     "href": "/ielts-website/speaking/cue-cards",
+     "outcome": "clicked",
+     "went": "/ielts-website/speaking/cue-cards"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/lessons/reading-task1",
+   "controls": [
+    {
+     "control": "Home",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "How Reading Works",
+     "kind": "link",
+     "href": "#how-it-works",
+     "outcome": "clicked"
+    },
+    {
+     "control": "About the Test",
+     "kind": "link",
+     "href": "#overview",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Lessons",
+     "kind": "link",
+     "href": "#types",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Take a Timed Test",
+     "kind": "link",
+     "href": "#timed-test",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "01 START HERE 20 min Spotting Paraphrase Not a question type, but the skill behi",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/paraphrase",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/paraphrase"
+    },
+    {
+     "control": "02 12 min Multiple Choice Pick the right option and dodge the distractors design",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/mc",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/mc"
+    },
+    {
+     "control": "03 12 min True / False / Not Given Decide whether statements agree with the fact",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/tfng",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/tfng"
+    },
+    {
+     "control": "04 12 min Yes / No / Not Given Decide whether statements match the writer's opin",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/ynng",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/ynng"
+    },
+    {
+     "control": "05 14 min Matching Headings Match each paragraph to its main idea, not just repe",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/headings",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/headings"
+    },
+    {
+     "control": "06 12 min Matching Information Find which paragraph contains a specific piece of",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/matching-information",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/matching-information"
+    },
+    {
+     "control": "07 13 min Matching Features Match statements to people, theories, places or date",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/matching-features",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/matching-features"
+    },
+    {
+     "control": "08 12 min Matching Sentence Endings Match the start of a sentence to the ending ",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/matching-sentence-endings",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/matching-sentence-endings"
+    },
+    {
+     "control": "09 10 min Sentence Completion Fill the gaps within the word limit, keeping the s",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/sentence",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/sentence"
+    },
+    {
+     "control": "10 13 min Summary, Note, Table & Flow-chart Completion Fill gaps in a summary, a",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/summary-completion",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/summary-completion"
+    },
+    {
+     "control": "11 12 min Diagram Label Completion Label a diagram or process using exact words ",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/diagram",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/diagram"
+    },
+    {
+     "control": "12 10 min Short-answer Questions Answer questions with a word limit, taking the ",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/short-answer",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/short-answer"
+    },
+    {
+     "control": "3 PASSAGES · 40 QUESTIONS · 60 MIN · 40 TESTS IN ROTATION Take a Reading Test St",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "practice tests page",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "Open practice",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "○ Mark this lesson as studied",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Save lesson",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Back to course",
+     "kind": "link",
+     "href": "/ielts-website/start",
+     "outcome": "clicked",
+     "went": "/ielts-website/start"
+    },
+    {
+     "control": "Back to today's session",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/lessons/reading/tfng",
+   "controls": [
+    {
+     "control": "Home",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Reading",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading-task1",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading-task1"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "The decision test on three statements (full worked example)",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Collapse passage ↑",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Collapse passage ↑",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "True",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "False",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Not Given",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "PREVIOUS Multiple Choice",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/mc",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/mc"
+    },
+    {
+     "control": "READING All Question Types",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading-task1",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading-task1"
+    },
+    {
+     "control": "NEXT Yes / No / Not Given",
+     "kind": "link",
+     "href": "/ielts-website/lessons/reading/ynng",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/reading/ynng"
+    },
+    {
+     "control": "Open practice",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "○ Mark this lesson as studied",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Save lesson",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Back to course",
+     "kind": "link",
+     "href": "/ielts-website/start",
+     "outcome": "clicked",
+     "went": "/ielts-website/start"
+    },
+    {
+     "control": "Back to today's session",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/lessons/listening/part1",
+   "controls": [
+    {
+     "control": "Home",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Listening",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "Give me a hint",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/listening/part1"
+      }
+     ]
+    },
+    {
+     "control": "LISTENING All Listening Lessons",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening"
+    },
+    {
+     "control": "NEXT Part 2. Monologue & Maps",
+     "kind": "link",
+     "href": "/ielts-website/lessons/listening/part2",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/listening/part2"
+    },
+    {
+     "control": "Open practice",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "○ Mark this lesson as studied",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Save lesson",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Back to course",
+     "kind": "link",
+     "href": "/ielts-website/start",
+     "outcome": "clicked",
+     "went": "/ielts-website/start"
+    },
+    {
+     "control": "Back to today's session",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/lessons/writing/opinion",
+   "controls": [
+    {
+     "control": "Home",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Writing",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      }
+     ]
+    },
+    {
+     "control": "How to Answer Task 2",
+     "kind": "link",
+     "href": "task2-method",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/task2-method"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/writing/opinion"
+      }
+     ]
+    },
+    {
+     "control": "Show the Band 8 answer",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Or write this one yourself first",
+     "kind": "link",
+     "href": "/ielts-website/trainers/writing?task=pte-wt-129-task2",
+     "outcome": "clicked",
+     "went": "/ielts-website/trainers/writing?task=pte-wt-129-task2"
+    },
+    {
+     "control": "✨ AI EXAMINER · OFFICIAL BAND DESCRIPTORS Open the Writing Checker Check my writ",
+     "kind": "link",
+     "href": "/ielts-website/writing/checker",
+     "outcome": "clicked",
+     "went": "/ielts-website/writing/checker"
+    },
+    {
+     "control": "PREVIOUS How to Answer Task 2",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/task2-method",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/task2-method"
+    },
+    {
+     "control": "WRITING All Question Types",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing"
+    },
+    {
+     "control": "NEXT Discussion Essays",
+     "kind": "link",
+     "href": "/ielts-website/lessons/writing/discussion",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/writing/discussion"
+    },
+    {
+     "control": "Open practice",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "○ Mark this lesson as studied",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Save lesson",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Back to course",
+     "kind": "link",
+     "href": "/ielts-website/start",
+     "outcome": "clicked",
+     "went": "/ielts-website/start"
+    },
+    {
+     "control": "Back to today's session",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/lessons/speaking/part2",
+   "controls": [
+    {
+     "control": "Home",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Speaking",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking"
+    },
+    {
+     "control": "1. Test Format",
+     "kind": "link",
+     "href": "#format",
+     "outcome": "clicked"
+    },
+    {
+     "control": "2. 1-Minute Prep",
+     "kind": "link",
+     "href": "#prep",
+     "outcome": "clicked"
+    },
+    {
+     "control": "3. Your Opening Line",
+     "kind": "link",
+     "href": "#opening",
+     "outcome": "clicked"
+    },
+    {
+     "control": "4. Talk Structure",
+     "kind": "link",
+     "href": "#structure",
+     "outcome": "clicked"
+    },
+    {
+     "control": "5. If the Card Doesn't Fit",
+     "kind": "link",
+     "href": "#rescue",
+     "outcome": "clicked"
+    },
+    {
+     "control": "6. Rounding Off Questions",
+     "kind": "link",
+     "href": "#rounding",
+     "outcome": "clicked"
+    },
+    {
+     "control": "7. Useful Language",
+     "kind": "link",
+     "href": "#language",
+     "outcome": "clicked"
+    },
+    {
+     "control": "8. Practice Cards",
+     "kind": "link",
+     "href": "#practice",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/speaking/part2#practice"
+      }
+     ]
+    },
+    {
+     "control": "Show Model Answer & Key Vocabulary",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show Model Answer & Key Vocabulary",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Show Model Answer & Key Vocabulary",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "PREVIOUS Part 1 Interview",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking/part1",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking/part1"
+    },
+    {
+     "control": "SPEAKING All Three Parts",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking"
+    },
+    {
+     "control": "NEXT Part 3 Discussion",
+     "kind": "link",
+     "href": "/ielts-website/lessons/speaking/part3",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/speaking/part3"
+    },
+    {
+     "control": "Open practice",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "○ Mark this lesson as studied",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Save lesson",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Back to course",
+     "kind": "link",
+     "href": "/ielts-website/start",
+     "outcome": "clicked",
+     "went": "/ielts-website/start"
+    },
+    {
+     "control": "Back to today's session",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/lessons/vocabulary/environment",
+   "controls": [
+    {
+     "control": "Home",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Vocabulary",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary"
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      }
+     ]
+    },
+    {
+     "control": "Explain this differently",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      }
+     ]
+    },
+    {
+     "control": "Show me an example",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "errors": [
+      {
+       "kind": "http",
+       "status": 429,
+       "text": "POST http://127.0.0.1:8841/tutor",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      },
+      {
+       "kind": "console",
+       "text": "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+       "url": "http://localhost:4441/ielts-website/lessons/vocabulary/environment"
+      }
+     ]
+    },
+    {
+     "control": "Show Practice Exercise",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "PREVIOUS Conjunctions & Linking Words",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/conjunctions",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/conjunctions"
+    },
+    {
+     "control": "VOCABULARY All Topics & Quiz",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary"
+    },
+    {
+     "control": "NEXT Education & Learning",
+     "kind": "link",
+     "href": "/ielts-website/lessons/vocabulary/education",
+     "outcome": "clicked",
+     "went": "/ielts-website/lessons/vocabulary/education"
+    },
+    {
+     "control": "Open practice",
+     "kind": "link",
+     "href": "/ielts-website/tests",
+     "outcome": "clicked",
+     "went": "/ielts-website/tests"
+    },
+    {
+     "control": "○ Mark this lesson as studied",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Save lesson",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Back to course",
+     "kind": "link",
+     "href": "/ielts-website/start",
+     "outcome": "clicked",
+     "went": "/ielts-website/start"
+    },
+    {
+     "control": "Back to today's session",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/help",
+   "controls": [
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=help",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=help"
+    },
+    {
+     "control": "What is free, and what is paid?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Can I get a refund?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "How do I get practice and guidance?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Where do I start?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "What is the difference between a lesson, practice and a test?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "What happens if I refresh or close the page during a test?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Is my score an official IELTS band?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Where is my progress saved?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "What can Mr EZ do?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Can I use the platform in Russian or Kazakh?",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Go to today's session",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    },
+    {
+     "control": "Privacy",
+     "kind": "link",
+     "href": "/ielts-website/privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/privacy"
+    },
+    {
+     "control": "Public offer",
+     "kind": "link",
+     "href": "/ielts-website/terms",
+     "outcome": "clicked",
+     "went": "/ielts-website/terms"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/support",
+   "controls": [
+    {
+     "control": "problem",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "question",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "account",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "other",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Send to a person",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "How we handle your information",
+     "kind": "link",
+     "href": "/ielts-website/privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/privacy"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/privacy",
+   "controls": [
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=privacy"
+    },
+    {
+     "control": "Ask for a review",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=ai-review",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=ai-review"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=privacy"
+    },
+    {
+     "control": "Public offer",
+     "kind": "link",
+     "href": "/ielts-website/terms",
+     "outcome": "clicked",
+     "went": "/ielts-website/terms"
+    },
+    {
+     "control": "How the platform works",
+     "kind": "link",
+     "href": "/ielts-website/help",
+     "outcome": "clicked",
+     "went": "/ielts-website/help"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/terms",
+   "controls": [
+    {
+     "control": "ask for a refund",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=refund",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=refund"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=terms",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=terms&from=%2Fterms"
+    },
+    {
+     "control": "Ask for a review",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=ai-review",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=ai-review"
+    },
+    {
+     "control": "How we handle your information",
+     "kind": "link",
+     "href": "/ielts-website/privacy",
+     "outcome": "clicked",
+     "went": "/ielts-website/privacy"
+    },
+    {
+     "control": "How the platform works",
+     "kind": "link",
+     "href": "/ielts-website/help",
+     "outcome": "clicked",
+     "went": "/ielts-website/help"
+    },
+    {
+     "control": "Ask Mr EZ Your AI tutor",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "dialog": "Mr EZ Simulated tutor (no AI is being called) Close Mr EZ × A little guidance. A lot of progress. Let’s figure it out together.  Understand a tricky question, l"
+    }
+   ],
+   "skipped": [],
+   "external": [
+    "https://www.gov.kz/memleket/entities/mti-kzpp"
+   ],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/sign-in",
+   "controls": [
+    {
+     "control": "Continue",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    }
+   ],
+   "skipped": [
+    "Sign out"
+   ],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/sign-up",
+   "controls": [
+    {
+     "control": "Continue",
+     "kind": "link",
+     "href": "/ielts-website/dashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/dashboard"
+    }
+   ],
+   "skipped": [
+    "Sign out"
+   ],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/forgot-password",
+   "controls": [
+    {
+     "control": "Back to sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in?next=%2Fdashboard",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in?next=%2Fdashboard"
+    }
+   ],
+   "skipped": [
+    "Send reset link"
+   ],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  },
+  {
+   "route": "/",
+   "controls": [
+    {
+     "control": "IELTS is EZ home",
+     "kind": "link",
+     "href": "#main",
+     "outcome": "clicked"
+    },
+    {
+     "control": "AI tutor",
+     "kind": "link",
+     "href": "#meet-mr-ez",
+     "outcome": "clicked"
+    },
+    {
+     "control": "AI feedback",
+     "kind": "link",
+     "href": "#feedback",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Your plan",
+     "kind": "link",
+     "href": "#your-plan",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Pricing",
+     "kind": "link",
+     "href": "#pricing",
+     "outcome": "clicked"
+    },
+    {
+     "control": "EN",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "lang": "en"
+    },
+    {
+     "control": "RU",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked",
+     "lang": "ru"
+    },
+    {
+     "control": "KZ",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Sign in",
+     "kind": "link",
+     "href": "/ielts-website/sign-in",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in"
+    },
+    {
+     "control": "Create a free account",
+     "kind": "link",
+     "href": "/ielts-website/sign-up",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-up"
+    },
+    {
+     "control": "Practise speaking",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Get a little guidance",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Learn the method",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "View full-size screenshot: Speaking trainer showing a Part 2 cue card, notes and",
+     "kind": "link",
+     "href": "/ielts-website/pics/next-chapter/platform-speaking-inside.png",
+     "problem": "link did not lead anywhere",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Just exploring? Take a look inside",
+     "kind": "link",
+     "href": "#your-classroom",
+     "outcome": "clicked"
+    },
+    {
+     "control": "7",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "7.5",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "8",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "speaking",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "writing",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "reading",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "listening",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "method",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "confidence",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "15",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "30",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "60",
+     "kind": "radio",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Find my starting point",
+     "kind": "link",
+     "href": "#journey-band",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Reading",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Listening",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Writing",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Speaking",
+     "kind": "button",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Official criteria. Transparent practice estimates. See what your writing and spe",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Create a free account",
+     "kind": "link",
+     "href": "/ielts-website/sign-up",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Get practice and guidance",
+     "kind": "link",
+     "href": "/ielts-website/plans",
+     "outcome": "clicked",
+     "went": "/ielts-website/plans"
+    },
+    {
+     "control": "See the plans",
+     "kind": "link",
+     "href": "/ielts-website/plans",
+     "outcome": "clicked",
+     "went": "/ielts-website/plans"
+    },
+    {
+     "control": "What is free? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "What is paid, and why? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "How much do practice and guidance cost? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Does it renew automatically? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Can I get a refund? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Is AI practice unlimited? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Do I need an account to read the lessons? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Which IELTS is it for? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Is the AI feedback an official IELTS score? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Can I practise under exam conditions? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Can I use it on my phone? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "How quickly will I get feedback? +",
+     "kind": "summary",
+     "href": null,
+     "outcome": "clicked"
+    },
+    {
+     "control": "Create a free account",
+     "kind": "link",
+     "href": "/ielts-website/sign-up",
+     "outcome": "not on screen from a fresh start"
+    },
+    {
+     "control": "Already have an account? Sign in.",
+     "kind": "link",
+     "href": "/ielts-website/sign-in",
+     "outcome": "clicked",
+     "went": "/ielts-website/sign-in"
+    },
+    {
+     "control": "IELTS is EZ home",
+     "kind": "link",
+     "href": "#main",
+     "outcome": "clicked"
+    },
+    {
+     "control": "How we teach",
+     "kind": "link",
+     "href": "#your-classroom",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Meet Mr EZ",
+     "kind": "link",
+     "href": "#meet-mr-ez",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Pricing",
+     "kind": "link",
+     "href": "#pricing",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Questions",
+     "kind": "link",
+     "href": "#questions",
+     "outcome": "clicked"
+    },
+    {
+     "control": "Terms",
+     "kind": "link",
+     "href": "/ielts-website/terms",
+     "outcome": "clicked",
+     "went": "/ielts-website/terms"
+    },
+    {
+     "control": "Ask a person",
+     "kind": "link",
+     "href": "/ielts-website/support?reason=footer",
+     "outcome": "clicked",
+     "went": "/ielts-website/support?reason=footer"
+    },
+    {
+     "control": "Back to top",
+     "kind": "link",
+     "href": "#main",
+     "outcome": "clicked"
+    }
+   ],
+   "skipped": [],
+   "external": [],
+   "status": 200,
+   "loadErrors": []
+  }
+ ]
+}

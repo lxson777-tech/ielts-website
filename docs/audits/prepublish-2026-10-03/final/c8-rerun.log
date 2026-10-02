@@ -1,0 +1,19 @@
+PASS en: before deleting, the account and its access exist
+PASS en: Account > Profile shows Delete account
+PASS en: the final button stays off until the box is ticked
+PASS en: the student lands on the 'account deleted' page
+PASS en: nothing of the account is left in this browser
+PASS en: the database has no account and no access for that student any more
+PASS en: signing in with the deleted account is refused
+PASS en: no page error along the way
+PASS ru: before deleting, the account and its access exist
+PASS ru: Account > Profile shows Delete account
+PASS ru: the final button stays off until the box is ticked
+PASS ru: the student lands on the 'account deleted' page
+PASS ru: nothing of the account is left in this browser
+PASS ru: the database has no account and no access for that student any more
+PASS ru: signing in with the deleted account is refused
+PASS ru: no page error along the way
+PASS open build: no Delete account row until the migration is live
+
+17 of 17 passed

@@ -1,0 +1,52 @@
+PASS en: before deleting, the account and its access exist
+PASS en: Account > Profile shows Delete account
+PASS en: the final button stays off until the box is ticked
+PASS en: the student lands on the 'account deleted' page
+PASS en: nothing of the account is left in this browser
+PASS en: the database has no account and no access for that student any more
+PASS en: signing in with the deleted account is refused
+PASS en: no page error along the way
+PASS ru: before deleting, the account and its access exist
+PASS ru: Account > Profile shows Delete account
+PASS ru: the final button stays off until the box is ticked
+PASS ru: the student lands on the 'account deleted' page
+PASS ru: nothing of the account is left in this browser
+PASS ru: the database has no account and no access for that student any more
+PASS ru: signing in with the deleted account is refused
+PASS ru: no page error along the way
+Traceback (most recent call last):
+  File "C:\Users\Alex\Desktop\Projects\IELTS website\.claude\worktrees\musing-mcclintock-862665\docs\audits\full-click-test-2026-10-02\scripts\c8_account_deletion.py", line 85, in <module>
+    page.wait_for_selector("#signup-email", timeout=30000)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Alex\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\playwright\sync_api\_generated.py", line 8770, in wait_for_selector
+    self._sync(
+    ~~~~~~~~~~^
+        self._impl_obj.wait_for_selector(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        )
+        ^
+    )
+    ^
+  File "C:\Users\Alex\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\playwright\_impl\_sync_base.py", line 115, in _sync
+    return task.result()
+           ~~~~~~~~~~~^^
+  File "C:\Users\Alex\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\playwright\_impl\_page.py", line 424, in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Alex\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\playwright\_impl\_frame.py", line 372, in wait_for_selector
+    await self._channel.send(
+        "waitForSelector", self._timeout, locals_to_params(locals())
+    )
+  File "C:\Users\Alex\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\playwright\_impl\_connection.py", line 69, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\Alex\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\playwright\_impl\_connection.py", line 559, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("#signup-email") to be visible
+

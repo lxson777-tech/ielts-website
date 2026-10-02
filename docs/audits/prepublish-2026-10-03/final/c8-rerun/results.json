@@ -1,0 +1,87 @@
+[
+ {
+  "check": "en: before deleting, the account and its access exist",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "en: Account > Profile shows Delete account",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "en: the final button stays off until the box is ticked",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "en: the student lands on the 'account deleted' page",
+  "ok": true,
+  "detail": "http://localhost:4441/ielts-website/account-deleted"
+ },
+ {
+  "check": "en: nothing of the account is left in this browser",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "en: the database has no account and no access for that student any more",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "en: signing in with the deleted account is refused",
+  "ok": true,
+  "detail": "http://localhost:4441/ielts-website/sign-in"
+ },
+ {
+  "check": "en: no page error along the way",
+  "ok": true,
+  "detail": "[{'kind': 'http', 'status': 400, 'text': 'POST http://127.0.0.1:8841/auth/v1/token?grant_type=password', 'url': 'http://localhost:4441/ielts-website/sign-in'}, {'kind': 'console', 'text': 'Failed to load resource: the server responded with a status of 400 (Bad Request)', 'url': 'http://localhost:444"
+ },
+ {
+  "check": "ru: before deleting, the account and its access exist",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "ru: Account > Profile shows Delete account",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "ru: the final button stays off until the box is ticked",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "ru: the student lands on the 'account deleted' page",
+  "ok": true,
+  "detail": "http://localhost:4441/ielts-website/account-deleted"
+ },
+ {
+  "check": "ru: nothing of the account is left in this browser",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "ru: the database has no account and no access for that student any more",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "ru: signing in with the deleted account is refused",
+  "ok": true,
+  "detail": "http://localhost:4441/ielts-website/sign-in"
+ },
+ {
+  "check": "ru: no page error along the way",
+  "ok": true,
+  "detail": "[{'kind': 'console', 'text': 'TypeError: Failed to fetch\\n    at http://localhost:4441/ielts-website/_astro/supabase.CfBe4DWb.js:13:2946\\n    at In (http://localhost:4441/ielts-website/_astro/supabase.CfBe4DWb.js:13:9672)\\n    at w (http://localhost:4441/ielts-website/_astro/supabase.CfBe4DWb.js:13:"
+ },
+ {
+  "check": "open build: no Delete account row until the migration is live",
+  "ok": true,
+  "detail": ""
+ }
+]
