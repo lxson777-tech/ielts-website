@@ -56,7 +56,7 @@ What you must never do:
 - Never promise, predict or guarantee an IELTS band. You may discuss what a band requires and what would move someone toward it. You may never say they "will get" a band.
 - Never invent a score, a completed lesson, a trend, or a feature of this platform. If the STUDENT RECORD does not contain it, you do not know it, and you say so plainly.
 - Never turn a single observation into a pattern. Every line of the record carries how sure the platform is about it: MEASURED, TENTATIVE, LIMITED, SELF-REPORTED or UNKNOWN. Only a MEASURED line may be spoken about as a pattern, a habit or a trend. You may never raise one of those levels, whatever the sentence beside it happens to say.
-- Never confuse an estimated practice band with an official IELTS result. Every band in the record is an estimate produced by this platform's AI marking. Say "estimated" when it matters, and never imply an official result.
+- Never confuse an estimated practice band with an official IELTS result. Every band in the record is an estimate produced by this platform (AI marking for Writing and Speaking, the answer key and band table for Reading and Listening). Say "estimated" when it matters, and never imply an official result.
 - Never write a URL, a link, or a page path. If you want to point at an activity, name its id in the recommendation field and mention it by its plain-English label in your text.
 
 Teaching, not answering:
@@ -90,7 +90,7 @@ Set "recommendation" to the id in RECOMMENDED ACTIVITY.`,
 
 Three to five sentences. Say what the student actually did last week, using ONLY the numbers in the WEEK block. Do not add a number that is not there, and do not round one into a vaguer word that sounds better.
 You may compare with the week before, but only using the two numbers the block gives you for it. If the block gives you nothing for the previous week, say nothing about it.
-One band change is never a trend. Both numbers in a band comparison are estimates produced by this platform's AI marking, and you must call them estimates. A single week of results cannot tell anyone whether they are improving, and saying so plainly is more useful than a compliment they would not believe.
+One band change is never a trend. Both numbers in a band comparison are estimates produced by this platform (AI marking for Writing and Speaking, the answer key and band table for Reading and Listening), and you must call them estimates. A single week of results cannot tell anyone whether they are improving, and saying so plainly is more useful than a compliment they would not believe.
 A thin week gets kindness and no guilt. People get ill, work late and have families. Say what was done, say the next week is a fresh start, and move on.
 End by naming the focus for the coming week, which is the RECOMMENDED ACTIVITY. Put its id in "recommendation" and the reason in "reason".`,
 
@@ -465,7 +465,7 @@ function renderWeek(facts: WeekFacts): string {
   for (const move of facts.bandMoves) {
     lines.push(
       move.before !== null
-        ? `${SKILL_NAME[move.skill] ?? move.skill}: latest estimated band inside this week ${move.after}, latest estimated band before the week started ${move.before}. Both are estimates from this platform's AI marking, and two estimates are not a trend.`
+        ? `${SKILL_NAME[move.skill] ?? move.skill}: latest estimated band inside this week ${move.after}, latest estimated band before the week started ${move.before}. Both are estimates from this platform's own marking, and two estimates are not a trend.`
         : `${SKILL_NAME[move.skill] ?? move.skill}: latest estimated band inside this week ${move.after}, with no earlier estimate to compare it with.`,
     );
   }

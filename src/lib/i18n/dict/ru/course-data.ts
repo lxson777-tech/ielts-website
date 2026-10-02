@@ -149,13 +149,13 @@ export const strings: Record<string, string> = {
   'Part 1. Everyday Conversation': 'Part 1. Обычный разговор',
   'Two speakers · Form completion': 'Два собеседника · Form completion',
   'Forms, bookings and registrations: catch names, numbers and spellings.':
-    'Формы, бронирования и регистрации: улавливайте имена, числа и произношение по буквам.',
+    'Формы, бронирования и регистрации: улавливайте имена, числа и написание по буквам.',
   'Part 2. Monologue & Maps': 'Part 2. Монолог и карты',
   'One speaker · Maps & matching': 'Один диктор · Maps & matching',
   'Follow a single speaker around a map, tour or announcement.':
     'Следите за диктором на карте, во время экскурсии или объявления.',
   'Part 3. Academic Discussion': 'Part 3. Академическая дискуссия',
-  'up to four speakers · Multiple choice': 'до четырёх собеседников · Multiple choice',
+  'Up to four speakers · Multiple choice': 'До четырёх собеседников · Multiple choice',
   'Track multiple speakers, dodge distractors, and catch corrections.':
     'Следите за несколькими собеседниками, избегайте отвлекающих вариантов и замечайте исправления.',
   'Part 4. Academic Lecture': 'Part 4. Академическая лекция',

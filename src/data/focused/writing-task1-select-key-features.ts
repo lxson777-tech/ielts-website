@@ -37,6 +37,12 @@ const NOTICE = [
   'Every figure it gives is one of the ones it chose to report, never a passing mention of something it is not really about.',
 ] as const;
 
+const NOTICE_CHECK = [
+  'It does not give each category a sentence of its own. It leads with the standout figure, the private studios, and ranks the rest against it.',
+  'Figures that belong together sit in the same sentence, rather than one sentence per number.',
+  'Every figure it gives is one of the ones it chose to report, never a passing mention of something it is not really about.',
+] as const;
+
 const GUIDED: WrittenFocusedTask = {
   kind: 'written-response',
   id: 'writing-task1-select-key-features-guided',
@@ -79,7 +85,7 @@ const CHECK: WrittenFocusedTask = {
   rules: RULES,
   piece: 'paragraph',
   modelParagraphIndex: 2,
-  noticeInTheModel: NOTICE,
+  noticeInTheModel: NOTICE_CHECK,
 };
 
 export const WRITING_TASK1_SELECT_KEY_FEATURES: readonly WrittenFocusedTask[] = [GUIDED, CHECK];

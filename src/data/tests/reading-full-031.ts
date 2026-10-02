@@ -198,7 +198,7 @@ const test: PracticeTest = {
               "evidence": "Today, companies engage in stealth marketing campaigns in which people are paid to frequent bars or websites to covertly promote certain products"
             }
           ],
-          "legendHtml": "<p>11. The behaviour of the monkeys on the island of Koshima showed that<br/>\n12. Primatologist Frans de Waal found that<br/>\n13. Dick Fosbury is mentioned in order to show that<br/>\n14. A feature of some modern marketing campaigns is that</p><p><strong>A</strong>. people imitated behaviour that was linked with success<br/>\n<strong>B</strong>. younger animals of a certain species are more likely to imitate each other.<br/>\n<strong>C</strong>. an animal would imitate another that had higher status<br/>\n<strong>D</strong>. imitation of popular sportspeople has occurred for many decades<br/>\n<strong>E</strong>. products are marketed to potential consumers who are unaware that marketing is occurring<br/>\n<strong>F</strong>. animals can develop new habits by observation.<br/>\n<strong>G</strong>. incentives are provided for consumers who behave in a certain way</p><p><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<p>11. The behaviour of the monkeys on the island of Koshima showed that<br/>\n12. Primatologist Frans de Waal found that<br/>\n13. Dick Fosbury is mentioned in order to show that<br/>\n14. A feature of some modern marketing campaigns is that</p><p><strong>A</strong>. people imitated behaviour that was linked with success<br/>\n<strong>B</strong>. younger animals of a certain species are more likely to imitate each other.<br/>\n<strong>C</strong>. an animal would imitate another that had higher status<br/>\n<strong>D</strong>. imitation of popular sportspeople has occurred for many decades<br/>\n<strong>E</strong>. products are marketed to potential consumers who are unaware that marketing is occurring<br/>\n<strong>F</strong>. animals can develop new habits by observation.<br/>\n<strong>G</strong>. incentives are provided for consumers who behave in a certain way</p>"
         }
       ]
     },
@@ -398,7 +398,7 @@ const test: PracticeTest = {
               "evidence": "In 1865, the celebrated British naturalist and wildlife artist John Gould said"
             }
           ],
-          "legendHtml": "<p>There are 345 varieties of parrot in existence and, of these, (24) ………….. live in Australia. As early as the (25) …………………….., the mapmaker (26) …………………… recognized that parrots lived in that part of the world. (27) ……………………, the famous painter of animals and birds, commented on the size and beauty of the Australian parrot family.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>There are 345 varieties of parrot in existence and, of these, (24) ………….. live in Australia. As early as the (25) …………………….., the mapmaker (26) …………………… recognized that parrots lived in that part of the world. (27) ……………………, the famous painter of animals and birds, commented on the size and beauty of the Australian parrot family.</p>",
           "wordLimit": 2
         }
       ]
@@ -510,7 +510,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 34-35",
           "type": "multiple-answer",
-          "instructionHtml": "Choose TWO letters, A-E. Write the correct letters in boxes 7-8 on your answer sheet.",
+          "instructionHtml": "Choose TWO letters, A-E. Write the correct letters in boxes 34-35 on your answer sheet.",
           "questions": [
             {
               "id": "q34",
@@ -596,7 +596,7 @@ const test: PracticeTest = {
               "evidence": "much legal work has nothing to do with conflict or misfortune, but is primarily concerned with drafting documents"
             }
           ],
-          "legendHtml": "<p>Lawyers as professionals People sometimes say that (36) …………………….. is of little interest to lawyers, who are more concerned with making money. This may well be the case with some individuals, in the same way that some (37) …………………….. or scientific experts may also be driven purely by financial greed. However, criticising lawyers because their work is concerned with people’s problems would be similar to attacking IT staff or (38) ……………………. for the same reason. In fact, many lawyers focus on questions relating, for example, to housing or civil liberties, which requires them to have (39) …………………… to their work. What’s more, a lot of lawyers’ time is spent writing (40) …………………….. rather than dealing with people’s misfortunes.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>Lawyers as professionals People sometimes say that (36) …………………….. is of little interest to lawyers, who are more concerned with making money. This may well be the case with some individuals, in the same way that some (37) …………………….. or scientific experts may also be driven purely by financial greed. However, criticising lawyers because their work is concerned with people’s problems would be similar to attacking IT staff or (38) ……………………. for the same reason. In fact, many lawyers focus on questions relating, for example, to housing or civil liberties, which requires them to have (39) …………………… to their work. What’s more, a lot of lawyers’ time is spent writing (40) …………………….. rather than dealing with people’s misfortunes.</p>",
           "wordLimit": 1
         }
       ]

@@ -106,17 +106,19 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
         why: nt('The first sentence only announces that a conclusion is happening. The second restates the actual position in fresh words, which band 6 requires for a "relevant position" to hold through the end.'),
       },
       practice:
-        nt('Write one full conclusion paragraph (3 sentences: summary, restated position, closing thought) for a question you already have an essay plan for. 10 minutes.'),
+        nt('Write one conclusion (1 or 2 sentences: a brief summary and your position restated in fresh words, with no new idea) for a question you already have an essay plan for. 10 minutes.'),
+      task1Note:
+        nt('For Task 1 (Academic), band 6 Task Achievement asks for an overview to be attempted and for information to be appropriately selected and supported with figures. Band 5 recounts detail mechanically, without the bigger picture. Write a separate overview paragraph, even a short one.'),
     },
     {
       from: 6,
       to: 7,
       whatChanges:
-        nt('Band 7 requires addressing ALL parts of the task in full, not some parts more than others, a clear position held THROUGHOUT the response (not one that becomes unclear or repetitive), and main ideas that are extended and supported, not just stated. The descriptor still allows some over-generalising at band 7.'),
+        nt('Band 7 requires all the main parts of the task to be properly addressed, not some covered much more fully than others, a clear position that holds to the end (not conclusions that become unclear or repetitive), and main ideas that are extended and supported, not just stated. The descriptor still allows some over-generalising at band 7.'),
       doThis: [
         nt('Give equal, full development to every part of the question, including the part you find harder.'),
         nt('Extend every main idea with a specific reason, cause, or example, not just a stated claim.'),
-        nt('Repeat your position explicitly in each body paragraph, so a reader never has to guess where you stand.'),
+        nt('Link each body paragraph back to your position where the question asks for one, so a reader never has to guess where you stand.'),
         nt('Replace vague generalisations ("many people believe") with a concrete, specific detail where you can.'),
       ],
       stopThis: [
@@ -130,6 +132,8 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       },
       practice:
         nt('Pick one body paragraph from an old essay. Rewrite it by adding one sentence of explanation and one specific example. 15 minutes.'),
+      task1Note:
+        nt('For Task 1 (Academic), the step to band 7 is mainly the overview: band 7 Task Achievement asks for a clear overview of the main trends, differences or stages, while band 6 needs only a relevant one. Make your overview name the two or three key features of the whole visual, then check that every key feature is covered and highlighted in the detail paragraphs.'),
     },
     {
       from: 7,
@@ -428,7 +432,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       example: {
         before: 'People use social media. It is popular. Many problem happen.',
         after: 'People use social media because it lets them stay connected, although this constant connection can cause problems.',
-        why: nt('The first version is three disconnected simple sentences with a subject-verb agreement error ("many problem happen"). The second links the ideas with "because" and "although", which is the attempted complex sentence band 5 is looking for.'),
+        why: nt('The first version is three disconnected simple sentences with a plural error ("many problem" should be "many problems"). The second links the ideas with "because" and "although", which is the attempted complex sentence band 5 is looking for.'),
       },
       practice:
         nt('Write 5 sentences about a familiar topic, each using a different connector: because, although, if, when, which. 15 minutes.'),
@@ -451,7 +455,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       example: {
         before: 'Government should to build more school because many child not go to school.',
         after: 'The government should build more schools, because many children currently have no access to education.',
-        why: nt('The original has a verb-form error ("should to build") and a subject-verb agreement error ("many child not go"). The revision fixes both while keeping the same complex "because" structure, so the error no longer risks confusing the reader.'),
+        why: nt('The original has a verb-form error ("should to build"), missing plurals ("more school", "many child") and a missing auxiliary ("not go" instead of "do not go"). The revision fixes all of them while keeping the same complex "because" structure, so the errors no longer risk confusing the reader.'),
       },
       practice:
         nt('Take 5 sentences from a past essay. Circle the subject and verb in each and check they agree. Fix any article (a/an/the) that is missing or wrong. 15 minutes.'),
@@ -497,7 +501,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       example: {
         before: 'If government will invest on education, more people can get benefit from it.',
         after: 'If the government invests in education, more people will benefit from it in the long run.',
-        why: nt('The original has three errors in one sentence (wrong tense after "if", wrong preposition, and an unnecessary "get"). The revision is the same idea with zero errors, which is what "the majority of sentences are error-free" requires at band 8.'),
+        why: nt('The original has four errors in one sentence (a missing "the" before "government", the wrong tense after "if", the wrong preposition, and an unnecessary "get"). The revision is the same idea with zero errors, which is what "the majority of sentences are error-free" requires at band 8.'),
       },
       practice:
         nt('Take one paragraph. Mark every error you can find, however small. Rewrite the paragraph with all of them fixed and read it aloud. 20 minutes.'),

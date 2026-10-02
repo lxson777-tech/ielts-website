@@ -209,7 +209,7 @@ const test: PracticeTest = {
               "evidence": "complementary practitioners are generally best at mobilising the placebo effect"
             }
           ],
-          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         }
       ]
     },
@@ -263,7 +263,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 15-18",
           "type": "multiple-choice",
-          "instructionHtml": "Choose the correct letter, A, B, C or D. Write your answers in boxes 15-26 on your answer sheet.",
+          "instructionHtml": "Choose the correct letter, A, B, C or D. Write your answers in boxes 15-18 on your answer sheet.",
           "questions": [
             {
               "id": "q15",
@@ -386,7 +386,7 @@ const test: PracticeTest = {
               "evidence": "but this view has not been considered as convincing evidence"
             }
           ],
-          "legendHtml": "<p><strong>Question 19 – 27</strong></p><dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<p><strong>Question 19 – 27</strong></p><dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         }
       ]
     },
@@ -447,8 +447,7 @@ const test: PracticeTest = {
               "id": "q29",
               "answer": [
                 "All of siblings",
-                "all siblings",
-                "all of the siblings"
+                "all siblings"
               ],
               "explanation": "Paragraph D says the shared environment may refer to all of the siblings of a family, so that is the range of reference for the shared environment row.",
               "evidence": "It may also refer to all of siblings of a family, but the rate of influence is less than 10 per cent."
@@ -477,39 +476,29 @@ const test: PracticeTest = {
           "table": {
             "rows": [
               [
-                "……………. background from parents and family including to all of siblings 40%-50% Shared Environment to",
                 {
                   "questionId": "q28"
-                },
-                ""
+                }
               ],
               [
-                "……………… Less than",
                 {
                   "questionId": "q29"
-                },
-                ""
+                }
               ],
               [
-                "……………",
                 {
                   "questionId": "q30"
-                },
-                ""
+                }
               ],
               [
-                "………………. to part of siblings",
                 {
                   "questionId": "q31"
-                },
-                ""
+                }
               ],
               [
-                "……. – 50%",
                 {
                   "questionId": "q32"
-                },
-                ""
+                }
               ]
             ]
           }

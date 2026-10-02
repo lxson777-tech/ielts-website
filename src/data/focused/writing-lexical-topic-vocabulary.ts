@@ -28,8 +28,14 @@ const RULES = {
 
 const ATTRIBUTION = "PracticePTEOnline, reused with the publisher's permission.";
 
-const NOTICE = [
-  'It names the specific technology at issue (automation, artificial intelligence, data privacy) rather than saying "technology" over and over.',
+const NOTICE_GUIDED = [
+  'It names the precise things at issue (collisions, mechanical faults, radar and cameras) rather than saying "technology" over and over.',
+  'It avoids the generic words a weaker answer leans on: "a big change", "good for people", "a lot of things".',
+  'Every precise word is used accurately, in a sentence that could only be about this topic, not glued on to sound advanced.',
+] as const;
+
+const NOTICE_CHECK = [
+  'It names the precise things at issue (investigative journalism, academic publishing, a paywall, a monthly subscription, an ebook) rather than saying "the internet" or "things online" over and over.',
   'It avoids the generic words a weaker answer leans on: "a big change", "good for people", "a lot of things".',
   'Every precise word is used accurately, in a sentence that could only be about this topic, not glued on to sound advanced.',
 ] as const;
@@ -56,7 +62,7 @@ const GUIDED: WrittenFocusedTask = {
     'Which precise word names your real point: innovation, automation, cybersecurity, data privacy?',
     'Read your paragraph back. Could every sentence only be about driverless vehicles, or could it be pasted into any essay?',
   ],
-  noticeInTheModel: NOTICE,
+  noticeInTheModel: NOTICE_GUIDED,
 };
 
 const CHECK: WrittenFocusedTask = {
@@ -68,7 +74,7 @@ const CHECK: WrittenFocusedTask = {
   title: 'Task 2 topic vocabulary: independent check',
   objective: OBJECTIVE,
   instruction:
-    'A question you have not seen, on the same subject. Write one paragraph using precise topic vocabulary, on your own.',
+    'A question you have not seen, on a different subject. Write one paragraph using precise topic vocabulary, on your own.',
   expectedMinutes: 7,
   provenance: 'publisher',
   source: { promptId: 'pte-wt-106-task2', task: 'task2', form: 'opinion', attribution: ATTRIBUTION },
@@ -76,7 +82,7 @@ const CHECK: WrittenFocusedTask = {
   rules: RULES,
   piece: 'paragraph',
   modelParagraphIndex: 1,
-  noticeInTheModel: NOTICE,
+  noticeInTheModel: NOTICE_CHECK,
 };
 
 export const WRITING_LEXICAL_TOPIC_VOCABULARY: readonly WrittenFocusedTask[] = [GUIDED, CHECK];

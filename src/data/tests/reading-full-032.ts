@@ -174,7 +174,7 @@ const test: PracticeTest = {
               "evidence": "the shoes have rounded soles that cause you to rock slightly when you stand still"
             }
           ],
-          "legendHtml": "<p>In their research, Brantingham and Beekman looked at the complex physical (9) ………………. of the foot and noted that the surfaces of modem environments restrict its movement. They invented a mat which they tried out on factory workers. Whenever the workers walked on it, the different levels of (10) ……………….. in the mat would encourage greater muscle action. In turn, this lessened the effect of (11) ……………….. on the cardiovascular system.</p><p>Similar research was undertaken by John Fisher and colleagues in Oregon. As a result of their findings, they decided to market cobblestone mats to the elderly as a means of dealing with (12) ……………… Reflexologists claim that by manipulating specific parts of the feet, the performance of certain (13) ……………… will also improve. Finally, Benno Nigg at Calgary University believes that specially shaped (14) ……………… on shoes should give health benefits.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>In their research, Brantingham and Beekman looked at the complex physical (9) ………………. of the foot and noted that the surfaces of modem environments restrict its movement. They invented a mat which they tried out on factory workers. Whenever the workers walked on it, the different levels of (10) ……………….. in the mat would encourage greater muscle action. In turn, this lessened the effect of (11) ……………….. on the cardiovascular system.</p><p>Similar research was undertaken by John Fisher and colleagues in Oregon. As a result of their findings, they decided to market cobblestone mats to the elderly as a means of dealing with (12) ……………… Reflexologists claim that by manipulating specific parts of the feet, the performance of certain (13) ……………… will also improve. Finally, Benno Nigg at Calgary University believes that specially shaped (14) ……………… on shoes should give health benefits.</p>",
           "wordLimit": 1
         }
       ]
@@ -256,9 +256,10 @@ const test: PracticeTest = {
             },
             {
               "id": "q19",
-              "answer": "Not given",
+              "answer": "False",
               "textHtml": "Margaret’s 1925 artworks of Sydney Harbour were simpler than her previous ones",
-              "explanation": "The sixth paragraph compares the 1925 harbour views with her earlier ones and calls them compact and busy, but it never tells us how complicated or simple the earlier harbour views themselves were, so the comparison the statement makes is not one the passage gives."
+              "explanation": "The sixth paragraph says that in 1925 harbour views were again prominent, ‘but in comparison with earlier artworks, they were compact and busy’. Busy pictures are not simpler ones, so the passage contradicts the statement.",
+              "evidence": "Harbour views were again prominent, but in comparison with earlier artworks, they were compact and busy."
             },
             {
               "id": "q20",
@@ -311,7 +312,10 @@ const test: PracticeTest = {
             },
             {
               "id": "q26",
-              "answer": "Painting",
+              "answer": [
+                "Painting",
+                "Travel"
+              ],
               "explanation": "The last paragraph says that as she grew older her love of painting, printmaking and travel carried on, so painting was one of the things she stayed interested in during old age.",
               "evidence": "As she got older, her love of painting, printmaking and travel continued."
             },
@@ -322,7 +326,7 @@ const test: PracticeTest = {
               "evidence": "she had produced over 400 paintings and prints"
             }
           ],
-          "legendHtml": "<p><strong>Margaret Preston’s later life</strong></p><p><strong>Aboriginal influence</strong><br/>\n• interest in Aboriginal art was inspired by seeing rock engravings close to her Berowra home<br/>\n• incorporated (22) …………….. and colours from Aboriginal art in her own work often referred to Aboriginal sources in the (23) ………………. she gave her artworks</p><p><strong>1953 exhibition</strong><br/>\n• very old method of (24) ……………….. was used for some prints<br/>\n• was inspired by (25) ………………….. about Chinese art that she had started collecting in 1915<br/>\n• combination of Chinese and Aboriginal elements</p><p><strong>Old age</strong><br/>\n• still interested in (26) ………………… and art<br/>\n• worked for nearly six decades making more than (27) ………………… artworks<br/>\n• dedicated n to Australian art and the originality of her work is seen in Preston’s long career</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>Margaret Preston’s later life</strong></p><p><strong>Aboriginal influence</strong><br/>\n• interest in Aboriginal art was inspired by seeing rock engravings close to her Berowra home<br/>\n• incorporated (22) …………….. and colours from Aboriginal art in her own work often referred to Aboriginal sources in the (23) ………………. she gave her artworks</p><p><strong>1953 exhibition</strong><br/>\n• very old method of (24) ……………….. was used for some prints<br/>\n• was inspired by (25) ………………….. about Chinese art that she had started collecting in 1915<br/>\n• combination of Chinese and Aboriginal elements</p><p><strong>Old age</strong><br/>\n• still interested in (26) ………………… and art<br/>\n• worked for nearly six decades making more than (27) ………………… artworks<br/>\n• dedicated n to Australian art and the originality of her work is seen in Preston’s long career</p>",
           "wordLimit": 1
         }
       ]
@@ -405,7 +409,7 @@ const test: PracticeTest = {
             {
               "id": "q31",
               "answer": "H",
-              "textHtml": "details of proposed research into the frequency with which earworms occur indifferent age groups",
+              "textHtml": "details of proposed research into the frequency with which earworms occur in different age groups",
               "explanation": "Paragraph H describes a planned study by Stewart and Halpern on whether people at different ages get earworms more or less often. The ringtone plan in the same paragraph is about which songs stick, not about age, so it is the age study that matches.",
               "evidence": "a study looking at whether people at different stages of life experience earworms differently"
             }
@@ -490,12 +494,12 @@ const test: PracticeTest = {
             {
               "id": "q40",
               "answer": "B",
-              "textHtml": "Earworms are more persistent when only a short section of the song is constantly replayed. A . Lauren Stewart B . Ira Hyman C . Andrea Haiper D . John Seabrook",
+              "textHtml": "Earworms are more persistent when only a short section of the song is constantly replayed. A . Lauren Stewart B . Ira Hyman C . Andrea Halpern D . John Seabrook",
               "explanation": "Paragraph E says some earworms are only fragments that loop back when the mind cannot remember the next part, and Dr Hyman says this can make the earworm even more firmly stuck. Andrea Halpern is tempting because she appears in the next paragraph on brain areas, but the point about looping fragments is Hyman's.",
               "evidence": "That could make an earworm even more entrenched, Dr Hyman says."
             }
           ],
-          "legendHtml": "<p><strong>A</strong>. Lauren Stewart<br/>\n<strong>B</strong>. Ira Hyman<br/>\n<strong>C</strong>. Andrea Haiper<br/>\n<strong>D</strong>. John Seabrook</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A</strong>. Lauren Stewart<br/>\n<strong>B</strong>. Ira Hyman<br/>\n<strong>C</strong>. Andrea Halpern<br/>\n<strong>D</strong>. John Seabrook</p>",
           "options": [
             "A",
             "B",

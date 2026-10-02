@@ -1124,7 +1124,7 @@ function StartScreen({
             <span aria-hidden="true" className="mt-0.5 shrink-0 text-ink-muted"><SpeakingIcon /></span>
             <span>
               <strong>Speaking</strong>{' '}
-              {t('(about 14 minutes): a real-time voice conversation with the AI examiner, Part 1 interview, Part 2 long turn, Part 3 discussion. Needs a microphone, and an account if this site requires one for it. You can skip this stage.')}
+              {t('(11 to 14 minutes): a real-time voice conversation with the AI examiner, Part 1 interview, Part 2 long turn, Part 3 discussion. Needs a microphone, and an account if this site requires one for it. You can skip this stage.')}
             </span>
           </li>
           <li className="flex gap-2.5">

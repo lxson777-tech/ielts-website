@@ -143,10 +143,7 @@ const test: PracticeTest = {
             },
             {
               "id": "q10",
-              "answer": [
-                "Rainbow refraction",
-                "refraction in the rainbow"
-              ],
+              "answer": "Rainbow refraction",
               "explanation": "Paragraph E lists the private studies that came before other scientists, and the one that put a mistaken idea right was his correct understanding of how light bends in a rainbow, which he had before Descartes.",
               "evidence": "correctly understood refraction in the rainbow before Descartes"
             }
@@ -157,7 +154,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 11-14",
           "type": "matching-features",
-          "instructionHtml": "Look at the following researchers (listed A-D) and findings. Match each researcher with the correct finding. Write your answers in boxes 11-14 on your answer sheet. NB You may use any researcher more than once.",
+          "instructionHtml": "Look at the following researchers (listed A-E) and findings. Match each researcher with the correct finding. Write your answers in boxes 11-14 on your answer sheet. NB You may use any researcher more than once.",
           "questions": [
             {
               "id": "q11",
@@ -188,7 +185,7 @@ const test: PracticeTest = {
               "evidence": "The law of refraction is also known as Snell’s Law, named after Willobrord Snell, who discovered the law in 1621."
             }
           ],
-          "legendHtml": "<p><strong>A</strong> Willobrord Snell<br/>\n<strong>B</strong> Johannes Kepler<br/>\n<strong>C</strong> Ptolemy<br/>\n<strong>D</strong> Galileo<br/>\n<strong>E</strong> Harriot</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A</strong> Willobrord Snell<br/>\n<strong>B</strong> Johannes Kepler<br/>\n<strong>C</strong> Ptolemy<br/>\n<strong>D</strong> Galileo<br/>\n<strong>E</strong> Harriot</p>",
           "options": [
             "A",
             "B",
@@ -291,7 +288,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 20-24",
           "type": "paragraph-matching",
-          "instructionHtml": "The reading passage has eleven paragraphs A-I. Which paragraph contains the following information?",
+          "instructionHtml": "The reading passage has nine paragraphs A-I. Which paragraph contains the following information?",
           "questions": [
             {
               "id": "q20",
@@ -354,10 +351,7 @@ const test: PracticeTest = {
             },
             {
               "id": "q26",
-              "answer": [
-                "capture or storage",
-                "Capture of shortage"
-              ],
+              "answer": "capture or storage",
               "explanation": "Paragraph G says more than half the rain that falls on land can never be caught or stored because it evaporates from the ground or is given off by plants, so what cannot be achieved is the capture or storage of that rainfall.",
               "evidence": "More than half of the precipitation that falls on land is never available for capture or storage because it evaporates from the ground or transpires from plants"
             },
@@ -368,7 +362,7 @@ const test: PracticeTest = {
               "evidence": "Bluewater (38.8% of total precipitation): collected in rivers, lakes, wetlands, and groundwater: available for withdrawal before it evaporates or reaches the ocean."
             }
           ],
-          "legendHtml": "<p>Many severe problems like starvation and military actions etc result from the storage of water which sometimes for some areas seems (25)…………… because of unavailability but other regions suffer another kind of scarcity for insufficient support. (26)……………… of the rainfall can’t be achieved because of evaporation. Some other parts form the (27)……………….. which can be used immediately. Water to irrigate the farmland takes a considerable amount along with the use for cities and industries and the extended need from the people involved.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>Many severe problems like starvation and military actions etc result from the shortage of water which sometimes for some areas seems (25)…………… because of unavailability but other regions suffer another kind of scarcity for insufficient support. (26)……………… of the rainfall can’t be achieved because of evaporation. Some other parts form the (27)……………….. which can be used immediately. Water to irrigate the farmland takes a considerable amount along with the use for cities and industries and the extended need from the people involved.</p>",
           "wordLimit": 3
         }
       ]
@@ -394,7 +388,7 @@ const test: PracticeTest = {
             "html": "<strong>C</strong> Howlers persists at La Pacifica, Glander explains, because they are leaf-eaters. They eat fruit when it is available but, unlike capuchin and spider monkeys, do not depend on large areas of fruiting trees. Glander is particularly interested in howlers’ ability to thrive on leaves loaded with toxins- poisonous substances designed to protect the plants. For leaf-eaters, long-term exposure to a specific plant toxin can increase their ability to neutralize the poisonous substances and absorb the leaf nutrients. Watching generations of howlers at La Pacifica has shown Glander that the monkeys keep their systems primed by sampling a variety of plants and then focusing on a small number of the most nutritious food items. The leaves that grow in regenerating forests, like those at La Pacifica, are actually more howler-friendly than those produced by the centuries-old trees that survive farther south. In younger forests, trees put most of their limited energy into growing wood, leaves, and fruit, so they produce much lower levels of toxin than do well-established, old-growth trees."
           },
           {
-            "html": "<strong>D</strong> The value of maturing forests to primates is also a subject of study at Santa Rosa National Park, about 35 miles northwest of La Pacifica. Large areas of Santa Rosa’s forests had at one time been burnt to make space for cattle ranching and coffee farming, thereby devastating local monkey habitat. But in 1971 the government protected the area by designating it a National Park, and species of Indigenous Lees which had been absent for decades began to invade the abandoned pastures. Capuchins were the first to begin using the reborn forests, followed by howlers. Eventually, even spider monkeys, fruit-eaters that need large areas of continuous forest, returned. In the first 28 years following protection of the area, the capuchin population doubled, while the number of howlers increased sevenfold."
+            "html": "<strong>D</strong> The value of maturing forests to primates is also a subject of study at Santa Rosa National Park, about 35 miles northwest of La Pacifica. Large areas of Santa Rosa’s forests had at one time been burnt to make space for cattle ranching and coffee farming, thereby devastating local monkey habitat. But in 1971 the government protected the area by designating it a National Park, and species of Indigenous trees which had been absent for decades began to invade the abandoned pastures. Capuchins were the first to begin using the reborn forests, followed by howlers. Eventually, even spider monkeys, fruit-eaters that need large areas of continuous forest, returned. In the first 28 years following protection of the area, the capuchin population doubled, while the number of howlers increased sevenfold."
           },
           {
             "html": "<strong>E</strong> Some of the same traits that allow howlers to survive at La Pacifica also explain their population boom in Santa Rosa, Howler reproduction is faster than that of other native monkey species. They give birth for the first time at about 3.5 years of age, compared with seven years for capuchins, and eight or more for spider monkeys. Also, while a female spider monkey will have a baby about once every four years, well-fed howlers can produce an infant every two years. Another factor is diet. Howlers are very adaptable feeders, and only need a comparatively small home range. Spider monkeys, on the other hand, need to occupy a huge home range. Also crucial is fact that the leaves howlers eat hold plenty of water, so the monkeys can survive away from open streams and water holes. This ability gives them a real advantage over capuchin and spider monkeys, which have suffered during the long, ongoing drought in the area."
@@ -411,7 +405,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 28-31",
           "type": "paragraph-matching",
-          "instructionHtml": "Reading passage has seven paragraphs, A-G. Which paragraph contains the following information?",
+          "instructionHtml": "Reading passage has seven paragraphs, A-G. Which paragraph contains the following information? NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q28",
@@ -429,9 +423,12 @@ const test: PracticeTest = {
             },
             {
               "id": "q30",
-              "answer": "E",
+              "answer": [
+                "C",
+                "E"
+              ],
               "textHtml": "A description of the means by which howlers select the best available diet for themselves",
-              "explanation": "The key gives Paragraph E, which describes howlers as very adaptable feeders that manage on a small home range and get their water from the leaves they eat. Note that the step by step account of how they choose their food, sampling many plants and then concentrating on the most nutritious ones, is in Paragraph C.",
+              "explanation": "Paragraph C describes how howlers choose their food: Glander found that they ‘keep their systems primed by sampling a variety of plants and then focusing on a small number of the most nutritious food items’, so C is the answer. The publisher’s key gives Paragraph E, which describes howlers as very adaptable feeders, so E is accepted too.",
               "evidence": "Howlers are very adaptable feeders, and only need a comparatively small home range."
             },
             {
@@ -492,14 +489,14 @@ const test: PracticeTest = {
         {
           "title": "Questions 36-40",
           "type": "matching-features",
-          "instructionHtml": "Look at the following features (Questions 36-40) and the list of locations below. Match each feature with the correct location, A, B or C. Write the correct letter, A, B or C, in boxes 36-40 on your answer sheet.",
+          "instructionHtml": "Look at the following features (Questions 36-40) and the list of locations below. Match each feature with the correct location, A, B or C. Write the correct letter, A, B or C, in boxes 36-40 on your answer sheet. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q36",
               "answer": "B",
               "textHtml": "It has seen the return of native tree species",
               "explanation": "Location B is Santa Rosa National Park, and Paragraph D says that once the area was protected in 1971 native tree species that had been missing for decades started spreading back into the abandoned pastures. Location A is tempting because La Pacifica kept strips of native trees, but those trees were never lost, so nothing returned there.",
-              "evidence": "species of Indigenous Lees which had been absent for decades began to invade the abandoned pastures"
+              "evidence": "species of Indigenous trees which had been absent for decades began to invade the abandoned pastures"
             },
             {
               "id": "q37",
@@ -508,7 +505,7 @@ const test: PracticeTest = {
                 "C"
               ],
               "textHtml": "It supports only one species of native monkey",
-              "explanation": "Both the ranch and the cacao farm are described as having howlers and no other native monkey, so A and C are both accepted here. At La Pacifica the capuchins and spider monkeys vanished after the highway was built, and at the cacao farm only howlers moved in.",
+              "explanation": "At La Pacifica only the howlers are left, because the capuchins and spider monkeys vanished after the highway was built, so A fits. The publisher’s key gives the cacao farm, C, where howlers live, and C is accepted too: spider monkeys also forage for fruit there, but the passage says they need nearby areas of forest to survive in the long term.",
               "evidence": "Other native primates- white-faced capuchin monkeys and spider monkeys were once common in this area, too, but vanished after the Pan-American Highway was built nearby in the 1950s"
             },
             {

@@ -168,7 +168,7 @@ const test: PracticeTest = {
               "evidence": "naming the problem means we can dedicate resources to it so that paediatricians feel like they have tools to treat “toxic stress”"
             }
           ],
-          "legendHtml": "<p><strong>A</strong> Traumatic experiences in childhood might lead to poor self-management<br/>\n<strong>B</strong> Supportive and responsive relationships with caring parents can prevent or reverse the damaging effects of toxic stress responses.<br/>\n<strong>C</strong> Properly naming a type of stress can facilitate its treatment process.<br/>\n<strong>D</strong> The real name of a particular form of stress could denounce a number of people.<br/>\n<strong>E</strong> Toxic stress can cause the next generations to suffer from negative consequences on both mental and physical health problems.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A</strong> Traumatic experiences in childhood might lead to poor self-management<br/>\n<strong>B</strong> Supportive and responsive relationships with caring parents can prevent or reverse the damaging effects of toxic stress responses.<br/>\n<strong>C</strong> Properly naming a type of stress can facilitate its treatment process.<br/>\n<strong>D</strong> The real name of a particular form of stress could denounce a number of people.<br/>\n<strong>E</strong> Toxic stress can cause the next generations to suffer from negative consequences on both mental and physical health problems.</p>",
           "options": [
             "A",
             "B",
@@ -262,7 +262,7 @@ const test: PracticeTest = {
               "answer": "C",
               "textHtml": "Which of the following features do all bovids have in common?",
               "options": [
-                "Their horns are shot",
+                "Their horns are short",
                 "They have upper incisors",
                 "They store food in the body",
                 "Their hooves are undivided"
@@ -275,7 +275,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 17-21",
           "type": "matching-features",
-          "instructionHtml": "Look at the following characteristics (Questions 17-21) and the list of sub-families below. Match each characteristic with the correct sub-family, A, B, C or D.",
+          "instructionHtml": "Look at the following characteristics (Questions 17-21) and the list of sub-families below. Match each characteristic with the correct sub-family, A, B, C or D. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q17",
@@ -301,7 +301,7 @@ const test: PracticeTest = {
             {
               "id": "q20",
               "answer": "A",
-              "textHtml": "can usually move a speed",
+              "textHtml": "can usually move at speed",
               "explanation": "Paragraph F describes antelopes as long legged, fast running animals whose horns lie along the back when they are at full speed. Caprinae is the tempting choice because wild goats and ibex are called agile, but agility on cliffs is not the same as running fast.",
               "evidence": "Antelopes are typically long-legged, fast-running species, often with long horns that may be laid along the back when the animal is in full flight."
             },
@@ -343,7 +343,7 @@ const test: PracticeTest = {
                 "the auroch",
                 "auroch"
               ],
-              "before": "Which species of Bovinae hos now died out?",
+              "before": "Which species of Bovinae has now died out?",
               "after": "",
               "explanation": "Paragraph E says the auroch, the ancestor of Europe's domestic cattle, is extinct, so it is the member of the Bovinae that has died out. The banteng, gaur, yak and water buffalo listed just before it are only rare and endangered, not gone.",
               "evidence": "while the auroch (the ancestor of the domestic cattle of Europe) is extinct"
@@ -380,7 +380,7 @@ const test: PracticeTest = {
               "evidence": "The pronghorn is the sole survivor of a New World sub-family of herbivorous ruminants, the Antilocapridae in North America."
             }
           ],
-          "legendHtml": "<p>22. What is the smallest species of Bovid called?<br/>\n23. Which species of Bovinae hos now died out?<br/>\n24. What facilitates the movement of the sitatunga over wetland?<br/>\n25. What sort of terrain do barbary sheep live in?<br/>\n26. What is the only living member of the Antilocapridae sub-family?</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>22. What is the smallest species of Bovid called?<br/>\n23. Which species of Bovinae has now died out?<br/>\n24. What facilitates the movement of the sitatunga over wetland?<br/>\n25. What sort of terrain do barbary sheep live in?<br/>\n26. What is the only living member of the Antilocapridae sub-family?</p>",
           "wordLimit": 3
         }
       ]
@@ -453,7 +453,7 @@ const test: PracticeTest = {
             {
               "id": "q28",
               "answer": "D",
-              "textHtml": "Why are mile harvestmen of interest to Dr Giribet and his colleagues?",
+              "textHtml": "Why are male harvestmen of interest to Dr Giribet and his colleagues?",
               "options": [
                 "they have been studied far less than most other species",
                 "they show the effects of climate on the evolution of animals",
@@ -505,7 +505,7 @@ const test: PracticeTest = {
             {
               "id": "q32",
               "answer": "A",
-              "textHtml": "Why is evidence from cockroached of limited value?",
+              "textHtml": "Why is evidence from cockroaches of limited value?",
               "options": [
                 "they spread too fast",
                 "they multiply too quickly",
@@ -585,7 +585,7 @@ const test: PracticeTest = {
               "evidence": "They then compared the harvestmen’s evolution to the movements of the continents."
             }
           ],
-          "legendHtml": "<p><strong>A</strong>. branches<br/>\n<strong>B</strong>. fossils<br/>\n<strong>C</strong>. drift<br/>\n<strong>D</strong>. DNA<br/>\n<strong>E</strong>. evolution<br/>\n<strong>F</strong>. Pangea<br/>\n<strong>G</strong>. dispersal<br/>\n<strong>H</strong>. ancestors<br/>\n<strong>I</strong>. continents</p><p><strong>The age and evolution of mite harvestmen</strong></p><p>Some of the first creatures to live on land were the (37) ………………….. of mite harvestmen. Boyer, Giribet and others study differences in the (38) ……………………. of these insects, and trace the development of a number of (39) ……………………… of the species.</p><p>Their evolution appears to reflect changes in the location of (40) ……………………. For example, the same type of mite harvestman is found in places that are now far apart but used to form Gondwana, part of a huge landmass.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>A</strong>. branches<br/>\n<strong>B</strong>. fossils<br/>\n<strong>C</strong>. drift<br/>\n<strong>D</strong>. DNA<br/>\n<strong>E</strong>. evolution<br/>\n<strong>F</strong>. Pangea<br/>\n<strong>G</strong>. dispersal<br/>\n<strong>H</strong>. ancestors<br/>\n<strong>I</strong>. continents</p><p><strong>The age and evolution of mite harvestmen</strong></p><p>Some of the first creatures to live on land were the (37) ………………….. of mite harvestmen. Boyer, Giribet and others study differences in the (38) ……………………. of these insects, and trace the development of a number of (39) ……………………… of the species.</p><p>Their evolution appears to reflect changes in the location of (40) ……………………. For example, the same type of mite harvestman is found in places that are now far apart but used to form Gondwana, part of a huge landmass.</p>",
           "options": [
             "A",
             "B",

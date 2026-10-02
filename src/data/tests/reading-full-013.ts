@@ -96,7 +96,7 @@ const test: PracticeTest = {
               "evidence": "the more compact spatial organisation of the house reduces staff time spent on supervising and escorting prisoners"
             }
           ],
-          "legendHtml": "<p><span>1. The agenda of current British prison systems is primarily</span><br/>\n<span>2. The primary role of prisons should he</span><br/>\n<span>3. The new prison scheme will focus on</span><br/>\n<span>4. Existing prison architecture causes</span><br/>\n<span>5. The positive results of reducing the number of prisoners in one space include</span></p><p><span>A. improved security, supervision and education.</span><br/>\n<span>B. rehabilitation and education.</span><br/>\n<span>C. reduced educational opportunities and morale</span><br/>\n<span>D. reduced risk of self harm.</span><br/>\n<span>E. security and control.</span><br/>\n<span>F. an alternative prison model</span><br/>\n<span>G. a learning environment rather than a punitive compound</span><br/>\n<span>H. organisation, management and funding.</span></p>"
+          "legendHtml": "<p><span>1. The agenda of current British prison systems is primarily</span><br/>\n<span>2. The primary role of prisons should be</span><br/>\n<span>3. The new prison scheme will focus on</span><br/>\n<span>4. Existing prison architecture causes</span><br/>\n<span>5. The positive results of reducing the number of prisoners in one space include</span></p><p><span>A. improved security, supervision and education.</span><br/>\n<span>B. rehabilitation and education.</span><br/>\n<span>C. reduced educational opportunities and morale</span><br/>\n<span>D. reduced risk of self harm.</span><br/>\n<span>E. security and control.</span><br/>\n<span>F. an alternative prison model</span><br/>\n<span>G. a learning environment rather than a punitive compound</span><br/>\n<span>H. organisation, management and funding.</span></p>"
         },
         {
           "title": "Questions 6-9",
@@ -288,7 +288,7 @@ const test: PracticeTest = {
             {
               "id": "q17",
               "answer": "True",
-              "textHtml": "If you have Down Syndrome, your neck may be at risk of damage in certain spoils",
+              "textHtml": "If you have Down Syndrome, your neck may be at risk of damage in certain sports",
               "explanation": "Atlantoaxial Instability puts the neck at risk in activities that hyperextend or flex it.",
               "evidence": "This condition exposes Down Syndrome individuals to the heightened possibility of a neck injury"
             },
@@ -309,7 +309,7 @@ const test: PracticeTest = {
             {
               "id": "q20",
               "answer": "Not given",
-              "textHtml": "Participation in sports helps people with intellectual disabilities lo improve their communication and social skills",
+              "textHtml": "Participation in sports helps people with intellectual disabilities to improve their communication and social skills",
               "explanation": "The passage never states that sports participation improves communication or social skills, so there is no information on this."
             }
           ],

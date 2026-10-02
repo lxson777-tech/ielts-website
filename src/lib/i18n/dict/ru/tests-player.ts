@@ -210,8 +210,8 @@ export const strings: Record<string, string> = {
   '(60 minutes), straight after.': '(60 минут), сразу следом.',
   '(60 minutes): Task 1 and Task 2 share one clock, a suggested 20 minutes on Task 1 and 40 on Task 2, same as the real exam.':
     '(60 минут): у Task 1 и Task 2 одни часы, рекомендуется 20 минут на Task 1 и 40 на Task 2, как на настоящем экзамене.',
-  '(about 14 minutes): a real-time voice conversation with the AI examiner, Part 1 interview, Part 2 long turn, Part 3 discussion. Needs a microphone, and an account if this site requires one for it. You can skip this stage.':
-    '(около 14 минут): голосовой разговор с AI экзаменатором в реальном времени, Part 1 интервью, Part 2 монолог, Part 3 обсуждение. Нужен микрофон, а также аккаунт, если он требуется на этом сайте. Этот этап можно пропустить.',
+  '(11 to 14 minutes): a real-time voice conversation with the AI examiner, Part 1 interview, Part 2 long turn, Part 3 discussion. Needs a microphone, and an account if this site requires one for it. You can skip this stage.':
+    '(от 11 до 14 минут): голосовой разговор с AI экзаменатором в реальном времени, Part 1 интервью, Part 2 монолог, Part 3 обсуждение. Нужен микрофон, а также аккаунт, если он требуется на этом сайте. Этот этап можно пропустить.',
   "Listening, Reading and Speaking are graded automatically. Writing isn't graded during the mock, score it afterwards in the Writing Checker.":
     'Listening, Reading и Speaking проверяются автоматически. Writing во время пробного экзамена не оценивается, разберите его потом в Writing Checker.',
   'Choose your tests': 'Выберите тесты',

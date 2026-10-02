@@ -99,8 +99,8 @@ export const strings: Record<string, string> = {
   'Paraphrase what the visual shows. Never copy the question wording. Keep the place, units and time period.':
     'Перефразируйте то, что показано на изображении. Никогда не копируйте формулировку задания. Сохраните место, единицы измерения и период времени.',
   Overview: 'Обзор',
-  'The most important paragraph. Start with "Overall,". Give the 2-3 key features, saving the figures for the detail paragraphs. Task Achievement asks for a clear overview from Band 6 upwards.':
-    'Самый важный абзац. Начните с "Overall,". Назовите 2-3 ключевые особенности, а цифры оставьте для абзацев с деталями. Task Achievement требует внятного обзора начиная с Band 6.',
+  'The most important paragraph. Start with "Overall,". Give the 2-3 key features, saving the figures for the detail paragraphs. Under Task Achievement a clear overview is a Band 7 requirement, and Band 6 needs at least a relevant one.':
+    'Самый важный абзац. Начните с "Overall,". Назовите 2-3 ключевые особенности, а цифры оставьте для абзацев с деталями. По Task Achievement внятный обзор требуется для Band 7, а для Band 6 нужен хотя бы уместный.',
   'Detail 1': 'Детали 1',
   'The first logical group of information, supported with selected figures.':
     'Первая логичная группа данных, подкреплённая выбранными цифрами.',
@@ -284,9 +284,9 @@ export const strings: Record<string, string> = {
 
   /* ================= Writing: Process Diagram ================= */
   'Process Diagram': 'Диаграмма процесса',
-  'How many stages are there?. Goes straight into your overview.':
-    'Сколько здесь стадий? Это сразу идёт в обзор.',
-  'Where does it start and end?. The other half of the overview.':
+  'How many stages are there? The number goes straight into your overview.':
+    'Сколько здесь стадий? Это число сразу идёт в обзор.',
+  'Where does it start and end? The other half of the overview.':
     'Где начало и где конец? Вторая половина обзора.',
   'Linear or cyclical? Does it finish, or loop back to the beginning?':
     'Линейный процесс или цикличный? Он заканчивается или возвращается к началу?',
@@ -309,8 +309,8 @@ export const strings: Record<string, string> = {
 
   /* ================= Writing: Maps & Plans ================= */
   'Maps & Plans': 'Карты и планы',
-  'Check the dates. Past → past, or past → present decides your tenses.':
-    'Проверьте даты. Прошлое → прошлое или прошлое → настоящее решает, какие времена использовать.',
+  'Check the dates. Past → past: past simple. Past → present: past simple + present perfect. Present → a planned future: present simple for today, will / is to be + passive for the plan.':
+    'Проверьте даты. Прошлое → прошлое: Past Simple. Прошлое → настоящее: Past Simple + Present Perfect. Настоящее → запланированное будущее: Present Simple для сегодняшнего дня, will / is to be + пассив для плана.',
   'Find north and the main fixed reference points.':
     'Найдите север и главные неподвижные ориентиры.',
   'Scan for four kinds of change: what disappeared, what appeared, what changed use, what grew or shrank.':

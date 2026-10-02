@@ -150,7 +150,7 @@ const test: PracticeTest = {
               "evidence": "This may be because the caterpillar exists solely on a diet of a plant called honeysuckle."
             }
           ],
-          "legendHtml": "<p><strong>Butterflies in the UK</strong></p><p><strong>The Small Blue</strong><br/>\n• lives in large (7) ……………….<br/>\n• first appears at the start of (8) ………….<br/>\n• completes more than one reproductive cycle per year</p><p><strong>The High Brown Fritillary</strong><br/>\n• has one reproductive cycle<br/>\n• is considered to be more (9) ……………… than other species<br/>\n• its caterpillars occupy a limited range of (10) …………………</p><p><strong>The Silver-studded Blue</strong><br/>\n• is already able to reproduce twice a year in warm areas of (11) ……………</p><p><strong>The White Admiral</strong><br/>\n• is found in (12) ………… areas of England<br/>\n• both climate change and the (13) ……………… of the caterpillar are possible reasons for decline</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>Butterflies in the UK</strong></p><p><strong>The Small Blue</strong><br/>\n• lives in large (7) ……………….<br/>\n• first appears at the start of (8) ………….<br/>\n• completes more than one reproductive cycle per year</p><p><strong>The High Brown Fritillary</strong><br/>\n• has one reproductive cycle<br/>\n• is considered to be more (9) ……………… than other species<br/>\n• its caterpillars occupy a limited range of (10) …………………</p><p><strong>The Silver-studded Blue</strong><br/>\n• is already able to reproduce twice a year in warm areas of (11) ……………</p><p><strong>The White Admiral</strong><br/>\n• is found in (12) ………… areas of England<br/>\n• both climate change and the (13) ……………… of the caterpillar are possible reasons for decline</p>",
           "wordLimit": 1
         }
       ]
@@ -311,7 +311,7 @@ const test: PracticeTest = {
               "evidence": "But environmental and legal groups have urged caution"
             }
           ],
-          "legendHtml": "<p><strong>Mining the sea floor</strong></p><p>Mining corporations believe that the mineral resources lying under the sea may be superior to those found in the earth. They also say that these can be removed without producing much (24) …………….</p><p>The extraction is often done by adapting the (25) …………………. that has already been used to work on land. The method of excavation involves removing the seawater from the slurry that is brought up to ships and returning it to the seabed. However, concerned groups strongly believe that (26) …………… is necessary due to the possible number of unidentified consequences.</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>Mining the sea floor</strong></p><p>Mining corporations believe that the mineral resources lying under the sea may be superior to those found in the earth. They also say that these can be removed without producing much (24) …………….</p><p>The extraction is often done by adapting the (25) …………………. that has already been used to work on land. The method of excavation involves removing the seawater from the slurry that is brought up to ships and returning it to the seabed. However, concerned groups strongly believe that (26) …………… is necessary due to the possible number of unidentified consequences.</p>",
           "wordLimit": 1
         }
       ]
@@ -497,7 +497,7 @@ const test: PracticeTest = {
               "evidence": "Research has shown repeatedly that when the natural habitats of primates such as apes and gorillas are disrupted, they tend to become more violent and hierarchical."
             }
           ],
-          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
         }
       ]
     }

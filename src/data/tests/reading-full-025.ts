@@ -152,7 +152,7 @@ const test: PracticeTest = {
               "explanation": "The last paragraph says Luddites were arrested after the attack on the mill near Huddersfield and that dozens were hanged or sent to Australia, but it never says how local people felt about them."
             }
           ],
-          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         }
       ]
     },
@@ -368,7 +368,7 @@ const test: PracticeTest = {
               "evidence": "repeated episodes of anxiety coupled with negative responses can increase risk of heart disease and depression"
             }
           ],
-          "legendHtml": "<p><strong>Questions 25 and 26</strong></p><p>Which TWO facts about anxiety are mentioned in Paragraph E of the text?</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p><strong>Questions 25 and 26</strong></p><p>Which TWO facts about anxiety are mentioned in Paragraph E of the text?</p>",
           "selectCount": 2,
           "choices": [
             {
@@ -475,7 +475,7 @@ const test: PracticeTest = {
               "evidence": "That trail took her to the heights of original research into mathematics."
             }
           ],
-          "legendHtml": "<p><strong>Maryann Mirzakhani</strong></p><p>Maryam Mirzakhani is regarded as (27) …………… in the field of mathematics because she was the only female holder of the prestigious Fields Medal – a record that she retained at the time of her death. However, maths held little (28) ……………… for her as a child and in fact her performance was below average until she was (29) …………….by a difficult puzzle that one of her siblings showed her. Later, as a professional mathematician, she had an inquiring mind and proved herself to be (30) ……………… when things did not go smoothly. She said she got the greatest (31) ……………… from making ground-breaking discoveries and in fact she was responsible for some extremely (32) ……………… mathematical studies.</p><p><strong>A</strong> appeal<br/>\n<strong>B</strong> determined<br/>\n<strong>C</strong> intrigued<br/>\n<strong>D</strong> single<br/>\n<strong>E</strong> achievement<br/>\n<strong>F</strong> devoted<br/>\n<strong>G</strong> involved<br/>\n<strong>H</strong> unique<br/>\n<strong>I</strong> innovative<br/>\n<strong>J</strong> satisfaction<br/>\n<strong>K</strong> intent</p>"
+          "legendHtml": "<p><strong>Maryam Mirzakhani</strong></p><p>Maryam Mirzakhani is regarded as (27) …………… in the field of mathematics because she was the only female holder of the prestigious Fields Medal – a record that she retained at the time of her death. However, maths held little (28) ……………… for her as a child and in fact her performance was below average until she was (29) …………….by a difficult puzzle that one of her siblings showed her. Later, as a professional mathematician, she had an inquiring mind and proved herself to be (30) ……………… when things did not go smoothly. She said she got the greatest (31) ……………… from making ground-breaking discoveries and in fact she was responsible for some extremely (32) ……………… mathematical studies.</p><p><strong>A</strong> appeal<br/>\n<strong>B</strong> determined<br/>\n<strong>C</strong> intrigued<br/>\n<strong>D</strong> single<br/>\n<strong>E</strong> achievement<br/>\n<strong>F</strong> devoted<br/>\n<strong>G</strong> involved<br/>\n<strong>H</strong> unique<br/>\n<strong>I</strong> innovative<br/>\n<strong>J</strong> satisfaction<br/>\n<strong>K</strong> intent</p>"
         },
         {
           "title": "Questions 33-37",

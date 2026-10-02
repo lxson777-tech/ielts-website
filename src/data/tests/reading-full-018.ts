@@ -47,7 +47,7 @@ const test: PracticeTest = {
               "id": "q1",
               "answer": "No",
               "textHtml": "The co-existence of wolves and humans began 10,000 years ago",
-              "explanation": "The recent paper 'pushed this date back by a factor of 10' from the conventional 10,000 to 20,000 years, so co-existence began far earlier, contradicting the statement.",
+              "explanation": "The passage says the conventional view puts the start of wolf domestication between 10,000 and 20,000 years ago, and that a recent paper ‘pushed this date back by a factor of 10’. So the co-existence began far earlier than 10,000 years ago, contradicting the statement.",
               "evidence": "pushed this date back by a factor of 10"
             },
             {
@@ -144,7 +144,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 10-14",
           "type": "matching-features",
-          "instructionHtml": "Match one of the researchers (A-C) to each of the findings (10-14) below.",
+          "instructionHtml": "Match one of the researchers (A-C) to each of the findings (10-14) below. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q10",
@@ -203,7 +203,7 @@ const test: PracticeTest = {
             "html": "<span>The crop circle phenomenon has puzzled and mystified humanity for many years. The designs just appear, placed carefully in fields of food grains. Some are larger than football fields and highly complex in design and construction. Others are smaller and more primitive. We call them crop circles, but many of them are not circular. Some are elongated abstract designs, a few resemble insects or other known forms, and some are mixtures of lines, circles, and other shapes melded into intricate patterns. Most become visible overnight, though it has been claimed that a few have appeared within a half-hour in broad daylight.</span>"
           },
           {
-            "html": "<span>Crop circles have appeared all over the world. About 10,000 instances from various countries have been reported in recent years. The first modern rash of crop circles appeared in Australia in December of 1973. A strange circular imprint appeared in a wheat field near Wokurna, a community southeast of Adelaide. Soon seven swirled circles up to 14 feet in diameter appeared in an oatfield nearby. In December of 1989, an amazing set of circles, ranging from a few inches to a few feet in diameter appeared in the wheat best west of Melbourne. As many as 90 crop circles were found. The best documented and largest modern spread of crop circles began in southern England during the summer of 1980. By the end of 1988, 112 new circles had been formed. At that time circles were being reported worldwide, 305 by the end of 1989. The total grew to an outstanding 1,000 newly-formed circles in 1990. In 1991, 200 to 300 circles were reported. Crop circles have been documented in over 30 countries, including Canada, the former Soviet Union Japan and the United States.</span>"
+            "html": "<span>Crop circles have appeared all over the world. About 10,000 instances from various countries have been reported in recent years. The first modern rash of crop circles appeared in Australia in December of 1973. A strange circular imprint appeared in a wheat field near Wokurna, a community southeast of Adelaide. Soon seven swirled circles up to 14 feet in diameter appeared in an oatfield nearby. In December of 1989, an amazing set of circles, ranging from a few inches to a few feet in diameter appeared in the wheat belt west of Melbourne. As many as 90 crop circles were found. The best documented and largest modern spread of crop circles began in southern England during the summer of 1980. By the end of 1988, 112 new circles had been formed. At that time circles were being reported worldwide, 305 by the end of 1989. The total grew to an outstanding 1,000 newly-formed circles in 1990. In 1991, 200 to 300 circles were reported. Crop circles have been documented in over 30 countries, including Canada, the former Soviet Union Japan and the United States.</span>"
           },
           {
             "html": "<span>Nine out of ten circles remained simple with broken stems flattened to the ground and swirled. The stalks around the circles remained completely erect. But over the years, crop circles have become much more geometrically intricate. Patterns involved multiple circles, bars, triangles, rings and spurs. Pictorial imagery also appeared. Reliable eyewitnesses have reported seeing unusual lights and hearing unidentifiable sounds while on an early-morning walk in the countryside where a crop circle showed later that day. High-pitched, warbling, noises have been recorded at the site of some crop circles. On several occasions a strange glow or a darker colouring has been seen in the sky over a crop circle. And in more than one instance, the electrical power of small planes flying overhead has been cut off abruptly. While the causal energies do not seem to harm animals, or even insects as far as we can tell, wild creatures tend to avoid the circles. Flocks of birds have been seen to split apart and fly around the perimeter to avoid going directly over a crop circle formation.</span>"
@@ -212,10 +212,10 @@ const test: PracticeTest = {
             "html": "<span>Researchers have spent a great deal of time investigating different aspects of crop circles. They try to detect traces of human involvement in the circle-making, test the area of the circle itself for geophysical anomalies, and analyze the field’s grain both from within and outside the circles, searching for differences.</span>"
           },
           {
-            "html": "<span>Dr. W. C. Levengood of BLT Research in Cambridge, Massachusetts, has analyzed many grain samples and confirmed, time after time, significant changes at the cellular level of crop circle plants. The plants in front of the circles have elongated cells and blown-out growth nodes. Seeds front the circle plants often show accelerated growth rates when they are sown, and in some instances, quite different-looking plants result. In many instances it appears that a vortex-like energy causes the plants to swirl down, flattening the design into the land. Whatever this energy is, it does not generally inhibit the plants’ growth. They continue to show normal response to the sun, raising upward over several days following the appearance of the circle. Michael Chorost of Duke University found occasions of short-lived radionuclides in the top layer of soil in some of the formations. A British government laboratory found diminished nitrogen and decreased nematode populations as well as decreased water content in the soil of a formation. Researchers have discovered other anomalies as well, such as curious embedded magnetic particles and charred tissue. Some of the plant stalks within the circles show evidence of being exposed to rapid microwave heating.</span>"
+            "html": "<span>Dr. W. C. Levengood of BLT Research in Cambridge, Massachusetts, has analyzed many grain samples and confirmed, time after time, significant changes at the cellular level of crop circle plants. The plants in front of the circles have elongated cells and blown-out growth nodes. Seeds from the circle plants often show accelerated growth rates when they are sown, and in some instances, quite different-looking plants result. In many instances it appears that a vortex-like energy causes the plants to swirl down, flattening the design into the land. Whatever this energy is, it does not generally inhibit the plants’ growth. They continue to show normal response to the sun, raising upward over several days following the appearance of the circle. Michael Chorost of Duke University found occasions of short-lived radionuclides in the top layer of soil in some of the formations. A British government laboratory found diminished nitrogen and decreased nematode populations as well as decreased water content in the soil of a formation. Researchers have discovered other anomalies as well, such as curious embedded magnetic particles and charred tissue. Some of the plant stalks within the circles show evidence of being exposed to rapid microwave heating.</span>"
           },
           {
-            "html": "<span>Scientists have attempted to explain crop circles as a result of natural processes. One popular theory accepted by many mainstream scientists and academics is known as ‘Plasma Vortex Theory’. Developed by Dr. Terence Mearden, it theorizes that electrified air (plasma), on the side of hills, becomes mini-tornadoes and screws down onto the ground, creating the circles. The theory also holds that the electrified air would cause a light to appear above the circle and therefore account for UFO sightings. Although this theory still has considerable support, it has come under fire because of the highly intricate and complex crop circle patterns that have appeared since 1991. Another theory is that the circles are all hoaxes or practical jokes. Major support came to this theory when, on September 9, 1991, two Englishmen claimed to have created approximately 250 crop circles. However, those circles were more rugged than others, and many were already suspect. It is irrational to believe that all crop circles are fake for publicity or other reasons. Many crop circles appeared long before the phenomenon pained large recognition from the public and press. Too many circles and patterns are formed each year in too many countries for them to have been hoaxes. Many crop circles show strange mathematical trails when analyzed.</span>"
+            "html": "<span>Scientists have attempted to explain crop circles as a result of natural processes. One popular theory accepted by many mainstream scientists and academics is known as ‘Plasma Vortex Theory’. Developed by Dr. Terence Mearden, it theorizes that electrified air (plasma), on the side of hills, becomes mini-tornadoes and screws down onto the ground, creating the circles. The theory also holds that the electrified air would cause a light to appear above the circle and therefore account for UFO sightings. Although this theory still has considerable support, it has come under fire because of the highly intricate and complex crop circle patterns that have appeared since 1991. Another theory is that the circles are all hoaxes or practical jokes. Major support came to this theory when, on September 9, 1991, two Englishmen claimed to have created approximately 250 crop circles. However, those circles were more rugged than others, and many were already suspect. It is irrational to believe that all crop circles are fake for publicity or other reasons. Many crop circles appeared long before the phenomenon gained large recognition from the public and press. Too many circles and patterns are formed each year in too many countries for them to have been hoaxes. Many crop circles show strange mathematical trails when analyzed.</span>"
           },
           {
             "html": "<span>The crop circle phenomenon is an enigma. Many dollars have been spent by researchers and their associations in an attempt to find a solution to this intriguing puzzle which will continue to haunt humanity until an explanation is found.</span>"
@@ -260,7 +260,7 @@ const test: PracticeTest = {
               "answer": "No",
               "textHtml": "All crop circles are hoaxes",
               "explanation": "The writer states 'it is irrational to believe that all crop circles are fake', directly contradicting the claim.",
-              "evidence": "it is irrational to believe that all crop circles are fake"
+              "evidence": "It is irrational to believe that all crop circles are fake"
             }
           ],
           "legendHtml": "<dl class=\"legend-key\"><dt>YES</dt><dd>if the statement agrees with the views of the writer</dd><dt>NO</dt><dd>if the statement contradicts the views of the writer</dd><dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd></dl>"
@@ -313,7 +313,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 24-27",
           "type": "matching-features",
-          "instructionHtml": "Use the information in the text to match one scientist (A-C) with each area of study (24-27) listed below.",
+          "instructionHtml": "Use the information in the text to match one scientist (A-C) with each area of study (24-27) listed below. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q24",
@@ -400,7 +400,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 28-33",
           "type": "matching-features",
-          "instructionHtml": "Use the information in the passage to match the people (A-C) with the opinions (28-33) listed below. There may be more than one correct answer.",
+          "instructionHtml": "Use the information in the passage to match the people (A-C) with the opinions (28-33) listed below. There may be more than one correct answer. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q28",
@@ -458,7 +458,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 34-36",
           "type": "matching-features",
-          "instructionHtml": "Choose ONE phrase pom the list below (A-G) to complete each of the following sentences. There are more phrases than questions so you will not use all of them.",
+          "instructionHtml": "Choose ONE phrase from the list below (A-G) to complete each of the following sentences. There are more phrases than questions so you will not use all of them.",
           "questions": [
             {
               "id": "q34",

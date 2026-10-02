@@ -1,7 +1,7 @@
 {
   "version": 1,
   "format": 3,
-  "indexVersion": "45fc15866e5c26f6",
+  "indexVersion": "4710c7b4aea16bc8",
   "tests": [
     {
       "id": "listening-full-001",
@@ -376,7 +376,7 @@
       "id": "reading-full-012",
       "skill": "reading",
       "title": "Academic Reading Test 12",
-      "byType": { "matching-headings": 2, "multiple-choice": 3, "paragraph-matching": 14, "sentence-completion": 10, "tfng": 6, "yes-no-notgiven": 5 },
+      "byType": { "multiple-choice": 5, "paragraph-matching": 14, "sentence-completion": 10, "tfng": 6, "yes-no-notgiven": 5 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -439,7 +439,7 @@
       "id": "reading-full-019",
       "skill": "reading",
       "title": "Academic Reading Test 19",
-      "byType": { "matching-features": 6, "matching-headings": 5, "multiple-choice": 9, "sentence-completion": 14, "yes-no-notgiven": 6 },
+      "byType": { "matching-features": 6, "matching-headings": 5, "multiple-choice": 10, "sentence-completion": 13, "yes-no-notgiven": 6 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -619,7 +619,7 @@
       "id": "reading-full-039",
       "skill": "reading",
       "title": "Academic Reading Test 39",
-      "byType": { "matching-features": 16, "multiple-choice": 1, "paragraph-matching": 6, "sentence-completion": 5, "tfng": 12 },
+      "byType": { "matching-features": 16, "multiple-choice": 2, "paragraph-matching": 6, "sentence-completion": 4, "tfng": 12 },
       "questionCount": 40,
       "durationMinutes": 60,
       "provenance": "imported-paper"
@@ -641,7 +641,7 @@
       "title": "Test 1 · Part 1",
       "byType": { "sentence-completion": 10 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-001",
@@ -689,7 +689,7 @@
       "title": "Test 2 · Part 3",
       "byType": { "multiple-choice": 4, "sentence-completion": 6 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-002",
@@ -721,7 +721,7 @@
       "title": "Test 3 · Part 3",
       "byType": { "multiple-choice": 10 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-003",
@@ -793,7 +793,7 @@
       "title": "Test 5 · Part 4",
       "byType": { "multiple-choice": 4, "sentence-completion": 6 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-006",
@@ -801,7 +801,7 @@
       "title": "Test 6 · Part 1",
       "byType": { "multiple-answer": 2, "sentence-completion": 8 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-006",
@@ -817,7 +817,7 @@
       "title": "Test 6 · Part 3",
       "byType": { "multiple-choice": 5, "sentence-completion": 5 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-006",
@@ -849,7 +849,7 @@
       "title": "Test 7 · Part 3",
       "byType": { "multiple-answer": 3, "multiple-choice": 4, "sentence-completion": 3 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-007",
@@ -857,7 +857,7 @@
       "title": "Test 7 · Part 4",
       "byType": { "sentence-completion": 10 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-008",
@@ -921,7 +921,7 @@
       "title": "Test 9 · Part 4",
       "byType": { "multiple-choice": 4, "sentence-completion": 6 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-010",
@@ -993,7 +993,7 @@
       "title": "Test 12 · Part 1",
       "byType": { "sentence-completion": 10 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-012",
@@ -1001,7 +1001,7 @@
       "title": "Test 12 · Part 2",
       "byType": { "matching-features": 5, "sentence-completion": 5 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-012",
@@ -1009,7 +1009,7 @@
       "title": "Test 12 · Part 3",
       "byType": { "multiple-choice": 3, "sentence-completion": 7 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-012",
@@ -1025,7 +1025,7 @@
       "title": "Test 13 · Part 1",
       "byType": { "categorisation": 4, "table-completion": 6 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-013",
@@ -1041,7 +1041,7 @@
       "title": "Test 13 · Part 3",
       "byType": { "multiple-choice": 4, "sentence-completion": 6 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-013",
@@ -1073,7 +1073,7 @@
       "title": "Test 14 · Part 3",
       "byType": { "multiple-choice": 5, "sentence-completion": 5 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-014",
@@ -1097,7 +1097,7 @@
       "title": "Test 15 · Part 2",
       "byType": { "matching-features": 2, "multiple-choice": 3, "sentence-completion": 5 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-015",
@@ -1105,7 +1105,7 @@
       "title": "Test 15 · Part 3",
       "byType": { "multiple-choice": 5, "table-completion": 5 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-015",
@@ -1121,7 +1121,7 @@
       "title": "Test 16 · Part 1",
       "byType": { "table-completion": 10 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-016",
@@ -1137,7 +1137,7 @@
       "title": "Test 16 · Part 3",
       "byType": { "matching-features": 7, "multiple-answer": 3 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-016",
@@ -1145,7 +1145,7 @@
       "title": "Test 16 · Part 4",
       "byType": { "categorisation": 5, "table-completion": 5 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-017",
@@ -1153,7 +1153,7 @@
       "title": "Test 17 · Part 1",
       "byType": { "multiple-choice": 4, "sentence-completion": 6 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-017",
@@ -1161,7 +1161,7 @@
       "title": "Test 17 · Part 2",
       "byType": { "sentence-completion": 6, "table-completion": 4 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-017",
@@ -1169,7 +1169,7 @@
       "title": "Test 17 · Part 3",
       "byType": { "diagram-labelling": 2, "multiple-choice": 3, "sentence-completion": 5 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-017",
@@ -1177,7 +1177,7 @@
       "title": "Test 17 · Part 4",
       "byType": { "sentence-completion": 4, "table-completion": 6 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-018",
@@ -1193,7 +1193,7 @@
       "title": "Test 18 · Part 2",
       "byType": { "multiple-choice": 4, "table-completion": 6 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-018",
@@ -1225,7 +1225,7 @@
       "title": "Test 19 · Part 2",
       "byType": { "matching-features": 6, "multiple-answer": 4 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-019",
@@ -1257,7 +1257,7 @@
       "title": "Test 20 · Part 2",
       "byType": { "multiple-choice": 2, "sentence-completion": 8 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-020",
@@ -1273,7 +1273,7 @@
       "title": "Test 20 · Part 4",
       "byType": { "multiple-answer": 2, "multiple-choice": 1, "sentence-completion": 7 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-021",
@@ -1297,7 +1297,7 @@
       "title": "Test 21 · Part 3",
       "byType": { "categorisation": 4, "table-completion": 6 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-021",
@@ -1305,7 +1305,7 @@
       "title": "Test 21 · Part 4",
       "byType": { "sentence-completion": 10 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-022",
@@ -1345,7 +1345,7 @@
       "title": "Test 23 · Part 1",
       "byType": { "sentence-completion": 10 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-023",
@@ -1353,7 +1353,7 @@
       "title": "Test 23 · Part 2",
       "byType": { "sentence-completion": 10 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-023",
@@ -1361,7 +1361,7 @@
       "title": "Test 23 · Part 3",
       "byType": { "multiple-answer": 2, "multiple-choice": 3, "sentence-completion": 5 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-023",
@@ -1377,7 +1377,7 @@
       "title": "Test 24 · Part 1",
       "byType": { "sentence-completion": 10 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-024",
@@ -1385,7 +1385,7 @@
       "title": "Test 24 · Part 2",
       "byType": { "multiple-choice": 4, "table-completion": 6 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-024",
@@ -1441,7 +1441,7 @@
       "title": "Test 26 · Part 1",
       "byType": { "sentence-completion": 5, "table-completion": 5 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-026",
@@ -1457,7 +1457,7 @@
       "title": "Test 26 · Part 3",
       "byType": { "multiple-answer": 4, "multiple-choice": 6 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-026",
@@ -1465,7 +1465,7 @@
       "title": "Test 26 · Part 4",
       "byType": { "sentence-completion": 10 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-027",
@@ -1513,7 +1513,7 @@
       "title": "Test 28 · Part 2",
       "byType": { "diagram-labelling": 3, "sentence-completion": 7 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-028",
@@ -1521,7 +1521,7 @@
       "title": "Test 28 · Part 3",
       "byType": { "matching-features": 4, "multiple-choice": 3, "sentence-completion": 3 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-028",
@@ -1879,7 +1879,7 @@
       "sourceTestId": "reading-full-012",
       "partNumber": 3,
       "title": "Passage 3 Drill: THE POWER OF THE PLACEBO EFFECT",
-      "byType": { "matching-headings": 2, "paragraph-matching": 7, "yes-no-notgiven": 5 },
+      "byType": { "multiple-choice": 2, "paragraph-matching": 7, "yes-no-notgiven": 5 },
       "questions": [27, 40],
       "durationMinutes": 20
     },
@@ -2031,7 +2031,7 @@
       "sourceTestId": "reading-full-019",
       "partNumber": 1,
       "title": "Passage 1 Drill: Frogwatch",
-      "byType": { "matching-features": 6, "sentence-completion": 1, "yes-no-notgiven": 6 },
+      "byType": { "matching-features": 6, "multiple-choice": 1, "yes-no-notgiven": 6 },
       "questions": [1, 13],
       "durationMinutes": 20
     },
@@ -2527,7 +2527,7 @@
       "sourceTestId": "reading-full-039",
       "partNumber": 3,
       "title": "Passage 3 Drill: Tele-working",
-      "byType": { "matching-features": 8, "sentence-completion": 5 },
+      "byType": { "matching-features": 8, "multiple-choice": 1, "sentence-completion": 4 },
       "questions": [28, 40],
       "durationMinutes": 20
     },
@@ -2882,7 +2882,7 @@
           "paper": "reading-full-029",
           "firstQuestion": 22,
           "types": ["sentence-completion"],
-          "versions": ["f34f902bf66af722", "5f3da0a01b8e09da", "40ac9d151d4848a8", "95ea57231f680fea", "37c080df5b929f06"]
+          "versions": ["f34f902bf66af722", "97e4ca7ee086e226", "40ac9d151d4848a8", "95ea57231f680fea", "37c080df5b929f06"]
         },
         {
           "paper": "reading-full-035",
@@ -2901,7 +2901,7 @@
           "paper": "reading-full-016",
           "firstQuestion": 1,
           "types": ["table-completion"],
-          "versions": ["6238ef64c7438b4b", "3dd845a0d3a5708c", "e82472069d6d0738", "89c885506a6bbaa0", "613a223aee721dab", "7bc70469838afe61", "48bd6a2ee5fb4fb5", "0822b598a2624ccb", "8cc7500f9c70e101", "72c5e028a3263aa4"]
+          "versions": ["308b93d1751dec54", "ed90a13225e00cca", "af8eb228c9baa9c0", "08bc579b48fd867b", "42c45b058c39eec4", "ac23aa5a1c8340e8", "c6ab077f6720a507", "f60a984434b491a6", "4b2406a7bbdf8de5", "3a0e00bbec4399ae"]
         },
         {
           "paper": "reading-full-002",
@@ -2926,7 +2926,7 @@
           "paper": "reading-full-001",
           "firstQuestion": 1,
           "types": ["tfng"],
-          "versions": ["e140982a148c1e92", "9225da948258807a", "d05cdfec561f5d71", "7979c6d9ed8caf88", "abea3e79096117bc", "40675f43f50192ec", "bc1acb5645e9ac9f"]
+          "versions": ["e140982a148c1e92", "9225da948258807a", "d05cdfec561f5d71", "df294a42a689b5e0", "abea3e79096117bc", "40675f43f50192ec", "bc1acb5645e9ac9f"]
         }
       ]
     },
@@ -3902,41 +3902,41 @@
       "questions": [7, 13],
       "drillPart": 1
     },
-    { "id": "writing-collocation-accuracy-guided", "subskill": "collocation-accuracy", "paper": "writing", "expectedMinutes": 6, "provenance": "project-authored", "kind": "written-response", "role": "guided-practice", "objective": "Correct a sentence with two do/make collocation slips, then write your own sentence using one of the same collocations correctly.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-cb91a9f6", "promptId": "pte-wt-129-task2" },
-    { "id": "writing-lexical-topic-vocabulary-check", "subskill": "lexical-precision", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Write a Task 2 body paragraph using precise topic vocabulary for the subject, rather than generic words that could belong to any essay.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-cb91a9f6", "promptId": "pte-wt-106-task2" },
-    { "id": "writing-lexical-topic-vocabulary-guided", "subskill": "lexical-precision", "paper": "writing", "expectedMinutes": 8, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Write a Task 2 body paragraph using precise topic vocabulary for the subject, rather than generic words that could belong to any essay.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-cb91a9f6", "promptId": "pte-wt-112-task2" },
-    { "id": "writing-recurring-pattern-accuracy-guided", "subskill": "recurring-pattern-accuracy", "paper": "writing", "expectedMinutes": 6, "provenance": "project-authored", "kind": "written-response", "role": "guided-practice", "objective": "Correct a sentence with three article slips, then write your own sentence using \"the environment\" correctly.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-cb91a9f6", "promptId": "pte-wt-130-task2" },
-    { "id": "writing-sentence-correction-number-of", "subskill": "sentence-correction", "paper": "writing", "expectedMinutes": 6, "provenance": "project-authored", "kind": "written-response", "role": "guided-practice", "objective": "Correct a sentence with a recurring subject-verb agreement slip, then write your own sentence using the same pattern correctly.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-cb91a9f6", "promptId": "pte-wt-119-task2" },
+    { "id": "writing-collocation-accuracy-guided", "subskill": "collocation-accuracy", "paper": "writing", "expectedMinutes": 6, "provenance": "project-authored", "kind": "written-response", "role": "guided-practice", "objective": "Correct a sentence with two do/make collocation slips, then write your own sentence using one of the same collocations correctly.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-d4cc92aa", "promptId": "pte-wt-129-task2" },
+    { "id": "writing-lexical-topic-vocabulary-check", "subskill": "lexical-precision", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Write a Task 2 body paragraph using precise topic vocabulary for the subject, rather than generic words that could belong to any essay.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-d4cc92aa", "promptId": "pte-wt-106-task2" },
+    { "id": "writing-lexical-topic-vocabulary-guided", "subskill": "lexical-precision", "paper": "writing", "expectedMinutes": 8, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Write a Task 2 body paragraph using precise topic vocabulary for the subject, rather than generic words that could belong to any essay.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-d4cc92aa", "promptId": "pte-wt-112-task2" },
+    { "id": "writing-recurring-pattern-accuracy-guided", "subskill": "recurring-pattern-accuracy", "paper": "writing", "expectedMinutes": 6, "provenance": "project-authored", "kind": "written-response", "role": "guided-practice", "objective": "Correct a sentence with three article slips, then write your own sentence using \"the environment\" correctly.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-d4cc92aa", "promptId": "pte-wt-130-task2" },
+    { "id": "writing-sentence-correction-number-of", "subskill": "sentence-correction", "paper": "writing", "expectedMinutes": 6, "provenance": "project-authored", "kind": "written-response", "role": "guided-practice", "objective": "Correct a sentence with a recurring subject-verb agreement slip, then write your own sentence using the same pattern correctly.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-d4cc92aa", "promptId": "pte-wt-119-task2" },
     { "id": "writing-task1-avoid-repetition-check", "subskill": "task1-avoid-repetition", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Report several figures without repeating the same trend or quantity word: vary rose, fell, a large number of and similar with real synonyms.", "lessonKey": "writing-method", "lessonBlockId": "b5-a81bc1c5", "promptId": "pte-wt-115-task1" },
     { "id": "writing-task1-avoid-repetition-guided", "subskill": "task1-avoid-repetition", "paper": "writing", "expectedMinutes": 8, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Report several figures without repeating the same trend or quantity word: vary rose, fell, a large number of and similar with real synonyms.", "lessonKey": "writing-method", "lessonBlockId": "b5-a81bc1c5", "promptId": "pte-wt-116-task1" },
-    { "id": "writing-task1-compare-and-group-check", "subskill": "task1-compare-and-group", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Compare the categories directly, using comparative language (than, compared with, whereas, respectively), rather than describing each one in a separate sentence with no link between them.", "lessonKey": "writing-charts", "lessonBlockId": "b3-323efc4a", "promptId": "pte-wt-121-task1" },
-    { "id": "writing-task1-compare-and-group-guided", "subskill": "task1-compare-and-group", "paper": "writing", "expectedMinutes": 8, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Compare the categories directly, using comparative language (than, compared with, whereas, respectively), rather than describing each one in a separate sentence with no link between them.", "lessonKey": "writing-charts", "lessonBlockId": "b3-323efc4a", "promptId": "pte-wt-132-task1" },
+    { "id": "writing-task1-compare-and-group-check", "subskill": "task1-compare-and-group", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Compare the categories directly, using comparative language (than, compared with, whereas, respectively), rather than describing each one in a separate sentence with no link between them.", "lessonKey": "writing-charts", "lessonBlockId": "b3-53db7f1a", "promptId": "pte-wt-121-task1" },
+    { "id": "writing-task1-compare-and-group-guided", "subskill": "task1-compare-and-group", "paper": "writing", "expectedMinutes": 8, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Compare the categories directly, using comparative language (than, compared with, whereas, respectively), rather than describing each one in a separate sentence with no link between them.", "lessonKey": "writing-charts", "lessonBlockId": "b3-53db7f1a", "promptId": "pte-wt-132-task1" },
     { "id": "writing-task1-data-language-check", "subskill": "task1-data-language", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Describe the trend with an accurate trend verb (rose, fell, grew, fluctuated, peaked, remained stable) and the exact figure that goes with it, never a figure with no verb to carry it.", "lessonKey": "writing-charts", "lessonBlockId": "b4-8dc867f4", "promptId": "pte-wt-109-task1" },
     { "id": "writing-task1-data-language-guided", "subskill": "task1-data-language", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Describe the trend with an accurate trend verb (rose, fell, grew, fluctuated, peaked, remained stable) and the exact figure that goes with it, never a figure with no verb to carry it.", "lessonKey": "writing-charts", "lessonBlockId": "b4-8dc867f4", "promptId": "pte-wt-120-task1" },
     { "id": "writing-task1-map-change-check", "subskill": "task1-map-change", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Describe one change between the two maps using location and change language (was replaced by, was built, was demolished, changed into, to the north), never trend language borrowed from a chart.", "lessonKey": "writing-maps", "lessonBlockId": "b3-82d57d4e", "promptId": "pte-wt-122-task1" },
     { "id": "writing-task1-map-change-guided", "subskill": "task1-map-change", "paper": "writing", "expectedMinutes": 8, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Describe one change between the two maps using location and change language (was replaced by, was built, was demolished, changed into, to the north), never trend language borrowed from a chart.", "lessonKey": "writing-maps", "lessonBlockId": "b3-82d57d4e", "promptId": "pte-wt-130-task1" },
-    { "id": "writing-task1-overview-check-a", "subskill": "task1-overview", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Write an overview that states the main trends or the main features of the visual, with no specific figures, clearly separate from the detail.", "lessonKey": "writing-method", "lessonBlockId": "b3-dbd00756", "promptId": "pte-wt-117-task1" },
-    { "id": "writing-task1-overview-check-b", "subskill": "task1-overview", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Write an overview that states the main trends or the main features of the visual, with no specific figures, clearly separate from the detail.", "lessonKey": "writing-method", "lessonBlockId": "b3-dbd00756", "promptId": "pte-wt-112-task1" },
-    { "id": "writing-task1-overview-check-c", "subskill": "task1-overview", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Write an overview that states the main trends or the main features of the visual, with no specific figures, clearly separate from the detail.", "lessonKey": "writing-method", "lessonBlockId": "b3-dbd00756", "promptId": "pte-wt-126-task1" },
-    { "id": "writing-task1-overview-guided", "subskill": "task1-overview", "paper": "writing", "expectedMinutes": 8, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Write an overview that states the main trends or the main features of the visual, with no specific figures, clearly separate from the detail.", "lessonKey": "writing-method", "lessonBlockId": "b3-dbd00756", "promptId": "pte-wt-129-task1" },
+    { "id": "writing-task1-overview-check-a", "subskill": "task1-overview", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Write an overview that states the main trends or the main features of the visual, with no specific figures, clearly separate from the detail.", "lessonKey": "writing-method", "lessonBlockId": "b3-cb8ec220", "promptId": "pte-wt-117-task1" },
+    { "id": "writing-task1-overview-check-b", "subskill": "task1-overview", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Write an overview that states the main trends or the main features of the visual, with no specific figures, clearly separate from the detail.", "lessonKey": "writing-method", "lessonBlockId": "b3-cb8ec220", "promptId": "pte-wt-112-task1" },
+    { "id": "writing-task1-overview-check-c", "subskill": "task1-overview", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Write an overview that states the main trends or the main features of the visual, with no specific figures, clearly separate from the detail.", "lessonKey": "writing-method", "lessonBlockId": "b3-cb8ec220", "promptId": "pte-wt-126-task1" },
+    { "id": "writing-task1-overview-guided", "subskill": "task1-overview", "paper": "writing", "expectedMinutes": 8, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Write an overview that states the main trends or the main features of the visual, with no specific figures, clearly separate from the detail.", "lessonKey": "writing-method", "lessonBlockId": "b3-cb8ec220", "promptId": "pte-wt-129-task1" },
     { "id": "writing-task1-process-sequence-check", "subskill": "task1-process-sequence", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Describe the stages of the process in the order they happen, marking the sequence with words such as first, then, after that or finally, rather than leaving the order to the diagram alone.", "lessonKey": "writing-process", "lessonBlockId": "b4-440e6f38", "promptId": "pte-wt-128-task1" },
     { "id": "writing-task1-process-sequence-guided", "subskill": "task1-process-sequence", "paper": "writing", "expectedMinutes": 8, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Describe the stages of the process in the order they happen, marking the sequence with words such as first, then, after that or finally, rather than leaving the order to the diagram alone.", "lessonKey": "writing-process", "lessonBlockId": "b4-440e6f38", "promptId": "pte-wt-131-task1" },
-    { "id": "writing-task1-select-key-features-check", "subskill": "task1-select-key-features", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Report the two or three most significant features of the visual, grouping related figures together, rather than describing every number in turn.", "lessonKey": "writing-method", "lessonBlockId": "b3-dbd00756", "promptId": "pte-wt-124-task1" },
-    { "id": "writing-task1-select-key-features-guided", "subskill": "task1-select-key-features", "paper": "writing", "expectedMinutes": 8, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Report the two or three most significant features of the visual, grouping related figures together, rather than describing every number in turn.", "lessonKey": "writing-method", "lessonBlockId": "b3-dbd00756", "promptId": "pte-wt-125-task1" },
+    { "id": "writing-task1-select-key-features-check", "subskill": "task1-select-key-features", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Report the two or three most significant features of the visual, grouping related figures together, rather than describing every number in turn.", "lessonKey": "writing-method", "lessonBlockId": "b3-cb8ec220", "promptId": "pte-wt-124-task1" },
+    { "id": "writing-task1-select-key-features-guided", "subskill": "task1-select-key-features", "paper": "writing", "expectedMinutes": 8, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Report the two or three most significant features of the visual, grouping related figures together, rather than describing every number in turn.", "lessonKey": "writing-method", "lessonBlockId": "b3-cb8ec220", "promptId": "pte-wt-125-task1" },
     { "id": "writing-task2-cohesion-and-linking-check", "subskill": "cohesion-and-linking", "paper": "writing", "expectedMinutes": 6, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Connect two sentences so the second genuinely follows from the first, without opening it with a mechanical linker such as Firstly, Moreover or In addition.", "lessonKey": "writing-twopart", "lessonBlockId": "b5-0caabcdf", "promptId": "pte-wt-126-task2" },
     { "id": "writing-task2-cohesion-and-linking-guided", "subskill": "cohesion-and-linking", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Connect two sentences so the second genuinely follows from the first, without opening it with a mechanical linker such as Firstly, Moreover or In addition.", "lessonKey": "writing-twopart", "lessonBlockId": "b5-0caabcdf", "promptId": "pte-wt-128-task2" },
-    { "id": "writing-task2-complex-sentences-check", "subskill": "complex-sentences-with-purpose", "paper": "writing", "expectedMinutes": 5, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Combine two simple sentences into one accurate complex sentence, using a subordinate clause (because, although, since, while, when, if).", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-cb91a9f6", "promptId": "pte-wt-108-task2" },
-    { "id": "writing-task2-complex-sentences-guided", "subskill": "complex-sentences-with-purpose", "paper": "writing", "expectedMinutes": 6, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Combine two simple sentences into one accurate complex sentence, using a subordinate clause (because, although, since, while, when, if).", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-cb91a9f6", "promptId": "pte-wt-113-task2" },
+    { "id": "writing-task2-complex-sentences-check", "subskill": "complex-sentences-with-purpose", "paper": "writing", "expectedMinutes": 5, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Combine two simple sentences into one accurate complex sentence, using a subordinate clause (because, although, since, while, when, if).", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-d4cc92aa", "promptId": "pte-wt-108-task2" },
+    { "id": "writing-task2-complex-sentences-guided", "subskill": "complex-sentences-with-purpose", "paper": "writing", "expectedMinutes": 6, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Combine two simple sentences into one accurate complex sentence, using a subordinate clause (because, although, since, while, when, if).", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-d4cc92aa", "promptId": "pte-wt-113-task2" },
     { "id": "writing-task2-conclusion-check", "subskill": "task2-conclusion", "paper": "writing", "expectedMinutes": 5, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Write a conclusion that restates your position and directly answers the question, in one or two sentences, with no new idea introduced this late.", "lessonKey": "writing-opinion", "lessonBlockId": "b3-eed0622a", "promptId": "pte-wt-122-task2" },
     { "id": "writing-task2-conclusion-guided", "subskill": "task2-conclusion", "paper": "writing", "expectedMinutes": 6, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Write a conclusion that restates your position and directly answers the question, in one or two sentences, with no new idea introduced this late.", "lessonKey": "writing-opinion", "lessonBlockId": "b3-eed0622a", "promptId": "pte-wt-123-task2" },
     { "id": "writing-task2-paragraph-organisation-check", "subskill": "paragraph-organisation", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Open the paragraph with a topic sentence that states its one idea, develop that idea, and close with a sentence that links back to the question.", "lessonKey": "writing-discussion", "lessonBlockId": "b3-20914bf7", "promptId": "pte-wt-118-task2" },
     { "id": "writing-task2-paragraph-organisation-guided", "subskill": "paragraph-organisation", "paper": "writing", "expectedMinutes": 8, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Open the paragraph with a topic sentence that states its one idea, develop that idea, and close with a sentence that links back to the question.", "lessonKey": "writing-discussion", "lessonBlockId": "b3-20914bf7", "promptId": "pte-wt-121-task2" },
-    { "id": "writing-task2-paraphrase-the-question-check", "subskill": "task2-paraphrase-the-question", "paper": "writing", "expectedMinutes": 5, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Paraphrase the question in your introduction, in your own words, without copying its own wording.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-cb91a9f6", "promptId": "pte-wt-104-task2" },
-    { "id": "writing-task2-paraphrase-the-question-guided", "subskill": "task2-paraphrase-the-question", "paper": "writing", "expectedMinutes": 6, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Paraphrase the question in your introduction, in your own words, without copying its own wording.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-cb91a9f6", "promptId": "pte-wt-117-task2" },
+    { "id": "writing-task2-paraphrase-the-question-check", "subskill": "task2-paraphrase-the-question", "paper": "writing", "expectedMinutes": 5, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Paraphrase the question in your introduction, in your own words, without copying its own wording.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-d4cc92aa", "promptId": "pte-wt-104-task2" },
+    { "id": "writing-task2-paraphrase-the-question-guided", "subskill": "task2-paraphrase-the-question", "paper": "writing", "expectedMinutes": 6, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Paraphrase the question in your introduction, in your own words, without copying its own wording.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-d4cc92aa", "promptId": "pte-wt-117-task2" },
     { "id": "writing-task2-position-and-thesis-check", "subskill": "task2-position-and-thesis", "paper": "writing", "expectedMinutes": 6, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "State a clear position on the question and, in one sentence, say what each body paragraph will argue, both inside the introduction.", "lessonKey": "writing-opinion", "lessonBlockId": "b4-7da065b6", "promptId": "pte-wt-124-task2" },
     { "id": "writing-task2-position-and-thesis-guided", "subskill": "task2-position-and-thesis", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "State a clear position on the question and, in one sentence, say what each body paragraph will argue, both inside the introduction.", "lessonKey": "writing-opinion", "lessonBlockId": "b4-7da065b6", "promptId": "pte-wt-125-task2" },
-    { "id": "writing-task2-structure-range-check", "subskill": "complex-sentence-range", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Write a paragraph that uses more than one kind of sentence structure (a relative clause, a subordinate clause, a passive, a conditional), not the same simple shape repeated.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-cb91a9f6", "promptId": "pte-wt-103-task2" },
-    { "id": "writing-task2-structure-range-guided", "subskill": "complex-sentence-range", "paper": "writing", "expectedMinutes": 8, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Write a paragraph that uses more than one kind of sentence structure (a relative clause, a subordinate clause, a passive, a conditional), not the same simple shape repeated.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-cb91a9f6", "promptId": "pte-wt-116-task2" },
+    { "id": "writing-task2-structure-range-check", "subskill": "complex-sentence-range", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Write a paragraph that uses more than one kind of sentence structure (a relative clause, a subordinate clause, a passive, a conditional), not the same simple shape repeated.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-d4cc92aa", "promptId": "pte-wt-103-task2" },
+    { "id": "writing-task2-structure-range-guided", "subskill": "complex-sentence-range", "paper": "writing", "expectedMinutes": 8, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Write a paragraph that uses more than one kind of sentence structure (a relative clause, a subordinate clause, a passive, a conditional), not the same simple shape repeated.", "lessonKey": "writing-task2-method", "lessonBlockId": "b5-d4cc92aa", "promptId": "pte-wt-116-task2" },
     { "id": "writing-task2-support-a-claim-check", "subskill": "task2-support-a-claim", "paper": "writing", "expectedMinutes": 7, "provenance": "publisher", "kind": "written-response", "role": "independent-check", "objective": "Make one claim, explain why it is true, and give one specific example, so the claim is not left to stand on its own.", "lessonKey": "writing-advantages", "lessonBlockId": "b3-89bf4b1b", "promptId": "pte-wt-120-task2" },
     { "id": "writing-task2-support-a-claim-guided", "subskill": "task2-support-a-claim", "paper": "writing", "expectedMinutes": 8, "provenance": "publisher", "kind": "written-response", "role": "guided-practice", "objective": "Make one claim, explain why it is true, and give one specific example, so the claim is not left to stand on its own.", "lessonKey": "writing-advantages", "lessonBlockId": "b3-89bf4b1b", "promptId": "pte-wt-127-task2" }
   ],
@@ -4717,7 +4717,7 @@
     {
       "type": "matching-headings",
       "absent": false,
-      "reading": { "questions": 79, "papers": 13, "drills": 14 },
+      "reading": { "questions": 77, "papers": 12, "drills": 13 },
       "listening": { "questions": 0, "papers": 0, "drills": 0 }
     },
     {
@@ -4729,7 +4729,7 @@
     {
       "type": "multiple-choice",
       "absent": false,
-      "reading": { "questions": 160, "papers": 30, "drills": 46 },
+      "reading": { "questions": 164, "papers": 30, "drills": 49 },
       "listening": { "questions": 192, "papers": 28, "drills": 49 }
     },
     {
@@ -4741,7 +4741,7 @@
     {
       "type": "sentence-completion",
       "absent": false,
-      "reading": { "questions": 431, "papers": 38, "drills": 81 },
+      "reading": { "questions": 429, "papers": 38, "drills": 80 },
       "listening": { "questions": 629, "papers": 30, "drills": 94 }
     },
     {

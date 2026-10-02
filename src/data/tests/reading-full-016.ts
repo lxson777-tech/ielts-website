@@ -47,7 +47,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 1-10",
           "type": "table-completion",
-          "instructionHtml": "Complete the table below. Write10 answers from the box and write the correct letter, A-L, next to questions 1-10.",
+          "instructionHtml": "Complete the table below. Write 10 answers from the box and write the correct letter, A-L, next to questions 1-10.",
           "questions": [
             {
               "id": "q1",
@@ -160,74 +160,54 @@ const test: PracticeTest = {
           "table": {
             "rows": [
               [
-                "……………",
                 {
                   "questionId": "q1"
-                },
-                ""
+                }
               ],
               [
-                "……………",
                 {
                   "questionId": "q2"
-                },
-                ""
+                }
               ],
               [
-                "……………",
                 {
                   "questionId": "q3"
-                },
-                ""
+                }
               ],
               [
-                "…………… Act of Creation/ Production",
                 {
                   "questionId": "q4"
-                },
-                ""
+                }
               ],
               [
-                "……………",
                 {
                   "questionId": "q5"
-                },
-                ""
+                }
               ],
               [
-                "……………",
                 {
                   "questionId": "q6"
-                },
-                ""
+                }
               ],
               [
-                "……………",
                 {
                   "questionId": "q7"
-                },
-                ""
+                }
               ],
               [
-                "……………",
                 {
                   "questionId": "q8"
-                },
-                ""
+                }
               ],
               [
-                "……………",
                 {
                   "questionId": "q9"
-                },
-                ""
+                }
               ],
               [
-                "…………… A the finished object appeals on an emotional and spiritual level B the final product has no pretensions to being anything more than it appears C only a functional use is considered for the finished object D no practical purpose as such is envisaged for the created object E the process of creation is merely a means to an end F whether or not there is an end product, the product itself is secondary to the process of creation G not having to adhere to a set of rules, the process is a matter of experimentation H there is no margin of error for experimentation, all of the process following a set of guidelines I its goal is defined from the outset J the process is fluid and undefined K it is useful but not commercially viable L the production process is a mixture of following rules and experimentation",
                 {
                   "questionId": "q10"
-                },
-                ""
+                }
               ]
             ]
           }
@@ -261,7 +241,7 @@ const test: PracticeTest = {
             "html": "<span>Sometimes Dali came across as not only mad but also unintelligible, at least as far as his paintings were concerned. One work, ‘The Persistence of Memory’, was particularly singled out for the sheer confusion it caused amongst its viewers. Featuring melting clocks, swarming ants and a mollusc that was the deflated head of Dali in disguise, the images were so puzzling that one critic urged readers to ‘page Dr. Freud’ to uncover the meaning of the canvas. His work was, if nothing else, provocative and powerful.</span>"
           },
           {
-            "html": "<span>With the passing years, Dali became ever more infatuated with money, admitting to a ‘pure, vertical, mystical, gothic love of cash’. Accordingly, he indiscriminately endorsed a host of products for French and American TV commercials. Fie also never failed to promote himself and displayed increasingly exhibitionist behaviour as time went on. Most notably, he once turned up for a lecture in Paris in a Rolls Royce stuffed with cauliflowers. Fie obviously believed the slogan of one of his advertising campaigns for Braniff Airlines, where he declares ‘If you got it, flaunt it.’ As a more positive outcome of his love for money, Dali took on increasingly diverse projects, ranging from set design to designing clothes and jewellery. His critics, however, believed that early on in his career his love for money exceeded his dedication to producing great art, resulting in Dali producing ‘awful junk’ after 1939, according to one art critic.</span>"
+            "html": "<span>With the passing years, Dali became ever more infatuated with money, admitting to a ‘pure, vertical, mystical, gothic love of cash’. Accordingly, he indiscriminately endorsed a host of products for French and American TV commercials. He also never failed to promote himself and displayed increasingly exhibitionist behaviour as time went on. Most notably, he once turned up for a lecture in Paris in a Rolls Royce stuffed with cauliflowers. He obviously believed the slogan of one of his advertising campaigns for Braniff Airlines, where he declares ‘If you got it, flaunt it.’ As a more positive outcome of his love for money, Dali took on increasingly diverse projects, ranging from set design to designing clothes and jewellery. His critics, however, believed that early on in his career his love for money exceeded his dedication to producing great art, resulting in Dali producing ‘awful junk’ after 1939, according to one art critic.</span>"
           },
           {
             "html": "<span>Despite a lukewarm reception from critics, Dali’s public popularity never declined. In 1974, at 70 years old, the Dali Theatre Museum opened in his hometown, Figueres. More of a surrealist happening than a museum, one exhibit was a long black Cadillac that rained inside itself whenever a visitor dropped a coin into the slot. Even today hundreds of thousands of visitors still tour the museum each year. Whatever your opinion of him, at least Dali is unlikely to ever be forgotten.</span>"
@@ -299,7 +279,7 @@ const test: PracticeTest = {
               "evidence": "Despite a lukewarm reception from critics"
             }
           ],
-          "legendHtml": "<p><span><strong>A</strong> of certain limitations in his artistic skills that became evident in his later works.</span><br/>\n<span><strong>B</strong> Introduced Dali to the psychoanalytic movement for the first time</span><br/>\n<span><strong>C</strong> his artistic studies needed to be supplemented by going to Paris to meet the Surrealist artists.</span><br/>\n<span><strong>D</strong> dome art critics are less impressed with his work than the general public.</span><br/>\n<span><strong>E</strong> inspired Dali to focus on the psychoanalytic content of his artwork.</span></p><p><span>11. Dali displayed a precocious talent from an early age; however, he was aware</span><br/>\n<span>12. Encountering the French Surrealist painters in Paris</span><br/>\n<span>13. Dali’s artistic legacy is secure although</span></p>"
+          "legendHtml": "<p><span><strong>A</strong> of certain limitations in his artistic skills that became evident in his later works.</span><br/>\n<span><strong>B</strong> Introduced Dali to the psychoanalytic movement for the first time</span><br/>\n<span><strong>C</strong> his artistic studies needed to be supplemented by going to Paris to meet the Surrealist artists.</span><br/>\n<span><strong>D</strong> some art critics are less impressed with his work than the general public.</span><br/>\n<span><strong>E</strong> inspired Dali to focus on the psychoanalytic content of his artwork.</span></p><p><span>11. Dali displayed a precocious talent from an early age; however, he was aware</span><br/>\n<span>12. Encountering the French Surrealist painters in Paris</span><br/>\n<span>13. Dali’s artistic legacy is secure although</span></p>"
         },
         {
           "title": "Questions 14-16",

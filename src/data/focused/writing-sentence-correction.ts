@@ -69,7 +69,7 @@ const GUIDED: WrittenFocusedTask = {
   correctionSentence:
     'The number of students who chooses to study abroad have risen sharply over the last decade, while a number of universities has struggled to keep pace.',
   correctionNote:
-    'Two slips, both from the same confusion. "The number of students" is singular, so its verb should be "has risen", not "have risen", and the relative clause needs "choose" to agree with the plural "students", not "chooses". "A number of universities" means "several universities" and is plural, so its verb should be "have struggled", not "has struggled". Decide what the real subject of each verb is before choosing singular or plural.',
+    'Three agreement slips. "The number of students" is singular, so its verb should be "has risen", not "have risen", while the relative clause inside it needs "choose" to agree with the plural "students", not "chooses". "A number of universities" means "several universities" and is plural, so its verb should be "have struggled", not "has struggled". Decide what the real subject of each verb is before choosing singular or plural.',
   transferPrompt:
     'Now write one sentence of your own using "a number of" with a correctly plural verb, about any IELTS topic.',
   guidingQuestions: [

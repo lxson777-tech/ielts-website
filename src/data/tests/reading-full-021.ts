@@ -75,7 +75,7 @@ const test: PracticeTest = {
                 "advertising is preferable to music",
                 "women can be kept waiting for longer than men"
               ],
-              "explanation": "The fifth paragraph says the alternative music the client already plays is probably the best choice, so the advice is to keep it. Option C is tempting because light jazz did well, but it only worked best with women, not with everyone.",
+              "explanation": "The fifth paragraph says the alternative music the client already plays is probably the best choice, so the advice is to keep it. Option B is tempting because the researchers tested four types of music, but they never suggest offering all four to people on hold.",
               "evidence": "The kind of music they’re playing now, alternative, is probably their best choice."
             }
           ]
@@ -83,7 +83,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 3-7",
           "type": "sentence-completion",
-          "instructionHtml": "Choose the type of music from the list A-D below which corresponds to the findings of the study.",
+          "instructionHtml": "Choose the type of music from the list A-D below which corresponds to the findings of the study. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q3",
@@ -272,7 +272,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 19-22",
           "type": "table-completion",
-          "instructionHtml": "Complete the table using NO MORE THAN THREE WORD S from the passage.",
+          "instructionHtml": "Complete the table using NO MORE THAN THREE WORDS from the passage.",
           "questions": [
             {
               "id": "q19",
@@ -306,37 +306,29 @@ const test: PracticeTest = {
               "evidence": "the fact that both are made with boiled water"
             }
           ],
-          "legendHtml": "<table><tbody><tr><td width=\"132\"><span><strong>Century</strong></span></td><td width=\"165\"><span><strong>Social change in Britain</strong></span></td><td width=\"148\"><span><strong>Reason</strong></span></td><td width=\"148\"><span><strong>Effect on population</strong></span></td></tr><tr><td width=\"132\"><span>Mid 17<sup>th</sup> century</span></td><td width=\"165\"><span>main drinks were still beer and ale</span></td><td width=\"148\"><span>Imps helped to make beer last longer</span></td><td width=\"148\"><span>no significant change</span></td></tr><tr><td width=\"132\"><span>Late 17<sup>th</sup> century</span></td><td width=\"165\"><span>gin becomes more popular, especially with poor people</span></td><td width=\"148\"><span>beer becomes expensive because of (19) ……….</span></td><td width=\"148\"><span>mortality rate goes up</span></td></tr><tr><td width=\"132\"><span>Early 18<sup>th</sup> century</span></td><td width=\"165\"><span>(20) ……….. drinking starts to become widespread</span></td><td width=\"148\"><span>Britain starts trade with China</span></td><td width=\"148\"><span>mortality rate goes down</span></td></tr><tr><td width=\"132\"><span>Mid 18<sup>th</sup> century</span></td><td width=\"165\"><span>decline in urban deaths caused by (21) ……….</span></td><td width=\"148\"><span>(22) …………. water used for tea and beer; antibacterial qualities of tannin</span></td><td width=\"148\"><span>infant mortality rate goes down by half</span></td></tr></tbody></table>",
+          "legendHtml": "<table><tbody><tr><td width=\"132\"><span><strong>Century</strong></span></td><td width=\"165\"><span><strong>Social change in Britain</strong></span></td><td width=\"148\"><span><strong>Reason</strong></span></td><td width=\"148\"><span><strong>Effect on population</strong></span></td></tr><tr><td width=\"132\"><span>Mid 17<sup>th</sup> century</span></td><td width=\"165\"><span>main drinks were still beer and ale</span></td><td width=\"148\"><span>Hops helped to make beer last longer</span></td><td width=\"148\"><span>no significant change</span></td></tr><tr><td width=\"132\"><span>Late 17<sup>th</sup> century</span></td><td width=\"165\"><span>gin becomes more popular, especially with poor people</span></td><td width=\"148\"><span>beer becomes expensive because of (19) ……….</span></td><td width=\"148\"><span>mortality rate goes up</span></td></tr><tr><td width=\"132\"><span>Early 18<sup>th</sup> century</span></td><td width=\"165\"><span>(20) ……….. drinking starts to become widespread</span></td><td width=\"148\"><span>Britain starts trade with China</span></td><td width=\"148\"><span>mortality rate goes down</span></td></tr><tr><td width=\"132\"><span>Mid 18<sup>th</sup> century</span></td><td width=\"165\"><span>decline in urban deaths caused by (21) ……….</span></td><td width=\"148\"><span>(22) …………. water used for tea and beer; antibacterial qualities of tannin</span></td><td width=\"148\"><span>infant mortality rate goes down by half</span></td></tr></tbody></table>",
           "wordLimit": 3,
           "table": {
             "rows": [
               [
-                "………. mortality rate goes up Early 18 th century",
                 {
                   "questionId": "q19"
-                },
-                ""
+                }
               ],
               [
-                "……….. drinking starts to become widespread Britain starts trade with China mortality rate goes down Mid 18 th century decline in urban deaths caused by",
                 {
                   "questionId": "q20"
-                },
-                ""
+                }
               ],
               [
-                "………",
                 {
                   "questionId": "q21"
-                },
-                ""
+                }
               ],
               [
-                "…………. water used for tea and beer; antibacterial qualities of tannin infant mortality rate goes down by half",
                 {
                   "questionId": "q22"
-                },
-                ""
+                }
               ]
             ]
           }
@@ -366,7 +358,7 @@ const test: PracticeTest = {
               "options": [
                 "like drinking beer",
                 "It want animals to work",
-                "Iike using wheels",
+                "like using wheels",
                 "want unemployment"
               ],
               "explanation": "Section G says Japan turned down a work-based revolution and gave up labour-saving machines so that people would not lose their jobs. Options B and C are tempting, but giving up animals and the wheel was the result of that decision, not the reason for it.",
@@ -378,8 +370,8 @@ const test: PracticeTest = {
               "textHtml": "Macfarlane thinks he has discovered why",
               "options": [
                 "the British drink beer and tea",
-                "industrialisation happened in Britain when if did",
-                "the Japanese did not drink beet",
+                "industrialisation happened in Britain when it did",
+                "the Japanese did not drink beer",
                 "sanitation wasn’t widespread until the 19th century"
               ],
               "explanation": "Section A sets the puzzle as why the Industrial Revolution happened in Britain and why at the end of the 18th century, and Section H says he considers that mystery solved. Option A is the trap, because tea and beer are his explanation, not the thing he set out to explain.",

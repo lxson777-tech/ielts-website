@@ -15,7 +15,7 @@ The guided course uses eight teaching units, normally one per week. It starts wi
 
 `src/lib/course.ts` explicitly places each registry lesson in COURSE_UNITS. Titles, descriptions, duration estimates and URLs still come from their registries. All 71 part lessons and five existing overviews remain. No lesson bodies or questions are removed. Completion keys are unchanged. The course builder rejects missing or duplicate entries so adding content requires a deliberate placement.
 
-The By section view filters the same teaching order by paper. Lesson pages also offer a labelled Next in course link; existing within-paper browsing remains available.
+The By section view filters the same teaching order by paper. Lesson pages keep their within-paper browsing (the step indicator and the paper's lesson list); the personal plan on the course page decides what comes next.
 
 ## Calendar
 
@@ -25,4 +25,4 @@ Full tests and mocks only appear after teaching. Recap vocabulary only uses topi
 
 ## Checks
 
-Automated checks cover exact lesson coverage and order, overview prerequisites, progression from Speaking Part 1 to Part 3, method-before-task order, saved completion, honest durations, and daily/weekday plans across 6 to 90 days and 15 to 60 minute targets. Browser checks exercise week navigation, lesson completion and next-course navigation at desktop and phone widths.
+Automated checks cover exact lesson coverage and order, overview prerequisites, progression from Speaking Part 1 to Part 3, method-before-task order, saved completion, honest durations, and daily/weekday plans across 6 to 90 days and 15 to 60 minute targets. Browser checks exercise week navigation, lesson completion and within-paper navigation at desktop and phone widths.

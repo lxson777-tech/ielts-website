@@ -42,7 +42,7 @@ const test: PracticeTest = {
           },
           {
             "label": "F",
-            "html": "Fins located in different places on a fish serve different purposes, such as moving forward, turning, and keeping an upright position. The tail fin, in its final lash may contribute as much as 40 per cent of the forward thrust. The median fins, that is, the dorsal, anal and ventral fins, control the rolling and yawing movements of the fish by increasing the vertical surface area presented to the water. The paired fins, pectoral and pelvic act as hydroplanes and control the pitch of the ash, causing it to swim downwards or upwards according to the angle to the water at which they are held by their muscles. The pectoral fins lie in front of the centre of gravity and, being readily mobile, are chiefly responsible for sending the ash up or down. The paired ins are also the means by which the fish slows down and stops."
+            "html": "Fins located in different places on a fish serve different purposes, such as moving forward, turning, and keeping an upright position. The tail fin, in its final lash may contribute as much as 40 per cent of the forward thrust. The median fins, that is, the dorsal, anal and ventral fins, control the rolling and yawing movements of the fish by increasing the vertical surface area presented to the water. The paired fins, pectoral and pelvic act as hydroplanes and control the pitch of the fish, causing it to swim downwards or upwards according to the angle to the water at which they are held by their muscles. The pectoral fins lie in front of the centre of gravity and, being readily mobile, are chiefly responsible for sending the fish up or down. The paired fins are also the means by which the fish slows down and stops."
           },
           {
             "label": "G",
@@ -139,25 +139,23 @@ const test: PracticeTest = {
               "id": "q9",
               "answer": [
                 "Pectoral and pelvic",
-                "pectoral",
-                "pectoral and pelvic fins"
+                "pectoral"
               ],
               "before": "",
               "after": "",
               "explanation": "The label is about the fins that push the fish up and down, and Paragraph F names the paired fins as the pectoral and pelvic ones, which work like hydroplanes and tilt the fish upwards or downwards.",
-              "evidence": "The paired fins, pectoral and pelvic act as hydroplanes and control the pitch of the ash"
+              "evidence": "The paired fins, pectoral and pelvic act as hydroplanes and control the pitch of the fish"
             },
             {
               "id": "q10",
               "answer": [
                 "Slows and stops",
-                "slows down and stops",
                 "slowing and stopping"
               ],
               "before": "",
               "after": "",
               "explanation": "Paragraph F ends by saying the paired fins are also what the fish uses to slow down and come to a stop, which is the extra job the diagram asks for.",
-              "evidence": "The paired ins are also the means by which the fish slows down and stops."
+              "evidence": "The paired fins are also the means by which the fish slows down and stops."
             }
           ],
           "legendHtml": "<p><img alt=\"\" data-lazyloaded=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"492\" src=\"/ielts-website/pics/reading/imported/test-282-1.png\" width=\"855\"/></p>",
@@ -190,7 +188,7 @@ const test: PracticeTest = {
               "evidence": "if the life of the fish is threatened-by a predator, for instance"
             }
           ],
-          "legendHtml": "<p>Two types of muscles are involved in fish swimming. The majority of a fish’s body comprises the (11)………………., and the red muscle is found only at the roots of the fins and in a strip along the centre of each flank. For most of its routine movements, the fish uses a lot of its (12)………………. saved in body, and white muscle is mostly used for short-term, fast swimming, such as escaping from (13)……………</p><p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "<p>Two types of muscles are involved in fish swimming. The majority of a fish’s body comprises the (11)………………., and the red muscle is found only at the roots of the fins and in a strip along the centre of each flank. For most of its routine movements, the fish uses a lot of its (12)………………. saved in body, and white muscle is mostly used for short-term, fast swimming, such as escaping from (13)……………</p>",
           "wordLimit": 3
         }
       ]
@@ -295,46 +293,34 @@ const test: PracticeTest = {
           "table": {
             "rows": [
               [
-                "……………..and tiredness Doctor’s measurement by taking",
                 {
                   "questionId": "q14"
-                },
-                ""
+                }
               ],
               [
-                "…………….and temperature Common judgement from",
                 {
                   "questionId": "q15"
-                },
-                ""
+                }
               ],
               [
-                "…………….around you Scientific evidence Medical knowledge from the general",
                 {
                   "questionId": "q16"
-                },
-                ""
+                }
               ],
               [
-                "……………e.g. doctor’s medical",
                 {
                   "questionId": "q17"
-                },
-                ""
+                }
               ],
               [
-                "…………. Examine the medical hypothesis with the previous drill and",
                 {
                   "questionId": "q18"
-                },
-                ""
+                }
               ],
               [
-                "…………",
                 {
                   "questionId": "q19"
-                },
-                ""
+                }
               ]
             ]
           }
@@ -342,7 +328,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 20-27",
           "type": "paragraph-matching",
-          "instructionHtml": "The reading passage has nine paragraphs A-I. Which paragraph contains the following information?",
+          "instructionHtml": "The reading passage has nine paragraphs A-I. Which paragraph contains the following information? NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q20",
@@ -401,7 +387,7 @@ const test: PracticeTest = {
               "evidence": "At other times, people may be suffering from a disease and fail to be aware of the illness until it has reached a late stage in its development."
             }
           ],
-          "legendHtml": "<p><ins data-full-width-responsive=\"true\"></ins></p>",
+          "legendHtml": "",
           "options": [
             "A",
             "B",
@@ -493,7 +479,7 @@ const test: PracticeTest = {
             {
               "id": "q32",
               "answer": "G",
-              "textHtml": "The possible application of the silk in civil engineering2",
+              "textHtml": "The possible application of the silk in civil engineering",
               "explanation": "Paragraph G suggests earthquake resistant suspension bridges hung from cables of synthetic silk, which is a civil engineering use. Paragraph B is tempting because it mentions vests and parachutes, but those are army equipment rather than construction.",
               "evidence": "They say that earthquake-resistant suspension bridges hung from cables of synthetic spider silk fibres may become a reality."
             }
@@ -581,7 +567,7 @@ const test: PracticeTest = {
               "explanation": "Lewis works at the University of Wyoming and Dorsch at DuPont, and each is quoted about his own work, but the passage never says the two men worked together on anything, so we cannot tell."
             }
           ],
-          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl><p><ins data-full-width-responsive=\"true\"></ins></p>"
+          "legendHtml": "<dl class=\"legend-key\"><dt>TRUE</dt><dd>if the statement agrees with the information</dd><dt>FALSE</dt><dd>if the statement contradicts the information</dd><dt>NOT GIVEN</dt><dd>if there is no information on this</dd></dl>"
         }
       ]
     }

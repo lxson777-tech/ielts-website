@@ -50,11 +50,14 @@ const test: PracticeTest = {
         {
           "title": "Questions 1-3",
           "type": "sentence-completion",
-          "instructionHtml": "Answer the following questions using NO MORE THAN ONE WORDS AND/OR A NUMBER from the passage.",
+          "instructionHtml": "Answer the following questions using NO MORE THAN ONE WORD AND/OR A NUMBER from the passage.",
           "questions": [
             {
               "id": "q1",
-              "answer": "18 (years old)",
+              "answer": [
+                "18",
+                "eighteen"
+              ],
               "before": "How old was Juliane at the time of the crash?",
               "after": "",
               "explanation": "The first paragraph introduces the film as the true story of an eighteen-year-old girl who was the only person to live through the crash, so Juliane was 18 when the plane came down.",
@@ -130,7 +133,7 @@ const test: PracticeTest = {
             {
               "id": "q7",
               "answer": "A",
-              "textHtml": "What, helped her to survive?",
+              "textHtml": "What helped her to survive?",
               "options": [
                 "Knowledge of the jungle",
                 "a map showing the location of the river",
@@ -257,7 +260,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 15-19",
           "type": "categorisation",
-          "instructionHtml": "Classify the following as relating to:",
+          "instructionHtml": "Classify the following as relating to: NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q15",
@@ -449,13 +452,26 @@ const test: PracticeTest = {
           ],
           "legendHtml": "<p><strong><span>List of Words</span></strong></p><table><tbody><tr><td width=\"119\"><span>Axis</span></td><td width=\"119\"><span>Estimate</span></td><td width=\"119\"><span>Perspective</span></td><td width=\"119\"><span>Map</span></td><td width=\"119\"><span>Direction</span></td></tr><tr><td width=\"119\"><span>Compare</span></td><td width=\"119\"><span>Projection</span></td><td width=\"119\"><span>Size</span></td><td width=\"119\"><span>Judge</span></td><td width=\"119\"><span>Accurately</span></td></tr><tr><td width=\"119\"><span>Angle</span></td><td width=\"119\"><span>Distances</span></td><td width=\"119\"><span>Models</span></td><td width=\"119\"><span>Change</span></td><td width=\"119\"></td></tr></tbody></table><p><span>For four centuries, map makers have been trying to convert three-dimensional information as accurately (example) as possible onto a two-dimensional plane. However, each method of (28) …………………. involves a compromise. Thus, a cylindrical projection indicates true north and south, known as fidelity of (29) …………. but misrepresents the relative size of countries.</span></p><p><span>To avoid this distortion, other cartographers rounded the lines of latitude and longitude. Dr. Peters felt that such maps presented a first-world (30) ……………… His map, with equal area projection, enables us to (31) …………… the size of one country with another.</span></p>",
           "options": [
-            "A"
+            "Axis",
+            "Estimate",
+            "Perspective",
+            "Map",
+            "Direction",
+            "Compare",
+            "Projection",
+            "Size",
+            "Judge",
+            "Accurately",
+            "Angle",
+            "Distances",
+            "Models",
+            "Change"
           ]
         },
         {
           "title": "Questions 32-36",
           "type": "matching-features",
-          "instructionHtml": "Use the information in the text to match the map projections [M A P] with the characteristics listed below.",
+          "instructionHtml": "Use the information in the text to match the map projections [M A P] with the characteristics listed below. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q32",

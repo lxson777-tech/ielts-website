@@ -65,7 +65,7 @@ const test: PracticeTest = {
               "id": "q1",
               "answer": "Benefits",
               "explanation": "The opening notes gap follows \"societal ___\", matching the passage's list of benefit types.",
-              "evidence": "they also provide numerous environmental, economic and social benefits."
+              "evidence": "Street trees are not only a key component of the urban landscape, but also provide numerous environmental, economic and social benefits."
             },
             {
               "id": "q2",
@@ -75,15 +75,15 @@ const test: PracticeTest = {
             },
             {
               "id": "q3",
-              "answer": "Surfaces",
-              "explanation": "Hard surfaces like concrete and asphalt store solar heat, causing the urban heat island effect.",
+              "answer": "Heat",
+              "explanation": "The gap follows ‘absorbing and retaining solar’, and the passage says the urban heat island effect is caused by hard surfaces such as concrete and asphalt ‘storing heat from the sun’, so the word is heat.",
               "evidence": "caused by hard surfaces such as concrete and asphalt storing heat from the sun."
             },
             {
               "id": "q4",
               "answer": "Water",
               "explanation": "Street trees improve water quality and reduce flooding, matching the gap \"___ quality and mitigate flooding\".",
-              "evidence": "they also improve water quality, reduce flooding"
+              "evidence": "They also improve water quality, reduce flooding"
             },
             {
               "id": "q5",
@@ -467,24 +467,36 @@ const test: PracticeTest = {
         },
         {
           "title": "Questions 39-40",
-          "type": "matching-headings",
+          "type": "multiple-choice",
           "instructionHtml": "Choose the correct letter, A, B, C or D.",
           "questions": [
             {
               "id": "q39",
               "answer": "D",
-              "textHtml": "What is the writer’s main purpose in Reading Passage 3? A to highlight the differences between the placebo effect and actual medical treatments B to provide support for those who believe that the placebo effect is a good thing C to argue that the placebo effect should be studied in more detail D to present evidence that the placebo effect is a real phenomenon",
+              "textHtml": "What is the writer’s main purpose in Reading Passage 3?",
               "explanation": "The passage's conclusion (paragraph G) argues the placebo effect is real and measurable, which is its overall purpose.",
-              "evidence": "it is clear that the placebo effect is a real and powerful phenomenon that can have a significant impact on a range of conditions."
+              "evidence": "it is clear that the placebo effect is a real and powerful phenomenon that can have a significant impact on a range of conditions.",
+              "options": [
+                "to highlight the differences between the placebo effect and actual medical treatments",
+                "to provide support for those who believe that the placebo effect is a good thing",
+                "to argue that the placebo effect should be studied in more detail",
+                "to present evidence that the placebo effect is a real phenomenon"
+              ]
             },
             {
               "id": "q40",
               "answer": "A",
-              "textHtml": "What would be the best subheading for this passage? A The placebo effect: a nuisance or a powerful healing tool? B The placebo effect: the key to effective pain management? C The placebo effect: a key to understanding the immune system? D The placebo effect: the end of modern medicine as we know it?",
-              "explanation": "The passage moves from the placebo effect being scorned to being shown as a genuinely powerful healing phenomenon, matching this subheading."
+              "textHtml": "What would be the best subheading for this passage?",
+              "explanation": "The passage moves from the placebo effect being scorned to being shown as a genuinely powerful healing phenomenon, matching this subheading.",
+              "options": [
+                "The placebo effect: a nuisance or a powerful healing tool?",
+                "The placebo effect: the key to effective pain management?",
+                "The placebo effect: a key to understanding the immune system?",
+                "The placebo effect: the end of modern medicine as we know it?"
+              ]
             }
           ],
-          "legendHtml": "<p><span><strong>A</strong> to highlight the differences between the placebo effect and actual medical treatments</span><br/>\n<span><strong>B</strong> to provide support for those who believe that the placebo effect is a good thing</span><br/>\n<span><strong>C</strong> to argue that the placebo effect should be studied in more detail</span><br/>\n<span><strong>D</strong> to present evidence that the placebo effect is a real phenomenon</span></p><p><span><strong>A</strong> The placebo effect: a nuisance or a powerful healing tool?</span><br/>\n<span><strong>B</strong> The placebo effect: the key to effective pain management?</span><br/>\n<span><strong>C</strong> The placebo effect: a key to understanding the immune system?</span><br/>\n<span><strong>D</strong> The placebo effect: the end of modern medicine as we know it?</span></p>",
+          "legendHtml": "",
           "options": [
             "A",
             "B",

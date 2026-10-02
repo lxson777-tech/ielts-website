@@ -14,7 +14,7 @@ export const strings: Record<string, string> = {
   'Listening questions and recordings are adapted with permission from':
     'Вопросы и записи для Listening адаптированы с разрешения',
   'Ready for the complete exam routine?': 'Готовы пройти весь экзамен по порядку?',
-  'Open Exam readiness': 'Открыть «Готовность к экзамену»',
+  'Take the full mock exam': 'Пройти полный пробный экзамен',
 
   /* Account page (src/pages/account.astro). */
   'Account sections': 'Разделы аккаунта',

@@ -119,8 +119,8 @@
       "ru": "Во втором абзаце предупреждается, что такой настрой ‘jeopardises the value of machine intelligence by disregarding important AI safety principles’. Это вариант A: автор указывает на риск."
     },
     "q29": {
-      "sha": "85e41ea1c3fd797b",
-      "ru": "В четвёртом абзаце сказано, что многие политики ‘do not understand’, что добавление нейросети само по себе не решит проблему. Это вариант C: они не осознают трудностей внедрения."
+      "sha": "859d5b8da69c8a3a",
+      "ru": "В четвёртом абзаце сказано, что многие политики превозносят преобразующую силу грядущей революции ИИ, но ‘they fail to realise the complexity around deploying advanced machine learning systems in the real world’. Это вариант C: они не осознают трудностей, с которыми связано внедрение национальных программ ИИ."
     },
     "q30": {
       "sha": "66ddbc1e2ada473e",

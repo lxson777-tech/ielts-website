@@ -81,7 +81,7 @@ export interface LessonMeta {
   image: string; // path under /pics, passed through withBase()
   level?: LessonLevel;
   /** See Sequenced.minutes. These overview pages are shorter reads than a
-      full part lesson, hence the flat 8. */
+      full part lesson, hence 8, except the longer Reading overview. */
   minutes?: number;
 }
 
@@ -101,7 +101,11 @@ export const LESSONS: LessonMeta[] = [
     description: nt('How the test works, the band score table, and a lesson for every official question type.'),
     image: '/pics/reading.png',
     level: nt('Beginner') as LessonLevel,
-    minutes: 8,
+    /* Not the flat 8 of the other overviews: this one also teaches the
+       routine behind every question type and the training order, about
+       1,400 words of teaching against 450 to 650 in the others (content
+       review, 3 October 2026). */
+    minutes: 12,
   },
   {
     slug: 'writing',

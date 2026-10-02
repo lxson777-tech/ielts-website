@@ -212,7 +212,7 @@ const test: PracticeTest = {
               "answer": "D",
               "textHtml": "a reference to a claim that was made without sufficient evidence",
               "explanation": "Paragraph D questions the 10,000-hour rule's appeal, noting practice was assumed to cause expertise without proof of causation.",
-              "evidence": "The idea that 10,000 hours of practice will make you an expert is appealing... but their research didn't determine whether practice was the cause of that expertise."
+              "evidence": "their research didn’t determine whether practice was the cause of that expertise. The idea that 10,000 hours of practice will make you an expert is appealing"
             }
           ],
           "options": [
@@ -418,7 +418,7 @@ const test: PracticeTest = {
         {
           "title": "Questions 27-32",
           "type": "paragraph-matching",
-          "instructionHtml": "Reading passage has ten paragraphs, A-J. Which paragraph contains the following information? Write the correct letter, A-J, in boxes 27-32 on your answer sheet.",
+          "instructionHtml": "Reading passage has ten paragraphs, A-J. Which paragraph contains the following information? Write the correct letter, A-J, in boxes 27-32 on your answer sheet. NB You may use any letter more than once.",
           "questions": [
             {
               "id": "q27",

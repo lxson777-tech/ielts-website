@@ -74,7 +74,7 @@ const test: PracticeTest = {
               "answer": "True",
               "textHtml": "The US Department of Defense has provided smart cards to its employees",
               "explanation": "Paragraph 3 says the Department of Defense has provided smart cards to its 4.3 million employees.",
-              "evidence": "In the United States, the Department of Defense has provided smart cards to its 4."
+              "evidence": "In the United States, the Department of Defense has provided smart cards to its 4.3 million employees"
             },
             {
               "id": "q5",
@@ -127,19 +127,22 @@ const test: PracticeTest = {
               "id": "q11",
               "answer": "Buses",
               "explanation": "Paragraph 7 says Hong Kong's Octopus card can also be used on buses, ferries and trams.",
-              "evidence": "The card can also be used on buses, ferries, and trams, and even in car parks and convenience stores."
+              "evidence": "The card can also be used on buses, ferries, and trams, and even in car parks and convenience stores.",
+              "answerPairId": "reading-308-q11-q13"
             },
             {
               "id": "q12",
               "answer": "Ferries",
               "explanation": "Paragraph 7 says Hong Kong's Octopus card can also be used on buses, ferries and trams.",
-              "evidence": "The card can also be used on buses, ferries, and trams, and even in car parks and convenience stores."
+              "evidence": "The card can also be used on buses, ferries, and trams, and even in car parks and convenience stores.",
+              "answerPairId": "reading-308-q11-q13"
             },
             {
               "id": "q13",
               "answer": "Trams",
               "explanation": "Paragraph 7 says Hong Kong's Octopus card can also be used on buses, ferries and trams.",
-              "evidence": "The card can also be used on buses, ferries, and trams, and even in car parks and convenience stores."
+              "evidence": "The card can also be used on buses, ferries, and trams, and even in car parks and convenience stores.",
+              "answerPairId": "reading-308-q11-q13"
             }
           ],
           "legendHtml": "<p><span><strong>THE SMART CARD</strong></span></p><p><span><strong>Functions of smart cards<br/>\n</strong></span><span>– store information<br/>\n</span><span>– allow the cardholder to access different systems</span></p><p><span><strong>Different uses of smart cards<br/>\n</strong></span><span>– to make small purchases<br/>\n</span><span>– to record phone and ATM transactions<br/>\n</span><span>– as a security pass</span></p><p><span><strong>Use of smart cards in France<br/>\n</strong></span><span>– to provide people with access to their own health records<br/>\n</span><span>– to store medical records and details about (8) ………………….<br/>\n</span><span>– to store (9) …………………</span></p><p><span><strong>Use of smart cards in the United States<br/>\n</strong></span><span>– to improve the security of the US passport card<br/>\n</span><span>– to provide a (10) …………………. between the card and a government database</span></p><p><span><strong>Use of smart cards in Hong Kong<br/>\n</strong></span><span>– to pay for travel on the city’s underground railway system<br/>\n</span><span>– to pay for travel on (11) ………………….. , (12) ……………….. and (13) …………….</span></p>",
@@ -236,7 +239,10 @@ const test: PracticeTest = {
           "questions": [
             {
               "id": "q19",
-              "answer": "Somatic",
+              "answer": [
+                "Somatic",
+                "Body"
+              ],
               "explanation": "Paragraph B says somatic gene therapy targets a patient's own body cells for gene replacement.",
               "evidence": "Gene therapy may be classified into the two following types: Somatic gene therapy: In somatic gene therapy, the therapeutic genes are transferred into the somatic cells (cells that do not make sperm or eggs) of a patient."
             },
@@ -279,9 +285,9 @@ const test: PracticeTest = {
             },
             {
               "id": "q24",
-              "answer": "Not given",
+              "answer": "False",
               "textHtml": "So far, gene therapy has only been used on adults",
-              "explanation": "The passage never states the ages of the patients treated, so whether gene therapy has only been used on adults is not stated."
+              "explanation": "Paragraph D says that two children treated for X-SCID in a clinical trial in 1999 later developed leukaemia, so gene therapy has already been used on children, not only on adults. The passage contradicts the statement."
             },
             {
               "id": "q25",
@@ -378,7 +384,7 @@ const test: PracticeTest = {
               "id": "q31",
               "answer": "Yes",
               "textHtml": "Students may learn better when they are taught using methods they are not familiar with",
-              "explanation": "Paragraph 8 says students who mix learning methods often learn more effectively than those who stick to one preferred style.",
+              "explanation": "Paragraph 7 says students who mix learning methods often learn more effectively than those who stick to one preferred style.",
               "evidence": "This is particularly worrying because research has shown that students who use a mix of learning methods often learn more effectively than those who stick to their ‘style’."
             }
           ],
@@ -451,13 +457,13 @@ const test: PracticeTest = {
             {
               "id": "q38",
               "answer": "Visual",
-              "explanation": "Paragraph 8 says students told they are visual learners might not try as hard at reading or listening tasks.",
-              "evidence": "In a typical research study, one group of students might be classified as ‘visual learners’, while another group would be classified as ‘auditory learners’."
+              "explanation": "Paragraph 7 says students told they are visual learners might not try as hard at reading or listening tasks.",
+              "evidence": "students who have been told that they are ‘visual learners’ might put less effort into tasks that are based on reading or listening"
             },
             {
               "id": "q39",
               "answer": "Mix",
-              "explanation": "Paragraph 8 says students who use a mix of learning methods often learn more effectively.",
+              "explanation": "Paragraph 7 says students who use a mix of learning methods often learn more effectively.",
               "evidence": "This is particularly worrying because research has shown that students who use a mix of learning methods often learn more effectively than those who stick to their ‘style’."
             },
             {
