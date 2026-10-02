@@ -105,7 +105,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
   {
     slug: 'places',
     title: nt('Hometown & Describing Places'),
-    blurb: nt('Every Speaking test opens with your hometown. The language to describe any place well.'),
+    blurb: nt('Many Speaking tests open with your hometown. The language to describe any place well.'),
     stage: 2,
     eyebrow: TOPIC_EYEBROW,
     minutes: 15,
@@ -161,7 +161,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
   {
     slug: 'crime',
     title: nt('Crime & Law'),
-    blurb: nt('Punishment, rehabilitation and the causes of crime. Around 1 in 10 Task 2 essays.'),
+    blurb: nt('Punishment, rehabilitation and the causes of crime. A frequent Task 2 topic.'),
     stage: 3,
     eyebrow: TOPIC_EYEBROW,
     minutes: 15,
@@ -185,7 +185,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
   {
     slug: 'ai',
     title: nt('Artificial Intelligence'),
-    blurb: nt('Automation, machine learning and job displacement. The fastest-growing essay theme of 2026.'),
+    blurb: nt('Automation, machine learning and job displacement. One of the fastest-growing essay themes.'),
     stage: 3,
     eyebrow: TOPIC_EYEBROW,
     minutes: 15,

@@ -21,7 +21,7 @@
 
 import type { SpokenFocusedTask } from '../focused-exercises';
 
-const OBJECTIVE = 'Turn one minute of preparation into a real plan for the two-minute talk, covering every bullet point in a clear order.';
+const OBJECTIVE = 'Turn one minute of preparation into a real plan for the two-minute talk, covering the whole card in a clear order.';
 
 const LESSON = { key: 'speaking-part2', blockHeading: 'Making the Most of Your 1 Minute' } as const;
 
@@ -29,7 +29,7 @@ const CHECKLIST = [
   'Did you write a few words for every "you should say" point before you started talking, not partway through?',
   'Did you talk about the points in a sensible order, rather than jumping between them?',
   'Did you keep talking for close to the full two minutes, rather than finishing early?',
-  'Did you close with a short final thought, rather than simply stopping?',
+  'Did you keep a backup idea ready, so you could carry on instead of stopping if your first idea ran out?',
 ] as const;
 
 const GUIDED: SpokenFocusedTask = {

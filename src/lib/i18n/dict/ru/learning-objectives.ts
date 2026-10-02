@@ -295,8 +295,8 @@ export const strings: Record<string, string> = {
 
   /* ── src/data/focused/speaking-part1-extend-an-answer.ts ─────────────────── */
   'Part 1: extend your answer': 'Part 1: разверните свой ответ',
-  'Extend a Part 1 answer into two or three sentences using Answer, Reason, Example, instead of stopping after one short answer.':
-    'Разверните ответ в Part 1 до двух-трёх предложений по модели Answer, Reason, Example, вместо того чтобы останавливаться после одного короткого ответа.',
+  'Extend a Part 1 answer into two or three sentences using Answer, Reason, Extend, instead of stopping after one short answer.':
+    'Разверните ответ в Part 1 до двух-трёх предложений по модели Answer, Reason, Extend, вместо того чтобы останавливаться после одного короткого ответа.',
   'Answer one question from the Work topic below. Give your straight answer, then a reason, then a real example, before you stop talking.':
     'Ответьте на один вопрос из темы Work ниже. Дайте прямой ответ, затем причину, затем реальный пример, прежде чем закончить говорить.',
   'Did you answer the question directly, in your first sentence?': 'Вы ответили на вопрос напрямую, в первом же предложении?',
@@ -308,8 +308,8 @@ export const strings: Record<string, string> = {
 
   /* ── src/data/focused/speaking-part2-plan-in-one-minute.ts ───────────────── */
   'Part 2: plan it in one minute': 'Part 2: спланируйте за одну минуту',
-  'Turn one minute of preparation into a real plan for the two-minute talk, covering every bullet point in a clear order.':
-    'Превратите одну минуту подготовки в настоящий план для двухминутного рассказа, охватив все пункты карточки в чёткой последовательности.',
+  'Turn one minute of preparation into a real plan for the two-minute talk, covering the whole card in a clear order.':
+    'Превратите одну минуту подготовки в настоящий план для двухминутного рассказа, охватив всю карточку в чёткой последовательности.',
   'Take one minute to plan this cue card, using the notes method the lesson teaches. Then record your two-minute answer.':
     'Возьмите одну минуту на план этой карточки, используя метод заметок из урока. Затем запишите свой двухминутный ответ.',
   'Did you write a few words for every "you should say" point before you started talking, not partway through?':
@@ -318,8 +318,8 @@ export const strings: Record<string, string> = {
     'Вы рассказывали о пунктах в логичном порядке, а не перескакивали между ними?',
   'Did you keep talking for close to the full two minutes, rather than finishing early?':
     'Вы говорили почти все две минуты, а не закончили раньше?',
-  'Did you close with a short final thought, rather than simply stopping?':
-    'Вы завершили короткой финальной мыслью, а не просто остановились?',
+  'Did you keep a backup idea ready, so you could carry on instead of stopping if your first idea ran out?':
+    'Была ли у вас наготове запасная идея, чтобы продолжить, а не остановиться, когда первая закончилась?',
 
   /* ── src/data/focused/speaking-fluency-repair.ts ──────────────────────────── */
   'Reducing long pauses': 'Сокращение долгих пауз',
@@ -329,8 +329,8 @@ export const strings: Record<string, string> = {
     'Ответьте на один вопрос из темы Hometown ниже. Если чувствуете, что вот-вот замолчите, используйте слово-заполнитель и продолжайте, а не останавливайтесь.',
   'Listening back, where is the longest silent gap? Estimate how many seconds it lasted.':
     'Слушая запись заново, где самая долгая тихая пауза? Оцените, сколько секунд она длилась.',
-  'When you paused, did you use a filler phrase (such as "let me think" or "that is a good question") to keep the flow going?':
-    'Когда вы делали паузу, использовали ли вы слово-заполнитель (например "let me think" или "that is a good question"), чтобы не терять поток речи?',
+  'When you paused, did you use a filler phrase (such as "let me think" or "that's a good question") to keep the flow going?':
+    'Когда вы делали паузу, использовали ли вы слово-заполнитель (например "let me think" или "that's a good question"), чтобы не терять поток речи?',
   'Did any pause run long enough that a listener would have started to wonder if you had finished?':
     'Была ли пауза настолько долгой, что слушатель мог бы подумать, что вы закончили?',
   'Compare this recording with your last one on the same kind of question: are the gaps shorter?':

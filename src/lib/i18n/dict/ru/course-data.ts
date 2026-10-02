@@ -268,16 +268,16 @@ export const strings: Record<string, string> = {
     'Неравенство, миграция и культурная идентичность для эссе на высокий балл.',
 
   'Crime & Law': 'Преступность и право',
-  'Punishment, rehabilitation and the causes of crime. Around 1 in 10 Task 2 essays.':
-    'Наказание, реабилитация и причины преступности. Примерно каждое десятое эссе Task 2.',
+  'Punishment, rehabilitation and the causes of crime. A frequent Task 2 topic.':
+    'Наказание, реабилитация и причины преступности. Частая тема Task 2.',
 
   'Government & Economy': 'Государство и экономика',
   'Taxation, public spending and the cost of living for policy-focused essays.':
     'Налогообложение, государственные расходы и стоимость жизни для эссе о государственной политике.',
 
   'Artificial Intelligence': 'Искусственный интеллект',
-  'Automation, machine learning and job displacement. The fastest-growing essay theme of 2026.':
-    'Автоматизация, машинное обучение и вытеснение рабочих мест. Самая быстрорастущая тема эссе 2026 года.',
+  'Automation, machine learning and job displacement. One of the fastest-growing essay themes.':
+    'Автоматизация, машинное обучение и вытеснение рабочих мест. Одна из самых быстрорастущих тем эссе.',
 
   'Social Media & Digital Life': 'Социальные сети и цифровая жизнь',
   'Echo chambers, influencers and screen time. A constant Speaking Part 1-3 topic.':
@@ -309,8 +309,8 @@ export const strings: Record<string, string> = {
   'The words to describe character. Speaking Part 2 asks you to describe a person more than anything else.':
     'Слова для описания характера. В Speaking Part 2 чаще всего просят описать человека.',
   'Hometown & Describing Places': 'Родной город и описание мест',
-  'Every Speaking test opens with your hometown. The language to describe any place well.':
-    'Любой Speaking начинается с вопросов о родном городе. Лексика, чтобы хорошо описать любое место.',
+  'Many Speaking tests open with your hometown. The language to describe any place well.':
+    'Многие Speaking начинаются с вопросов о родном городе. Лексика, чтобы хорошо описать любое место.',
   'Childhood & Growing Up': 'Детство и взросление',
   'Memories, upbringing and growing up. Behind a large share of Part 2 cue cards.':
     'Воспоминания, воспитание и взросление. На этом построена большая часть карточек Part 2.',

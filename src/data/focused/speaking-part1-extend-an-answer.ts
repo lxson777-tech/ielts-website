@@ -1,5 +1,5 @@
 /* Speaking Part 1, extending an answer with the A.R.E. structure the
- * speaking lessons already teach (Answer, Reason, Example): a one-word or
+ * speaking lessons already teach (Answer, Reason, Extend): a one-word or
  * one-clause answer to a Part 1 question, turned into two or three natural
  * sentences.
  *
@@ -21,7 +21,7 @@
 
 import type { SpokenFocusedTask } from '../focused-exercises';
 
-const OBJECTIVE = 'Extend a Part 1 answer into two or three sentences using Answer, Reason, Example, instead of stopping after one short answer.';
+const OBJECTIVE = 'Extend a Part 1 answer into two or three sentences using Answer, Reason, Extend, instead of stopping after one short answer.';
 
 const LESSON = { key: 'speaking-part1', blockHeading: 'A.R.E. in Action' } as const;
 

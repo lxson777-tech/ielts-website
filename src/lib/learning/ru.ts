@@ -575,10 +575,10 @@ const CATALOG_RU: Record<string, string> = {
 
   'Catch yourself before a silence runs long, and keep talking with a filler phrase instead of stopping, rather than pausing until the next idea arrives.':
     'Замечать паузу до того, как она затянется, и продолжать говорить с помощью связующей фразы вместо того, чтобы молчать в ожидании следующей мысли.',
-  'Extend a Part 1 answer into two or three sentences using Answer, Reason, Example, instead of stopping after one short answer.':
-    'Разворачивать ответ Part 1 в два-три предложения по схеме ответ, причина, пример, вместо того чтобы останавливаться после одной короткой фразы.',
-  'Turn one minute of preparation into a real plan for the two-minute talk, covering every bullet point in a clear order.':
-    'Превращать одну минуту подготовки в настоящий план для двухминутного рассказа, раскрывая каждый пункт карточки в понятном порядке.',
+  'Extend a Part 1 answer into two or three sentences using Answer, Reason, Extend, instead of stopping after one short answer.':
+    'Разворачивать ответ Part 1 в два-три предложения по схеме ответ, причина, развитие мысли, вместо того чтобы останавливаться после одной короткой фразы.',
+  'Turn one minute of preparation into a real plan for the two-minute talk, covering the whole card in a clear order.':
+    'Превращать одну минуту подготовки в настоящий план для двухминутного рассказа, раскрывая всю карточку в понятном порядке.',
   'Tell a Part 2 story using more than one tense: the past for what happened, and the present for how things are now or how you feel about it looking back.':
     'Рассказывать историю Part 2, используя больше одного времени: прошедшее для того, что произошло, и настоящее для того, как обстоят дела сейчас или что вы об этом думаете сегодня.',
   'Give an opinion on a Part 3 question, justify it with a reason, and support the reason with a specific example, using the OREO structure.':
