@@ -128,12 +128,27 @@ test('the free-account model is on the page in both languages, and no trial is',
   assert.match(SALES_COPY['faq.unlimited.a'].en, /12 essay assessments, 6 recorded Speaking assessments/);
   assert.match(SALES_COPY['faq.academic.a'].en, /Academic IELTS/);
   assert.match(SALES_COPY['faq.academic.a'].ru, /Academic IELTS/);
-  // Alex, 29 September 2026: fixed periods, no automatic renewal, no refunds after purchase.
-  assert.match(SALES_COPY['price.status'].en, /no automatic renewal, no refunds after purchase/);
+  // Alex, 29 September 2026: fixed periods, no automatic renewal.
+  assert.match(SALES_COPY['price.status'].en, /no automatic renewal/);
   assert.match(SALES_COPY['faq.renewal.a'].en, /never charged automatically/);
-  assert.match(SALES_COPY['faq.refund.a'].en, /^No\. Payments are not refunded after purchase/);
-  assert.match(SALES_COPY['faq.refund.a'].ru, /^Нет\. После покупки деньги не возвращаются/);
-  assert.match(SALES_COPY['faq.refund.a'].en, /purchase terms/);
+  // Alex, 2 October 2026: the unused share is refunded on request (the
+  // public offer's refund rule, src/lib/legal/refund.ts), replacing "no
+  // refunds after purchase", which Kazakh consumer law very likely voids.
+  for (const key of ['price.status', 'price.status.open'] as const) {
+    assert.match(SALES_COPY[key].en, /unused share is refunded on request/);
+    assert.match(SALES_COPY[key].ru, /Неиспользованную часть оплаты можно вернуть по запросу/);
+  }
+  assert.match(SALES_COPY['price.paid.small'].en, /ask for a refund during the 30 days, and we pay back the share you have not used/);
+  assert.match(SALES_COPY['price.paid.small'].ru, /можно попросить возврат, и мы вернём неиспользованную часть оплаты/);
+  assert.match(SALES_COPY['faq.refund.a'].en, /^Yes\. You can ask for a refund at any time during your 30 days/);
+  assert.match(SALES_COPY['faq.refund.a'].en, /larger of the days that have started and the AI assessments you have used/);
+  assert.match(SALES_COPY['faq.refund.a'].ru, /^Да\. В течение 30 дней можно в любой момент попросить возврат/);
+  assert.match(SALES_COPY['faq.refund.a'].en, /public offer/);
+  // Nothing on the page still says refunds are refused.
+  for (const [key, value] of Object.entries(SALES_COPY)) {
+    assert.doesNotMatch(value.en, /no refunds?|not refunded/i, `${key} still refuses refunds`);
+    assert.doesNotMatch(value.ru, /не возвращаются|без возврата/i, `${key} still refuses refunds (ru)`);
+  }
 });
 
 test('the allowances on the page are the approved ones', () => {

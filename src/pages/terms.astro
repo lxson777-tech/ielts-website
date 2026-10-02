@@ -1,13 +1,22 @@
 ---
-/* /terms: the free account and practice and guidance, in plain words
-   (Builder E, 29 September 2026; Builder W, 1 October 2026). The text lives
-   in src/components/support/TermsDocument.tsx because its sentences carry
-   the real price. */
+/* /terms (Builder E, 29 September 2026; Builder W, 1 October 2026; Builder
+   L, 2 October 2026). On the gated build (the paid site) this is the public
+   offer agreement; on the open build (the live site) it is the free-site
+   terms, as before. The text lives in
+   src/components/support/TermsDocument.tsx because its sentences carry the
+   real price, the days and the included assessments. */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TermsDocument from '../components/support/TermsDocument';
+import { isTrialBuild } from '../lib/trial/mode';
+
+const offer = isTrialBuild();
+const title = offer ? 'Public offer · IELTS is EZ' : 'Terms of use · IELTS is EZ';
+const description = offer
+  ? 'The public offer for practice and guidance on IELTS is EZ: who sells, what 30 days include, how the agreement is made, refunds of the unused share, complaints and your rights.'
+  : 'IELTS is EZ in plain words: every lesson is free with an account; practice and guidance last 30 days, with no automatic renewal, and a refund of the unused share on request.';
 ---
 
-<BaseLayout title="Terms of use · IELTS is EZ" description="IELTS is EZ in plain words: every lesson is free with an account; practice and guidance last 30 days, with no automatic renewal and no refunds after purchase.">
+<BaseLayout title={title} description={description}>
   <TermsDocument client:load />
 </BaseLayout>
 

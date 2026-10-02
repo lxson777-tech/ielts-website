@@ -16,9 +16,14 @@
    docs/paid-access/FREE-ACCOUNT-MODEL.md): every lesson is free with an
    account; practice, tests and personal guidance are paid ("practice and
    guidance", in Russian "практика и сопровождение", always that one name),
-   one price for 30 days, no automatic renewal, no refunds after purchase.
-   There is no free trial. Nothing here promises free practice to the
-   public: students Alex teaches get theirs from him directly.
+   one price for 30 days, no automatic renewal. There is no free trial.
+   Refunds (Alex, 2 October 2026, replacing "no refunds after purchase"): a
+   refund of the unused share on request at any time during the 30 days,
+   the used share being the larger of the days started and the AI
+   assessments used (src/lib/legal/refund.ts; the full rule and its worked
+   example are on the public offer, /terms#refunds). Nothing here promises
+   free practice to the public: students Alex teaches get theirs from him
+   directly.
 
    How it is used
    ---------------
@@ -407,9 +412,10 @@ export const SALES_COPY = {
 
   /* Free and paid (PricingPlans.astro). Alex, 1 October 2026: every lesson
      is free with an account; practice and guidance are one price for 30
-     days, which simply end (no automatic renewal), with no refunds after
-     purchase. Buying is possible only where the build has a payments
-     Worker; elsewhere the button stays unavailable and the page says so. */
+     days, which simply end (no automatic renewal); the unused share is
+     refunded on request during the 30 days. Buying is possible only where
+     the build has a payments Worker; elsewhere the button stays unavailable
+     and the page says so. */
   'price.title': {
     en: 'Every lesson, free.<br /><span>Guidance when you want it.</span>',
     ru: 'Все уроки бесплатно.<br /><span>Сопровождение, когда оно нужно.</span>',
@@ -450,17 +456,17 @@ export const SALES_COPY = {
     ru: 'Mr EZ, ваш личный ИИ-репетитор, и ваш личный учебный план',
   },
   'price.paid.small': {
-    en: 'No automatic renewal: access simply ends after 30 days. No refunds after purchase. Recorded Speaking assessments last up to 5 minutes and live interviews up to 15. The placement test is once per account. Essays written in a mock exam or the placement test count towards the 12. Unused assessments expire with the 30 days. Mr EZ allows 40 chat messages and 60 lesson-help requests a day.',
-    ru: 'Без автоматического продления: доступ просто заканчивается через 30 дней. После покупки деньги не возвращаются. Запись Speaking длится до 5 минут, устное собеседование до 15 минут. Вступительный тест проходят один раз на аккаунт. Эссе в пробном экзамене и во вступительном тесте входят в 12 проверок. Неиспользованные проверки сгорают через 30 дней. Mr EZ: 40 сообщений в чате и 60 запросов помощи в уроках в день.',
+    en: 'No automatic renewal: access simply ends after 30 days. You can ask for a refund during the 30 days, and we pay back the share you have not used. Recorded Speaking assessments last up to 5 minutes and live interviews up to 15. The placement test is once per account. Essays written in a mock exam or the placement test count towards the 12. Unused assessments expire with the 30 days. Mr EZ allows 40 chat messages and 60 lesson-help requests a day.',
+    ru: 'Без автоматического продления: доступ просто заканчивается через 30 дней. В течение 30 дней можно попросить возврат, и мы вернём неиспользованную часть оплаты. Запись Speaking длится до 5 минут, устное собеседование до 15 минут. Вступительный тест проходят один раз на аккаунт. Эссе в пробном экзамене и во вступительном тесте входят в 12 проверок. Неиспользованные проверки сгорают через 30 дней. Mr EZ: 40 сообщений в чате и 60 запросов помощи в уроках в день.',
   },
   'price.paid.cta': { en: 'Get practice and guidance', ru: 'Подключить практику и сопровождение' },
   'price.status': {
-    en: '30 days, no automatic renewal, no refunds after purchase. Buying is not switched on yet.',
-    ru: '30 дней, без автоматического продления, без возврата денег после покупки. Покупка пока недоступна.',
+    en: '30 days, no automatic renewal. The unused share is refunded on request. Buying is not switched on yet.',
+    ru: '30 дней, без автоматического продления. Неиспользованную часть оплаты можно вернуть по запросу. Покупка пока недоступна.',
   },
   'price.status.open': {
-    en: '30 days, no automatic renewal, no refunds after purchase. Check what is included before you buy.',
-    ru: '30 дней, без автоматического продления, без возврата денег после покупки. Перед покупкой проверьте, что входит в доступ.',
+    en: '30 days, no automatic renewal. The unused share is refunded on request. Check what is included before you buy.',
+    ru: '30 дней, без автоматического продления. Неиспользованную часть оплаты можно вернуть по запросу. Перед покупкой проверьте, что входит в доступ.',
   },
   'price.plans': { en: 'See the plans', ru: 'Посмотреть тарифы' },
 
@@ -489,8 +495,8 @@ export const SALES_COPY = {
   },
   'faq.refund.q': { en: 'Can I get a refund?', ru: 'Можно ли вернуть деньги?' },
   'faq.refund.a': {
-    en: 'No. Payments are not refunded after purchase. Every lesson is free with an account, so you can see how the course teaches before you decide. The purchase terms have the details.',
-    ru: 'Нет. После покупки деньги не возвращаются. Все уроки бесплатны с аккаунтом, поэтому до решения вы можете посмотреть, как устроено обучение. Подробности в правилах покупки.',
+    en: 'Yes. You can ask for a refund at any time during your 30 days, and we pay back the share you have not used. The used share is the larger of the days that have started and the AI assessments you have used. Ask through the support form. The public offer has the full rule and a worked example.',
+    ru: 'Да. В течение 30 дней можно в любой момент попросить возврат, и мы вернём неиспользованную часть оплаты. Использованная часть считается по большему из двух: сколько дней доступа уже началось и сколько проверок ИИ вы уже использовали. Напишите нам через форму поддержки. Полное правило и пример расчёта есть в публичной оферте.',
   },
   'faq.unlimited.q': { en: 'Is AI practice unlimited?', ru: 'Практика с ИИ без ограничений?' },
   'faq.unlimited.a': {

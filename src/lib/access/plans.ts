@@ -58,10 +58,15 @@ export const THREE_MONTH_SAVING = FULL_ACCESS_PRICES_KZT.oneMonth * 3 - FULL_ACC
 export const PAID_AI_ALLOWANCE = 'Each 30-day purchase includes 12 essay assessments, 6 recorded Speaking assessments (up to 5 minutes each), and 2 live interviews with feedback (up to 15 minutes each), plus 2 full mock exams and the placement test once per account. Unused assessments expire with that purchase. Every lesson stays free with an account. Paid access includes unlimited Reading and Listening practice. Mr EZ includes 40 chat messages and 60 lesson-help requests per day.';
 
 /** Also decided on 29 September 2026: a purchase is a fixed period that
-    simply ends. There is no automatic renewal and no refund after purchase
-    (nothing student-facing offers one; the database still records a refund
-    a provider issues, for example by error). Buying again while access is
-    running adds the new period after the current one. */
+    simply ends. There is no automatic renewal. Buying again while access is
+    running adds the new period after the current one.
+    Refunds (Alex, 2 October 2026, replacing "no refunds after purchase"): a
+    student may ask at any time during the period and gets the unused share
+    back, the used share being the larger of the days started and the
+    assessments used (src/lib/legal/refund.ts; the full rule is on the
+    public offer, /terms#refunds). A refund is issued by a person through
+    the payment provider; the database records it (access_order_refunded),
+    which ends that purchase's access at once. */
 export const PAID_ACCESS_RENEWS = false;
 
 export function paidPlan(id: string): PaidPlan | null {

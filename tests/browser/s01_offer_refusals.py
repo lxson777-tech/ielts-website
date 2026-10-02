@@ -10,7 +10,8 @@ mode: real Workers, SIMULATED grades, SIMULATED payments, no money, no model):
     to Plans, and never "could not reach the grading service" (P1-2, P2-12);
   - the placement test and Mock Exam Day say what they use before starting
     (P1-6);
-  - the refund answer says no refunds after purchase (P2-10).
+  - the refund answer gives the refund rule: the unused share, on request
+    (P2-10; was "no refunds after purchase" until 2 October 2026).
 
 And on the OPEN build (today's live site configuration) against the same
 open build of commit fe4ebdb: lesson help buttons for a signed-out reader,
@@ -321,8 +322,8 @@ def gated_journey(p) -> None:
 
     # The refund answer (sales page, signed out), both languages.
     for lang, phrase, question in (
-        ("en", "There are no refunds after purchase.", "Can I get a refund?"),
-        ("ru", "после покупки деньги не возвращаются", "Можно ли вернуть деньги?"),
+        ("en", "we pay back the share you have not used", "Can I get a refund?"),
+        ("ru", "мы вернём неиспользованную часть оплаты", "Можно ли вернуть деньги?"),
     ):
         sc = browser.new_context(viewport={"width": 390, "height": 844}, locale="ru-RU" if lang == "ru" else "en-US")
         sc.add_init_script(f'localStorage.setItem("ielts.locale.v1","{lang}");')
@@ -333,7 +334,7 @@ def gated_journey(p) -> None:
         q.scroll_into_view_if_needed()
         q.click()
         sp.wait_for_function("(p)=>document.body.innerText.includes(p)", arg=phrase, timeout=30000)
-        check(f"refund FAQ ({lang}): no refunds after purchase, shown when opened", True)
+        check(f"refund FAQ ({lang}): the refund rule, shown when opened", True)
         shot(sp, f"13-refund-faq-{lang}-390", full=False)
         sc.close()
 

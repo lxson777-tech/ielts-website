@@ -7,10 +7,14 @@
    the SIMULATED provider says so in the receipt itself, because no money
    moved.
 
-   The seller's name and details: NOT shown. Alex has not published operator
-   details yet (29 September 2026), and nothing may be invented.
-   TODO(Builder E / orchestrator): once src/lib/operator.ts exists, render
-   its seller name and details in the marked block below, and only from it. */
+   The seller (Builder L, 2 October 2026): the name, IIN, registered address
+   and contacts, read ONLY through sellerRows() / legalDetail() in
+   src/lib/operator.ts, with a link to the public offer. A receipt exists
+   only on the gated build, where a detail Alex has not filled in shows as a
+   marked placeholder. This page is the purchase record a student can print;
+   the fiscal receipt from an online cash register, which the tax law may
+   also require for card payments, comes with the payment provider and is
+   not this page. */
 
 import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
@@ -22,7 +26,11 @@ import { signInHref } from '../../lib/auth/profile';
 import { currentRoute } from '../../lib/auth/next';
 import { isOrderId, receiptFor, receiptRows, type OrderFetch } from './access-state';
 import { readOrder } from './payments';
+import { sellerRows } from '../../lib/legal/offer';
+import { isTrialBuild } from '../../lib/trial/mode';
+import { SellerValue } from '../legal/SellerDetails';
 import '../../styles/access.css';
+import '../../styles/legal.css';
 
 export default function Receipt() {
   const { t, locale } = useT();
@@ -138,9 +146,7 @@ export default function Receipt() {
                 </div>
               )}
             </dl>
-            {/* SELLER BLOCK: intentionally empty. Render the seller's name and
-                details here ONLY from src/lib/operator.ts (Builder E) once it
-                exists. Never type them in here. */}
+            <SellerBlock />
           </article>
           <div className="access-actions access-no-print">
             <button type="button" className="access-buy" onClick={() => window.print()}>
@@ -154,6 +160,27 @@ export default function Receipt() {
   }
 
   return <div className="trial-ui access-receipt-page">{content}</div>;
+}
+
+/* The seller, only from src/lib/operator.ts. Never type a detail in here. */
+function SellerBlock() {
+  const { t } = useT();
+  const rows = sellerRows(['fullName', 'iin', 'registeredAddress', 'phone', 'email'], isTrialBuild());
+  if (rows.length === 0) return null;
+  return (
+    <section className="legal-seller-receipt" aria-labelledby="access-receipt-seller">
+      <h2 id="access-receipt-seller">{t('Seller')}</h2>
+      {rows.map((row) => (
+        <p key={row.key}>
+          {row.key === 'fullName' ? null : <>{t(row.label)}: </>}
+          <SellerValue {...row} />
+        </p>
+      ))}
+      <p className="access-no-print">
+        <a href={withBase('/terms')}>{t('Public offer')}</a>
+      </p>
+    </section>
+  );
 }
 
 function Loading() {

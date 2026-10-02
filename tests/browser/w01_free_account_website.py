@@ -8,8 +8,8 @@ website):
   - every call to action lands on sign-up, sign-in or the plans page, and no
     link anywhere on the page goes to /trial or to a lesson;
   - the pricing and the questions say: every lesson free with an account,
-    practice and guidance paid, the price, no automatic renewal, no refunds
-    after purchase;
+    practice and guidance paid, the price, no automatic renewal, a refund of
+    the unused share on request;
   - the questionnaire's plan marks which days are free lessons, and its
     answers survive sign-up and the profile and arrive on the dashboard;
   - /terms, /privacy and /help read correctly in both languages.
@@ -180,7 +180,7 @@ def run() -> int:
         for phrase in ["Every lesson, free.", "Free account", "Every lesson for Reading, Listening, Writing and Speaking",
                        "Practice and guidance", "₸12,990", "for 30 days", "12 essay assessments and 6 recorded Speaking assessments",
                        "2 live interviews", "2 full mock exams and the placement test", "No automatic renewal",
-                       "No refunds after purchase", "Get practice and guidance"]:
+                       "we pay back the share you have not used", "Get practice and guidance"]:
             check(f"en pricing says: {phrase}", phrase.lower() in pricing.lower())  # labels are capitalised by CSS
         buy = page.locator("#pricing [data-buy-link]")
         check("en pricing: Get practice and guidance goes to /plans (buying is on in this build)",
@@ -194,7 +194,7 @@ def run() -> int:
         faq = text_of(page, "#questions")
         for phrase in ["What is free?", "Every lesson, with an account", "What is paid, and why?", "costs real money to run",
                        "30 days cost ₸12,990, paid once", "Does it renew automatically?", "never charged automatically",
-                       "Can I get a refund?", "No. Payments are not refunded after purchase", "Academic IELTS",
+                       "Can I get a refund?", "Yes. You can ask for a refund at any time during your 30 days", "Academic IELTS",
                        "Do I need an account to read the lessons?", "Yes. Lessons open with a free account"]:
             check(f"en FAQ says: {phrase}", phrase in faq)
         body = page.locator("body").inner_text()

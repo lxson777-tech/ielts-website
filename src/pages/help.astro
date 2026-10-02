@@ -13,6 +13,12 @@
    (docs/paid-access/FREE-ACCOUNT-MODEL.md), so two answers say how that
    works and how to get guidance, and Mr EZ's answer says he comes with it.
    The open build (today's live site) sells nothing and keeps its answers.
+   Refunds (Builder L, 2 October 2026): "payments are not refunded after
+   purchase" became the refund rule of the public offer
+   (src/lib/legal/refund.ts, /terms#refunds), with its own answer here. The
+   seller's email (src/lib/operator.ts, through sellerEmail()) joins "Talk
+   to a person" on the gated build, as a marked placeholder until Alex fills
+   it in, and on the open build only once it is filled in.
    Presentation is Codex's; this uses the existing account/report page shell. */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { withBase } from '../lib/url';
@@ -21,9 +27,14 @@ import { publishedOperator } from '../lib/operator';
 import { SUPPORT_ENABLED } from '../lib/support';
 import { isTrialBuild } from '../lib/trial/mode';
 import { PURCHASE_ENABLED } from '../components/access/payments';
+import { sellerEmail } from '../lib/legal/offer';
+import '../styles/legal.css';
 
 const operator = publishedOperator();
 const sellsAccess = isTrialBuild();
+/* A direct way to write: the published operator contact, or else the
+   seller's email from the legal details. */
+const directEmail = operator?.contact ? null : sellerEmail(sellsAccess);
 
 /* Gated build only: what is free, what is paid, and how to get guidance. */
 const accessSections: { id: string; question: string; answers: string[] }[] = [
@@ -34,8 +45,17 @@ const accessSections: { id: string; question: string; answers: string[] }[] = [
       /* The access tiers: src/lib/access/model.ts. */
       nt('Every lesson is free with an account: the explanations, worked examples, each lesson’s own short quiz and the vocabulary lists.'),
       nt('Practice and guidance are paid: practice exercises and timed tests with band estimates, AI feedback on essays and recorded Speaking, live interviews with the AI examiner, full mock exams, the placement test, Mr EZ and the practice in your personal study plan.'),
-      /* src/lib/access/plans.ts: 30 days, no renewal, no refunds after purchase. */
-      nt('Practice and guidance last 30 days and then simply end. Nothing renews, and payments are not refunded after purchase. The Plans page shows the price and what 30 days include.'),
+      /* src/lib/access/plans.ts: 30 days, no renewal. */
+      nt('Practice and guidance last 30 days and then simply end. Nothing renews. The Plans page shows the price and what 30 days include.'),
+    ],
+  },
+  {
+    id: 'refund',
+    question: nt('Can I get a refund?'),
+    answers: [
+      /* The refund rule: src/lib/legal/refund.ts and the offer, /terms#refunds. */
+      nt('Yes. You can ask for a refund at any time during the 30 days, and we pay back the share you have not used. The used share is the larger of the days that have started and the AI assessments you have used.'),
+      nt('Ask through the support form, choosing a refund, or by email to the seller. The public offer has the full rule and a worked example.'),
     ],
   },
   {
@@ -151,6 +171,12 @@ const sections: { id: string; question: string; answers: string[] }[] = [
             {operator.contactHref ? <a href={operator.contactHref}>{operator.contact}</a> : operator.contact}
           </p>
         )}
+        {directEmail && (
+          <p>
+            <span data-i18n>Or write directly:</span>{' '}
+            {directEmail.draft ? <span class="legal-draft">{directEmail.text}</span> : <a href={directEmail.href ?? undefined}>{directEmail.text}</a>}
+          </p>
+        )}
       </div>
       {SUPPORT_ENABLED && <a class="policy-action" href={withBase('/support?reason=help')} data-i18n>Ask a person</a>}
     </section>
@@ -171,7 +197,7 @@ const sections: { id: string; question: string; answers: string[] }[] = [
     </p>
     <p class="help-policies">
       <a href={withBase('/privacy')} data-i18n>Privacy</a>
-      <a href={withBase('/terms')} data-i18n>Terms of use</a>
+      {sellsAccess ? <a href={withBase('/terms')} data-i18n>Public offer</a> : <a href={withBase('/terms')} data-i18n>Terms of use</a>}
     </p>
   </div>
 </BaseLayout>

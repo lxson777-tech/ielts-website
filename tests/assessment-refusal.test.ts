@@ -298,8 +298,10 @@ test('the open build keeps its 18-minute live mock, its part-of-lesson scroll an
   assert.match(read('src/components/LiveExaminer.tsx'), /purpose: isTrialBuild\(\) \? \(placement \? 'placement' : mock \? 'mock' : undefined\) : undefined,/);
 });
 
-test('the refund answer says no refunds after purchase, in both languages (P2-10)', () => {
-  // Wording settled by the free-account website (Builder W, 1 October 2026).
-  assert.match(SALES_COPY['faq.refund.a'].en, /^No\. Payments are not refunded after purchase\./);
-  assert.match(SALES_COPY['faq.refund.a'].ru, /^Нет\. После покупки деньги не возвращаются\./);
+test('the refund answer gives the refund rule, in both languages (P2-10)', () => {
+  // Wording settled by the free-account website (Builder W, 1 October 2026),
+  // then the refund rule of the public offer (Builder L, 2 October 2026):
+  // the unused share is refunded on request during the 30 days.
+  assert.match(SALES_COPY['faq.refund.a'].en, /^Yes\. You can ask for a refund at any time during your 30 days, and we pay back the share you have not used\./);
+  assert.match(SALES_COPY['faq.refund.a'].ru, /^Да\. В течение 30 дней можно в любой момент попросить возврат, и мы вернём неиспользованную часть оплаты\./);
 });

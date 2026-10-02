@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useT } from '../../lib/i18n/react';
 import { withBase } from '../../lib/url';
 import { refreshAfterAccessChange } from '../../lib/trial/client';
+import { isTrialBuild } from '../../lib/trial/mode';
 import type { TrialHookView } from '../../lib/trial/react';
 import type { PaymentOrder } from '../../lib/access/plans';
 import {
@@ -283,7 +284,7 @@ export function PurchaseLinks() {
   const { t } = useT();
   return (
     <p className="access-links">
-      <a href={withBase('/terms')}>{t('Terms of use')}</a>
+      <a href={withBase('/terms')}>{isTrialBuild() ? t('Public offer') : t('Terms of use')}</a>
       <span aria-hidden="true">·</span>
       <a href={withBase('/privacy')}>{t('Privacy')}</a>
     </p>

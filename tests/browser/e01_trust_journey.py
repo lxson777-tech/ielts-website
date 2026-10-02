@@ -243,9 +243,9 @@ def main() -> int:
             price = ("10,000 KZT" in body and "25,000 KZT" in body) if locale == "en" else (
                 "10 000 тенге" in body.replace(" ", " ") and "25 000 тенге" in body.replace(" ", " "))
             check(f"{tag} /terms: readable, with the approved prices", want in body and price)
-            check(f"{tag} /terms: no refunds, no renewal, fair daily limits, results kept",
-                  all(k in body for k in (["not refunded", "Nothing renews", "daily safety limit", "stays on your account"]
-                                           if locale == "en" else ["не возвращаются", "не продлевается", "дневной лимит", "остаётся в аккаунте"])))
+            check(f"{tag} /terms: refund of the unused share, no renewal, fair daily limits, results kept",
+                  all(k in body for k in (["share you have not used", "Nothing renews", "daily safety limit", "stays on your account"]
+                                           if locale == "en" else ["неиспользованную часть", "не продлевается", "дневной лимит", "остаётся в аккаунте"])))
             check(f"{tag} /terms: says buying is not open yet", "not open yet" in body or "пока нельзя" in body)
             check(f"{tag} /terms: no sideways scroll", no_sideways_scroll(page))
             shot(page, f"{tag}-terms")

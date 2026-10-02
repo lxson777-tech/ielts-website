@@ -5,8 +5,9 @@ import AssessmentBalance from '../access/AssessmentBalance';
    Monthly 10,000 KZT and three months 25,000 KZT are approved (the numbers
    live in src/lib/access/plans.ts and the database). Alex decided on 29
    September 2026 that a purchase is a fixed period that simply ends: no
-   automatic renewal, no refund after purchase (the free trial is the time to
-   try).
+   automatic renewal. Refunds (2 October 2026): the unused share, on request,
+   at any time during the 30 days; PurchaseTerms says so beside the plans and
+   the offer (/terms#refunds) has the full rule.
 
    Two states:
    - PUBLIC_PAYMENTS_URL unset (or the open site): exactly the honest page

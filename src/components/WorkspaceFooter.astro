@@ -4,11 +4,25 @@ import { SUPPORT_ENABLED } from '../lib/support';
    person, and the two policy pages (audit F04, Builder E, 29 September
    2026). The full marketing footer stays on the public pages only. The
    operator's name joins the wordmark only once Alex publishes it in
-   src/lib/operator.ts; until then the line names nobody. */
+   src/lib/operator.ts; until then the line names nobody.
+
+   The seller line (Builder L, 2 October 2026): Kazakh consumer law asks a
+   site that sells to show who sells on the site itself (the research in
+   docs/legal/KZ-WEBSITE-REQUIREMENTS-2026-10-02.md, section 2). So under the
+   links, a small line with the seller's name, IIN, phone and email, read
+   ONLY through sellerRows() / legalDetail(), and a link to the public offer.
+   On the gated build a detail Alex has not filled in shows as a marked
+   placeholder; on the open build (the live site) the line appears only for
+   details that are filled in, so today it shows nothing at all. */
 import { withBase } from '../lib/url';
 import { publishedOperator } from '../lib/operator';
+import { sellerRows, SELLER_SHORT } from '../lib/legal/offer';
+import { isTrialBuild } from '../lib/trial/mode';
+import '../styles/legal.css';
 
 const operator = publishedOperator();
+const offer = isTrialBuild();
+const seller = sellerRows(SELLER_SHORT, offer);
 ---
 
 <footer class="ws-footer ws-footer-trust">
@@ -17,8 +31,19 @@ const operator = publishedOperator();
     <a href={withBase('/help')} data-i18n>Help</a>
     {SUPPORT_ENABLED && <a href={withBase('/support?reason=footer')} data-i18n>Report a problem</a>}
     <a href={withBase('/privacy')} data-i18n>Privacy</a>
-    <a href={withBase('/terms')} data-i18n>Terms</a>
+    {offer ? <a href={withBase('/terms')} data-i18n>Public offer</a> : <a href={withBase('/terms')} data-i18n>Terms</a>}
   </nav>
+  {seller.length > 0 && (
+    <p class="legal-footer" aria-label="Seller" data-i18n-attr="aria-label">
+      {seller.map((row) => (
+        <span>
+          {row.key !== 'fullName' && <span data-i18n>{row.label}</span>}
+          {row.key !== 'fullName' && ' '}
+          {row.draft ? <span class="legal-draft">{row.text}</span> : row.href ? <a href={row.href}>{row.text}</a> : row.text}
+        </span>
+      ))}
+    </p>
+  )}
 </footer>
 
 <style>

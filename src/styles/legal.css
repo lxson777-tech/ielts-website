@@ -1,0 +1,105 @@
+/* The seller's details, the refund example and the footer's seller line
+   (Builder L, 2 October 2026). Sits on top of trust-pages.css: the same warm
+   surface, forest ink and separators, nothing louder. */
+
+/* A detail Alex has not filled in yet. Seen only in the gated build, which
+   is reviewed locally and never published as it is. */
+.legal-draft {
+  border-bottom: 1px dashed currentColor;
+  color: var(--color-ink-muted);
+  font-style: italic;
+}
+
+/* /terms#refunds lands below the floating workspace header, not under it. */
+.policy-section[id] {
+  scroll-margin-top: 104px;
+}
+
+.legal-seller {
+  margin-top: 4px;
+}
+
+/* Links inside the legal lists read as links: ink, underlined, as the
+   policy pages' own footer links are. */
+.policy .policy-list a,
+.policy .legal-seller a {
+  color: var(--color-ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--color-border);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 180ms ease;
+}
+.policy .policy-list a:hover,
+.policy .legal-seller a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* The worked refund example: one quiet panel, numbers in tabular figures. */
+.legal-example {
+  max-width: 68ch;
+  margin: 18px 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface);
+  padding: 16px 20px;
+  font-variant-numeric: tabular-nums;
+}
+.policy-section .legal-example h3 {
+  margin: 0 0 8px;
+  font-size: 0.92rem;
+  font-weight: 650;
+}
+.legal-example ol {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 1.3em;
+  list-style: decimal;
+  line-height: 1.6;
+}
+.legal-example li:last-child {
+  font-weight: 650;
+}
+
+/* The seller line at the foot of the workspace: small, muted, wraps. */
+.legal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 14px;
+  width: 100%;
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+.legal-footer a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+/* On the receipt the seller block sits under the purchase rows. */
+.access-receipt .legal-seller-receipt {
+  margin-top: 22px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 14px;
+}
+.access-receipt .legal-seller-receipt h2 {
+  margin: 0 0 6px;
+  font-size: 0.82rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+.access-receipt .legal-seller-receipt p {
+  margin: 2px 0;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .legal-example {
+    padding: 14px 16px;
+  }
+}
