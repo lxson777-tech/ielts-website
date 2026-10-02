@@ -32,6 +32,12 @@ export interface PracticeQuestion {
       "Academic Reading Test 7, Questions 14 to 19". Shown next to the
       explanation once the question is answered. */
   source?: string;
+  /** Questions of one unit sharing this id form an unordered answer pool:
+      any accepted answer of the pool fits any of its blanks, but each one
+      earns at most one mark (src/lib/practice-scoring.ts). Copied from the
+      source question's `answerPairId`, which the full test player scores
+      the same way. */
+  pool?: string;
 }
 
 /** A block of real source text belonging to one unit, so students read the
@@ -951,7 +957,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
 
   "ynng": {
   "title": "Exercise. Decide: Yes, No, or Not Given (real test questions)",
-  "intro": "These statements test the writer's own opinions and claims, not simple facts.",
+  "intro": "These statements test what the writer claims or believes. Decide whether the writer agrees (Yes), disagrees (No), or does not say (Not Given).",
   "units": [
     {
       "passages": [
@@ -3087,6 +3093,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           ]
         }
       ],
+      "intro": "Choose ONE WORD ONLY from the passage for each answer.",
       "questions": [
         {
           "prompt": "Peatlands which have been drained begin to release ________ instead of storing it",
@@ -3151,6 +3158,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           ]
         }
       ],
+      "intro": "Choose NO MORE THAN TWO WORDS from the passage for each answer.",
       "questions": [
         {
           "prompt": "In the late nineteenth century, the car industry invested in the development of the ________ , rather than fuel-cell technology",
@@ -3218,6 +3226,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "html": "<table><tbody><tr><td></td><td><span><strong>Art</strong></span></td><td><span><strong>Craft</strong></span></td></tr><tr><td rowspan=\"2\"><span>End product</span></td><td><span>(1) ……………</span></td><td><span>(2) ……………</span></td></tr><tr><td><span>(3) ……………</span></td><td><span>(4) ……………</span></td></tr><tr><td rowspan=\"3\"><span>Act of Creation/ Production</span></td><td><span>(5) ……………</span></td><td><span>(6) ……………</span></td></tr><tr><td><span>(7) ……………</span></td><td><span>(8) ……………</span></td></tr><tr><td><span>(9) ……………</span></td><td><span>(10) ……………</span></td></tr></tbody></table><p><span><strong>A</strong> the finished object appeals on an emotional and spiritual level</span><br/>\n<span><strong>B</strong> the final product has no pretensions to being anything more than it appears</span><br/>\n<span><strong>C</strong> only a functional use is considered for the finished object</span><br/>\n<span><strong>D</strong> no practical purpose as such is envisaged for the created object</span><br/>\n<span><strong>E</strong> the process of creation is merely a means to an end</span><br/>\n<span><strong>F</strong> whether or not there is an end product, the product itself is secondary to the process of creation</span><br/>\n<span><strong>G</strong> not having to adhere to a set of rules, the process is a matter of experimentation</span><br/>\n<span><strong>H</strong> there is no margin of error for experimentation, all of the process following a set of guidelines</span><br/>\n<span><strong>I</strong> its goal is defined from the outset</span><br/>\n<span><strong>J</strong> the process is fluid and undefined</span><br/>\n<span><strong>K</strong> it is useful but not commercially viable</span><br/>\n<span><strong>L</strong> the production process is a mixture of following rules and experimentation</span></p>"
         }
       ],
+      "intro": "Write the correct letter, A-L, from the box for each answer. Blanks in the same column of the same section of the table take their letters in any order, but each letter counts only once.",
       "questions": [
         {
           "prompt": "Table blank 1: which letter goes here?",
@@ -3227,7 +3236,8 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
             "D"
           ],
           "explanation": "Paragraph 3 says art 'appeal[s] purely at the level of the imagination' (A), and paragraph 2 says art is 'not restricted by the confines of practicality' (D), so either letter fits this row.",
-          "source": "Academic Reading Test 16, Questions 1 to 10"
+          "source": "Academic Reading Test 16, Questions 1 to 10",
+          "pool": "reading-302-1-3"
         },
         {
           "prompt": "Table blank 2: which letter goes here?",
@@ -3237,7 +3247,8 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
             "C"
           ],
           "explanation": "Paragraph 2 says the craftsman's teapot 'should normally be able to hold tea or flowers', only a functional use (C), while craft stays 'lodged firmly in the practicality of the everyday world', no higher pretension (B).",
-          "source": "Academic Reading Test 16, Questions 1 to 10"
+          "source": "Academic Reading Test 16, Questions 1 to 10",
+          "pool": "reading-302-2-4"
         },
         {
           "prompt": "Table blank 3: which letter goes here?",
@@ -3247,7 +3258,8 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
             "D"
           ],
           "explanation": "This row shares q1's pool: paragraph 3 says art appeals 'at the level of the imagination' (A) and paragraph 2 says art has 'no practical purpose' since it is 'not restricted by the confines of practicality' (D).",
-          "source": "Academic Reading Test 16, Questions 1 to 10"
+          "source": "Academic Reading Test 16, Questions 1 to 10",
+          "pool": "reading-302-1-3"
         },
         {
           "prompt": "Table blank 4: which letter goes here?",
@@ -3257,7 +3269,8 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
             "C"
           ],
           "explanation": "This row shares q2's pool: craft's end product is judged only by its function (C, paragraph 2) and remains 'lodged firmly in the practicality of the everyday world' with no higher pretension (B).",
-          "source": "Academic Reading Test 16, Questions 1 to 10"
+          "source": "Academic Reading Test 16, Questions 1 to 10",
+          "pool": "reading-302-2-4"
         },
         {
           "prompt": "Table blank 5: which letter goes here?",
@@ -3268,7 +3281,8 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
             "J"
           ],
           "explanation": "Paragraph 8 says art's emphasis 'is placed instead on the act of creation itself' (F); paragraph 5 describes the artist's 'trial-and-error approach' (G); paragraph 4 says art 'evolves non-deterministically' (J).",
-          "source": "Academic Reading Test 16, Questions 1 to 10"
+          "source": "Academic Reading Test 16, Questions 1 to 10",
+          "pool": "reading-302-5-7-9"
         },
         {
           "prompt": "Table blank 6: which letter goes here?",
@@ -3279,7 +3293,8 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
             "I"
           ],
           "explanation": "Paragraph 8 says craft exists for 'monetary compensation', so its process is only a means to an end (E); paragraph 4 says the craftsman 'knows what he wants to make before he makes it', a goal set from the start (I) with no room for experiment (H).",
-          "source": "Academic Reading Test 16, Questions 1 to 10"
+          "source": "Academic Reading Test 16, Questions 1 to 10",
+          "pool": "reading-302-6-8-10"
         },
         {
           "prompt": "Table blank 7: which letter goes here?",
@@ -3290,7 +3305,8 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
             "J"
           ],
           "explanation": "This row shares q5's Art pool: paragraph 4 says art 'evolves non-deterministically' (J), paragraph 5 describes 'a trial-and-error approach' (G), and paragraph 8 places emphasis on process over product (F).",
-          "source": "Academic Reading Test 16, Questions 1 to 10"
+          "source": "Academic Reading Test 16, Questions 1 to 10",
+          "pool": "reading-302-5-7-9"
         },
         {
           "prompt": "Table blank 8: which letter goes here?",
@@ -3301,7 +3317,8 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
             "I"
           ],
           "explanation": "This row shares q6's Craft pool: Collingwood says the craftsman's foreknowledge 'must not be vague but precise', leaving no margin for experiment (H) once the goal is fixed (I).",
-          "source": "Academic Reading Test 16, Questions 1 to 10"
+          "source": "Academic Reading Test 16, Questions 1 to 10",
+          "pool": "reading-302-6-8-10"
         },
         {
           "prompt": "Table blank 9: which letter goes here?",
@@ -3312,7 +3329,8 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
             "J"
           ],
           "explanation": "This row also draws on F, G and J: the artist works by trial and error (paragraph 5) in an undefined, evolving process (paragraph 4) where the finished object itself is secondary (paragraph 8).",
-          "source": "Academic Reading Test 16, Questions 1 to 10"
+          "source": "Academic Reading Test 16, Questions 1 to 10",
+          "pool": "reading-302-5-7-9"
         },
         {
           "prompt": "Table blank 10: which letter goes here?",
@@ -3323,7 +3341,8 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
             "I"
           ],
           "explanation": "This row completes the Craft pool: planning is 'indispensable' to craft (paragraph 4, supporting H and I), and because craftsmen must deliver, the process is only a means to the finished product (E).",
-          "source": "Academic Reading Test 16, Questions 1 to 10"
+          "source": "Academic Reading Test 16, Questions 1 to 10",
+          "pool": "reading-302-6-8-10"
         }
       ]
     },
@@ -3346,6 +3365,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           ]
         }
       ],
+      "intro": "Choose ONE WORD ONLY from the passage for each answer.",
       "questions": [
         {
           "prompt": "the buses use designated ________ to cut down on delays",
@@ -3446,6 +3466,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           ]
         }
       ],
+      "intro": "Choose NO MORE THAN THREE WORDS from the passage for each answer.",
       "questions": [
         {
           "prompt": "What is the smallest species of Bovid called?",
@@ -3516,6 +3537,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           ]
         }
       ],
+      "intro": "Choose NO MORE THAN THREE WORDS from the passage for each answer.",
       "questions": [
         {
           "prompt": "What was an early slogan about addressing the imbalance between the developed and developing worlds?",
@@ -3593,6 +3615,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "html": "<p><span><img alt=\"\" class=\"alignnone size-medium wp-image-12051\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 300px) 100vw, 300px\" decoding=\"async\" fetchpriority=\"high\" height=\"294\" src=\"/ielts-website/pics/reading/imported/test-303-1.webp\" width=\"300\"/></span></p><p><span>DNA is left unexamined as no (27) …………….. yet is available to analyse it.</span></p><p><span>Fingerprints are not used (28) ……………..</span></p><p><span>Only one of the Ripper’s (29) …………… is photographed at the crime scene.</span></p><p><span>Images taken are (30) ……………… capturing the victim’s eyes.</span></p><p><span>Vital written evidence is (31) ……………. on the orders of a police investigator.</span></p><p><span>Investigators representing rival (32) …………………. fail to exchange information.</span></p>"
         }
       ],
+      "intro": "Write NO MORE THAN THREE WORDS from the passage for each answer.",
       "questions": [
         {
           "prompt": "Diagram label 1: what word goes here?",
@@ -3672,6 +3695,7 @@ export const READING_PRACTICE: Record<string, PracticeSet> = {
           "html": "<p><span><img alt=\"\" class=\"size-full wp-image-12105 aligncenter\" data-lazyloaded=\"1\" data-sizes=\"(max-width: 903px) 100vw, 903px\" decoding=\"async\" fetchpriority=\"high\" height=\"468\" src=\"/ielts-website/pics/reading/imported/test-305-1.webp\" width=\"903\"/></span></p>"
         }
       ],
+      "intro": "Write NO MORE THAN THREE WORDS from the passage for each answer.",
       "questions": [
         {
           "prompt": "Diagram label 1: what word goes here?",
