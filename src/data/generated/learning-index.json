@@ -1,7 +1,7 @@
 {
   "version": 1,
   "format": 3,
-  "indexVersion": "7cfd209ef7bb0dc1",
+  "indexVersion": "10d26307ce7025c8",
   "tests": [
     {
       "id": "listening-full-001",
@@ -641,7 +641,7 @@
       "title": "Test 1 · Part 1",
       "byType": { "sentence-completion": 10 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-001",
@@ -689,7 +689,7 @@
       "title": "Test 2 · Part 3",
       "byType": { "multiple-choice": 4, "sentence-completion": 6 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-002",
@@ -721,7 +721,7 @@
       "title": "Test 3 · Part 3",
       "byType": { "multiple-choice": 10 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-003",
@@ -793,7 +793,7 @@
       "title": "Test 5 · Part 4",
       "byType": { "multiple-choice": 4, "sentence-completion": 6 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-006",
@@ -801,7 +801,7 @@
       "title": "Test 6 · Part 1",
       "byType": { "multiple-answer": 2, "sentence-completion": 8 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-006",
@@ -817,7 +817,7 @@
       "title": "Test 6 · Part 3",
       "byType": { "multiple-choice": 5, "sentence-completion": 5 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-006",
@@ -849,7 +849,7 @@
       "title": "Test 7 · Part 3",
       "byType": { "multiple-answer": 3, "multiple-choice": 4, "sentence-completion": 3 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-007",
@@ -857,7 +857,7 @@
       "title": "Test 7 · Part 4",
       "byType": { "sentence-completion": 10 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-008",
@@ -921,7 +921,7 @@
       "title": "Test 9 · Part 4",
       "byType": { "multiple-choice": 4, "sentence-completion": 6 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-010",
@@ -993,7 +993,7 @@
       "title": "Test 12 · Part 1",
       "byType": { "sentence-completion": 10 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-012",
@@ -1001,7 +1001,7 @@
       "title": "Test 12 · Part 2",
       "byType": { "matching-features": 5, "sentence-completion": 5 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-012",
@@ -1009,7 +1009,7 @@
       "title": "Test 12 · Part 3",
       "byType": { "multiple-choice": 3, "sentence-completion": 7 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-012",
@@ -1025,7 +1025,7 @@
       "title": "Test 13 · Part 1",
       "byType": { "categorisation": 4, "table-completion": 6 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-013",
@@ -1041,7 +1041,7 @@
       "title": "Test 13 · Part 3",
       "byType": { "multiple-choice": 4, "sentence-completion": 6 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-013",
@@ -1073,7 +1073,7 @@
       "title": "Test 14 · Part 3",
       "byType": { "multiple-choice": 5, "sentence-completion": 5 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-014",
@@ -1097,7 +1097,7 @@
       "title": "Test 15 · Part 2",
       "byType": { "matching-features": 2, "multiple-choice": 3, "sentence-completion": 5 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-015",
@@ -1105,7 +1105,7 @@
       "title": "Test 15 · Part 3",
       "byType": { "multiple-choice": 5, "table-completion": 5 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-015",
@@ -1121,7 +1121,7 @@
       "title": "Test 16 · Part 1",
       "byType": { "table-completion": 10 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-016",
@@ -1137,7 +1137,7 @@
       "title": "Test 16 · Part 3",
       "byType": { "matching-features": 7, "multiple-answer": 3 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-016",
@@ -1145,7 +1145,7 @@
       "title": "Test 16 · Part 4",
       "byType": { "categorisation": 5, "table-completion": 5 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-017",
@@ -1153,7 +1153,7 @@
       "title": "Test 17 · Part 1",
       "byType": { "multiple-choice": 4, "sentence-completion": 6 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-017",
@@ -1161,7 +1161,7 @@
       "title": "Test 17 · Part 2",
       "byType": { "sentence-completion": 6, "table-completion": 4 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-017",
@@ -1169,7 +1169,7 @@
       "title": "Test 17 · Part 3",
       "byType": { "diagram-labelling": 2, "multiple-choice": 3, "sentence-completion": 5 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-017",
@@ -1177,7 +1177,7 @@
       "title": "Test 17 · Part 4",
       "byType": { "sentence-completion": 4, "table-completion": 6 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-018",
@@ -1193,7 +1193,7 @@
       "title": "Test 18 · Part 2",
       "byType": { "multiple-choice": 4, "table-completion": 6 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-018",
@@ -1225,7 +1225,7 @@
       "title": "Test 19 · Part 2",
       "byType": { "matching-features": 6, "multiple-answer": 4 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-019",
@@ -1257,7 +1257,7 @@
       "title": "Test 20 · Part 2",
       "byType": { "multiple-choice": 2, "sentence-completion": 8 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-020",
@@ -1273,7 +1273,7 @@
       "title": "Test 20 · Part 4",
       "byType": { "multiple-answer": 2, "multiple-choice": 1, "sentence-completion": 7 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-021",
@@ -1297,7 +1297,7 @@
       "title": "Test 21 · Part 3",
       "byType": { "categorisation": 4, "table-completion": 6 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-021",
@@ -1305,7 +1305,7 @@
       "title": "Test 21 · Part 4",
       "byType": { "sentence-completion": 10 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-022",
@@ -1345,7 +1345,7 @@
       "title": "Test 23 · Part 1",
       "byType": { "sentence-completion": 10 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-023",
@@ -1353,7 +1353,7 @@
       "title": "Test 23 · Part 2",
       "byType": { "sentence-completion": 10 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-023",
@@ -1361,7 +1361,7 @@
       "title": "Test 23 · Part 3",
       "byType": { "multiple-answer": 2, "multiple-choice": 3, "sentence-completion": 5 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-023",
@@ -1377,7 +1377,7 @@
       "title": "Test 24 · Part 1",
       "byType": { "sentence-completion": 10 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-024",
@@ -1385,7 +1385,7 @@
       "title": "Test 24 · Part 2",
       "byType": { "multiple-choice": 4, "table-completion": 6 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-024",
@@ -1441,7 +1441,7 @@
       "title": "Test 26 · Part 1",
       "byType": { "sentence-completion": 5, "table-completion": 5 },
       "questions": [1, 10],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-026",
@@ -1457,7 +1457,7 @@
       "title": "Test 26 · Part 3",
       "byType": { "multiple-answer": 4, "multiple-choice": 6 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-026",
@@ -1465,7 +1465,7 @@
       "title": "Test 26 · Part 4",
       "byType": { "sentence-completion": 10 },
       "questions": [31, 40],
-      "durationMinutes": 8
+      "durationMinutes": 10
     },
     {
       "sourceTestId": "listening-full-027",
@@ -1513,7 +1513,7 @@
       "title": "Test 28 · Part 2",
       "byType": { "diagram-labelling": 3, "sentence-completion": 7 },
       "questions": [11, 20],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-028",
@@ -1521,7 +1521,7 @@
       "title": "Test 28 · Part 3",
       "byType": { "matching-features": 4, "multiple-choice": 3, "sentence-completion": 3 },
       "questions": [21, 30],
-      "durationMinutes": 8
+      "durationMinutes": 9
     },
     {
       "sourceTestId": "listening-full-028",

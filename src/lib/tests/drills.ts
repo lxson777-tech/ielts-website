@@ -88,10 +88,24 @@ function testNumber(test: PracticeTest): string {
   return m ? String(parseInt(m[1], 10)) : test.title;
 }
 
+/** Minutes on a Listening drill's clock. Eight is enough for most parts,
+    but the clock starts before the student presses Start recording and
+    the paper hands itself in when it reaches zero, so a part whose own
+    recording runs longer than about seven minutes needs more: the length
+    of the recording plus one minute, rounded up. Content review 3 October
+    2026 found 8 parts whose recording (up to 8.9 minutes) outlasted the
+    old flat 8-minute clock, so the last answers could never be given. */
+export function listeningDrillMinutes(part: PracticeTest['parts'][number]): number {
+  const s = part.stimulus;
+  if (s.kind !== 'audio' || typeof s.startSeconds !== 'number' || typeof s.endSeconds !== 'number') return 8;
+  const audioMinutes = (s.endSeconds - s.startSeconds) / 60;
+  return Math.max(8, Math.ceil(audioMinutes + 1));
+}
+
 function buildListeningDrill(source: PracticeTest, partIndex: number): PracticeTest {
   const part = source.parts[partIndex]!;
   const questionCount = part.groups.reduce((s, g) => s + g.questions.length, 0);
-  const minutes = 8;
+  const minutes = listeningDrillMinutes(part);
   return buildDrill(source, partIndex, {
     // "Part" stays English, like every other Part number on the site.
     title: { key: nt('Test {test} · Part {part}'), vars: { test: testNumber(source), part: partIndex + 1 } },

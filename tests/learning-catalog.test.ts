@@ -828,7 +828,10 @@ test('a full paper and the mock are indivisible, with their true duration', () =
   /* A drill is divisible-sized and is what a short day gets instead. */
   const drill = findActivity('drill:listening-full-001-drill-p1') as CatalogueActivity;
   assert.equal(drill.indivisible, false);
-  assert.equal(drill.expectedMinutes, 8);
+  /* 10, not the old flat 8: this part's own recording runs 8.9 minutes,
+     and a drill's clock now outlasts its recording
+     (tests/listening-drill-clock.test.ts). */
+  assert.equal(drill.expectedMinutes, 10);
 });
 
 test('the explanation languages match what is really translated on disk', () => {
