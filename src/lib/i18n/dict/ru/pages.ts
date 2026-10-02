@@ -130,11 +130,11 @@ export const strings: Record<string, string> = {
   'Listening section': 'Раздел Listening',
   'Reading section': 'Раздел Reading',
   'Practice with real test questions': 'Практика на реальных вопросах теста',
-  'The recording and questions below come from a real IELTS Listening test.':
-    'Запись и вопросы ниже взяты из настоящего теста IELTS Listening.',
+  'The recording and questions below come from full IELTS Listening practice tests.':
+    'Запись и вопросы ниже взяты из полных тренировочных тестов IELTS Listening.',
   'All Listening Lessons': 'Все уроки Listening',
-  'The passage and questions below come from a real IELTS Academic Reading test.':
-    'Текст и вопросы ниже взяты из настоящего теста IELTS Academic Reading.',
+  'The passage and questions below come from full IELTS Academic Reading practice tests.':
+    'Текст и вопросы ниже взяты из полных тренировочных тестов IELTS Academic Reading.',
 
   /* src/pages/account.astro */
   'My account': 'Мой аккаунт',

@@ -47,7 +47,7 @@ export const LISTENING_PARTS: ListeningPart[] = [
     title: nt('Part 3. Academic Discussion'),
     group: 'parts',
     stage: 2,
-    eyebrow: nt('up to four speakers · Multiple choice'),
+    eyebrow: nt('Up to four speakers · Multiple choice'),
     blurb: nt('Track multiple speakers, dodge distractors, and catch corrections.'),
     minutes: 12,
   },

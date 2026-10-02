@@ -32,7 +32,7 @@ const LESSON = { key: 'speaking-part1', blockHeading: 'Useful Fillers & Linking 
 
 const CHECKLIST = [
   'Listening back, where is the longest silent gap? Estimate how many seconds it lasted.',
-  'When you paused, did you use a filler phrase (such as "let me think" or "that's a good question") to keep the flow going?',
+  "When you paused, did you use a filler phrase (such as \"let me think\" or \"that's a good question\") to keep the flow going?",
   'Did any pause run long enough that a listener would have started to wonder if you had finished?',
   'Compare this recording with your last one on the same kind of question: are the gaps shorter?',
 ] as const;

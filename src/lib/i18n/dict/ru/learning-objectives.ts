@@ -329,8 +329,8 @@ export const strings: Record<string, string> = {
     'Ответьте на один вопрос из темы Hometown ниже. Если чувствуете, что вот-вот замолчите, используйте слово-заполнитель и продолжайте, а не останавливайтесь.',
   'Listening back, where is the longest silent gap? Estimate how many seconds it lasted.':
     'Слушая запись заново, где самая долгая тихая пауза? Оцените, сколько секунд она длилась.',
-  'When you paused, did you use a filler phrase (such as "let me think" or "that's a good question") to keep the flow going?':
-    'Когда вы делали паузу, использовали ли вы слово-заполнитель (например "let me think" или "that's a good question"), чтобы не терять поток речи?',
+  "When you paused, did you use a filler phrase (such as \"let me think\" or \"that's a good question\") to keep the flow going?":
+    "Когда вы делали паузу, использовали ли вы слово-заполнитель (например \"let me think\" или \"that's a good question\"), чтобы не терять поток речи?",
   'Did any pause run long enough that a listener would have started to wonder if you had finished?':
     'Была ли пауза настолько долгой, что слушатель мог бы подумать, что вы закончили?',
   'Compare this recording with your last one on the same kind of question: are the gaps shorter?':
