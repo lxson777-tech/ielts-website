@@ -91,3 +91,16 @@ test('no contact detail is hard-coded under src/ outside src/lib/operator.ts', (
     'Contacts belong in src/lib/operator.ts, filled in by Alex only. Found:\n' + problems.join('\n'),
   );
 });
+
+test('seller details: empty until Alex fills them in; drafts show placeholders only when asked', async () => {
+  const { LEGAL, legalDetail, legalDetailsComplete, LEGAL_PLACEHOLDER } = await import('../src/lib/operator.ts');
+  // Only Alex fills these in: until he does, every value stays null.
+  for (const [key, value] of Object.entries(LEGAL)) {
+    if (value !== null) assert.ok(String(value).trim().length > 0, `LEGAL.${key} is set but empty`);
+  }
+  const empty = { fullName: null, iin: null, registration: null, registeredAddress: null, actualAddress: null, phone: null, email: null, hours: null };
+  assert.equal(legalDetail('fullName', false, empty), null, 'the live site shows nothing unfinished');
+  assert.deepEqual(legalDetail('fullName', true, empty), { text: LEGAL_PLACEHOLDER.fullName, draft: true });
+  assert.deepEqual(legalDetail('iin', false, { ...empty, iin: '000000000000' }), { text: '000000000000', draft: false });
+  assert.equal(legalDetailsComplete(empty), false);
+});
