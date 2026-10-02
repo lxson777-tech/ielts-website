@@ -388,7 +388,10 @@ function foldEquivalentForms(s: string): string {
     .replace(AM_PM_RE, ' $1m');
 }
 
-function normalizeAnswer(s: string): string {
+/** The form a typed answer is compared in. Exported so any other place that
+    marks a typed answer (lesson practice, for one) can compare exactly as
+    the tests do; prefer answerMatches() where a whole key is at hand. */
+export function normalizeAnswer(s: string): string {
   // Free-form typing is stored raw, so we mark on content, not formatting.
   // Forgiven: case; extra/doubled spaces; curly vs straight quotes and dashes;
   // thousand-separator commas (5000 vs 5,000); currency symbols ($50 vs 50);
