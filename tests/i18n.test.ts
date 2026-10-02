@@ -78,6 +78,7 @@ import * as wFree from '../src/lib/i18n/dict/ru/w-free.ts';
 import * as gFree from '../src/lib/i18n/dict/ru/g-free.ts';
 import * as pFree from '../src/lib/i18n/dict/ru/p-free.ts';
 import * as accountCategories from '../src/lib/i18n/dict/ru/account-categories.ts';
+import * as lLegal from '../src/lib/i18n/dict/ru/l-legal.ts';
 
 import * as partStrategies from '../src/lib/i18n/dict/ru/parts/strategies.ts';
 import * as partStructures from '../src/lib/i18n/dict/ru/parts/structures.ts';
@@ -123,6 +124,7 @@ const BATCH_FILES: { file: string; mod: { strings: Record<string, string>; plura
   { file: 'dict/ru/g-free.ts', mod: gFree },
   { file: 'dict/ru/p-free.ts', mod: pFree },
   { file: 'dict/ru/account-categories.ts', mod: accountCategories },
+  { file: 'dict/ru/l-legal.ts', mod: lLegal },
 ];
 
 /* The extra dictionary parts (src/lib/i18n/dict/parts.ts): the big coaching

@@ -1,25 +1,58 @@
 ---
 /* /privacy: what the site collects, why, what it keeps and which services
-   handle it (Builder E, 29 September 2026).
+   handle it (Builder E, 29 September 2026; rewritten around the legally
+   required points for the paid site by Builder L, 2 October 2026).
 
-   Every statement was checked against the code on that date, not written
-   from general expectations:
-   - profile fields and their rules: src/lib/auth/profile.ts,
+   TWO VERSIONS, chosen by the build:
+   - The gated build (PUBLIC_ACCESS_MODE=trial, the paid site, `legal`
+     below): the privacy notice Kazakh personal-data law asks for (Law
+     No. 94-V; docs/legal/KZ-WEBSITE-REQUIREMENTS-2026-10-02.md, sections 1,
+     4 and 5; docs/legal/BUILD-PLAN-2026-10-02.md): who the operator is (the
+     seller block, IIN included, only through sellerRows() / legalDetail() in
+     src/lib/operator.ts, with marked placeholders until Alex fills them in),
+     every field collected, the purposes, the legal basis (consent), the
+     third parties and their countries, retention for each kind of data,
+     cookies, the student's rights with the legal response times, how to
+     use them, what is kept after deletion and why, breaches, minors and
+     automated AI marking. Its version is PRIVACY_VERSION
+     (src/lib/legal/offer.ts), the same as the consent version
+     (CONSENT_VERSION, src/lib/legal/consent.ts, Builder C;
+     tests/legal-pages.test.ts holds the two together).
+   - The open build (today's live site): the page as it was, describing the
+     live site truthfully: no purchases, the retention and removal questions
+     still listed as undecided, and the operator only once published.
+
+   Every statement was checked against the code, not written from general
+   expectations:
+   - profile fields and their rules: src/lib/auth/profile.ts and
+     src/components/auth/ProfileForm.tsx (first and last name, date of
+     birth, phone, city, school or job, how they found us; under 18 a parent
+     or guardian's name, phone and agreement, with its time),
      supabase/migrations/2026-09-24-profiles.sql; seen by the owner in
-     /admin (2026-09-24-admin.sql);
-   - saved study: src/lib/progress.ts (essays kept with their report;
-     Speaking keeps bands only, no recording is stored anywhere by our code);
-   - Mr EZ: conversations in Supabase, cleared by the student in
-     MrEzMemory on /plan-settings; the Worker sends the model the student's
-     message and facts counted from their own record (workers/mr-ez);
+     /admin (2026-09-24-admin.sql); sign-in email and password, or Google's
+     email and name (Supabase Auth);
+   - saved study: src/lib/progress.ts and the learning tables
+     (2026-09-21-learning.sql: learning_events, learning_plan,
+     learning_companions); essays kept with their report; Speaking keeps
+     bands only, no recording is stored anywhere by our code;
+   - Mr EZ: conversations in Supabase (mr_ez_* tables), cleared by the
+     student in MrEzMemory on /plan-settings; the Worker sends the model the
+     student's message and facts counted from their own record
+     (workers/mr-ez);
    - grading: essay text and Speaking audio go to OpenAI through the
      grade-essay and grade-speaking Workers on Cloudflare (their READMEs);
+     every OpenAI call is made with store: false (each Worker's src/index.ts);
+   - OpenAI's own retention, read on its "Your data" page
+     (developers.openai.com/api/docs/guides/your-data) on 2 October 2026:
+     API data is not used for training unless the customer opts in; abuse
+     monitoring logs are kept "up to 30 days, unless longer retention is
+     required by law"; transcription keeps nothing;
    - live examiner: audio goes browser to OpenAI directly; the Worker only
      brokers the session and keeps a timing row (live_examiner_sessions);
    - trial: trial_accounts (start, end, the goal questions) and trial_usage.
      The trial is retired (Alex, 1 October 2026): nothing starts a new one,
-     but the rows already written are kept (nothing is deleted), so the
-     page still says they exist, in the past tense;
+     but the rows already written are kept, so the page still says they
+     exist, in the past tense;
    - allowances (gated build): assessment_usage counts each essay, recorded
      Speaking, live interview and mock or placement interview against the
      30 days (kind, purpose, status, times), and assessment_provider_usage
@@ -36,11 +69,18 @@
      refunded), a failure reason, the created/paid/refunded times and a
      receipt number; access_grants keeps each paid period's start and end and
      the time it was revoked. An order row exists from the moment a purchase
-     is STARTED. Both tables reference the sign-in with ON DELETE RESTRICT,
-     so an account with any order cannot be deleted today. Card details never
-     reach our code: the Worker asks the provider for a checkout address and
-     later receives a signed confirmation. No provider is chosen, so none is
-     named. The site has no delete-my-account control at all;
+     is STARTED. Card details never reach our code: the Worker asks the
+     provider for a checkout address and later receives a signed
+     confirmation. No provider is chosen, so none is named;
+   - deletion (2 October 2026, 2026-10-02-account-deletion.sql): Delete
+     account in Account > Profile removes the sign-in and, by cascade, every
+     table above; payment_orders rows stay as anonymous sales (user_id
+     cleared). "Download my data" in Account > Profile is Builder C's
+     (src/lib/legal/export.ts);
+   - retention (the plan's defaults): account data while the account is
+     open; payment records 5 years as anonymous sales (tax law); signed-out
+     support messages 12 months, then deleted automatically (Builder C,
+     2026-10-02-support-retention.sql); the consent record with the account;
    - signed-out support (re-audit R01, workers/support and
      2026-09-30-support.sql): the typed email, message, topic, language and
      the page named in the link are kept; the sender's network address only
@@ -48,16 +88,15 @@
      limits, never shown to the admin and erased after 24 hours (on every
      signed-out message and hourly). The Turnstile check, only when its site
      key is configured, sends Cloudflare the token and the address; the site
-     stores neither.
+     stores neither;
+   - browser storage: only the sign-in session, study progress and settings
+     such as the language (localStorage); no advertising or analytics code
+     anywhere in src/, and no third-party fonts or scripts;
+   - asking a person to review an AI result: the support form, reason
+     `ai-review` (Builder C).
    If a Worker is ever switched to its Gemini rollback, the "OpenAI" lines
-   below must change first.
-
-   Deliberately NOT stated, because Alex has not decided them: who runs the
-   site (shown on its own once src/lib/operator.ts is published), how long
-   each kind of information is kept, and the full process for removing an
-   account. The page says what happens TODAY (including the deletion limit
-   above) and lists separately what is still undecided, because silence
-   would read as "kept forever, never removable". */
+   below must change first. If the Supabase region is confirmed, the
+   "European Union or the United States" line should name it. */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { ACCOUNT_DELETION_ENABLED } from '../lib/auth/session';
 import { SUPPORT_ENABLED } from '../lib/support';
@@ -65,8 +104,28 @@ import { withBase } from '../lib/url';
 import { nt } from '../lib/i18n/translate';
 import { publishedOperator } from '../lib/operator';
 import { isTrialBuild } from '../lib/trial/mode';
+import { SELLER_FULL, sellerEmail, sellerRows } from '../lib/legal/offer';
+import '../styles/legal.css';
 
 const operator = publishedOperator();
+
+/* The paid site's privacy notice (see the header). */
+const legal = isTrialBuild();
+/* Purchases exist only in the gated build: the open site sells nothing and
+   never creates a purchase record. */
+const sellsAccess = legal;
+/* Self-service deletion (2 October 2026), where its database function exists. */
+const selfDeletion = ACCOUNT_DELETION_ENABLED;
+
+/* The seller block is shown on the gated build only, so drafts are on. */
+const seller = sellerRows(SELLER_FULL, true);
+const email = sellerEmail(true);
+/* The version line in the header spells out PRIVACY_VERSION as a whole
+   sentence, so it is translated as one; tests/legal-pages.test.ts fails if
+   the sentence and the constant ever disagree. */
+
+const servicesTitle = legal ? nt('Who else receives it, and where') : nt('Which services handle it');
+const removalTitle = legal ? nt('Deleting your account, and what is kept') : nt('Removing your account');
 
 const asked: { what: string; why: string }[] = [
   {
@@ -102,12 +161,6 @@ const kept: string[] = [
     : []),
 ];
 
-/* Purchases exist only in the gated build: the open site sells nothing and
-   never creates a purchase record. */
-const sellsAccess = isTrialBuild();
-/* Self-service deletion (2 October 2026), where its database function exists. */
-const selfDeletion = ACCOUNT_DELETION_ENABLED;
-
 const purchaseRecord: string[] = [
   nt('Which plan you chose, its price and currency, and when you started the purchase.'),
   nt('What happened to it: waiting for payment, paid, not completed, cancelled or refunded, with the time, and a short reason if a payment did not go through.'),
@@ -119,27 +172,82 @@ const purchaseRecord: string[] = [
   nt('If the person who runs the site gives you free access, the dates it starts and ends and who gave it.'),
 ];
 
+/* Gated build: why each kind of information is used. */
+const purposes: string[] = [
+  nt('To create and run your account, open your lessons and keep your progress on all your devices.'),
+  nt('To mark your essays and Speaking with AI, and to run Mr EZ and the live examiner.'),
+  nt('To sell practice and guidance, count its included assessments and keep a receipt for each payment.'),
+  nt('To answer your messages and requests.'),
+  nt('To keep the service safe and fair, for example with daily limits.'),
+  nt('To keep the sales records the tax law requires.'),
+];
+
+/* Gated build: how long each kind of information is kept (the plan's
+   retention, docs/legal/BUILD-PLAN-2026-10-02.md). */
+const retention: { what: string; how: string }[] = [
+  { what: nt('Your account and everything in it'), how: nt('While your account is open. When you delete your account, it is all deleted at once.') },
+  { what: nt('Your consent'), how: nt('The record of when you gave it is kept with your account and deleted with it.') },
+  { what: nt('Payment records'), how: nt('Kept for 5 years as anonymous sale records, because the tax law requires it, then deleted.') },
+  { what: nt('Messages sent without signing in'), how: nt('Kept for 12 months, then deleted automatically.') },
+  { what: nt('The scrambled code of your connection'), how: nt('Kept for 24 hours, only to limit how often one sender can write.') },
+  { what: nt('What OpenAI receives'), how: nt('OpenAI may keep it for up to 30 days to check for misuse, then deletes it, unless the law requires longer. It does not use it to train its models. This site also tells OpenAI not to store the replies it writes.') },
+];
+
 const undecided = selfDeletion
   ? nt('Still being decided: how long information is kept while an account stays open. This page will say so once it is.')
-  : sellsAccess
-    ? nt('Still being decided: how long each kind of information is kept, including purchase records, and the full process for removing an account. This page will say so once it is.')
-    : nt('Still being decided: how long each kind of information is kept, and the full process for removing an account. This page will say so once it is.');
+  : nt('Still being decided: how long each kind of information is kept, and the full process for removing an account. This page will say so once it is.');
 
-const services: { name: string; role: string }[] = [
-  {
-    name: 'Supabase',
-    role: sellsAccess
-      ? nt('Stores accounts, profiles, saved work, Mr EZ conversations, support messages and purchase records.')
-      : nt('Stores accounts, profiles, saved work, Mr EZ conversations and support messages.'),
-  },
-  {
-    name: 'OpenAI',
-    role: nt('Writes the AI feedback and Mr EZ’s replies. Your essay text, your Speaking recording, and your questions to Mr EZ with a summary of your own results are sent to OpenAI for this, under OpenAI’s own terms for its API.'),
-  },
-  {
-    name: 'Cloudflare',
-    role: nt('Runs the small services that check your account and pass your work to OpenAI, so the AI keys never reach your browser.'),
-  },
+const services: { name: string; role: string; where?: string }[] = legal
+  ? [
+      {
+        name: 'Supabase',
+        role: nt('Stores accounts, profiles, saved work, Mr EZ conversations, support messages and purchase records.'),
+        where: nt('Outside Kazakhstan: the European Union or the United States.'),
+      },
+      {
+        name: 'OpenAI',
+        role: nt('Writes the AI feedback and Mr EZ’s replies, and runs the live examiner. Your essay text, your Speaking recording, your voice in a live interview, and your questions to Mr EZ with a summary of your own results are sent to OpenAI for this.'),
+        where: nt('The United States.'),
+      },
+      {
+        name: 'Cloudflare',
+        role: nt('Runs the small services that check your account and pass your work to OpenAI, so the AI keys never reach your browser, and the security check on the support form.'),
+        where: nt('A worldwide network, with servers in many countries.'),
+      },
+      {
+        name: 'GitHub Pages',
+        role: nt('Serves the pages of the site. Like any website host, it receives your connection’s address when your browser loads a page.'),
+        where: nt('The United States.'),
+      },
+      {
+        name: nt('The payment company'),
+        role: nt('Takes your payment on its own page and confirms it to the site. It will be named here once it is chosen.'),
+        where: nt('Kazakhstan.'),
+      },
+    ]
+  : [
+      {
+        name: 'Supabase',
+        role: nt('Stores accounts, profiles, saved work, Mr EZ conversations and support messages.'),
+      },
+      {
+        name: 'OpenAI',
+        role: nt('Writes the AI feedback and Mr EZ’s replies. Your essay text, your Speaking recording, and your questions to Mr EZ with a summary of your own results are sent to OpenAI for this, under OpenAI’s own terms for its API.'),
+      },
+      {
+        name: 'Cloudflare',
+        role: nt('Runs the small services that check your account and pass your work to OpenAI, so the AI keys never reach your browser.'),
+      },
+    ];
+
+/* Gated build: the student's rights, with the legal response times
+   (Law No. 94-V Art. 24, 8 p.7, 25 p.2(8); the research, section 1). */
+const rights: string[] = [
+  nt('To know what information we hold about you and how it is used, and to get a copy. We answer within 3 working days.'),
+  nt('To have information corrected, blocked or deleted if it is wrong or held unlawfully. We do this within 1 working day of confirming it.'),
+  nt('To delete your account and everything in it, at any time.'),
+  nt('To withdraw your consent. We stop using your information and delete it within 15 working days, except the records the law requires us to keep. The site cannot run an account without it, so withdrawing consent closes your account.'),
+  nt('To object to an AI result and have a person review it.'),
 ];
 ---
 
@@ -148,11 +256,33 @@ const services: { name: string; role: string }[] = [
     <header class="policy-head">
       <p class="policy-eyebrow" data-i18n>Privacy</p>
       <h1 data-i18n>How your information is used</h1>
-      <p class="policy-lede" data-i18n>What the site asks for and why, what it keeps, and which services handle it. Only what the site actually does, in plain words.</p>
-      <p class="policy-updated" data-i18n>Updated 1 October 2026</p>
+      {legal ? (
+        <>
+          <p class="policy-lede" data-i18n>This is the privacy notice of IELTS is EZ: who is responsible for your information, what is collected and why, who else receives it, how long it is kept and what your rights are. Only what the site actually does, in plain words.</p>
+          <p class="policy-updated" data-i18n>Version of 2 October 2026, the same version as the consent you give when you create your account.</p>
+        </>
+      ) : (
+        <>
+          <p class="policy-lede" data-i18n>What the site asks for and why, what it keeps, and which services handle it. Only what the site actually does, in plain words.</p>
+          <p class="policy-updated" data-i18n>Updated 1 October 2026</p>
+        </>
+      )}
     </header>
 
-    {operator && (
+    {legal ? (
+      <section class="policy-section" aria-labelledby="privacy-who">
+        <h2 id="privacy-who" data-i18n>Who is responsible</h2>
+        <p data-i18n>Your information is handled by the seller of IELTS is EZ, a sole trader registered in Kazakhstan. The seller is the operator of your personal data: the one who decides how it is used and is responsible for keeping it safe.</p>
+        <dl class="policy-services legal-seller">
+          {seller.map((row) => (
+            <div>
+              <dt data-i18n>{row.label}</dt>
+              <dd>{row.draft ? <span class="legal-draft">{row.text}</span> : row.href ? <a href={row.href}>{row.text}</a> : row.text}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    ) : operator && (
       <section class="policy-section" aria-labelledby="privacy-who">
         <h2 id="privacy-who" data-i18n>Who is responsible</h2>
         <dl class="policy-services">
@@ -189,7 +319,7 @@ const services: { name: string; role: string }[] = [
       <ul class="policy-list">
         {kept.map((line) => <li data-i18n>{line}</li>)}
       </ul>
-      <p style="margin-top: 16px" data-i18n>Your progress is also kept in this browser, on this device. Signing in keeps it on your account too.</p>
+      {!legal && <p style="margin-top: 16px" data-i18n>Your progress is also kept in this browser, on this device. Signing in keeps it on your account too.</p>}
     </section>
 
     {sellsAccess && (
@@ -206,27 +336,136 @@ const services: { name: string; role: string }[] = [
       </section>
     )}
 
+    {legal && (
+      <section class="policy-section" aria-labelledby="privacy-why">
+        <h2 id="privacy-why" data-i18n>Why we use it, and on what basis</h2>
+        <ul class="policy-list">
+          {purposes.map((line) => <li data-i18n>{line}</li>)}
+        </ul>
+        <p style="margin-top: 16px" data-i18n>We use your information because you agree to it. You give your consent when you create your account, and a parent or guardian gives it for a student under 18. You can withdraw it at any time (see Your rights below).</p>
+        <p data-i18n>Sales records are kept after that because the tax law requires them.</p>
+        <p data-i18n>Your information is never sold, never used for advertising and never made public.</p>
+      </section>
+    )}
+
     <section class="policy-section" aria-labelledby="privacy-services">
-      <h2 id="privacy-services" data-i18n>Which services handle it</h2>
+      <h2 id="privacy-services" data-i18n>{servicesTitle}</h2>
+      {legal && <p data-i18n>These companies handle your information for the site, only for the work described here:</p>}
       <dl class="policy-services">
         {services.map((s) => (
           <div>
-            <dt>{s.name}</dt>
-            <dd data-i18n>{s.role}</dd>
+            <dt data-i18n>{s.name}</dt>
+            <dd>
+              <span data-i18n>{s.role}</span>
+              {s.where && (
+                <>
+                  <br />
+                  <span class="legal-where" data-i18n>{s.where}</span>
+                </>
+              )}
+            </dd>
           </div>
         ))}
       </dl>
-      <p style="margin-top: 16px" data-i18n>In a live Speaking interview, your voice goes straight from your browser to OpenAI. It does not pass through this site, which keeps only a short record of when the interview started and ended, to apply the daily limits.</p>
+      {legal ? (
+        <>
+          <p style="margin-top: 16px" data-i18n>Some of these companies are outside Kazakhstan, so your information is sent abroad. You agree to this as part of your consent.</p>
+          <p data-i18n>In a live Speaking interview, your voice goes straight from your browser to OpenAI. It does not pass through this site, which keeps only a short record of when the interview started and ended, to apply the limits.</p>
+        </>
+      ) : (
+        <p style="margin-top: 16px" data-i18n>In a live Speaking interview, your voice goes straight from your browser to OpenAI. It does not pass through this site, which keeps only a short record of when the interview started and ended, to apply the daily limits.</p>
+      )}
     </section>
+
+    {legal && (
+      <section class="policy-section" aria-labelledby="privacy-retention">
+        <h2 id="privacy-retention" data-i18n>How long it is kept</h2>
+        <dl class="policy-services">
+          {retention.map((r) => (
+            <div>
+              <dt data-i18n>{r.what}</dt>
+              <dd data-i18n>{r.how}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    )}
+
+    {legal && (
+      <section class="policy-section" aria-labelledby="privacy-browser">
+        <h2 id="privacy-browser" data-i18n>Cookies and your browser</h2>
+        <p data-i18n>This site keeps only your sign-in, your study progress and settings such as your language in your browser. There are no advertising or analytics cookies.</p>
+      </section>
+    )}
+
+    {legal && (
+      <section class="policy-section" aria-labelledby="privacy-rights">
+        <h2 id="privacy-rights" data-i18n>Your rights</h2>
+        <ul class="policy-list">
+          {rights.map((line) => <li data-i18n>{line}</li>)}
+        </ul>
+        <h3 data-i18n>How to use them</h3>
+        <ul class="policy-list">
+          <li data-i18n>Download my data: open Account, then Profile. You get a copy of what your account holds.</li>
+          <li data-i18n>Delete account: open Account, then Profile.</li>
+          {SUPPORT_ENABLED && (
+            <li>
+              <span data-i18n>Anything else: write through the support form.</span>{' '}
+              <a href={withBase('/support?reason=privacy')} data-i18n>Ask a person</a>
+            </li>
+          )}
+          {email && (
+            <li>
+              <span data-i18n>Or by email to the seller:</span>{' '}
+              {email.draft ? <span class="legal-draft">{email.text}</span> : <a href={email.href ?? undefined}>{email.text}</a>}
+            </li>
+          )}
+        </ul>
+        <p style="margin-top: 16px" data-i18n>Using your rights is free.</p>
+      </section>
+    )}
+
+    {legal && (
+      <section class="policy-section" aria-labelledby="privacy-ai">
+        <h2 id="privacy-ai" data-i18n>Marking by AI</h2>
+        <p data-i18n>Your essays and Speaking are marked automatically by AI, and Mr EZ and the live examiner are AI too. A band from AI is an estimate to help you practise. It is not an official IELTS score, and nothing else about you is decided by it.</p>
+        <p>
+          <span data-i18n>You can object to any AI result and ask a person to review it.</span>
+          {SUPPORT_ENABLED && (
+            <>
+              {' '}
+              <a href={withBase('/support?reason=ai-review')} data-i18n>Ask for a review</a>
+            </>
+          )}
+        </p>
+      </section>
+    )}
+
+    {legal && (
+      <section class="policy-section" aria-labelledby="privacy-safety">
+        <h2 id="privacy-safety" data-i18n>Keeping it safe</h2>
+        <p data-i18n>Only you and the person who runs the site can see your details. Connections to the site are encrypted.</p>
+        <p data-i18n>If your information is ever exposed in a security incident, the government body for personal data protection is told within one working day, as the law requires.</p>
+      </section>
+    )}
 
     <section class="policy-section" aria-labelledby="privacy-young">
       <h2 id="privacy-young" data-i18n>Younger students</h2>
-      <p data-i18n>If you are under 18, the profile asks for a parent or guardian’s name and phone number, and for their agreement, before you can continue.</p>
-      <p data-i18n>Please read this page together with them.</p>
+      {legal ? (
+        <>
+          <p data-i18n>If you are under 18, a parent or guardian must agree before you use the site, and before any purchase. The profile asks for their name, their phone number and their agreement.</p>
+          <p data-i18n>Please read this page together with them.</p>
+        </>
+      ) : (
+        <>
+          <p data-i18n>If you are under 18, the profile asks for a parent or guardian’s name and phone number, and for their agreement, before you can continue.</p>
+          <p data-i18n>Please read this page together with them.</p>
+        </>
+      )}
     </section>
 
     {/* Only where the support form can send (src/lib/support.ts). */}
-    {SUPPORT_ENABLED && (
+    {SUPPORT_ENABLED && !legal && (
     <section class="policy-section" aria-labelledby="privacy-questions">
       <h2 id="privacy-questions" data-i18n>Questions about your information</h2>
       <p data-i18n>Ask through the support form. A person reads every message and replies by email.</p>
@@ -235,26 +474,24 @@ const services: { name: string; role: string }[] = [
     )}
 
     <section class="policy-section" aria-labelledby="privacy-removal">
-      <h2 id="privacy-removal" data-i18n>Removing your account</h2>
+      <h2 id="privacy-removal" data-i18n>{removalTitle}</h2>
       {selfDeletion ? (
         <>
           <p data-i18n>You can delete your account yourself at any time: open Account, then Profile, then Delete account.</p>
           <p data-i18n>Everything is removed at once and cannot be recovered: your details, your progress and results, your essays and speaking feedback, your saved items and notes, your study plan, your conversations with Mr EZ and your messages to us. Any access you have paid for ends.</p>
-          {sellsAccess && (
-            <p data-i18n>A record of each payment (the plan, the amount, the date and the receipt number) is kept without your name or email, because sales records must be kept by law.</p>
+          {legal && (
+            <p data-i18n>One thing is kept: a record of each payment (the plan, the amount, the date and the receipt number), without your name or email, for 5 years, because the tax law requires sales records to be kept.</p>
           )}
         </>
       ) : (
-        <>
-          <p data-i18n>The site has no button for deleting an account yet. To ask about removing your account or your information, use the support form.</p>
-          {sellsAccess && (
-            <p data-i18n>One limit applies today. An account that has any purchase record cannot be deleted, because purchase records are kept. This includes a purchase that was started and never paid.</p>
-          )}
-        </>
+        <p data-i18n>The site has no button for deleting an account yet. To ask about removing your account or your information, use the support form.</p>
       )}
-      <p class="policy-note" role="note" data-i18n>{undecided}</p>
+      {!legal && <p class="policy-note" role="note" data-i18n>{undecided}</p>}
+      {legal && SUPPORT_ENABLED && (
+        <p><a class="policy-action" href={withBase('/support?reason=privacy')} data-i18n>Ask a person</a></p>
+      )}
       <p class="policy-foot">
-        <a href={withBase('/terms')} data-i18n>Terms of use</a>
+        {legal ? <a href={withBase('/terms')} data-i18n>Public offer</a> : <a href={withBase('/terms')} data-i18n>Terms of use</a>}
         <a href={withBase('/help')} data-i18n>How the platform works</a>
       </p>
     </section>
@@ -263,4 +500,8 @@ const services: { name: string; role: string }[] = [
 
 <style is:global>
   @import '../styles/trust-pages.css';
+  .legal-where {
+    color: var(--color-ink-muted);
+    font-size: 0.9rem;
+  }
 </style>
