@@ -23,10 +23,16 @@ const RULES = {
 
 const ATTRIBUTION = "PracticePTEOnline, reused with the publisher's permission.";
 
-const NOTICE = [
+const NOTICE_GUIDED = [
   'The first sentence makes ONE claim, not two or three run together.',
   'The next sentence explains why that claim is true, in the writer\'s own reasoning rather than repeating the claim in different words.',
-  'It closes with a specific example, signalled by a phrase such as "for example" or "for instance", naming a real situation rather than another general statement.',
+  'It then gives a specific example, a passenger who takes the train from London to Paris rather than flying, naming a real situation rather than another general statement. In your own paragraph, signal the example with "for example" or "for instance".',
+] as const;
+
+const NOTICE_CHECK = [
+  'The first sentence makes ONE claim, not two or three run together.',
+  'The next sentence explains why that claim is true, in the writer\'s own reasoning rather than repeating the claim in different words.',
+  'It then gives a specific example, a retired surgeon who spends two days a week supervising trainees, naming a real situation rather than another general statement. In your own paragraph, signal the example with "for example" or "for instance".',
 ] as const;
 
 const GUIDED: WrittenFocusedTask = {
@@ -50,7 +56,7 @@ const GUIDED: WrittenFocusedTask = {
     'Why is that true? Give your own reasoning, not a repeat of the claim.',
     'What real, specific example shows this happening? Introduce it with "for example" or "for instance".',
   ],
-  noticeInTheModel: NOTICE,
+  noticeInTheModel: NOTICE_GUIDED,
 };
 
 const CHECK: WrittenFocusedTask = {
@@ -69,7 +75,7 @@ const CHECK: WrittenFocusedTask = {
   rules: RULES,
   piece: 'paragraph',
   modelParagraphIndex: 1,
-  noticeInTheModel: NOTICE,
+  noticeInTheModel: NOTICE_CHECK,
 };
 
 export const WRITING_TASK2_SUPPORT_A_CLAIM: readonly WrittenFocusedTask[] = [GUIDED, CHECK];

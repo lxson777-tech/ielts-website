@@ -77,6 +77,15 @@ const NOTICE = [
   'It carries no figures at all. Every number in the model answer is saved for the two detail paragraphs.',
 ] as const;
 
+/** The process check's model overview names its number of stages, which the
+    Task 1 method lesson allows (it is the shape of the process, not a data
+    figure), so its third notice says exactly that instead of "no figures at all". */
+const NOTICE_PROCESS = [
+  'It opens with a summarising word, so the reader knows at once that this is the big picture and not another detail.',
+  'It names the shape of the whole visual, the direction or the standout group, rather than working through the categories one by one.',
+  'It carries no data figures. The one number in it, "nine-stage", gives the shape of the process, which a process overview may state; everything else is saved for the two detail paragraphs.',
+] as const;
+
 const GUIDED: WrittenFocusedTask = {
   kind: 'written-response',
   id: 'writing-task1-overview-guided',
@@ -139,7 +148,7 @@ const CHECK_B: WrittenFocusedTask = {
   title: 'Task 1 overview: a different kind of visual',
   objective: OBJECTIVE,
   instruction:
-    'A process diagram this time, which you have not seen. Write only its overview, on your own.',
+    'A process diagram this time, which you have not seen. Write only its overview, on your own. Saying how many stages there are is fine: write the number as a word, such as "six stages".',
   expectedMinutes: 7,
   provenance: 'publisher',
   source: {
@@ -151,7 +160,7 @@ const CHECK_B: WrittenFocusedTask = {
   lesson: LESSON,
   rules: RULES,
   piece: 'overview',
-  noticeInTheModel: NOTICE,
+  noticeInTheModel: NOTICE_PROCESS,
 };
 
 /** The third unseen prompt. The short overview task is also the Writing

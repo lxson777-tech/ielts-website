@@ -57,7 +57,7 @@ const TASK1_SKELETON: WritingParagraph[] = [
   {
     name: nt('Overview'),
     description: nt(
-      'The most important paragraph. Start with "Overall,". Give the 2-3 key features, saving the figures for the detail paragraphs. Task Achievement asks for a clear overview from Band 6 upwards.',
+      'The most important paragraph. Start with "Overall,". Give the 2-3 key features, saving the figures for the detail paragraphs. Under Task Achievement a clear overview is a Band 7 requirement, and Band 6 needs at least a relevant one.',
     ),
   },
   {
@@ -293,8 +293,8 @@ export const WRITING_STRUCTURES: Record<VariantKey, WritingStructure> = {
     label: nt('Process Diagram'),
     paragraphs: TASK1_SKELETON,
     notes: [
-      nt('How many stages are there?. Goes straight into your overview.'),
-      nt('Where does it start and end?. The other half of the overview.'),
+      nt('How many stages are there? The number goes straight into your overview.'),
+      nt('Where does it start and end? The other half of the overview.'),
       nt('Linear or cyclical? Does it finish, or loop back to the beginning?'),
       nt('Natural (active voice, "the water evaporates") or man-made (passive voice, "the glass is crushed")?'),
       nt('Where will you split the stages for your two detail paragraphs?'),
@@ -317,7 +317,7 @@ export const WRITING_STRUCTURES: Record<VariantKey, WritingStructure> = {
     label: nt('Maps & Plans'),
     paragraphs: TASK1_SKELETON,
     notes: [
-      nt('Check the dates. Past → past, or past → present decides your tenses.'),
+      nt('Check the dates. Past → past: past simple. Past → present: past simple + present perfect. Present → a planned future: present simple for today, will / is to be + passive for the plan.'),
       nt('Find north and the main fixed reference points.'),
       nt('Scan for four kinds of change: what disappeared, what appeared, what changed use, what grew or shrank.'),
       nt('Name the headline transformation for the overview.'),

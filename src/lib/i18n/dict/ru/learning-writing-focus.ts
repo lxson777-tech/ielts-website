@@ -215,8 +215,8 @@ export const strings: Record<string, string> = {
     'Напишите только overview для этого графика. Одно или два предложения об основных тенденциях, без цифр.',
   'A chart you have not seen. Write only its overview, on your own: no guiding questions, no model, no Mr EZ.':
     'Незнакомый вам график. Напишите только его overview, самостоятельно: без наводящих вопросов, без образца, без Mr EZ.',
-  'A process diagram this time, which you have not seen. Write only its overview, on your own.':
-    'В этот раз незнакомая вам схема процесса. Напишите только её overview, самостоятельно.',
+  'A process diagram this time, which you have not seen. Write only its overview, on your own. Saying how many stages there are is fine: write the number as a word, such as "six stages".':
+    'В этот раз незнакомая вам схема процесса. Напишите только её overview, самостоятельно. Назвать число этапов можно: напишите его словом, например "six stages".',
   'A pair of maps, which you have not seen. Write only the overview, on your own.':
     'Две незнакомые вам карты. Напишите только overview, самостоятельно.',
 
@@ -227,6 +227,59 @@ export const strings: Record<string, string> = {
     'В нём названа форма всего изображения, направление или выделяющаяся группа, а не перечислены категории одна за другой.',
   'It carries no figures at all. Every number in the model answer is saved for the two detail paragraphs.':
     'В нём вообще нет цифр. Все числа в образце оставлены для двух абзацев с деталями.',
+  'It carries no data figures. The one number in it, "nine-stage", gives the shape of the process, which a process overview may state; everything else is saved for the two detail paragraphs.':
+    'В нём нет цифр из данных. Единственное число в нём, "nine-stage", описывает форму процесса, а её overview процесса называть может; всё остальное оставлено для двух абзацев с деталями.',
+
+  /* 3 October 2026 content review: the other written focused tasks
+     (src/data/focused/writing-*.ts). Each task's "What to notice" list now
+     describes the band 8 paragraph actually shown beside it, so these are
+     the new sentences; quoted English from the model stays English. */
+  'It mixes structures inside one paragraph: a subordinate clause ("while its symptoms are being soothed"), a relative clause ("a patient who feels slightly better each week") and a conditional ("if the underlying cause is stomach cancer").':
+    'В одном абзаце смешаны разные конструкции: придаточное ("while its symptoms are being soothed"), относительное придаточное ("a patient who feels slightly better each week") и условное предложение ("if the underlying cause is stomach cancer").',
+  'A passive appears where the doer genuinely does not matter ("Alternative practitioners are rarely trained", "Conventional medicine is valued"), not forced in everywhere.':
+    'Пассив появляется там, где исполнитель действительно не важен ("Alternative practitioners are rarely trained", "Conventional medicine is valued"), а не вставлен повсюду.',
+  'It opens with a reason clause ("because most of what it conveys does not sit in the words") and later adds detail with relative clauses ("which fills stadiums in Latin America", "crowds who learn the lyrics phonetically").':
+    'Абзац начинается с придаточного причины ("because most of what it conveys does not sit in the words"), а дальше подробности добавляются относительными придаточными ("which fills stadiums in Latin America", "crowds who learn the lyrics phonetically").',
+  'A passive appears where it keeps the right subject in focus ("a listener can be moved by a song"), not forced in everywhere.':
+    'Пассив появляется там, где он держит в центре нужное подлежащее ("a listener can be moved by a song"), а не вставлен повсюду.',
+  'It then gives a specific example, a passenger who takes the train from London to Paris rather than flying, naming a real situation rather than another general statement. In your own paragraph, signal the example with "for example" or "for instance".':
+    'Затем идёт конкретный пример, пассажир, который едет из Лондона в Париж поездом, а не летит самолётом: это реальная ситуация, а не ещё одно общее утверждение. В своём абзаце обозначьте пример словами "for example" или "for instance".',
+  'It then gives a specific example, a retired surgeon who spends two days a week supervising trainees, naming a real situation rather than another general statement. In your own paragraph, signal the example with "for example" or "for instance".':
+    'Затем идёт конкретный пример, хирург на пенсии, который два дня в неделю руководит практикантами: это реальная ситуация, а не ещё одно общее утверждение. В своём абзаце обозначьте пример словами "for example" или "for instance".',
+  'It names the precise things at issue (collisions, mechanical faults, radar and cameras) rather than saying "technology" over and over.':
+    'В нём названо именно то, о чём идёт речь (collisions, mechanical faults, radar and cameras), а не повторяется снова и снова "technology".',
+  'It names the precise things at issue (investigative journalism, academic publishing, a paywall, a monthly subscription, an ebook) rather than saying "the internet" or "things online" over and over.':
+    'В нём названо именно то, о чём идёт речь (investigative journalism, academic publishing, a paywall, a monthly subscription, an ebook), а не повторяется снова и снова "the internet" или "things online".',
+  'A question you have not seen, on a different subject. Write one paragraph using precise topic vocabulary, on your own.':
+    'Незнакомый вам вопрос на другую тему. Напишите один абзац с точной тематической лексикой, самостоятельно.',
+  'It never uses the same trend word twice: openings "plummeted" and then were "recovering", while closures were "easing", "peaking" and "falling back".':
+    'Одно и то же слово тенденции не повторяется дважды: открытия "plummeted", а затем были "recovering", а закрытия "easing", "peaking" и "falling back".',
+  'Where a figure needs no movement word, it uses a different kind of phrase instead ("at their peak of 8,500", "only 300 apart") rather than repeating a verb.':
+    'Там, где цифре не нужно слово движения, используется фраза другого рода ("at their peak of 8,500", "only 300 apart"), а не повтор глагола.',
+  'It describes each category with a different expression: food "took only 17%", clothing and footwear "also halved", fuel and power "fell less", and household goods "remain unchanged".':
+    'Каждая категория описана своим выражением: food "took only 17%", clothing and footwear "also halved", fuel and power "fell less", а household goods "remain unchanged".',
+  'When a second category halved as well, it writes "as did personal goods" instead of repeating "halved".':
+    'Когда вдвое сократилась и вторая категория, написано "as did personal goods", а не повторено "halved".',
+  'It does not give each category a sentence of its own. It leads with the standout figure, the private studios, and ranks the rest against it.':
+    'Каждой категории не отводится отдельное предложение. Сначала идёт самая заметная цифра, private studios, а остальные выстроены по отношению к ней.',
+  'It joins contrasting ideas inside one sentence with a subordinating word ("whereas a colleague who moves to a smaller firm... may be uncomfortable for a year"), rather than leaving them as separate simple sentences.':
+    'Противоположные мысли соединены в одном предложении подчинительным словом ("whereas a colleague who moves to a smaller firm... may be uncomfortable for a year"), а не оставлены отдельными простыми предложениями.',
+  'The joining word matches the logic: "whereas" sets one person against another, and "where she knows nobody" adds detail about the place.':
+    'Связующее слово соответствует логике: "whereas" противопоставляет одного человека другому, а "where she knows nobody" добавляет подробность о месте.',
+  'Nothing is lost in the combining: both ideas stay in the sentence. Do the same with your own pair, because combining is not the same as cutting one idea to fit the other in.':
+    'При соединении ничего не теряется: обе мысли остаются в предложении. Сделайте так же со своей парой предложений, потому что соединить не значит урезать одну мысль, чтобы втиснуть другую.',
+  'It builds its sentences around subordinate clauses ("how a child reads failure", "who believes ability is fixed") rather than a run of simple sentences.':
+    'Предложения построены вокруг придаточных ("how a child reads failure", "who believes ability is fixed"), а не идут цепочкой простых предложений.',
+  'Each clause does a job the logic needs: "who believes ability is fixed" says which pupil is meant, and "that they are not built for the subject" says what the poor result is taken to prove.':
+    'Каждое придаточное выполняет нужную логике работу: "who believes ability is fixed" уточняет, о каком ученике речь, а "that they are not built for the subject" говорит, что якобы доказывает плохой результат.',
+  'Three agreement slips. "The number of students" is singular, so its verb should be "has risen", not "have risen", while the relative clause inside it needs "choose" to agree with the plural "students", not "chooses". "A number of universities" means "several universities" and is plural, so its verb should be "have struggled", not "has struggled". Decide what the real subject of each verb is before choosing singular or plural.':
+    'Три ошибки согласования. "The number of students" стоит в единственном числе, поэтому глагол должен быть "has risen", а не "have risen", а относительному придаточному внутри нужно "choose", в согласии с "students" во множественном числе, а не "chooses". "A number of universities" означает "several universities" и стоит во множественном числе, поэтому глагол должен быть "have struggled", а не "has struggled". Прежде чем выбрать единственное или множественное число, определите настоящее подлежащее каждого глагола.',
+  /* Two sentences students already saw in English only: the shown wording
+     never matched a dictionary key. */
+  'Where it does link two ideas explicitly, it uses a word that says something real about the relationship (however, as a result), not a word that only announces a list.':
+    'Там, где связь между идеями всё же явная, использовано слово, которое реально говорит об их отношении (however, as a result), а не слово, которое просто объявляет список.',
+  'Two do/make slips, both common. "A mistake" needs MAKE: "make a mistake", not "do a mistake". "Homework" needs DO: "do their homework", not "make their homework". Decide which fixed verb belongs to each noun before choosing do or make.':
+    'Две частые ошибки с do/make. "A mistake" требует MAKE: "make a mistake", а не "do a mistake". "Homework" требует DO: "do their homework", а не "make their homework". Прежде чем выбрать do или make, решите, какой устойчивый глагол принадлежит каждому существительному.',
 };
 
 export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {};

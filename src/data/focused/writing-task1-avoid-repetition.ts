@@ -25,9 +25,15 @@ const RULES = {
 
 const ATTRIBUTION = "PracticePTEOnline, reused with the publisher's permission.";
 
-const NOTICE = [
-  'When two figures move the same way, it does not use the same trend verb twice: it reaches for a synonym (rose, then climbed, then grew).',
-  'Quantity phrases vary too: "a large number of" the first time, "the majority of" or "most" the second.',
+const NOTICE_GUIDED = [
+  'It never uses the same trend word twice: openings "plummeted" and then were "recovering", while closures were "easing", "peaking" and "falling back".',
+  'Where a figure needs no movement word, it uses a different kind of phrase instead ("at their peak of 8,500", "only 300 apart") rather than repeating a verb.',
+  'Variety never comes at the cost of accuracy: every synonym still names the right direction and the right figure.',
+] as const;
+
+const NOTICE_CHECK = [
+  'It describes each category with a different expression: food "took only 17%", clothing and footwear "also halved", fuel and power "fell less", and household goods "remain unchanged".',
+  'When a second category halved as well, it writes "as did personal goods" instead of repeating "halved".',
   'Variety never comes at the cost of accuracy: every synonym still names the right direction and the right figure.',
 ] as const;
 
@@ -53,7 +59,7 @@ const GUIDED: WrittenFocusedTask = {
     'For each one, what trend word fits (rose, fell, grew, climbed, dropped, declined)? Cross off any word you have already used.',
     'For quantities, what else could "a large number of" become the second time (the majority of, most, a significant proportion of)?',
   ],
-  noticeInTheModel: NOTICE,
+  noticeInTheModel: NOTICE_GUIDED,
 };
 
 const CHECK: WrittenFocusedTask = {
@@ -72,7 +78,7 @@ const CHECK: WrittenFocusedTask = {
   rules: RULES,
   piece: 'paragraph',
   modelParagraphIndex: 2,
-  noticeInTheModel: NOTICE,
+  noticeInTheModel: NOTICE_CHECK,
 };
 
 export const WRITING_TASK1_AVOID_REPETITION: readonly WrittenFocusedTask[] = [GUIDED, CHECK];

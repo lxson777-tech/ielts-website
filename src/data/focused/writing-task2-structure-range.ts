@@ -27,9 +27,15 @@ const RULES = {
 
 const ATTRIBUTION = "PracticePTEOnline, reused with the publisher's permission.";
 
-const NOTICE = [
-  'It opens with one structure (a subordinate clause: "Although alternative medicine is unregulated...") and closes with a different one (a relative clause: "...a claim which few studies support").',
-  'A passive appears where the doer genuinely does not matter ("more research needs to be conducted"), not forced in everywhere.',
+const NOTICE_GUIDED = [
+  'It mixes structures inside one paragraph: a subordinate clause ("while its symptoms are being soothed"), a relative clause ("a patient who feels slightly better each week") and a conditional ("if the underlying cause is stomach cancer").',
+  'A passive appears where the doer genuinely does not matter ("Alternative practitioners are rarely trained", "Conventional medicine is valued"), not forced in everywhere.',
+  'The range serves the meaning. Nothing here is a structure for its own sake; each one is the natural way to say that particular sentence.',
+] as const;
+
+const NOTICE_CHECK = [
+  'It opens with a reason clause ("because most of what it conveys does not sit in the words") and later adds detail with relative clauses ("which fills stadiums in Latin America", "crowds who learn the lyrics phonetically").',
+  'A passive appears where it keeps the right subject in focus ("a listener can be moved by a song"), not forced in everywhere.',
   'The range serves the meaning. Nothing here is a structure for its own sake; each one is the natural way to say that particular sentence.',
 ] as const;
 
@@ -55,7 +61,7 @@ const GUIDED: WrittenFocusedTask = {
     'Where could a subordinate clause (because, although, while) link a reason or a contrast to your main point?',
     'Is there a sentence where the doer of the action genuinely does not matter, where a passive would read more naturally than an active?',
   ],
-  noticeInTheModel: NOTICE,
+  noticeInTheModel: NOTICE_GUIDED,
 };
 
 const CHECK: WrittenFocusedTask = {
@@ -74,7 +80,7 @@ const CHECK: WrittenFocusedTask = {
   rules: RULES,
   piece: 'paragraph',
   modelParagraphIndex: 1,
-  noticeInTheModel: NOTICE,
+  noticeInTheModel: NOTICE_CHECK,
 };
 
 export const WRITING_TASK2_STRUCTURE_RANGE: readonly WrittenFocusedTask[] = [GUIDED, CHECK];
