@@ -144,14 +144,56 @@ export function stampBlockIds(root: ParentNode, ids: readonly string[]): number 
     own labels ("Asking Mr EZ...Show me an example") back to a student whose
     daily questions had run out. */
 export function blockTextOf(heading: HTMLElement): string {
+  return tidyBlockText(blockSpanText(heading) ?? siblingText(heading));
+}
+
+/** Everything in document order from this heading to the next stamped one,
+    which is exactly the span segmentLessonBody cuts. A heading that sits in a
+    title box (`.section-title-block`) has no siblings after it, so reading
+    siblings alone found only the heading, and the fallback quoted a lesson's
+    title back as "the sentence that decides this one". Null without a real
+    document (a test's stand-in), where the sibling reading is used. */
+function blockSpanText(heading: HTMLElement): string | null {
+  const root = typeof heading.closest === 'function' ? heading.closest('[data-lesson-body]') : null;
+  const doc = heading.ownerDocument;
+  if (!root || !doc || typeof doc.createRange !== 'function') return null;
+  const all = headingsToStamp(root);
+  const next = all[all.indexOf(heading) + 1];
+  const range = doc.createRange();
+  range.selectNodeContents(root);
+  range.setStartBefore(heading);
+  if (next) range.setEndBefore(next);
+  const span = range.cloneContents();
+  span.querySelectorAll(`.${HELP_NODE_CLASS}`).forEach((node) => node.remove());
+  /* A line break after every block element, so paragraphs and list items do
+     not run together into one "sentence". */
+  span.querySelectorAll('p, li, div, h2, h3, h4, tr, td, th, ul, ol, table, br').forEach((node) => {
+    node.append('\n');
+  });
+  return span.textContent ?? '';
+}
+
+/** Whether a block says anything beyond its heading (and the small label a
+    title box carries above it). */
+export function hasOwnTeaching(heading: HTMLElement): boolean {
+  const title = tidyBlockText(heading.textContent ?? '');
+  const rest = blockTextOf(heading).split('\n').filter((line) => line && line !== title);
+  const label = heading.closest?.('.section-title-block')?.querySelector('.tag')?.textContent?.trim();
+  return rest.some((line) => line !== label);
+}
+
+function siblingText(heading: HTMLElement): string {
   const parts: string[] = [heading.textContent ?? ''];
   let node: Element | null = heading.nextElementSibling;
   while (node && !/^H[23]$/.test(node.tagName)) {
     if (!node.classList?.contains(HELP_NODE_CLASS)) parts.push(node.textContent ?? '');
     node = node.nextElementSibling;
   }
-  return parts
-    .join('\n')
+  return parts.join('\n');
+}
+
+function tidyBlockText(text: string): string {
+  return text
     .replace(/[ \t]+/g, ' ')
     .replace(/ *\n[ \n]*/g, '\n')
     .trim();
@@ -211,6 +253,11 @@ function addControls(root: ParentNode, options: LessonBlockHelpOptions): void {
   for (const heading of headingsToStamp(root)) {
     const blockId = heading.dataset.lessonBlock;
     if (!blockId) continue;
+    /* A section title whose teaching starts under the next heading (the
+       usual opening of a lesson) has nothing of its own to explain, and help
+       offered there could only quote the title back. The block keeps its id;
+       it just gets no buttons. */
+    if (!hasOwnTeaching(heading)) continue;
     const control = buildControl({
       lessonKey: options.lessonKey,
       lessonTitle: options.lessonTitle,

@@ -42,3 +42,11 @@ test('a block stops at the next heading', () => {
   const heading = chain(['H2', 'One'], ['P', 'First.'], ['H2', 'Two'], ['P', 'Second.']);
   assert.equal(blockTextOf(heading as unknown as HTMLElement), 'One\nFirst.');
 });
+
+test('a bare section title gets no help buttons, a block with teaching does', async () => {
+  const { hasOwnTeaching } = await import('../src/components/learning/lesson-block-help.ts');
+  const bare = chain(['H2', 'True, False, Not Given'], ['H3', 'What is it?'], ['P', 'The official name.']);
+  assert.equal(hasOwnTeaching(bare as unknown as HTMLElement), false);
+  const taught = chain(['H2', 'Everyday Conversation'], ['P', 'Most common question types here.'], ['H3', 'What is it?']);
+  assert.equal(hasOwnTeaching(taught as unknown as HTMLElement), true);
+});
