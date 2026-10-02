@@ -184,7 +184,7 @@ export default function CueCardBank() {
             {t('All cue cards')}
           </button>
           <span className="rounded-full bg-brand-tint px-3 py-1 text-xs font-bold uppercase tracking-wider text-brand">
-            {familyLabel(selected.family)}
+            {t(familyLabel(selected.family))}
           </span>
         </div>
 

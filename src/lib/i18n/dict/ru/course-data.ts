@@ -174,7 +174,8 @@ export const strings: Record<string, string> = {
   'Question type · Most common in Parts 1 & 4': 'Тип задания · Чаще всего в Part 1 и Part 4',
   'Fill gaps in a form, notes, a table or a flow-chart with words or numbers you hear.':
     'Заполняйте пропуски в форме, конспекте, таблице или блок-схеме словами или числами, которые слышите.',
-  'Question type · Any part': 'Тип задания · Любая часть',
+  'Question type · Most common in Part 4': 'Тип задания · Чаще всего в Part 4',
+  'Question type · Most common in Part 1': 'Тип задания · Чаще всего в Part 1',
   'Complete sentences with words taken directly from the recording, within the word limit.':
     'Дополняйте предложения словами прямо из записи, в пределах лимита слов.',
   'Answer questions with a short answer taken from the recording, within the word limit.':
