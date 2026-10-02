@@ -41,7 +41,11 @@
    as themselves (support_request_create), limited per account.
 
    Once an hour (wrangler.jsonc, triggers) the Worker asks the database to
-   erase source hashes that are past their purpose; see `cleanup`. */
+   erase source hashes that are past their purpose; see `cleanup`. In the
+   same hour it asks the database to delete signed-out visitors' messages
+   older than 12 months (2026-10-02-support-retention.sql); see
+   `retention`. A signed-in student's messages are not touched: they go
+   with the account. */
 
 import { TrialServiceError, serviceRpc } from '../../../src/lib/trial/gate';
 import { SUPPORT_LIMITS, SUPPORT_REASONS, isSupportEmail, isSupportTopic } from '../../../src/lib/support-rules';
@@ -337,15 +341,35 @@ export async function cleanup(deps: Deps, env: Env): Promise<number | null> {
   return typeof result.cleared === 'number' ? result.cleared : 0;
 }
 
+/** Deletes signed-out visitors' messages older than the database's
+    visitorKeepMonths (12). Run hourly beside `cleanup`. Returns how many
+    were deleted, or null when the Worker is not configured. */
+export async function retention(deps: Deps, env: Env): Promise<number | null> {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return null;
+  const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
+  const result = await rpc('support_visitor_retention', {});
+  return typeof result.deleted === 'number' ? result.deleted : 0;
+}
+
+/** The hourly schedule: both cleanups, each on its own, so one failing (for
+    example a database without the retention migration yet) never stops the
+    other. */
+export async function hourly(deps: Deps, env: Env): Promise<void> {
+  try {
+    await cleanup(deps, env);
+  } catch {
+    console.error('support: the hourly cleanup could not reach the database');
+  }
+  try {
+    await retention(deps, env);
+  } catch {
+    console.error('support: the hourly retention cleanup could not reach the database');
+  }
+}
+
 const defaultDeps: Deps = { fetch: (input, init) => fetch(input, init) };
 
 export default {
   fetch: (request: Request, env: Env) => createHandler(defaultDeps).fetch(request, env),
-  scheduled: async (_controller: unknown, env: Env) => {
-    try {
-      await cleanup(defaultDeps, env);
-    } catch {
-      console.error('support: the hourly cleanup could not reach the database');
-    }
-  },
+  scheduled: async (_controller: unknown, env: Env) => hourly(defaultDeps, env),
 };

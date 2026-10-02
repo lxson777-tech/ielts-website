@@ -70,7 +70,11 @@ themselves. Nothing a signed-out sender does can affect them.
 ## What is stored about a signed-out sender, and for how long
 
 - The email address they typed, their message, the topic, the language, and (when a
-  link said so) which page they came from. These stay until Alex removes them.
+  link said so) which page they came from. **They are deleted 12 months after they
+  arrived**, answered or not (`supabase/migrations/2026-10-02-support-retention.sql`,
+  `support_visitor_retention()`), by the same hourly schedule below. Alex can remove one
+  sooner. A signed-in student's messages are not part of this: they are kept with the
+  account and deleted with it.
 - A **keyed hash** of their network address (HMAC-SHA-256 with `SUPPORT_SOURCE_SALT`).
   The address itself is never stored and never written to a log. Without the secret
   the hash cannot be turned back into an address, and the secret lives only in this
@@ -80,6 +84,9 @@ themselves. Nothing a signed-out sender does can affect them.
 - **The hash is erased after 24 hours** (the request itself stays). The erasing runs
   at the start of every signed-out request and once an hour on the Worker's schedule
   (`triggers` in `wrangler.jsonc`), so in practice a hash is gone within 25 hours.
+- The hourly schedule runs both cleanups, each on its own (`hourly` in `src/index.ts`),
+  so a database that does not have the retention migration yet still gets its hashes
+  erased.
 - When the bot check is on, the Turnstile token and the sender's address are sent to
   Cloudflare to be verified. Neither is stored here.
 

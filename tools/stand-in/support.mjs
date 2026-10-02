@@ -15,6 +15,9 @@
  *   POST /rest/v1/rpc/support_limits            database itself, as for real
  *   POST /rest/v1/rpc/support_admin_list
  *   POST /rest/v1/rpc/support_admin_mark
+ *   POST /rest/v1/rpc/support_retention        2026-10-02-support-
+ *   POST /rest/v1/rpc/support_visitor_retention  retention.sql
+ *   POST /rest/v1/rpc/support_my_requests
  *   POST /rest/v1/rpc/is_admin
  *   POST /rest/v1/rpc/admin_list_users   (a plain stand-in, see below)
  *
@@ -64,6 +67,8 @@ import { createTrialDb } from '../trial-db.mjs';
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 export const ADMIN_MIGRATION = resolve(REPO, 'supabase/migrations/2026-09-24-admin.sql');
 export const SUPPORT_MIGRATION = resolve(REPO, 'supabase/migrations/2026-09-30-support.sql');
+/** Visitor-message retention and a student's own copy (2 October 2026). */
+export const SUPPORT_RETENTION_MIGRATION = resolve(REPO, 'supabase/migrations/2026-10-02-support-retention.sql');
 
 const HANDLED_RPC = new Set([
   'support_request_create',
@@ -72,6 +77,9 @@ const HANDLED_RPC = new Set([
   'support_limits',
   'support_admin_list',
   'support_admin_mark',
+  'support_retention',
+  'support_visitor_retention',
+  'support_my_requests',
   'is_admin',
   'admin_list_users',
 ]);
@@ -106,6 +114,7 @@ async function readRaw(req) {
 export async function createSupportDb() {
   const db = await createTrialDb({ migration: ADMIN_MIGRATION });
   await db.raw.exec(readFileSync(SUPPORT_MIGRATION, 'utf8'));
+  await db.raw.exec(readFileSync(SUPPORT_RETENTION_MIGRATION, 'utf8'));
   return Object.assign(db, {
     async makeAdmin(userId, note = 'local stand-in admin') {
       await db.raw.query('insert into public.admins (user_id, note) values ($1, $2) on conflict (user_id) do nothing', [userId, note]);
