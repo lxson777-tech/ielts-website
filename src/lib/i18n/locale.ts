@@ -72,12 +72,18 @@ export function intlLocale(locale: Locale | string | null | undefined, english =
 
 let kazakhIntl: boolean | null = null;
 
+/* Gotcha worth remembering (found in the browser check, 2 October 2026):
+   supportedLocalesOf('kk-KZ') is not enough. Chromium builds can answer
+   ['kk-KZ'] and still carry no Kazakh data, writing "2026 M10 2" for a date
+   and "12,990" for a number. So the test formats a known date and number
+   and keeps kk-KZ only when they really come out Kazakh: the October month
+   name and a space, not a comma, between thousands. */
 function kazakhIntlSupported(): boolean {
   if (kazakhIntl !== null) return kazakhIntl;
   try {
-    kazakhIntl =
-      Intl.DateTimeFormat.supportedLocalesOf(['kk-KZ']).length > 0 &&
-      Intl.NumberFormat.supportedLocalesOf(['kk-KZ']).length > 0;
+    const month = new Intl.DateTimeFormat('kk-KZ', { month: 'long', timeZone: 'UTC' }).format(Date.UTC(2026, 9, 15));
+    const number = new Intl.NumberFormat('kk-KZ').format(12990);
+    kazakhIntl = /қазан/i.test(month) && !/[,.]/.test(number);
   } catch {
     kazakhIntl = false;
   }

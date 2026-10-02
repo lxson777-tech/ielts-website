@@ -1,0 +1,506 @@
+[
+ {
+  "lang": "en",
+  "width": 320,
+  "path": "/",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 320,
+  "path": "/plans",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 320,
+  "path": "/terms",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 320,
+  "path": "/privacy",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 320,
+  "path": "/help",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 320,
+  "path": "/sign-up",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 320,
+  "path": "/account",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 360,
+  "path": "/",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 360,
+  "path": "/plans",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 360,
+  "path": "/terms",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 360,
+  "path": "/privacy",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 360,
+  "path": "/help",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 360,
+  "path": "/sign-up",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 360,
+  "path": "/account",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 390,
+  "path": "/",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 390,
+  "path": "/plans",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 390,
+  "path": "/terms",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 390,
+  "path": "/privacy",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 390,
+  "path": "/help",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 390,
+  "path": "/sign-up",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "en",
+  "width": 390,
+  "path": "/account",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 320,
+  "path": "/",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 320,
+  "path": "/plans",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 320,
+  "path": "/terms",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 320,
+  "path": "/privacy",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 320,
+  "path": "/help",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 320,
+  "path": "/sign-up",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 320,
+  "path": "/account",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 360,
+  "path": "/",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 360,
+  "path": "/plans",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 360,
+  "path": "/terms",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 360,
+  "path": "/privacy",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 360,
+  "path": "/help",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 360,
+  "path": "/sign-up",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 360,
+  "path": "/account",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 390,
+  "path": "/",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 390,
+  "path": "/plans",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 390,
+  "path": "/terms",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 390,
+  "path": "/privacy",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 390,
+  "path": "/help",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 390,
+  "path": "/sign-up",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "ru",
+  "width": 390,
+  "path": "/account",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 320,
+  "path": "/",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 320,
+  "path": "/plans",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 320,
+  "path": "/terms",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 320,
+  "path": "/privacy",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 320,
+  "path": "/help",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 320,
+  "path": "/sign-up",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 320,
+  "path": "/account",
+  "scrollWidth": 320,
+  "innerWidth": 320,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 360,
+  "path": "/",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 360,
+  "path": "/plans",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 360,
+  "path": "/terms",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 360,
+  "path": "/privacy",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 360,
+  "path": "/help",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 360,
+  "path": "/sign-up",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 360,
+  "path": "/account",
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 390,
+  "path": "/",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 390,
+  "path": "/plans",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 390,
+  "path": "/terms",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 390,
+  "path": "/privacy",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 390,
+  "path": "/help",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 390,
+  "path": "/sign-up",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ },
+ {
+  "lang": "kk",
+  "width": 390,
+  "path": "/account",
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "ok": true
+ }
+]

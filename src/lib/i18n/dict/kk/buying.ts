@@ -59,6 +59,15 @@ export const strings: Record<string, string> = {
   'Check again': 'Қайта тексеру',
   'Start again': 'Қайтадан бастау',
 
+  /* The account page's frame and tabs (src/pages/account.astro), around
+     Account > Profile and Account > Access */
+  'Log in to see your details, your saved work and your results.': 'Деректеріңізді, сақталған жұмыстарыңызды және нәтижелеріңізді көру үшін кіріңіз.',
+  'Log in': 'Кіру',
+  'Create a free account': 'Тегін аккаунт ашу',
+  Profile: 'Профиль',
+  Access: 'Қолжетімділік',
+  'Saved and results': 'Сақталғандар мен нәтижелер',
+
   /* Account > Access (AccountAccess.tsx) */
   'Add more time': 'Уақыт қосу',
   'Buy access again': 'Қолжетімділікті қайта сатып алу',

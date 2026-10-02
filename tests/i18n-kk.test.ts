@@ -153,6 +153,8 @@ const KK_PARTIAL: Record<string, readonly string[]> = {
     'Preparing…',
     'Download my data',
   ],
+  // The account page's frame and its Profile and Access tabs.
+  'pages/account.astro': ['Your account', 'Log in to see your details, your saved work and your results.', 'Log in', 'Create a free account', 'Account', 'Profile', 'Access', 'Saved and results'],
   // The support form's refund and AI-review reasons.
   'components/support/SupportForm.tsx': [
     'You came here to ask for a refund. Tell us which purchase it is for, and a person will answer by email.',
@@ -204,7 +206,7 @@ test('the content language of Kazakh is Russian, and nothing else moves', () => 
 });
 
 test('dates and numbers use kk-KZ for Kazakh where the runtime has it, and are unchanged otherwise', () => {
-  const hasKazakh = Intl.DateTimeFormat.supportedLocalesOf(['kk-KZ']).length > 0;
+  const hasKazakh = /қазан/i.test(new Intl.DateTimeFormat('kk-KZ', { month: 'long', timeZone: 'UTC' }).format(Date.UTC(2026, 9, 15)));
   assert.equal(intlLocale('kk'), hasKazakh ? 'kk-KZ' : 'ru-RU');
   assert.equal(intlLocale('ru'), 'ru-RU');
   assert.equal(intlLocale('en'), 'en-GB');
@@ -436,4 +438,18 @@ test('Kazakh reads the Russian guidance parts, and a later merge never replaces 
   mergeUnderOwn('kk', kk, { strings: { 'Public offer': 'Публичная оферта', 'A brand new paid line': 'Новая платная строка' } });
   assert.equal(kk.strings['Public offer'], 'Жария оферта', 'the paid Russian pack must not overwrite Kazakh');
   assert.equal(kk.strings['A brand new paid line'], 'Новая платная строка', 'but it does add Russian where Kazakh has none');
+});
+
+/* ------------------------------------------------------------------ */
+/* The native speaker's review list                                    */
+/* ------------------------------------------------------------------ */
+
+test('the native speaker review file lists every Kazakh line the site shows', async () => {
+  const review = fs.readFileSync(path.join(SRC_DIR, '..', 'docs', 'legal', 'KAZAKH-REVIEW.md'), 'utf8');
+  const { SALES_COPY } = await import('../src/marketing/sales-copy.ts');
+  const missing: string[] = [];
+  for (const value of Object.values(kkMerged.strings)) if (!review.includes(value)) missing.push(value);
+  for (const [key, entry] of Object.entries(SALES_COPY)) if (!review.includes(entry.kk)) missing.push(`${key}: ${entry.kk}`);
+  assert.deepEqual(missing, [], 'docs/legal/KAZAKH-REVIEW.md is out of date: list every new Kazakh line there for the checker');
+  assert.doesNotMatch(review, /[–—]/, 'the review file follows the no-dash rule too');
 });
