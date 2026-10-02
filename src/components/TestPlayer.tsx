@@ -13,6 +13,7 @@ import {
   questionCount,
   scoredQuestionIds,
 } from '../lib/tests/schema';
+import { countedWords, isOverWordLimit, numberRuleOf, type NumberRule } from '../lib/tests/word-limit';
 import { recordTestAttempt } from '../lib/progress';
 import TrialBlock from './trial/TrialBlock';
 import { useTrialTest } from './trial/useTrialTest';
@@ -258,11 +259,6 @@ function buildRetakeTest(test: PracticeTest, wrongIds: Set<string>): PracticeTes
 
 function pad(n: number): string {
   return String(n).padStart(2, '0');
-}
-
-function countWords(s: string): number {
-  const t = s.trim();
-  return t ? t.split(/\s+/).length : 0;
 }
 
 /** Strip tags and collapse whitespace, then cut to a bookmark-card-sized
@@ -1731,6 +1727,7 @@ function TestPlayerBody({
                       answers={answers}
                       submitted={submitted}
                       wordLimit={group.wordLimit}
+                      numberRule={numberRuleOf(group)}
                       setAnswer={setAnswer}
                       onLocate={locateEvidence}
                       skill={test.skill}
@@ -2062,7 +2059,8 @@ function QuestionItem({
   const answerText = q.multiSelect
     ? q.multiSelect.correctValues.join(', ')
     : Array.isArray(q.answer) ? q.answer[0] : q.answer;
-  const overLimit = !submitted && group.wordLimit != null && countWords(value) > group.wordLimit;
+  const numberRule = numberRuleOf(group);
+  const overLimit = !submitted && group.wordLimit != null && isOverWordLimit(value, group.wordLimit, numberRule);
 
   const stateCls = submitted
     ? ok
@@ -2135,7 +2133,7 @@ function QuestionItem({
             />
             {q.textHtml && <Html as="span" className="text-sm text-ink-muted" html={q.textHtml} />}
           </div>
-          {overLimit && <WordLimitWarning value={value} limit={group.wordLimit!} className="ml-10 mt-1" />}
+          {overLimit && <WordLimitWarning value={value} limit={group.wordLimit!} rule={numberRule} className="ml-10 mt-1" />}
         </div>
       ) : group.type === 'sentence-completion' || group.type === 'table-completion' ? (
         <div>
@@ -2157,7 +2155,7 @@ function QuestionItem({
               {q.after}
             </p>
           </div>
-          {overLimit && <WordLimitWarning value={value} limit={group.wordLimit!} className="ml-10 mt-1" />}
+          {overLimit && <WordLimitWarning value={value} limit={group.wordLimit!} rule={numberRule} className="ml-10 mt-1" />}
         </div>
       ) : group.type === 'multiple-choice' ? (
         <div>
@@ -2240,10 +2238,12 @@ function QuestionItem({
 
 /** Word-count nudge shown live while typing a free-text answer that has a
     stated limit (e.g. "NO MORE THAN TWO WORDS") — a nudge, not a hard block,
-    since the real exam only penalises at marking time. */
-function WordLimitWarning({ value, limit, className }: { value: string; limit: number; className?: string }) {
+    since the real exam only penalises at marking time. Counted the IELTS way
+    (src/lib/tests/word-limit.ts): a hyphenated word is one word, and under
+    "AND/OR A NUMBER" the number is not one of the words. */
+function WordLimitWarning({ value, limit, rule, className }: { value: string; limit: number; rule: NumberRule; className?: string }) {
   const { tn } = useT();
-  const count = countWords(value);
+  const count = countedWords(value, rule);
   return (
     <p className={`text-xs font-semibold text-warning ${className ?? ''}`}>
       ⚠ {tn(count, { one: '{n} word: limit is {limit}', other: '{n} words: limit is {limit}' }, { limit })}
@@ -2532,6 +2532,7 @@ function TableGrid({
   answers,
   submitted,
   wordLimit,
+  numberRule,
   setAnswer,
   onLocate,
   skill,
@@ -2541,6 +2542,7 @@ function TableGrid({
   answers: Record<string, string>;
   submitted: boolean;
   wordLimit?: number;
+  numberRule: NumberRule;
   setAnswer: (qid: string, value: string) => void;
   onLocate?: (evidence: string) => void;
   skill: TestSkill;
@@ -2596,8 +2598,8 @@ function TableGrid({
                       aria-label={t('Question {n}', { n: nq.n })}
                       className={`w-32 rounded-lg border px-2 py-0.5 text-center font-semibold focus:border-brand ${cls}`}
                     />
-                    {wordLimit != null && !submitted && countWords(value) > wordLimit && (
-                      <WordLimitWarning value={value} limit={wordLimit} className="mt-1" />
+                    {wordLimit != null && !submitted && isOverWordLimit(value, wordLimit, numberRule) && (
+                      <WordLimitWarning value={value} limit={wordLimit} rule={numberRule} className="mt-1" />
                     )}
                   </td>
                 );
