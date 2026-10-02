@@ -1,0 +1,107 @@
+[
+ {
+  "check": "open: /lessons/writing/method shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "open: /lessons/writing/charts shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "open: /lessons/writing/process shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "open: /lessons/writing/maps shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "open: /lessons/writing/task2-method shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "open: /lessons/writing/opinion shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "open: /lessons/writing/discussion shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "open: /lessons/writing/advantages shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "open: /lessons/writing/problem shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "open: /lessons/writing/twopart shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "open: the model answer bank loads with no error and lists the new tasks",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "gated: /lessons/writing/method shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "gated: /lessons/writing/charts shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "gated: /lessons/writing/process shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "gated: /lessons/writing/maps shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "gated: /lessons/writing/task2-method shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "gated: /lessons/writing/opinion shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "gated: /lessons/writing/discussion shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "gated: /lessons/writing/advantages shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "gated: /lessons/writing/problem shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "gated: /lessons/writing/twopart shows its Band 8 worked example, no error",
+  "ok": true,
+  "detail": "[]"
+ }
+]
