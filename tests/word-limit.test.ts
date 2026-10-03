@@ -86,10 +86,9 @@ test('items are counted the IELTS way', () => {
    every free-text group on every paper is run through it. The only answers
    allowed to trip it are publisher keys already named as over their own
    printed limit and left for Alex (tests/listening-answer-key.test.ts,
-   tests/reading-key-lint.test.ts). */
-const KNOWN_OVER_LIMIT = new Set([
-  'reading-full-010 q40 Learning style',
-]);
+   tests/reading-key-lint.test.ts). None are left: Test 29 Q15 was settled
+   from the recording as "all day" on 3 October 2026. */
+const KNOWN_OVER_LIMIT = new Set<string>([]);
 
 test('no accepted key on any paper triggers the over-the-limit nudge', () => {
   const flagged: string[] = [];

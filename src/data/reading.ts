@@ -35,9 +35,10 @@ export const READING_PARTS: ReadingPart[] = [
     image: '/pics/reading/quiz.png',
     blurb: nt('Not a question type, but the skill behind all of them: recognising the same idea in different words.'),
     // A warm-up of single sentences plus one real passage with eight real
-    // questions (src/data/reading-practice.ts), so a little longer than the
-    // question-type lessons.
-    minutes: 20,
+    // questions (src/data/reading-practice.ts). Every `minutes` in this file
+    // is set by tools/estimate-lesson-minutes.mjs (the whole page: teaching
+    // plus practice), and tests/lesson-minutes.test.ts keeps it in step.
+    minutes: 25,
   },
   {
     slug: 'mc',
@@ -46,7 +47,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/mc.png',
     blurb: nt('Pick the right option and dodge the distractors designed to catch skimmers.'),
-    minutes: 12,
+    minutes: 15,
   },
   {
     slug: 'tfng',
@@ -55,7 +56,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/tfng.png',
     blurb: nt('Decide whether statements agree with the facts in the text, and learn what "Not Given" really means.'),
-    minutes: 12,
+    minutes: 35,
   },
   {
     slug: 'ynng',
@@ -64,7 +65,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/ynng.png',
     blurb: nt("Decide whether statements match the writer's opinions and claims, not the facts in the text."),
-    minutes: 12,
+    minutes: 35,
   },
   {
     slug: 'headings',
@@ -73,7 +74,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 3,
     image: '/pics/reading/headings.png',
     blurb: nt('Match each paragraph to its main idea, not just repeated words.'),
-    minutes: 14,
+    minutes: 20,
   },
   {
     slug: 'matching-information',
@@ -82,7 +83,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/para.png',
     blurb: nt('Find which paragraph contains a specific piece of information.'),
-    minutes: 12,
+    minutes: 25,
   },
   {
     slug: 'matching-features',
@@ -91,7 +92,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 3,
     image: '/pics/reading/cat.png',
     blurb: nt('Match statements to people, theories, places or dates. Some books call this classification.'),
-    minutes: 13,
+    minutes: 20,
   },
   {
     slug: 'matching-sentence-endings',
@@ -100,7 +101,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/endings.png',
     blurb: nt('Match the start of a sentence to the ending that correctly completes it, using the passage.'),
-    minutes: 12,
+    minutes: 20,
   },
   {
     slug: 'sentence',
@@ -109,7 +110,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/sentence.png',
     blurb: nt('Fill the gaps within the word limit, keeping the sentence grammatical.'),
-    minutes: 10,
+    minutes: 20,
   },
   {
     slug: 'summary-completion',
@@ -118,7 +119,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/summary.png',
     blurb: nt('Fill gaps in a summary, a set of notes, a table or a flow-chart using words taken from the passage.'),
-    minutes: 13,
+    minutes: 35,
   },
   {
     slug: 'diagram',
@@ -127,7 +128,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 3,
     image: '/pics/reading/diagram.png',
     blurb: nt('Label a diagram or process using exact words from the passage.'),
-    minutes: 12,
+    minutes: 20,
   },
   {
     slug: 'short-answer',
@@ -136,7 +137,7 @@ export const READING_PARTS: ReadingPart[] = [
     stage: 2,
     image: '/pics/reading/shortanswer.png',
     blurb: nt('Answer questions with a word limit, taking the answer straight from the passage.'),
-    minutes: 10,
+    minutes: 25,
   },
 ];
 

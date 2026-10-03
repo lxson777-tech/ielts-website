@@ -19,7 +19,7 @@ export const SPEAKING_PARTS: SpeakingPart[] = [
     blurb: nt('Handle the warm-up interview questions with natural, extended answers.'),
     stage: 2,
     image: '/pics/speaking-part1.png',
-    minutes: 20,
+    minutes: 45,
   },
   {
     slug: 'part2',
@@ -27,7 +27,7 @@ export const SPEAKING_PARTS: SpeakingPart[] = [
     blurb: nt('Speak for two minutes from a cue card without running dry.'),
     stage: 2,
     image: '/pics/speaking-part2.png',
-    minutes: 25,
+    minutes: 35,
   },
   {
     slug: 'part3',
@@ -35,7 +35,7 @@ export const SPEAKING_PARTS: SpeakingPart[] = [
     blurb: nt('Discuss abstract follow-up questions and show off complex language.'),
     stage: 3,
     image: '/pics/speaking-part3.png',
-    minutes: 30,
+    minutes: 15,
   },
 ];
 

@@ -31,7 +31,7 @@ export const LISTENING_PARTS: ListeningPart[] = [
     stage: 1,
     eyebrow: nt('Two speakers · Form completion'),
     blurb: nt('Forms, bookings and registrations: catch names, numbers and spellings.'),
-    minutes: 12,
+    minutes: 15,
   },
   {
     slug: 'part2',
@@ -40,7 +40,7 @@ export const LISTENING_PARTS: ListeningPart[] = [
     stage: 2,
     eyebrow: nt('One speaker · Maps & matching'),
     blurb: nt('Follow a single speaker around a map, tour or announcement.'),
-    minutes: 12,
+    minutes: 15,
   },
   {
     slug: 'part3',
@@ -49,7 +49,7 @@ export const LISTENING_PARTS: ListeningPart[] = [
     stage: 2,
     eyebrow: nt('Up to four speakers · Multiple choice'),
     blurb: nt('Track multiple speakers, dodge distractors, and catch corrections.'),
-    minutes: 12,
+    minutes: 15,
   },
   {
     slug: 'part4',
@@ -58,7 +58,7 @@ export const LISTENING_PARTS: ListeningPart[] = [
     stage: 3,
     eyebrow: nt('One speaker · Note completion'),
     blurb: nt('Complete notes from a fast, dense university-style talk.'),
-    minutes: 12,
+    minutes: 15,
   },
   {
     slug: 'multiple-choice',
@@ -67,7 +67,7 @@ export const LISTENING_PARTS: ListeningPart[] = [
     stage: 2,
     eyebrow: nt('Question type · Most common in Parts 2 & 3'),
     blurb: nt('Pick the correct option, or two, from a list while the recording plays.'),
-    minutes: 12,
+    minutes: 25,
   },
   {
     slug: 'matching',
@@ -76,7 +76,7 @@ export const LISTENING_PARTS: ListeningPart[] = [
     stage: 2,
     eyebrow: nt('Question type · Most common in Parts 2 & 3'),
     blurb: nt('Match items from a list to the options given, such as speakers to opinions or plans to features.'),
-    minutes: 12,
+    minutes: 20,
   },
   {
     slug: 'map-labelling',
@@ -85,7 +85,7 @@ export const LISTENING_PARTS: ListeningPart[] = [
     stage: 3,
     eyebrow: nt('Question type · Most common in Part 2'),
     blurb: nt('Label a map, plan or diagram by following directions given in the recording.'),
-    minutes: 14,
+    minutes: 20,
   },
   {
     slug: 'form-completion',
@@ -94,7 +94,7 @@ export const LISTENING_PARTS: ListeningPart[] = [
     stage: 1,
     eyebrow: nt('Question type · Most common in Parts 1 & 4'),
     blurb: nt('Fill gaps in a form, notes, a table or a flow-chart with words or numbers you hear.'),
-    minutes: 11,
+    minutes: 30,
   },
   {
     slug: 'sentence-completion',
@@ -103,7 +103,7 @@ export const LISTENING_PARTS: ListeningPart[] = [
     stage: 2,
     eyebrow: nt('Question type · Most common in Part 4'),
     blurb: nt('Complete sentences with words taken directly from the recording, within the word limit.'),
-    minutes: 10,
+    minutes: 30,
   },
   {
     slug: 'short-answer',
@@ -112,7 +112,7 @@ export const LISTENING_PARTS: ListeningPart[] = [
     stage: 2,
     eyebrow: nt('Question type · Most common in Part 1'),
     blurb: nt('Answer questions with a short answer taken from the recording, within the word limit.'),
-    minutes: 10,
+    minutes: 25,
   },
 ];
 

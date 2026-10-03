@@ -468,10 +468,7 @@ const test: PracticeTest = {
             },
             {
               "id": "q40",
-              "answer": [
-                "Style",
-                "Learning style"
-              ],
+              "answer": "Style",
               "explanation": "The paragraph on the 2018 study says 78 percent of students said they had a particular learning style. The instruction allows one word only, so the answer to write is 'style'.",
               "evidence": "They found that 93 percent of them agreed with the idea of learning styles, and that 78 percent of them said that they had a particular learning style."
             }
