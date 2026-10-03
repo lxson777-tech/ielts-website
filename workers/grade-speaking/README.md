@@ -326,9 +326,17 @@ line by line, with its two notes ("must fully fit the positive features",
 "average performance across all parts of the test"). The method block and
 the pronunciation prompt were rewritten so every phrase they quote exists in
 the new text (`tests/descriptor-quotes.test.ts` checks this). Models,
-temperatures, anchors and the JSON contract are unchanged. A small paid
-calibration run is due before this is deployed; the results below were
-measured against the older wording.
+temperatures, anchors and the JSON contract are unchanged. The results
+below the next paragraph were measured against the older wording.
+
+The check run (docs/audits/prepublish-2026-10-03/grader-check/REPORT.md)
+found the official band 9 candidate's Fluency marked 7 for ordinary
+mid-sentence restarts. Alex chose a narrow fix: the standardisation
+guidance now tells the model to judge "only very occasional repetition or
+self-correction" against the band 8 and 9 samples, not against flawless
+speech. Re-check on five of the six clips (band 6 not re-run): 3.5, 5.5,
+6.5, 7.5 and 9 for the 3.5, 5, 7, 8 and 9 clips (band 9 Fluency 9), see
+SPEAKING-TUNE.md in the same folder.
 
 2026-09-14 recalibration (Alex reported the grader was too strict): the four
 scales are now the official public IELTS Speaking band descriptors verbatim

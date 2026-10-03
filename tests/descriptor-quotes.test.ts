@@ -26,6 +26,7 @@ import {
   PRON_SCALE,
   SPEAKING_NOTES,
   METHOD_BLOCK,
+  anchorsTextBlock,
   hybridPronunciationSystemInstruction,
   hybridTextSystemInstruction,
 } from '../workers/grade-speaking/src/index.ts';
@@ -158,6 +159,12 @@ test('the speaking grader method block and pronunciation guidance quote only the
     const pron = hybridPronunciationSystemInstruction(anchors);
     assert.deepEqual(problems(section(pron, 'Method:', '=== OUTPUT REQUIREMENTS ==='), SPEAKING, 'pronunciation'), []);
   }
+  // The standardisation guidance after the six sample transcripts (the
+  // transcripts themselves are candidate speech, not descriptor quotes).
+  const standardisation = anchorsTextBlock();
+  const guidance = standardisation.slice(standardisation.indexOf('Spoken transcripts always contain'));
+  assert.ok(guidance.includes('"only very occasional repetition or self-correction"'));
+  assert.deepEqual(problems(guidance, SPEAKING, 'standardisation'), []);
   const text = hybridTextSystemInstruction();
   assert.ok(text.includes(FC_SCALE) && text.includes(LR_SCALE) && text.includes(GRA_SCALE) && text.includes(SPEAKING_NOTES));
 });

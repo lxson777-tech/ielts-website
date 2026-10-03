@@ -1444,8 +1444,15 @@ interface ClipTranscriptForPrompt {
     actually received, real marked performances to compare against instead
     of the rubric text alone. This mirrors the standardisation real
     examiners go through against marked recordings before they sit an
-    exam. See src/anchors.ts for the data and its source. */
-function anchorsTextBlock(): string {
+    exam. See src/anchors.ts for the data and its source.
+
+    3 October 2026 (Alex's choice): the last paragraph tells the model to
+    read the band 8 and 9 wording "only very occasional repetition or
+    self-correction" against the band 8 and 9 samples, because on the
+    current descriptors it marked the official band 9 candidate's Fluency 7
+    for ordinary mid-sentence restarts. Exported for
+    tests/descriptor-quotes.test.ts, which checks its quotes. */
+export function anchorsTextBlock(): string {
   const samples = SPEAKING_ANCHORS.map(
     (a) => `--- Official sample, examiner band ${a.band} ---\n${a.transcript}`,
   ).join('\n\n');
@@ -1454,7 +1461,8 @@ Real IELTS examiners are periodically standardised against marked sample perform
 
 ${samples}
 
-Spoken transcripts always contain fillers, repetition and self-correction; they are not written prose. Judge the candidate by comparing the transcript and the timing statistics with these marked samples: which band's sample does this candidate most resemble in flow, range and control? Band 6 speech is understandable at length with noticeable errors and searching; band 7 flows with only occasional searching and mostly accurate complex sentences; band 8 is fluent and precise with rare slips; band 9 is effortless. Do not place candidates at band 6 by default.`;
+Spoken transcripts always contain fillers, repetition and self-correction; they are not written prose. Judge the candidate by comparing the transcript and the timing statistics with these marked samples: which band's sample does this candidate most resemble in flow, range and control? Band 6 speech is understandable at length with noticeable errors and searching; band 7 flows with only occasional searching and mostly accurate complex sentences; band 8 is fluent and precise with rare slips; band 9 is effortless. Do not place candidates at band 6 by default.
+At bands 8 and 9 for Fluency and Coherence, judge "only very occasional repetition or self-correction" against the band 8 and band 9 samples above, not against flawless speech: those officially marked candidates still repeat a word or restart a phrase mid-sentence now and then. A candidate whose repetition and self-correction are no more frequent than in those samples meets that wording, and the other band 8 and 9 features (what the hesitation is for, how coherent and extended the topic development is) decide between them.`;
 }
 
 /** Builds the OpenAI Responses API request body for the hybrid pipeline's
