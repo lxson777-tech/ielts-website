@@ -12,7 +12,13 @@
  *
  * Options:
  *   --paper essay | speaking-anchors
- *   --input <json>     essays: [{ id, task, variant, minWords, promptHtml, essay, officialBand }]
+ *   --input <json>     essays: [{ id, task, variant, minWords, promptHtml, essay, officialBand, chartFile? }]
+ *                      A Task 1 promptHtml may name a site chart as the site
+ *                      does (<img src="/ielts-website/pics/writing/imported/
+ *                      wt-132-task1.webp">); it is served from disk. A chart
+ *                      that is not the site's (the official IELTS.org sample
+ *                      question) goes in `chartFile`, a path to the image.
+ *                      Each result lists `imagesSent`, the images per call.
  *   --worker <path>    the Worker module to run (default: the current one in
  *                      workers/). Point it at an older copy (for example
  *                      `git show <rev>:workers/grade-essay/src/index.ts` saved
@@ -107,11 +113,19 @@ export function estimateCost(url, init) {
     const p = priceFor(model);
     // Pull base64 audio out so it is priced as audio, not as text.
     let audioSeconds = 0;
-    const textOnly = body.replace(/"data":"([A-Za-z0-9+/=]{200,})"/g, (_m, b64) => {
+    // An attached image (a Task 1 chart) is priced as image tokens, not as
+    // its base64 text: at "high" detail at most 2,500 patches x 1.2 for the
+    // GPT-5 family, so 3,000 tokens is the ceiling per image.
+    let images = 0;
+    const withoutImages = body.replace(/"image_url":"data:image\/[a-z0-9.+-]+;base64,[A-Za-z0-9+/=]*"/gi, () => {
+      images += 1;
+      return '""';
+    });
+    const textOnly = withoutImages.replace(/"data":"([A-Za-z0-9+/=]{200,})"/g, (_m, b64) => {
       audioSeconds += (b64.length * 0.75) / 4000;
       return '""';
     });
-    const textTokens = textOnly.length / 3.5;
+    const textTokens = textOnly.length / 3.5 + images * 3000;
     const outTokens = url.includes('/chat/completions') ? 4000 : 12000;
     return (textTokens * p.text_in + audioSeconds * 10 * (p.audio_in ?? FALLBACK_PRICE.audio_in) + outTokens * p.out) / 1_000_000;
   }
@@ -203,6 +217,54 @@ export function makeBudgetFetch({ realFetch, ledger, ledgerPath, budgetUsd, cont
   };
 }
 
+/* ── Task 1 charts, served from disk ──
+   The essay Worker fetches a Task 1 question's chart from the site
+   (workers/grade-essay/src/task1-visual.ts). Here that fetch is answered from
+   public/pics/writing/imported, or from an item's own `chartFile`, and never
+   reaches the network; everything else goes on to `next` (the budget fetch,
+   which only lets OpenAI through). `context.imagesSent` records how many
+   images each model call carried, so a result shows the chart was seen. */
+const CHART_PATH = /\/pics\/writing\/imported\/([A-Za-z0-9._-]+)$/;
+
+export function makeChartFetch(next, { extraCharts = {}, context = {} } = {}) {
+  return async (input, init) => {
+    const url = String(input);
+    if (url.startsWith('https://api.openai.com/')) {
+      if (typeof init?.body === 'string') {
+        const n = (init.body.match(/"type":"input_image"/g) ?? []).length;
+        (context.imagesSent ??= []).push(n);
+      }
+      return next(input, init);
+    }
+    let path = '';
+    try { path = new URL(url).pathname; } catch { /* not a URL */ }
+    const m = path.match(CHART_PATH);
+    if (m) {
+      const file = extraCharts[m[1]] ?? resolve(REPO, 'public/pics/writing/imported', m[1]);
+      if (!existsSync(file)) return new Response('not found', { status: 404 });
+      return new Response(readFileSync(file), { status: 200 });
+    }
+    return next(input, init);
+  };
+}
+
+/** An item whose chart is not one of the site's (the official IELTS.org
+    sample question, say) brings it as `chartFile`. The runner trusts it for
+    this run only, by adding its SHA-256 to the Worker's chart list in memory
+    (never on disk), and points the question at it. */
+async function registerItemChart(item, extraCharts) {
+  if (!item.chartFile) return item.promptHtml;
+  const file = resolve(REPO, item.chartFile);
+  const ext = file.slice(file.lastIndexOf('.')).toLowerCase();
+  if (!['.png', '.jpg', '.jpeg', '.webp', '.gif'].includes(ext)) throw new Error(`${item.id}: chartFile must be png, jpg, webp or gif`);
+  const name = `calibration-${String(item.id).replace(/[^A-Za-z0-9-]/g, '-')}${ext}`;
+  const { createHash } = await import('node:crypto');
+  const { TASK1_CHARTS } = await import(pathToFileURL(resolve(REPO, 'workers/grade-essay/src/task1-charts.ts')).href);
+  TASK1_CHARTS[name] = createHash('sha256').update(readFileSync(file)).digest('hex');
+  extraCharts[name] = file;
+  return `${item.promptHtml}<img src="/ielts-website/pics/writing/imported/${name}" alt="">`;
+}
+
 /* ── key and settings ── */
 
 function parseDotEnv(text) {
@@ -263,7 +325,7 @@ function responsesText(data) {
   return null;
 }
 
-async function gradeEssays({ items, workerPath, env, budgetFetchFor }) {
+export async function gradeEssays({ items, workerPath, env, budgetFetchFor }) {
   const mod = await import(pathToFileURL(workerPath).href);
   let analyzeEssay = null;
   try {
@@ -283,20 +345,22 @@ async function gradeEssays({ items, workerPath, env, budgetFetchFor }) {
     });
     const samples = Number(env.GRADING_SAMPLES ?? 3);
     context.callsPerEndpoint = { 'https://api.openai.com/v1/responses': samples };
-    const handler = mod.createHandler({ fetch: f });
-    const prompt = { id: item.id, task: item.task, variant: item.variant, title: item.id, promptHtml: item.promptHtml, minWords: item.minWords };
+    const extraCharts = {};
+    const promptHtml = await registerItemChart(item, extraCharts);
+    const handler = mod.createHandler({ fetch: makeChartFetch(f, { extraCharts, context }) });
+    const prompt = { id: item.id, task: item.task, variant: item.variant, title: item.id, promptHtml, minWords: item.minWords };
     let mechanics;
     try { mechanics = analyzeEssay ? analyzeEssay({ prompt, essay: item.essay }) : undefined; } catch { mechanics = undefined; }
     const req = new Request('http://localhost/grade', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Origin: 'http://localhost:4321' },
-      body: JSON.stringify({ prompt: { task: item.task, variant: item.variant, promptHtml: item.promptHtml, minWords: item.minWords }, essay: item.essay, mechanics }),
+      body: JSON.stringify({ prompt: { task: item.task, variant: item.variant, promptHtml, minWords: item.minWords }, essay: item.essay, mechanics }),
     });
     console.log(`grading ${item.id} (official ${item.officialBand})`);
     const resp = await handler.fetch(req, env);
     const body = await resp.json().catch(() => null);
     if (!resp.ok) {
-      results.push({ id: item.id, officialBand: item.officialBand, error: body?.error ?? `HTTP ${resp.status}`, refused: context.refused ?? null, runs });
+      results.push({ id: item.id, officialBand: item.officialBand, error: body?.error ?? `HTTP ${resp.status}`, refused: context.refused ?? null, runs, imagesSent: context.imagesSent ?? [] });
       if (context.budgetStop) { console.log('BUDGET STOP'); break; }
       continue;
     }
@@ -307,6 +371,7 @@ async function gradeEssays({ items, workerPath, env, budgetFetchFor }) {
       officialBand: item.officialBand,
       band: overall(Object.values(criteria)),
       criteria,
+      imagesSent: context.imagesSent ?? [],
       runs: runs.map((r) => ({ ...r, overall: overall(Object.values(r)) })),
       comments: Object.fromEntries(ESSAY_KEYS.map((k) => [k, body.criteria[k].comment])),
     });
