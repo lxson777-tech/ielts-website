@@ -536,9 +536,8 @@ export function lintPractice(practice, testsById) {
    Matched on the start of the message ("<test id> <question id>: <what>"),
    so a different fault on the same question still fails. */
 export const KEPT_ON_PURPOSE = {
-  'reading-full-010 q40: answer "Learning style" is longer':
-    'The publisher prints "learning style"; tools/import_reading.py ANSWER_OVERRIDES keeps it accepted and ' +
-    'tests/reading-answer-key.test.ts pins that. Listed for Alex in docs/audits/content-review-2026-10-03/reading-tests.md.',
+  /* Empty since 3 October 2026, when Alex decided Test 10 Q40 accepts only
+     'style' under its ONE WORD ONLY limit. */
 };
 
 export async function lintReadingBank() {

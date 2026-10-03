@@ -17,7 +17,7 @@ const cases: [number, string, string[], string[]][] = [
   [9, 'q12', ['standardised', 'Standardized'], ['standard']],
   [10, 'q22', ['reinsertion', 'Reinserted'], ['reinsert']],
   [10, 'q37', ['changeable', 'changing'], ['fixed']],
-  [10, 'q40', ['style', 'learning style'], ['learner']],
+  [10, 'q40', ['style', 'Style'], ['learning style', 'learner']],
   [9, 'q24', ['charging stations'], ['parking']],
   [10, 'q5', ['False', 'false'], ['Not given', 'True']],
   [16, 'q29', ['False'], ['Not given', 'True']],

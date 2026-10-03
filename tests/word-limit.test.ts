@@ -90,7 +90,6 @@ test('items are counted the IELTS way', () => {
 const KNOWN_OVER_LIMIT = new Set([
   'listening-full-029 q15 served all day',
   'listening-full-029 q15 available all day',
-  'reading-full-010 q40 Learning style',
 ]);
 
 test('no accepted key on any paper triggers the over-the-limit nudge', () => {
