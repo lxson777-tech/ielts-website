@@ -19,7 +19,7 @@ const listening = ALL_TESTS.filter((t) => t.skill === 'listening');
 const hashes = listening.map((t) => {
   const contract = t.parts
     .flatMap((p) => p.groups.flatMap((g) => g.questions))
-    .map(({ id, answer, answerPairId, multiSelect }) => ({ id, answer, answerPairId, multiSelect }));
+    .map(({ id, answer, answerPairId, multiSelect, anyOrder }) => ({ id, answer, answerPairId, multiSelect, anyOrder }));
   return createHash('sha256').update(JSON.stringify(contract)).digest('hex');
 });
 

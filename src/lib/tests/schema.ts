@@ -90,6 +90,14 @@ export interface Question {
   /** Questions sharing this id form an unordered answer pair. Each distinct
       correct selection earns one mark, regardless of which slot contains it. */
   answerPairId?: string;
+  /** One blank that asks for a list ("List three activities ..."), where the
+      items may be written in any order, as IELTS allows unless the paper says
+      otherwise. Each accepted form in `answer` names one right set; the
+      student's answer earns the mark when it holds the same items in any
+      order, separated by commas, "and", "&", "/", ";" or plain spaces.
+      `answerPairId` cannot do this, because it needs one numbered question
+      per item. */
+  anyOrder?: boolean;
   /** Post-submit review: a short "why this is the answer" note. */
   explanation?: string;
   /** Post-submit review: the exact supporting sentence from the passage. */
@@ -514,7 +522,24 @@ export function isCorrect(question: Question, given: string): boolean {
     return selected.size === correct.size && [...selected].every((value) => correct.has(value));
   }
   const accepted = Array.isArray(question.answer) ? question.answer : [question.answer];
+  if (question.anyOrder) {
+    const items = listItems(given);
+    return items !== '' && accepted.some((a) => listItems(a) === items);
+  }
   return accepted.some((a) => normalizeAnswer(a) === normalizeAnswer(given));
+}
+
+/** A typed list folded so that order and separators stop mattering: the
+    answer is normalised as usual, the separators become spaces, and the
+    words are sorted. Used only for an `anyOrder` question. */
+function listItems(s: string): string {
+  return normalizeAnswer(s)
+    .replace(/[,;/&]/g, ' ')
+    .replace(/\band\b/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean)
+    .sort()
+    .join(' ');
 }
 
 /** Return the question ids that earn marks, including unordered answer pairs.

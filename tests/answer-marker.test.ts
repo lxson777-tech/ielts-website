@@ -254,6 +254,32 @@ test('answer pools and multi-select questions use the same folds', () => {
   assert.equal(isCorrect(multi, 'A|B'), false);
 });
 
+test('a list in one blank (anyOrder) is right in any order and wrong with a missing or extra item', () => {
+  // Listening Test 22 Q37: "List three activities ...", four right sets.
+  const list = {
+    id: 'q37',
+    anyOrder: true,
+    answer: ['fishing, hiking, cycling', 'fishing, hiking, ice-skating', 'fishing, cycling, ice-skating', 'hiking, cycling, ice-skating'],
+  } as Question;
+  for (const typed of [
+    'fishing, hiking, cycling',
+    'cycling, fishing, hiking',
+    'ice skating, hiking and fishing',
+    'Cycling hiking fishing',
+    'hiking / ice-skating / cycling',
+  ]) assert.equal(isCorrect(list, typed), true, `"${typed}" should be RIGHT`);
+  for (const typed of [
+    'fishing, hiking',
+    'fishing, hiking, cycling, ice skating',
+    'fishing, hiking, swimming',
+    'fishing, fishing, hiking',
+    '',
+  ]) assert.equal(isCorrect(list, typed), false, `"${typed}" should be WRONG`);
+  // Without the flag the order still matters, as before.
+  assert.equal(isCorrect({ ...list, anyOrder: undefined }, 'cycling, fishing, hiking'), false);
+  assert.equal(scoredQuestionIds([list], { q37: 'cycling, hiking, fishing' }).size, 1);
+});
+
 test('focused exercises mark exactly as the full test does', () => {
   assert.equal(focusedIsCorrect('three', '3'), true);
   assert.equal(focusedIsCorrect('organizer', 'organiser'), true);

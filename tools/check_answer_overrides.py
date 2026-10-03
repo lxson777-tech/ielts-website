@@ -95,6 +95,8 @@ def check_tables() -> list[str]:
                 problems.append(f"{label}: override pairs it as {fix['answerPairId']!r} but the data has {question.get('answerPairId')!r}")
             if "multiSelect" in fix and question.get("multiSelect") != fix["multiSelect"]:
                 problems.append(f"{label}: override multiSelect differs from the data")
+            if bool(fix.get("anyOrder")) != bool(question.get("anyOrder")):
+                problems.append(f"{label}: override anyOrder is {bool(fix.get('anyOrder'))} but the data has {bool(question.get('anyOrder'))}")
 
     # The Reading importer's group corrections (option lists, word limits).
     for (number, title), fix in import_reading.GROUP_OVERRIDES.items():
