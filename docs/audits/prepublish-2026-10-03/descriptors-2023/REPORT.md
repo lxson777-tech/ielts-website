@@ -30,3 +30,14 @@ Alex decided the site should use the current official descriptors and supplied t
 ## Before students see it
 A small paid check run of both graders (Alex approved), then redeploying both Workers (Alex approved),
 regenerating the paid content packs and restarting the local stand-in.
+
+## Deployed (3 October 2026, Alex approved)
+- Essay grader `ielts-grade-essay`, version 46483d01-3d1d-4ce9-8f6c-dac9d467f61a (previous b9433298-3b62-4972-94d4-900d0af2d14a,
+  20 September). Live check: one Band 8 model essay graded 9/9/9/9 in 44 seconds, comments in the new wording.
+- Speaking grader `ielts-grade-speaking`, with the Fluency tune (`grader-check/SPEAKING-TUNE.md`), version
+  29ab47ec-ac11-4a05-9aa0-d5da54b3ed46 (previous 47ed34cd-e44a-403a-8e0d-6498332da08e). Live check: a 25-second
+  clip graded end to end in 32 seconds (the clip was paired with an unrelated question, so the bands are a
+  plumbing check only).
+- Both still run with ACCESS_MODE "open": no sign-in, allowance or usage records, exactly as before.
+- Rollback: `npx wrangler rollback <previous version id>` in the Worker's folder.
+- Paid spend today: check run $2.95, speaking tune $0.52, two live checks about $0.20.
