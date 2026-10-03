@@ -70,6 +70,17 @@ selected provider's key is missing, the Worker fails closed with a 503
 
 ## Official-descriptor recalibration
 
+**3 October 2026: moved to the "Updated May 2023" descriptors.** Alex chose
+to grade against the current official Writing Band Descriptors (Task 1 and
+Task 2, from the PDF he downloaded from ielts.org). The rubric in
+`src/index.ts` now quotes that document line by line, separately for each
+task, with every feature the PDF prints in bold tagged `[limits the rating]`.
+The guidance around it was rewritten so every phrase it quotes exists in the
+new text (`tests/descriptor-quotes.test.ts` checks this). Models,
+temperatures and the JSON contract are unchanged. A small paid calibration
+run against the official sample scripts is due before this is deployed;
+the earlier results below were measured against the older wording.
+
 The rubric now quotes the **official public IELTS Writing Band Descriptors**
 verbatim, band by band, instead of a paraphrased summary. Alongside that, a
 few home-made grading rules that were never part of the official descriptors

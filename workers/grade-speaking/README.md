@@ -318,6 +318,18 @@ platform.openai.com's billing page.
 
 ## Grading calibration
 
+**3 October 2026: moved to the current official descriptors.** Alex chose to
+grade against the current official Speaking Band Descriptors (the PDF he
+downloaded from ielts.org). The old scales below were a condensed version of
+the older public descriptors; `src/index.ts` now quotes the current document
+line by line, with its two notes ("must fully fit the positive features",
+"average performance across all parts of the test"). The method block and
+the pronunciation prompt were rewritten so every phrase they quote exists in
+the new text (`tests/descriptor-quotes.test.ts` checks this). Models,
+temperatures, anchors and the JSON contract are unchanged. A small paid
+calibration run is due before this is deployed; the results below were
+measured against the older wording.
+
 2026-09-14 recalibration (Alex reported the grader was too strict): the four
 scales are now the official public IELTS Speaking band descriptors verbatim
 (Cambridge English copy of the IELTS.org public version), and the grading

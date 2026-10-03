@@ -458,9 +458,13 @@ test('OPTIONS returns 204 and an unsupported method returns 405', async () => {
   assert.equal(res2.status, 405);
 });
 
-// ---- Rubric: exact descriptor wording ----
+/// ---- Rubric: exact descriptor wording ----
+// Alex's decision, 3 October 2026: the grader uses the official Writing Band
+// Descriptors "Updated May 2023" (the PDF he downloaded from ielts.org). The
+// phrases below are copied from that document, so these tests pin the 2023
+// wording and would fail if the older public version came back.
 
-test('the four descriptor scales contain the exact band 9 and band 6 wording from the official public descriptors', async () => {
+test('the four Task 2 scales contain the exact band 9 and band 6 wording from the May 2023 descriptors', async () => {
   // Capture the real system text the Worker sends for a Task 2 essay, the
   // same way the "request sent to OpenAI" test does.
   const { fn, calls } = makeFakeFetch(() => ({ status: 200, body: openaiEnvelope(assessmentAt(6)) }));
@@ -469,33 +473,40 @@ test('the four descriptor scales contain the exact band 9 and band 6 wording fro
   const body = JSON.parse(String(calls[0].init?.body)) as Record<string, any>;
   const instructions = String(body.instructions);
 
-  // Task response (Task 2), band 9 and band 6, copied verbatim from
-  // docs/writing-descriptors-task-2.txt.
-  assert.ok(
-    instructions.includes(
-      'presents a fully developed position in answer to the question with relevant, fully extended and well supported ideas',
-    ),
-  );
-  assert.ok(
-    instructions.includes('presents a relevant position although the conclusions may become unclear or repetitive'),
-  );
+  assert.ok(instructions.includes('Updated May 2023'));
+  assert.ok(instructions.includes('A script must fully fit the positive features of the descriptor at a particular level.'));
 
-  // Lexical resource, band 9 and band 6, copied verbatim (shared by both tasks).
-  assert.ok(
-    instructions.includes('uses a wide range of vocabulary with very natural and sophisticated control of lexical features'),
-  );
-  assert.ok(instructions.includes('attempts to use less common vocabulary but with some inaccuracy'));
+  // Task response, band 9, 7 and 6.
+  assert.ok(instructions.includes('A clear and fully developed position is presented which directly answers the question/s.'));
+  assert.ok(instructions.includes('A clear and developed position is presented.'));
+  assert.ok(instructions.includes('although the conclusions drawn may be unclear, unjustified or repetitive'));
+  // The bold band 5 feature is tagged as rating-limiting.
+  assert.ok(instructions.includes('The main parts of the prompt are incompletely addressed. [limits the rating'));
+
+  // Lexical resource, band 9 and band 6.
+  assert.ok(instructions.includes('Full flexibility and precise use are widely evident.'));
+  assert.ok(instructions.includes('If the writer is a risk-taker, there will be a wider range of vocabulary used but higher degrees of inaccuracy or inappropriacy.'));
 
   // Grammatical range and accuracy, band 9 and band 6.
-  assert.ok(instructions.includes('uses a wide range of structures with full flexibility and accuracy'));
-  assert.ok(instructions.includes('uses a mix of simple and complex sentence forms'));
+  assert.ok(instructions.includes('A wide range of structures is used with full flexibility and control.'));
+  assert.ok(instructions.includes('A mix of simple and complex sentence forms is used but flexibility is limited.'));
 
-  // Coherence and cohesion, band 9 and band 6.
-  assert.ok(instructions.includes('uses cohesion in such a way that it attracts no attention'));
-  assert.ok(instructions.includes('uses paragraphing, but not always logically'));
+  // Coherence and cohesion, band 9 and the Task 2 paragraphing lines.
+  assert.ok(instructions.includes('Cohesion is used in such a way that it very rarely attracts attention.'));
+  assert.ok(instructions.includes('Paragraphing may not always be logical and/or the central topic may not always be clear.'));
+  assert.ok(instructions.includes('Paragraphing may be inadequate or missing. [limits the rating]'));
+
+  // The older public wording is gone from the descriptors and the guidance.
+  // (The official band 7.5 sample's examiner comment, quoted further down
+  // as it was published, still says "presents a clear position throughout
+  // the response"; that is the examiner's own sentence, not a descriptor.)
+  const rubric = instructions.slice(0, instructions.indexOf('=== EXAMINER STANDARDISATION'));
+  assert.ok(!rubric.includes('presents a clear position throughout the response'));
+  assert.ok(!rubric.includes("rare minor errors occur only as 'slips'"));
+  assert.ok(!rubric.includes('writes a totally memorised response'));
 });
 
-test('Task 1 uses the Academic Task Achievement scale (band 9 and band 6 wording, GT lines excluded)', async () => {
+test('Task 1 uses the Task 1 scales, with the General Training lines marked and excluded by instruction', async () => {
   const { fn, calls } = makeFakeFetch(() => ({ status: 200, body: openaiEnvelope(assessmentAt(6)) }));
   const handler = handlerWith(fn);
   await handler.fetch(
@@ -504,10 +515,17 @@ test('Task 1 uses the Academic Task Achievement scale (band 9 and band 6 wording
   );
   const body = JSON.parse(String(calls[0].init?.body)) as Record<string, any>;
   const instructions = String(body.instructions);
-  assert.ok(instructions.includes('fully satisfies all the requirements of the task'));
-  assert.ok(instructions.includes('presents an overview with information appropriately selected'));
-  // General Training lines must never appear (Academic-only site).
-  assert.ok(!instructions.includes('(GT)'));
+  assert.ok(instructions.includes('All the requirements of the task are fully and appropriately satisfied.'));
+  assert.ok(instructions.includes('(Academic) It presents a clear overview, the data are appropriately categorised, and main trends or differences are identified.'));
+  assert.ok(instructions.includes('A relevant overview is attempted.'));
+  assert.ok(instructions.includes('Full flexibility and precise use are evident within the scope of the task.'));
+  // The PDF's Task 1 column prints Academic and General Training lines
+  // together; the examiner is told to apply only the Academic ones (this
+  // site sets Academic Task 1 only).
+  assert.ok(instructions.includes('ignore every line marked (General Training)'));
+  // Task 2's paragraphing lines are not in the Task 1 scale.
+  assert.ok(!instructions.includes('Paragraphing may be inadequate or missing.'));
+  assert.ok(!instructions.includes('TASK RESPONSE (Task 2)'));
 });
 
 test('validateAssessment replaces em and en dashes in every string of the response', () => {

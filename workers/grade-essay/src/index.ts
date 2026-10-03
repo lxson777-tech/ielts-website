@@ -1,6 +1,6 @@
 import { meteredFetch } from '../../../src/lib/access/metering';
 import { reserveAssessment, finishAssessment, type AssessmentClaim } from '../../../src/lib/access/assessment';
-/* Cloudflare Worker: grades an IELTS essay against the official public IELTS
+/* Cloudflare Worker: grades an IELTS essay against the official IELTS (Updated May 2023)
    Writing Band Descriptors. The static site POSTs { prompt, essay, mechanics }
    here; the Worker holds the provider API key(s), sends the rubric + the
    essay to the configured model with a strict JSON response schema,
@@ -86,105 +86,167 @@ interface GradeRequest {
 const CRITERION_KEYS = ['taskResponse', 'coherenceCohesion', 'lexicalResource', 'grammaticalRange'] as const;
 
 /* ── the examiner rubric ──────────────────────────────────────────────────
-   Band by band scales quoted verbatim from the official IELTS Writing Band
-   Descriptors (public version, copyright British Council / IDP / Cambridge),
-   so every band awarded is grounded in the published wording, not a
-   paraphrase. Task 1's Task Achievement column keeps only the Academic (A)
-   lines (this site is Academic only); the other three columns are the same
-   wording for both tasks, so Task 2's Coherence and Cohesion, Lexical
-   Resource and Grammatical Range and Accuracy scales are reused for Task 1
-   as well. */
+   The official IELTS Writing Band Descriptors, "Updated May 2023" (Task 1
+   and Task 2, Academic and General Training), quoted verbatim, line by
+   line, so every band awarded is grounded in the published wording, not a
+   paraphrase. Copyright British Council / IDP / Cambridge.
 
-const TR_TASK2 = `TASK RESPONSE (Task 2):
-9: fully addresses all parts of the task; presents a fully developed position in answer to the question with relevant, fully extended and well supported ideas
-8: sufficiently addresses all parts of the task; presents a well-developed response to the question with relevant, extended and supported ideas
-7: addresses all parts of the task; presents a clear position throughout the response; presents, extends and supports main ideas, but there may be a tendency to over-generalise and/or supporting ideas may lack focus
-6: addresses all parts of the task although some parts may be more fully covered than others; presents a relevant position although the conclusions may become unclear or repetitive; presents relevant main ideas but some may be inadequately developed/unclear
-5: addresses the task only partially; the format may be inappropriate in places; expresses a position but the development is not always clear and there may be no conclusions drawn; presents some main ideas but these are limited and not sufficiently developed; there may be irrelevant detail
-4: responds to the task only in a minimal way or the answer is tangential; the format may be inappropriate; presents a position but this is unclear; presents some main ideas but these are difficult to identify and may be repetitive, irrelevant or not well supported
-3: does not adequately address any part of the task; does not express a clear position; presents few ideas, which are largely undeveloped or irrelevant
-2: barely responds to the task; does not express a position; may attempt to present one or two ideas but there is no development
-1: answer is completely unrelated to the task
-0: does not attend; does not attempt the task in any way; writes a totally memorised response`;
+   Alex's decision, 3 October 2026: grade against the current official
+   descriptors from the PDF he downloaded from ielts.org, replacing the
+   older public version this file quoted before. Each criterion is quoted
+   separately for each task because the 2023 wording differs between them
+   (Task 2's Coherence and Cohesion has its own paragraphing lines, and
+   Task 1's Lexical Resource and Grammatical Range and Accuracy say "within
+   the scope of the task").
 
-const TA_TASK1_ACADEMIC = `TASK ACHIEVEMENT (Task 1, Academic):
-9: fully satisfies all the requirements of the task; clearly presents a fully developed response
-8: covers all requirements of the task sufficiently; presents, highlights and illustrates key features/bullet points clearly and appropriately
-7: covers the requirements of the task; presents a clear overview of main trends, differences or stages; clearly presents and highlights key features/bullet points but could be more fully extended
-6: addresses the requirements of the task; presents an overview with information appropriately selected; presents and adequately highlights key features/bullet points but details may be irrelevant, inappropriate or inaccurate
-5: generally addresses the task; the format may be inappropriate in places; recounts detail mechanically with no clear overview; there may be no data to support the description; presents, but inadequately covers, key features/bullet points; there may be a tendency to focus on details
-4: attempts to address the task but does not cover all key features/bullet points; the format may be inappropriate; may confuse key features/bullet points with detail; parts may be unclear, irrelevant, repetitive or inaccurate
-3: fails to address the task, which may have been completely misunderstood; presents limited ideas which may be largely irrelevant/repetitive
-2: answer is barely related to the task
-1: answer is completely unrelated to the task
-0: does not attend; does not attempt the task in any way; writes a totally memorised response`;
+   The PDF prints the features that limit a rating in bold. Bold does not
+   survive in plain text, so each one is marked "[limits the rating]" right
+   after the sentence it belongs to; when only part of a sentence is bold,
+   that part is quoted inside the tag. Task 1's column keeps its
+   (Academic) and (General Training) lines exactly as printed; the
+   instructions below tell the examiner which ones apply.
 
-const CC_SCALE = `COHERENCE AND COHESION (Task 1 and Task 2):
-9: uses cohesion in such a way that it attracts no attention; skilfully manages paragraphing
-8: sequences information and ideas logically; manages all aspects of cohesion well; uses paragraphing sufficiently and appropriately
-7: logically organises information and ideas; there is clear progression throughout; uses a range of cohesive devices appropriately although there may be some under-/over-use; presents a clear central topic within each paragraph
-6: arranges information and ideas coherently and there is a clear overall progression; uses cohesive devices effectively, but cohesion within and/or between sentences may be faulty or mechanical; may not always use referencing clearly or appropriately; uses paragraphing, but not always logically
-5: presents information with some organisation but there may be a lack of overall progression; makes inadequate, inaccurate or over-use of cohesive devices; may be repetitive because of lack of referencing and substitution; may not write in paragraphs, or paragraphing may be inadequate
-4: presents information and ideas but these are not arranged coherently and there is no clear progression in the response; uses some basic cohesive devices but these may be inaccurate or repetitive; may not write in paragraphs or their use may be confusing
-3: does not organise ideas logically; may use a very limited range of cohesive devices, and those used may not indicate a logical relationship between ideas
-2: has very little control of organisational features
-1: fails to communicate any message
-0: does not attend; does not attempt the task in any way; writes a totally memorised response`;
+   The Task 1 band 7 line "The content is relevant and accurate" is
+   followed in the PDF by a dash before "there may be a few omissions or
+   lapses". The prompt below keeps that line exactly as printed, dash
+   included; it is the only one, and nothing students see repeats it. */
 
-const LR_SCALE = `LEXICAL RESOURCE (Task 1 and Task 2):
-9: uses a wide range of vocabulary with very natural and sophisticated control of lexical features; rare minor errors occur only as 'slips'
-8: uses a wide range of vocabulary fluently and flexibly to convey precise meanings; skilfully uses uncommon lexical items but there may be occasional inaccuracies in word choice and collocation; produces rare errors in spelling and/or word formation
-7: uses a sufficient range of vocabulary to allow some flexibility and precision; uses less common lexical items with some awareness of style and collocation; may produce occasional errors in word choice, spelling and/or word formation
-6: uses an adequate range of vocabulary for the task; attempts to use less common vocabulary but with some inaccuracy; makes some errors in spelling and/or word formation, but they do not impede communication
-5: uses a limited range of vocabulary, but this is minimally adequate for the task; may make noticeable errors in spelling and/or word formation that may cause some difficulty for the reader
-4: uses only basic vocabulary which may be used repetitively or which may be inappropriate for the task; has limited control of word formation and/or spelling; errors may cause strain for the reader
-3: uses only a very limited range of words and expressions with very limited control of word formation and/or spelling; errors may severely distort the message
-2: uses an extremely limited range of vocabulary; essentially no control of word formation and/or spelling
-1: can only use a few isolated words
-0: does not attend; does not attempt the task in any way; writes a totally memorised response`;
+const DESCRIPTOR_PREAMBLE = `A script must fully fit the positive features of the descriptor at a particular level. Bolded text indicates negative features that will limit a rating. (In this plain-text copy, every feature the official document prints in bold is marked [limits the rating].)`;
 
-const GRA_SCALE = `GRAMMATICAL RANGE AND ACCURACY (Task 1 and Task 2):
-9: uses a wide range of structures with full flexibility and accuracy; rare minor errors occur only as 'slips'
-8: uses a wide range of structures; the majority of sentences are error-free; makes only very occasional errors or inappropriacies
-7: uses a variety of complex structures; produces frequent error-free sentences; has good control of grammar and punctuation but may make a few errors
-6: uses a mix of simple and complex sentence forms; makes some errors in grammar and punctuation but they rarely reduce communication
-5: uses only a limited range of structures; attempts complex sentences but these tend to be less accurate than simple sentences; may make frequent grammatical errors and punctuation may be faulty; errors can cause some difficulty for the reader
-4: uses only a very limited range of structures with only rare use of subordinate clauses; some structures are accurate but errors predominate, and punctuation is often faulty
-3: attempts sentence forms but errors in grammar and punctuation predominate and distort the meaning
-2: cannot use sentence forms except in memorised phrases
-1: cannot use sentence forms at all
-0: does not attend; does not attempt the task in any way; writes a totally memorised response`;
+export const TA_TASK1 = `TASK ACHIEVEMENT (Task 1)
+9: All the requirements of the task are fully and appropriately satisfied. There may be extremely rare lapses in content.
+8: The response covers all the requirements of the task appropriately, relevantly and sufficiently. (Academic) Key features are skilfully selected, and clearly presented, highlighted and illustrated. (General Training) All bullet points are clearly presented, and appropriately illustrated or extended. There may be occasional omissions or lapses in content.
+7: The response covers the requirements of the task. The content is relevant and accurate – there may be a few omissions or lapses. The format is appropriate. (Academic) Key features which are selected are covered and clearly highlighted but could be more fully or more appropriately illustrated or extended. (Academic) It presents a clear overview, the data are appropriately categorised, and main trends or differences are identified. (General Training) All bullet points are covered and clearly highlighted but could be more fully or more appropriately illustrated or extended. It presents a clear purpose. The tone is consistent and appropriate to the task. Any lapses are minimal.
+6: The response focuses on the requirements of the task and an appropriate format is used. (Academic) Key features which are selected are covered and adequately highlighted. A relevant overview is attempted. Information is appropriately selected and supported using figures/data. (General Training) All bullet points are covered and adequately highlighted. The purpose is generally clear. There may be minor inconsistencies in tone. Some irrelevant, inappropriate or inaccurate information may occur in areas of detail or when illustrating or extending the main points. Some details may be missing (or excessive) and further extension or illustration may be needed.
+5: The response generally addresses the requirements of the task. The format may be inappropriate in places. (Academic) Key features which are selected are not adequately covered. The recounting of detail is mainly mechanical. There may be no data to support the description. [limits the rating] (General Training) All bullet points are presented but one or more may not be adequately covered. The purpose may be unclear at times. The tone may be variable and sometimes inappropriate. There may be a tendency to focus on details (without referring to the bigger picture). The inclusion of irrelevant, inappropriate or inaccurate material in key areas detracts from the task achievement. There is limited detail when extending and illustrating the main points.
+4: The response is an attempt to address the task. (Academic) Few key features have been selected. (General Training) Not all bullet points are presented. [limits the rating] (General Training) The purpose of the letter is not clearly explained and may be confused. The tone may be inappropriate. [limits the rating] The format may be inappropriate. [limits the rating] Key features/bullet points which are presented may be irrelevant, repetitive, inaccurate or inappropriate.
+3: The response does not address the requirements of the task (possibly because of misunderstanding of the data/diagram/situation). Key features/bullet points which are presented may be largely irrelevant. Limited information is presented, and this may be used repetitively.
+2: The content barely relates to the task.
+1: Responses of 20 words or fewer are rated at Band 1. [limits the rating] The content is wholly unrelated to the task. [limits the rating] Any copied rubric must be discounted.`;
 
-function systemInstruction(task: 'task1' | 'task2', variant?: string): string {
+export const CC_TASK1 = `COHERENCE AND COHESION (Task 1)
+9: The message can be followed effortlessly. Cohesion is used in such a way that it very rarely attracts attention. Any lapses in coherence or cohesion are minimal. Paragraphing is skilfully managed.
+8: The message can be followed with ease. Information and ideas are logically sequenced, and cohesion is well managed. Occasional lapses in coherence or cohesion may occur. Paragraphing is used sufficiently and appropriately.
+7: Information and ideas are logically organised and there is a clear progression throughout the response. A few lapses may occur. A range of cohesive devices including reference and substitution is used flexibly but with some inaccuracies or some over/under use.
+6: Information and ideas are generally arranged coherently and there is a clear overall progression. Cohesive devices are used to some good effect but cohesion within and/or between sentences may be faulty or mechanical due to misuse, overuse or omission. The use of reference and substitution may lack flexibility or clarity and result in some repetition or error
+5: Organisation is evident but is not wholly logical and there may be a lack of overall progression. Nevertheless, there is a sense of underlying coherence to the response. The relationship of ideas can be followed but the sentences are not fluently linked to each other. There may be limited/overuse of cohesive devices with some inaccuracy. The writing may be repetitive due to inadequate and/or inaccurate use of reference and substitution.
+4: Information and ideas are evident but not arranged coherently, and there is no clear progression within the response. Relationships between ideas can be unclear and/or inadequately marked. There is some use of basic cohesive devices, which may be inaccurate or repetitive. There is inaccurate use or a lack of substitution or referencing.
+3: There is no apparent logical organisation. Ideas are discernible but difficult to relate to each other. Minimal use of sequencers or cohesive devices. Those used do not necessarily indicate a logical relationship between ideas. There is difficulty in identifying referencing.
+2: There is little relevant message, or the entire response may be off-topic. [limits the rating: "the entire response may be off-topic"] There is little evidence of control of organisational features.
+1: Responses of 20 words or fewer are rated at Band 1. [limits the rating] The writing fails to communicate any message and appears to be by a virtual non-writer.`;
+
+export const LR_TASK1 = `LEXICAL RESOURCE (Task 1)
+9: Full flexibility and precise use are evident within the scope of the task. A wide range of vocabulary is used accurately and appropriately with very natural and sophisticated control of lexical features. Minor errors in spelling and word formation are extremely rare and have minimal impact on communication.
+8: A wide resource is fluently and flexibly used to convey precise meanings within the scope of the task. There is skilful use of uncommon and/or idiomatic items when appropriate, despite occasional inaccuracies in word choice and collocation. Occasional errors in spelling and/or word formation may occur, but have minimal impact on communication.
+7: The resource is sufficient to allow some flexibility and precision. There is some ability to use less common and/or idiomatic items. An awareness of style and collocation is evident, though inappropriacies occur. There are only a few errors in spelling and/or word formation, and they do not detract from overall clarity.
+6: The resource is generally adequate and appropriate for the task. The meaning is generally clear in spite of a rather restricted range or a lack of precision in word choice. If the writer is a risk-taker, there will be a wider range of vocabulary used but higher degrees of inaccuracy or inappropriacy. There are some errors in spelling and/or word formation, but these do not impede communication.
+5: The resource is limited but minimally adequate for the task. Simple vocabulary may be used accurately but the range does not permit much variation in expression. There may be frequent lapses in the appropriacy of word choice, and a lack of flexibility is apparent in frequent simplifications and/or repetitions. Errors in spelling and/or word formation may be noticeable and may cause some difficulty for the reader.
+4: The resource is limited and inadequate for or unrelated to the task. [limits the rating: "unrelated to the task"] Vocabulary is basic and may be used repetitively. There may be inappropriate use of lexical chunks (e.g. memorised phrases, formulaic language and/or language from the input material). Inappropriate word choice and/or errors in word formation and/or in spelling may impede meaning.
+3: The resource is inadequate (which may be due to the response being significantly underlength). Possible over-dependence on input material or memorised language. Control of word choice and/or spelling is very limited, and errors predominate. These errors may severely impede meaning.
+2: The resource is extremely limited with few recognisable strings, apart from memorised phrases. There is no apparent control of word formation and/or spelling.
+1: Responses of 20 words or fewer are rated at Band 1. [limits the rating] No resource is apparent, except for a few isolated words.`;
+
+export const GRA_TASK1 = `GRAMMATICAL RANGE AND ACCURACY (Task 1)
+9: A wide range of structures within the scope of the task is used with full flexibility and control. Punctuation and grammar are used appropriately throughout. Minor errors are extremely rare and have minimal impact on communication
+8: A wide range of structures within the scope of the task is flexibly and accurately used. The majority of sentences are error-free, and punctuation is well managed. Occasional, non-systematic errors and inappropriacies occur, but have minimal impact on communication.
+7: A variety of complex structures is used with some flexibility and accuracy. Grammar and punctuation are generally well controlled, and error-free sentences are frequent. A few errors in grammar may persist, but these do not impede communication.
+6: A mix of simple and complex sentence forms is used but flexibility is limited. Examples of more complex structures are not marked by the same level of accuracy as in simple structures. Errors in grammar and punctuation occur, but rarely impede communication
+5: The range of structures is limited and rather repetitive. Although complex sentences are attempted, they tend to be faulty, and the greatest accuracy is achieved on simple sentences. Grammatical errors may be frequent and cause some difficulty for the reader. Punctuation may be faulty.
+4: A very limited range of structures is used. Subordinate clauses are rare and simple sentences predominate. [limits the rating] Some structures are produced accurately but grammatical errors are frequent and may impede meaning. Punctuation is often faulty or inadequate.
+3: Sentence forms are attempted, but errors in grammar and punctuation predominate (except in memorised phrases or those taken from the input material). This prevents most meaning from coming through. Length may be insufficient to provide evidence of control of sentence forms. [limits the rating]
+2: There is little or no evidence of sentence forms (except in memorised phrases).
+1: Responses of 20 words or fewer are rated at Band 1. [limits the rating] No rateable language is evident.`;
+
+export const TR_TASK2 = `TASK RESPONSE (Task 2)
+9: The prompt is appropriately addressed and explored in depth. A clear and fully developed position is presented which directly answers the question/s. Ideas are relevant, fully extended and well supported. Any lapses in content or support are extremely rare.
+8: The prompt is appropriately and sufficiently addressed. A clear and well-developed position is presented in response to the question/s. Ideas are relevant, well extended and supported. There may be occasional omissions or lapses in content.
+7: The main parts of the prompt are appropriately addressed. A clear and developed position is presented. Main ideas are extended and supported but there may be a tendency to over-generalise or there may be a lack of focus and precision in supporting ideas/material.
+6: The main parts of the prompt are addressed (though some may be more fully covered than others). An appropriate format is used. A position is presented that is directly relevant to the prompt, although the conclusions drawn may be unclear, unjustified or repetitive. Main ideas are relevant, but some may be insufficiently developed or may lack clarity, while some supporting arguments and evidence may be less relevant or inadequate.
+5: The main parts of the prompt are incompletely addressed. [limits the rating: "incompletely addressed"] The format may be inappropriate in places. The writer expresses a position, but the development is not always clear. Some main ideas are put forward, but they are limited and are not sufficiently developed and/or there may be irrelevant detail. There may be some repetition.
+4: The prompt is tackled in a minimal way, or the answer is tangential, possibly due to some misunderstanding of the prompt. The format may be inappropriate. [limits the rating] A position is discernible, but the reader has to read carefully to find it. Main ideas are difficult to identify and such ideas that are identifiable may lack relevance, clarity and/or support. Large parts of the response may be repetitive.
+3: No part of the prompt is adequately addressed, or the prompt has been misunderstood. No relevant position can be identified, and/or there is little direct response to the question/s. There are few ideas, and these may be irrelevant or insufficiently developed.
+2: The content is barely related to the prompt. No position can be identified. There may be glimpses of one or two ideas without development.
+1: Responses of 20 words or fewer are rated at Band 1. [limits the rating] The content is wholly unrelated to the prompt. [limits the rating] Any copied rubric must be discounted.`;
+
+export const CC_TASK2 = `COHERENCE AND COHESION (Task 2)
+9: The message can be followed effortlessly. Cohesion is used in such a way that it very rarely attracts attention. Any lapses in coherence or cohesion are minimal. Paragraphing is skilfully managed.
+8: The message can be followed with ease. Information and ideas are logically sequenced, and cohesion is well managed. Occasional lapses in coherence and cohesion may occur. Paragraphing is used sufficiently and appropriately.
+7: Information and ideas are logically organised, and there is a clear progression throughout the response. (A few lapses may occur, but these are minor.) A range of cohesive devices including reference and substitution is used flexibly but with some inaccuracies or some over/under use. Paragraphing is generally used effectively to support overall coherence, and the sequencing of ideas within a paragraph is generally logical.
+6: Information and ideas are generally arranged coherently and there is a clear overall progression. Cohesive devices are used to some good effect but cohesion within and/or between sentences may be faulty or mechanical due to misuse, overuse or omission. The use of reference and substitution may lack flexibility or clarity and result in some repetition or error. Paragraphing may not always be logical and/or the central topic may not always be clear.
+5: Organisation is evident but is not wholly logical and there may be a lack of overall progression. Nevertheless, there is a sense of underlying coherence to the response. The relationship of ideas can be followed but the sentences are not fluently linked to each other. There may be limited/overuse of cohesive devices with some inaccuracy. The writing may be repetitive due to inadequate and/or inaccurate use of reference and substitution. Paragraphing may be inadequate or missing. [limits the rating]
+4: Information and ideas are evident but not arranged coherently and there is no clear progression within the response. Relationships between ideas can be unclear and/or inadequately marked. There is some use of basic cohesive devices, which may be inaccurate or repetitive. There is inaccurate use or a lack of substitution or referencing. There may be no paragraphing and/or no clear main topic within paragraphs.
+3: There is no apparent logical organisation. Ideas are discernible but difficult to relate to each other. There is minimal use of sequencers or cohesive devices. Those used do not necessarily indicate a logical relationship between ideas. There is difficulty in identifying referencing. Any attempts at paragraphing are unhelpful.
+2: There is little relevant message, or the entire response may be off-topic. [limits the rating: "entire response may be off-topic"] There is little evidence of control of organisational features.
+1: Responses of 20 words or fewer are rated at Band 1. [limits the rating] The writing fails to communicate any message and appears to be by a virtual non-writer.`;
+
+export const LR_TASK2 = `LEXICAL RESOURCE (Task 2)
+9: Full flexibility and precise use are widely evident. A wide range of vocabulary is used accurately and appropriately with very natural and sophisticated control of lexical features. Minor errors in spelling and word formation are extremely rare and have minimal impact on communication.
+8: A wide resource is fluently and flexibly used to convey precise meanings. There is skilful use of uncommon and/or idiomatic items when appropriate, despite occasional inaccuracies in word choice and collocation. Occasional errors in spelling and/or word formation may occur, but have minimal impact on communication.
+7: The resource is sufficient to allow some flexibility and precision. There is some ability to use less common and/or idiomatic items. An awareness of style and collocation is evident, though inappropriacies occur. There are only a few errors in spelling and/or word formation and they do not detract from overall clarity.
+6: The resource is generally adequate and appropriate for the task. The meaning is generally clear in spite of a rather restricted range or a lack of precision in word choice. If the writer is a risk-taker, there will be a wider range of vocabulary used but higher degrees of inaccuracy or inappropriacy. There are some errors in spelling and/or word formation, but these do not impede communication.
+5: The resource is limited but minimally adequate for the task. Simple vocabulary may be used accurately but the range does not permit much variation in expression. There may be frequent lapses in the appropriacy of word choice and a lack of flexibility is apparent in frequent simplifications and/or repetitions. Errors in spelling and/or word formation may be noticeable and may cause some difficulty for the reader.
+4: The resource is limited and inadequate for or unrelated to the task. [limits the rating: "unrelated to the task"] Vocabulary is basic and may be used repetitively. There may be inappropriate use of lexical chunks (e.g. memorised phrases, formulaic language and/or language from the input material). Inappropriate word choice and/or errors in word formation and/or in spelling may impede meaning.
+3: The resource is inadequate (which may be due to the response being significantly underlength). Possible over-dependence on input material or memorised language. Control of word choice and/or spelling is very limited, and errors predominate. These errors may severely impede meaning.
+2: The resource is extremely limited with few recognisable strings, apart from memorised phrases. There is no apparent control of word formation and/or spelling.
+1: Responses of 20 words or fewer are rated at Band 1. [limits the rating] No resource is apparent, except for a few isolated words.`;
+
+export const GRA_TASK2 = `GRAMMATICAL RANGE AND ACCURACY (Task 2)
+9: A wide range of structures is used with full flexibility and control. Punctuation and grammar are used appropriately throughout. Minor errors are extremely rare and have minimal impact on communication.
+8: A wide range of structures is flexibly and accurately used. The majority of sentences are error-free, and punctuation is well managed. Occasional, non-systematic errors and inappropriacies occur, but have minimal impact on communication.
+7: A variety of complex structures is used with some flexibility and accuracy. Grammar and punctuation are generally well controlled, and error-free sentences are frequent. A few errors in grammar may persist, but these do not impede communication.
+6: A mix of simple and complex sentence forms is used but flexibility is limited. Examples of more complex structures are not marked by the same level of accuracy as in simple structures. Errors in grammar and punctuation occur, but rarely impede communication.
+5: The range of structures is limited and rather repetitive. Although complex sentences are attempted, they tend to be faulty, and the greatest accuracy is achieved on simple sentences. Grammatical errors may be frequent and cause some difficulty for the reader. Punctuation may be faulty.
+4: A very limited range of structures is used. Subordinate clauses are rare and simple sentences predominate. [limits the rating] Some structures are produced accurately but grammatical errors are frequent and may impede meaning. Punctuation is often faulty or inadequate.
+3: Sentence forms are attempted, but errors in grammar and punctuation predominate (except in memorised phrases or those taken from the input material). This prevents most meaning from coming through. Length may be insufficient to provide evidence of control of sentence forms. [limits the rating]
+2: There is little or no evidence of sentence forms (except in memorised phrases).
+1: Responses of 20 words or fewer are rated at Band 1. [limits the rating] No rateable language is evident.`;
+
+/** Printed once, across all four criteria, in both tasks. */
+export const BAND_0 = `BAND 0 (all four criteria, both tasks)
+0: Should only be used where a candidate did not attend or attempt the question in any way, used a language other than English throughout, or where there is proof that a candidate’s answer has been totally memorised. [limits the rating: "where there is proof that a candidate’s answer has been totally memorised"]`;
+
+/** The four scales for one task, in the order the official tables print
+    them, with the preamble and band 0. Exported so a test can check that
+    every phrase the guidance and the band guides quote really appears in
+    the official text. */
+export function descriptorText(task: 'task1' | 'task2'): string {
+  const scales = task === 'task2' ? [TR_TASK2, CC_TASK2, LR_TASK2, GRA_TASK2] : [TA_TASK1, CC_TASK1, LR_TASK1, GRA_TASK1];
+  return [DESCRIPTOR_PREAMBLE, ...scales, BAND_0].join('\n\n');
+}
+
+/** Exported for tests/descriptor-quotes.test.ts only. */
+export function systemInstruction(task: 'task1' | 'task2', variant?: string): string {
   const isTask2 = task === 'task2';
   const trLabel = isTask2 ? 'Task Response' : 'Task Achievement';
   const taskDesc = isTask2
     ? 'an IELTS Writing Task 2 essay (formal discursive essay, minimum 250 words)'
     : 'an IELTS Writing Task 1 (Academic) report describing visual information (minimum 150 words)';
-  const trScale = isTask2 ? TR_TASK2 : TA_TASK1_ACADEMIC;
+  const taskName = isTask2 ? 'Writing Task 2' : 'Writing Task 1';
+  const variantLine = isTask2
+    ? ''
+    : '\n- This site sets Academic Task 1 only. In the Task Achievement scale, apply the unmarked lines and the lines marked (Academic), and ignore every line marked (General Training).';
+  const band7Allows = isTask2
+    ? 'Band 7 explicitly allows "a tendency to over-generalise" or "a lack of focus and precision in supporting ideas/material", cohesive devices used "with some inaccuracies or some over/under use" ("A few lapses may occur, but these are minor"), vocabulary where "inappropriacies occur" with "only a few errors in spelling and/or word formation", and grammar where "A few errors in grammar may persist"; band 8 allows "occasional omissions or lapses in content", "occasional inaccuracies in word choice and collocation" and "Occasional, non-systematic errors and inappropriacies".'
+    : 'Band 7 explicitly allows "a few omissions or lapses", key features that "could be more fully or more appropriately illustrated or extended", cohesive devices used "with some inaccuracies or some over/under use" ("A few lapses may occur"), vocabulary where "inappropriacies occur" with "only a few errors in spelling and/or word formation", and grammar where "A few errors in grammar may persist"; band 8 allows "occasional omissions or lapses in content", "occasional inaccuracies in word choice and collocation" and "Occasional, non-systematic errors and inappropriacies".';
 
-  return `You are a certified IELTS Writing examiner. Assess ${taskDesc} against the four official criteria using the official public band descriptors below, exactly as a trained examiner would, and be neither harsher nor more lenient than they are. Return ONLY the requested JSON.
+  return `You are a certified IELTS Writing examiner. Assess ${taskDesc} against the four official criteria using the official band descriptors below, exactly as a trained examiner would, and be neither harsher nor more lenient than they are. Return ONLY the requested JSON.
 
-=== OFFICIAL BAND DESCRIPTORS (public version, quoted verbatim) ===
+=== OFFICIAL BAND DESCRIPTORS (${taskName}, Updated May 2023, quoted verbatim) ===
 
-${trScale}
-
-${CC_SCALE}
-
-${LR_SCALE}
-
-${GRA_SCALE}
+${descriptorText(task)}
 
 === HOW TO USE THE DESCRIPTORS ===
-- Rate the four criteria independently with a whole band 0 to 9 (half bands exist only in the overall score, which is computed elsewhere, never per criterion).
-- Award, per criterion, the band whose descriptors match the essay as a whole. Descriptors are cumulative: a band means all the features listed for that band are present. When a performance sits between two bands, award the band whose features are all present.
-- A band's descriptors already include its weaknesses. Band 7 explicitly allows over-generalisation, some under- or over-use of cohesive devices, occasional word-choice or spelling errors, and "a few errors"; band 8 allows occasional inaccuracies. Never lower a band for a weakness the descriptor itself permits, and never add requirements the descriptors do not state.
+- Rate the four criteria independently with a whole band 0 to 9 (half bands exist only in the overall score, which is computed elsewhere, never per criterion).${variantLine}
+- Award, per criterion, the band whose descriptors match the essay as a whole. "A script must fully fit the positive features of the descriptor at a particular level": a band means all the positive features listed for that band are present. When a performance sits between two bands, award the band whose positive features are all present.
+- A feature marked [limits the rating] is one the official document prints in bold, a negative feature that will limit a rating: when the essay shows it, that criterion cannot be rated above the band where the feature is listed, however strong the rest of the essay is.
+- A band's descriptors already include its weaknesses. ${band7Allows} Never lower a band for a weakness the descriptor itself permits, and never add requirements the descriptors do not state.
 - Judge the whole essay, not its best or worst sentence.
 - IELTS assesses task handling and language, not opinions: a correct or clever position earns nothing extra.
 - Work evidence first: fill each criterion's evidence with concrete quoted fragments and specific errors from THIS essay before deciding its band.
-- Length: responses under the minimum word count are penalised under ${trLabel} only, because shorter responses cannot fully address the task, so ${trLabel} falls in proportion to how short the response is; the other three criteria are judged on the language actually produced.
+- Length: responses under the minimum word count are penalised mainly under ${trLabel}, because shorter responses cannot fully address the task, so ${trLabel} falls in proportion to how short the response is. The other three criteria are judged on the language actually produced, except where the descriptors themselves make length count: "Responses of 20 words or fewer are rated at Band 1" on every criterion, Lexical Resource band 3 allows that the resource may be inadequate because of "the response being significantly underlength", and Grammatical Range and Accuracy band 3 says "Length may be insufficient to provide evidence of control of sentence forms".
+- "Any copied rubric must be discounted": words copied from the question do not count towards the essay's length or its language. Memorised or formulaic phrases are judged as the Lexical Resource descriptors say ("inappropriate use of lexical chunks (e.g. memorised phrases, formulaic language and/or language from the input material)" is a band 4 feature).
 - Off-topic or tangential responses: ${trLabel} 4 or below, per the descriptors.
-- A wholly memorised response: band 0, per the descriptors' "writes a totally memorised response".
+- Band 0 only "where there is proof that a candidate’s answer has been totally memorised" (or the question was not attempted, or not written in English). A suspicion is not proof: grade the language you see.
 
 === EXAMINER STANDARDISATION (official IELTS sample scripts with examiner comments) ===
 Trained examiners are standardised against marked scripts before they mark. Below are five real Task 2 scripts published by IELTS.org with the band each received and the examiner's comment. Read them as your scale: before awarding a band, ask which of these scripts the essay in front of you most resembles in task handling, organisation, vocabulary control and grammatical accuracy, and award accordingly. Band 8.5 contains occasional errors; band 7.5 has minor systematic errors and unhelpful punctuation; band 6.5 has regular errors that do not hurt clarity; band 5.5 has a level of error too high for band 6; band 4 has errors that cause severe problems for the reader.

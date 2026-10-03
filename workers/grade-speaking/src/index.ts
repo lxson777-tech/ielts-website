@@ -157,82 +157,94 @@ const CRITERION_KEYS = ['fluencyCoherence', 'lexicalResource', 'grammaticalRange
 const TEXT_CRITERION_KEYS = ['fluencyCoherence', 'lexicalResource', 'grammaticalRange'] as const;
 
 /* ── the examiner rubric ──────────────────────────────────────────────────
-   Band-by-band scales condensed faithfully from the official IELTS Speaking
-   Band Descriptors (public version, © British Council / IDP / Cambridge).
-   FINAL, do not change this wording; it was recalibrated 2026-09-14
-   against the official public descriptors and method. */
+   The official IELTS Speaking Band Descriptors (the current public version,
+   "Scoring criteria for Academic and General Training tests", copyright
+   British Council / IDP / Cambridge), quoted verbatim, line by line.
 
-const FC_SCALE = `FLUENCY AND COHERENCE
-9: speaks fluently with only rare repetition or self-correction; any hesitation is content-related rather than to find words or grammar; speaks coherently with fully appropriate cohesive features; develops topics fully and appropriately.
-8: speaks fluently with only occasional repetition or self-correction; hesitation is usually content-related and only rarely to search for language; develops topics coherently and appropriately.
-7: speaks at length without noticeable effort or loss of coherence; may demonstrate language-related hesitation at times, or some repetition and/or self-correction; uses a range of connectives and discourse markers with some flexibility.
-6: is willing to speak at length, though may lose coherence at times due to occasional repetition, self-correction or hesitation; uses a range of connectives and discourse markers but not always appropriately.
-5: usually maintains flow of speech but uses repetition, self-correction and/or slow speech to keep going; may over-use certain connectives and discourse markers; produces simple speech fluently, but more complex communication causes fluency problems.
-4: cannot respond without noticeable pauses and may speak slowly, with frequent repetition and self-correction; links basic sentences but with repetitious use of simple connectives and some breakdowns in coherence.
-3: speaks with long pauses; has limited ability to link simple sentences; gives only simple responses and is frequently unable to convey basic message.
-2: pauses lengthily before most words; little communication possible.
-1: no communication possible; no rateable language.
-0: does not attend.`;
+   Alex's decision, 3 October 2026: grade against the current official
+   descriptors from the PDF he downloaded from ielts.org. Until then these
+   scales held a condensed version of the OLDER public descriptors ("speaks
+   fluently with only rare repetition or self-correction", "L1 accent has
+   minimal effect on intelligibility"), recalibrated 2026-09-14. The wording
+   below replaces it; a fresh calibration run against the official samples
+   is needed before this is deployed (see docs/GRADING-OPENAI-RESULT.md).
+   The Speaking document prints no bold features, so nothing is tagged. */
 
-const LR_SCALE = `LEXICAL RESOURCE
-9: uses vocabulary with full flexibility and precision in all topics; uses idiomatic language naturally and accurately.
-8: uses a wide vocabulary resource readily and flexibly to convey precise meaning; uses less common and idiomatic vocabulary skilfully, with occasional inaccuracies; uses paraphrase effectively as required.
-7: uses vocabulary resource flexibly to discuss a variety of topics; uses some less common and idiomatic vocabulary and shows some awareness of style and collocation, with some inappropriate choices; uses paraphrase effectively.
-6: has a wide enough vocabulary to discuss topics at length and make meaning clear in spite of inappropriacies; generally paraphrases successfully.
-5: manages to talk about familiar and unfamiliar topics but uses vocabulary with limited flexibility; attempts to use paraphrase but with mixed success.
-4: is able to talk about familiar topics but can only convey basic meaning on unfamiliar topics and makes frequent errors in word choice; rarely attempts paraphrase.
-3: uses simple vocabulary to convey personal information; has insufficient vocabulary for less familiar topics.
-2: only produces isolated words or memorised utterances.
-1: no rateable language.
-0: does not attend.`;
+export const FC_SCALE = `FLUENCY AND COHERENCE
+9: Fluent with only very occasional repetition or self-correction. Any hesitation that occurs is used only to prepare the content of the next utterance and not to find words or grammar. Speech is situationally appropriate and cohesive features are fully acceptable. Topic development is fully coherent and appropriately extended.
+8: Fluent with only very occasional repetition or self-correction. Hesitation may occasionally be used to find words or grammar, but most will be content related. Topic development is coherent, appropriate and relevant.
+7: Able to keep going and readily produce long turns without noticeable effort. Some hesitation, repetition and/or self-correction may occur, often mid-sentence and indicate problems with accessing appropriate language. However, these will not affect coherence. Flexible use of spoken discourse markers, connectives and cohesive features.
+6: Able to keep going and demonstrates a willingness to produce long turns. Coherence may be lost at times as a result of hesitation, repetition and/or self-correction. Uses a range of spoken discourse markers, connectives and cohesive features though not always appropriately.
+5: Usually able to keep going, but relies on repetition and self-correction to do so and/or on slow speech. Hesitations are often associated with mid-sentence searches for fairly basic lexis and grammar. Overuse of certain discourse markers, connectives and other cohesive features. More complex speech usually causes disfluency but simpler language may be produced fluently.
+4: Unable to keep going without noticeable pauses. Speech may be slow with frequent repetition. Often self-corrects. Can link simple sentences but often with repetitious use of connectives. Some breakdowns in coherence.
+3: Frequent, sometimes long, pauses occur while candidate searches for words. Limited ability to link simple sentences and go beyond simple responses to questions. Frequently unable to convey basic message.
+2: Lengthy pauses before nearly every word. Isolated words may be recognisable but speech is of virtually no communicative significance.
+1: Essentially none. Speech is totally incoherent.
+0: Does not attend / Does not complete the test`;
 
-const GRA_SCALE = `GRAMMATICAL RANGE AND ACCURACY
-9: uses a full range of structures naturally and appropriately; produces consistently accurate structures apart from slips characteristic of native speaker speech.
-8: uses a wide range of structures flexibly; produces a majority of error-free sentences with only very occasional inappropriacies or basic/non-systematic errors.
-7: uses a range of complex structures with some flexibility; frequently produces error-free sentences, though some grammatical mistakes persist.
-6: uses a mix of simple and complex structures, but with limited flexibility; may make frequent mistakes with complex structures, though these rarely cause comprehension problems.
-5: produces basic sentence forms with reasonable accuracy; uses a limited range of more complex structures, but these usually contain errors and may cause some comprehension problems.
-4: produces basic sentence forms and some correct simple sentences but subordinate structures are rare; errors are frequent and may lead to misunderstanding.
-3: attempts basic sentence forms but with limited success, or relies on apparently memorised utterances; makes numerous errors except in memorised expressions.
-2: cannot produce basic sentence forms.
-1: no rateable language.
-0: does not attend.`;
+export const LR_SCALE = `LEXICAL RESOURCE
+9: Total flexibility and precise use in all contexts. Sustained use of accurate and idiomatic language.
+8: Wide resource, readily and flexibly used to discuss all topics and convey precise meaning. Skilful use of less common and idiomatic items despite occasional inaccuracies in word choice and collocation. Effective use of paraphrase as required.
+7: Resource flexibly used to discuss a variety of topics. Some ability to use less common and idiomatic items and an awareness of style and collocation is evident though inappropriacies occur. Effective use of paraphrase as required.
+6: Resource sufficient to discuss topics at length. Vocabulary use may be inappropriate but meaning is clear. Generally able to paraphrase successfully.
+5: Resource sufficient to discuss familiar and unfamiliar topics but there is limited flexibility. Attempts paraphrase but not always with success.
+4: Resource sufficient for familiar topics but only basic meaning can be conveyed on unfamiliar topics. Frequent inappropriacies and errors in word choice. Rarely attempts paraphrase.
+3: Resource limited to simple vocabulary used primarily to convey personal information. Vocabulary inadequate for unfamiliar topics.
+2: Very limited resource. Utterances consist of isolated words or memorised utterances. Little communication possible without the support of mime or gesture.
+1: No resource bar a few isolated words. No communication possible.
+0: Does not attend / Does not complete the test`;
 
-const PRON_SCALE = `PRONUNCIATION
-9: uses a full range of pronunciation features with precision and subtlety; sustains flexible use of features throughout; is effortless to understand.
-8: uses a wide range of pronunciation features; sustains flexible use of features, with only occasional lapses; is easy to understand throughout; L1 accent has minimal effect on intelligibility.
-7: shows all the positive features of Band 6 and some, but not all, of the positive features of Band 8.
-6: uses a range of pronunciation features with mixed control; shows some effective use of features but this is not sustained; can generally be understood throughout, though mispronunciation of individual words or sounds reduces clarity at times.
-5: shows all the positive features of Band 4 and some, but not all, of the positive features of Band 6.
-4: uses a limited range of pronunciation features; attempts to control features but lapses are frequent; mispronunciations are frequent and cause some difficulty for the listener.
-3: shows some of the features of Band 2 and some, but not all, of the positive features of Band 4.
-2: speech is often unintelligible.
-1: no communication possible.
-0: does not attend.`;
+export const GRA_SCALE = `GRAMMATICAL RANGE AND ACCURACY
+9: Structures are precise and accurate at all times, apart from ‘mistakes’ characteristic of native speaker speech.
+8: Wide range of structures, flexibly used. The majority of sentences are error free. Occasional inappropriacies and non-systematic errors occur. A few basic errors may persist.
+7: A range of structures flexibly used. Error-free sentences are frequent. Both simple and complex sentences are used effectively despite some errors. A few basic errors persist.
+6: Produces a mix of short and complex sentence forms and a variety of structures with limited flexibility. Though errors frequently occur in complex structures, these rarely impede communication.
+5: Basic sentence forms are fairly well controlled for accuracy. Complex structures are attempted but these are limited in range, nearly always contain errors and may lead to the need for reformulation.
+4: Can produce basic sentence forms and some short utterances are error-free. Subordinate clauses are rare and, overall, turns are short, structures are repetitive and errors are frequent.
+3: Basic sentence forms are attempted but grammatical errors are numerous except in apparently memorised utterances.
+2: No evidence of basic sentence forms.
+1: No rateable language unless memorised.
+0: Does not attend / Does not complete the test`;
 
-/** The official examiner method for awarding bands, shared verbatim by the
-    single-call audio prompt (systemInstruction) and the hybrid pipeline's
-    text-grading prompt (hybridTextSystemInstruction). FINAL, do not change
-    this wording; see the file header comment. */
-const METHOD_BLOCK = `=== HOW EXAMINERS AWARD BANDS (official method) ===
+export const PRON_SCALE = `PRONUNCIATION
+9: Uses a full range of phonological features to convey precise and/or subtle meaning. Flexible use of features of connected speech is sustained throughout. Can be effortlessly understood throughout. Accent has no effect on intelligibility.
+8: Uses a wide range of phonological features to convey precise and/or subtle meaning. Can sustain appropriate rhythm. Flexible use of stress and intonation across long utterances, despite occasional lapses. Can be easily understood throughout. Accent has minimal effect on intelligibility.
+7: Displays all the positive features of band 6, and some, but not all, of the positive features of band 8.
+6: Uses a range of phonological features, but control is variable. Chunking is generally appropriate, but rhythm may be affected by a lack of stress-timing and/or a rapid speech rate. Some effective use of intonation and stress, but this is not sustained. Individual words or phonemes may be mispronounced but this causes only occasional lack of clarity. Can generally be understood throughout without much effort.
+5: Displays all the positive features of band 4, and some, but not all, of the positive features of band 6.
+4: Uses some acceptable phonological features, but the range is limited. Produces some acceptable chunking, but there are frequent lapses in overall rhythm. Attempts to use intonation and stress, but control is limited. Individual words or phonemes are frequently mispronounced, causing lack of clarity. Understanding requires some effort and there may be patches of speech that cannot be understood.
+3: Displays some features of band 2, and some, but not all, of the positive features of band 4.
+2: Uses few acceptable phonological features (possibly because sample is insufficient). Overall problems with delivery impair attempts at connected speech. Individual words and phonemes are mainly mispronounced and little meaning is conveyed. Often unintelligible.
+1: Can produce occasional individual words and phonemes that are recognisable, but no overall meaning is conveyed. Unintelligible.
+0: Does not attend / Does not complete the test`;
+
+/** The two notes printed under the official table. */
+export const SPEAKING_NOTES = `Notes: (i) A candidate must fully fit the positive features of the descriptor at a particular level. (ii) A candidate will be rated on their average performance across all parts of the test.`;
+
+/** The method block for awarding bands, shared verbatim by the single-call
+    audio prompt (systemInstruction) and the hybrid pipeline's text-grading
+    prompt (hybridTextSystemInstruction). Rewritten 3 October 2026 so every
+    phrase it quotes exists in the current official descriptors above;
+    tests/descriptor-quotes.test.ts checks that. */
+export const METHOD_BLOCK = `=== HOW EXAMINERS AWARD BANDS (official method) ===
 - Rate each of the four criteria INDEPENDENTLY with a WHOLE band from 0 to 9. Half bands exist only in the overall score, which is computed elsewhere as the average of the four.
-- For each criterion, award the band whose descriptors match the candidate's performance ACROSS THE WHOLE TEST. The descriptors are cumulative: a band is awarded when the candidate shows all the positive features of that band. Bands 7, 5 and 3 for Pronunciation are defined by "all the features of the band below and some, but not all, of the band above"; apply the same logic to the other criteria when a performance sits between two bands.
-- A band's descriptors already include that band's weaknesses. Band 7 explicitly allows language-related hesitation, some repetition and self-correction, some inappropriate word choices and some persistent grammatical mistakes; Band 8 allows occasional inaccuracies and occasional lapses. Do NOT lower a band because of weaknesses the descriptor itself permits.
+- For each criterion, award the band whose descriptors match the candidate's performance ACROSS THE WHOLE TEST: "A candidate will be rated on their average performance across all parts of the test." The descriptors are cumulative: "A candidate must fully fit the positive features of the descriptor at a particular level." Pronunciation band 7 is defined as "Displays all the positive features of band 6, and some, but not all, of the positive features of band 8" (band 5 the same way between bands 4 and 6, and band 3 as "Displays some features of band 2, and some, but not all, of the positive features of band 4"); apply the same logic to the other criteria when a performance sits between two bands.
+- A band's descriptors already include that band's weaknesses. Band 7 explicitly allows "Some hesitation, repetition and/or self-correction" that may "indicate problems with accessing appropriate language" (as long as "these will not affect coherence"), vocabulary where "inappropriacies occur", and grammar where "A few basic errors persist"; Band 8 allows hesitation that "may occasionally be used to find words or grammar", "occasional inaccuracies in word choice and collocation", "A few basic errors may persist" and stress and intonation "despite occasional lapses". Do NOT lower a band because of weaknesses the descriptor itself permits.
 - Do not add requirements the descriptors do not state. Fillers ("um", "well", "you know"), false starts, self-correction and informal spoken grammar are normal features of speech; only their frequency and effect on coherence matter, as the descriptors describe.
 - Judge the typical performance over the whole test, not the single best or single worst moment. One slip does not remove a band; one good sentence does not earn one.
 - The criteria are independent: rich vocabulary with weak grammar scores high on Lexical Resource and low on Grammatical Range and Accuracy.
-- Accent is never penalised in itself. Only its effect on intelligibility counts, exactly as the Pronunciation descriptors state ("L1 accent has minimal effect on intelligibility").
+- Accent is never penalised in itself. Only its effect on intelligibility counts, exactly as the Pronunciation descriptors state ("Accent has minimal effect on intelligibility" at band 8, "Accent has no effect on intelligibility" at band 9).
 - IELTS assesses LANGUAGE ONLY. Ideas, opinions, confidence, humour and topic knowledge earn nothing and cost nothing.
 - Work EVIDENCE-FIRST: for each criterion, first collect concrete observations from the audio (quoted fragments, specific errors, hesitation patterns, pronunciation lapses) into the \`evidence\` field, then decide which band those observations match. Never write the band before the evidence.
 - The transcript you are given is MACHINE-GENERATED speech recognition and is NOT the candidate's writing. It routinely drops articles and endings, mishears words and names, and sometimes mixes the examiner's words into the candidate's turn. Use it only to follow which question is being answered. Judge vocabulary and grammar from what you HEAR; never cite as an error anything you cannot confirm in the audio, and when the audio and the transcript disagree, the audio is right.
-- Count only clear errors. Natural spoken phrasing ("a quite hectic schedule"), a self-corrected slip, a contraction, an informal word order in casual speech, or a plausible collocation you merely find less elegant is NOT an error. The descriptors ask whether mistakes are frequent and whether they cause comprehension problems, not whether the speech is flawless.
+- Count only clear errors. Natural spoken phrasing ("a quite hectic schedule"), a self-corrected slip, a contraction, an informal word order in casual speech, or a plausible collocation you merely find less elegant is NOT an error. The descriptors ask whether errors are frequent and whether they impede communication, not whether the speech is flawless.
 - Grade what was actually produced. If the candidate said very little, describe that honestly in Fluency and Coherence and rate the language that was produced; do not extrapolate a higher band from a few good phrases, and do not invent content the candidate did not say.
 - CRITICAL: if a clip contains NO intelligible spoken English at all (silence, a tone, background noise, unintelligible sound), you MUST NOT invent a transcript or guess what a candidate might have said. Say explicitly in every criterion's comment that no intelligible spoken response was detected in that clip, award band 1 for every criterion affected, and do not include quotes from it in \`moments\`.`;
 
 function systemInstruction(): string {
-  return `You are a certified IELTS Speaking examiner. You are listening to AUDIO RECORDINGS of a candidate's spoken answers, not reading a transcript: judge Pronunciation directly from what you hear (intelligibility, word and sentence stress, intonation, chunking, individual sounds), and judge Fluency and Coherence from actual pacing, hesitation and self-correction. Assess against the four official criteria using the official public band descriptors below, exactly as a trained examiner would, and be neither harsher nor more lenient than they are. Return ONLY the requested JSON.
+  return `You are a certified IELTS Speaking examiner. You are listening to AUDIO RECORDINGS of a candidate's spoken answers, not reading a transcript: judge Pronunciation directly from what you hear (intelligibility, word and sentence stress, intonation, chunking, individual sounds), and judge Fluency and Coherence from actual pacing, hesitation and self-correction. Assess against the four official criteria using the official band descriptors below, exactly as a trained examiner would, and be neither harsher nor more lenient than they are. Return ONLY the requested JSON.
 
-=== IELTS SPEAKING BAND DESCRIPTORS (public version, verbatim) ===
+=== IELTS SPEAKING BAND DESCRIPTORS (current official version, verbatim) ===
 
 ${FC_SCALE}
 
@@ -241,6 +253,8 @@ ${LR_SCALE}
 ${GRA_SCALE}
 
 ${PRON_SCALE}
+
+${SPEAKING_NOTES}
 
 ${METHOD_BLOCK}
 
@@ -1390,16 +1404,18 @@ export function computeSegmentStats(segments: DiarizedSegment[], candidateSpeake
     user content (hybridSessionOverview), not here, matching how buildParts
     already keeps the session description with the per-clip content rather
     than in the system prompt. */
-function hybridTextSystemInstruction(): string {
-  return `You are a certified IELTS Speaking examiner. You are assessing a candidate's spoken performance from a VERBATIM transcript (fillers, repetitions and false starts were kept on purpose) plus measured timing statistics for each response. Assess Fluency and Coherence, Lexical Resource, and Grammatical Range and Accuracy only (Pronunciation is assessed separately from the audio). Use the official public band descriptors below exactly as a trained examiner would, and be neither harsher nor more lenient than they are.
+export function hybridTextSystemInstruction(): string {
+  return `You are a certified IELTS Speaking examiner. You are assessing a candidate's spoken performance from a VERBATIM transcript (fillers, repetitions and false starts were kept on purpose) plus measured timing statistics for each response. Assess Fluency and Coherence, Lexical Resource, and Grammatical Range and Accuracy only (Pronunciation is assessed separately from the audio). Use the official band descriptors below exactly as a trained examiner would, and be neither harsher nor more lenient than they are.
 
-=== IELTS SPEAKING BAND DESCRIPTORS (public version, verbatim) ===
+=== IELTS SPEAKING BAND DESCRIPTORS (current official version, verbatim) ===
 
 ${FC_SCALE}
 
 ${LR_SCALE}
 
 ${GRA_SCALE}
+
+${SPEAKING_NOTES}
 
 ${METHOD_BLOCK}
 - The transcript comes from automatic speech recognition: an occasional odd word may be a recognition error rather than the candidate's; do not count an error you would need the audio to confirm. Timing statistics are measured, not guessed: use them for hesitation and pace.
@@ -1519,15 +1535,15 @@ async function gradeTextCall(
     ported from the calibration script's pronunciation prompt, PRON_SCALE
     verbatim. Judges only what the audio-model call is actually good at
     judging; FC/LR/GRA come from the text-grading call instead. */
-function hybridPronunciationSystemInstruction(anchorsEnabled: boolean): string {
+export function hybridPronunciationSystemInstruction(anchorsEnabled: boolean): string {
   const referenceGuidance = anchorsEnabled
     ? ` Below the candidate's own recording you will also hear reference clips, each labelled with the band a real candidate actually received in an official IELTS exam. Use them as the scale for this criterion: compare the candidate's intelligibility, word and sentence stress, rhythm and intonation with the references, and award the band of the reference the candidate most resembles, adjusting by one band up or down if the candidate is clearly better or worse than that reference. Accent itself is still never penalised, only its effect on intelligibility, exactly as above.`
     : '';
-  return `You are a certified IELTS Speaking examiner assessing ONLY the Pronunciation criterion from this audio, using the official public descriptors below exactly as a trained examiner would. Pronunciation means the sounds, word stress, sentence stress, rhythm, intonation and chunking, and above all how much effort the listener needs. A regional or first-language accent is never penalised in itself; only its effect on intelligibility counts, exactly as the descriptors state.
+  return `You are a certified IELTS Speaking examiner assessing ONLY the Pronunciation criterion from this audio, using the official descriptors below exactly as a trained examiner would. Pronunciation means the sounds, word stress, sentence stress, rhythm, intonation and chunking, and above all how much effort the listener needs. A regional or first-language accent is never penalised in itself; only its effect on intelligibility counts, exactly as the descriptors state.
 
 ${PRON_SCALE}
 
-Method: award the band whose cumulative descriptors match the whole recording. Band 7 is "all the positive features of Band 6 and some, but not all, of Band 8"; Band 8 requires only that the speaker is easy to understand throughout with occasional lapses. Do not lower a band for an accent that does not reduce intelligibility, and never judge grammar or vocabulary here. First list concrete evidence (specific words or features you heard) into \`evidence\`, then decide the band. Never write the band before the evidence. The transcript is not available to you here; judge only what you hear.${referenceGuidance}
+Method: award the band whose cumulative descriptors match the whole recording. Band 7 "Displays all the positive features of band 6, and some, but not all, of the positive features of band 8". Band 8 does not ask for a native accent: its speaker "Can be easily understood throughout", keeps flexible stress and intonation "despite occasional lapses", and "Accent has minimal effect on intelligibility". Do not lower a band for an accent that does not reduce intelligibility, and never judge grammar or vocabulary here. First list concrete evidence (specific words or features you heard) into \`evidence\`, then decide the band. Never write the band before the evidence. The transcript is not available to you here; judge only what you hear.${referenceGuidance}
 
 === OUTPUT REQUIREMENTS ===
 - Never use em dashes or en dashes anywhere in your text; use a comma, a colon or a full stop instead.
