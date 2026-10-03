@@ -142,13 +142,15 @@ export function analyzeEssay(input: EssayInput): MechanicsReport {
   const sents = sentences(essay);
   const sentLengths = sents.map((s) => words(s).length);
 
-  const wordCount = essayWords.length;
+  /* Length is counted the way IELTS counts it (countWords below); the
+     vocabulary statistics keep using the letters-only words. */
+  const wordCount = countWords(essay);
   const sentenceCount = sents.length;
   const avgSentenceLength = sentenceCount ? wordCount / sentenceCount : 0;
   const sentenceLengthSpread = stdev(sentLengths);
 
   const uniqueWords = new Set(essayWords).size;
-  const lexicalDiversity = wordCount ? uniqueWords / wordCount : 0;
+  const lexicalDiversity = essayWords.length ? uniqueWords / essayWords.length : 0;
 
   const overusedWords = overused(essayWords);
   const linkingDevices = countLinkers(essay.toLowerCase());
@@ -227,7 +229,13 @@ export function analyzeEssay(input: EssayInput): MechanicsReport {
   };
 }
 
-/** Live word count for the editor (no full analysis). */
+/** Word count as IELTS counts it, for the editor and the length check.
+    Numbers are words ("7,200", "25%", "2011"), a hyphenated word is one
+    word ("well-known"), and a contraction is one word. Until 3 October 2026
+    this counted letters only, so a Task 1 report full of figures read as
+    under length (a 183-word Band 8 answer counted 158) and the grader was
+    told so. A token counts when it holds at least one letter or digit, so a
+    stray dash or bullet does not. */
 export function countWords(text: string): number {
-  return words(text).length;
+  return (text.match(/\S+/g) ?? []).filter((token) => /[\p{L}\p{N}]/u.test(token)).length;
 }
