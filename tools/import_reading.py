@@ -120,8 +120,8 @@ ANSWER_OVERRIDES: dict[tuple[int, str], dict] = {
         "reason": "The gap reads 'students who believe that intelligence is (37) ......', which needs an adjective. The passage only offers the phrase 'intelligence can change', so no single passage word fits. Both adjectival forms a student could reasonably produce are accepted.",
     },
     (10, "q40"): {
-        "answer": ["Style", "Learning style"],
-        "reason": "The instruction says ONE WORD ONLY, so the attainable answer is 'style'. The publisher's two-word 'learning style' stays accepted, but is no longer the headline answer, since it breaks the group's own word limit.",
+        "answer": "Style",
+        "reason": "The instruction says ONE WORD ONLY, so the answer is 'style'. The publisher's two-word 'learning style' breaks the group's own word limit and a real examiner marks it wrong; Alex decided on 3 October 2026 to stop accepting it.",
     },
     # --- The passage contradicts or fails to support the published key ---
     (10, "q5"): {
