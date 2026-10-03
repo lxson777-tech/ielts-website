@@ -53,8 +53,12 @@ export interface Sequenced {
   image?: string;
   /** Small line above the card title, e.g. '10 words · collocations'. */
   eyebrow?: string;
-  /** Honest estimate of time to work through this lesson, in minutes. Shown
-      as a small muted "12 min" label wherever the lesson is listed. Optional
+  /** Honest estimate of time to work through the WHOLE lesson page, in
+      minutes: the teaching text and every exercise and practice question on
+      it. Shown as a small muted "25 min" label wherever the lesson is
+      listed. Set by tools/estimate-lesson-minutes.mjs (the rule is written
+      at the top of that file) and kept in step by
+      tests/lesson-minutes.test.ts, so never hand-edit one number. Optional
       so a part added without one just shows no label rather than "0 min". */
   minutes?: number;
 }
@@ -80,8 +84,8 @@ export interface LessonMeta {
   description: string;
   image: string; // path under /pics, passed through withBase()
   level?: LessonLevel;
-  /** See Sequenced.minutes. These overview pages are shorter reads than a
-      full part lesson, hence 8, except the longer Reading overview. */
+  /** See Sequenced.minutes. The overviews are short reads with no practice
+      of their own, so most come out at the 10 minute minimum. */
   minutes?: number;
 }
 
@@ -101,11 +105,10 @@ export const LESSONS: LessonMeta[] = [
     description: nt('How the test works, the band score table, and a lesson for every official question type.'),
     image: '/pics/reading.png',
     level: nt('Beginner') as LessonLevel,
-    /* Not the flat 8 of the other overviews: this one also teaches the
-       routine behind every question type and the training order, about
-       1,400 words of teaching against 450 to 650 in the others (content
-       review, 3 October 2026). */
-    minutes: 12,
+    /* About 1,500 words of teaching (the routine behind every question
+       type and the training order) against 230 to 450 in the other
+       overviews: 12 minutes of reading, which rounds to 10. */
+    minutes: 10,
   },
   {
     slug: 'writing',
@@ -114,7 +117,7 @@ export const LESSONS: LessonMeta[] = [
     description: nt('How the test works, how examiners mark it, and a lesson for each task.'),
     image: '/pics/writing/start-task.png',
     level: nt('Intermediate') as LessonLevel,
-    minutes: 8,
+    minutes: 10,
   },
   {
     slug: 'speaking',
@@ -123,7 +126,7 @@ export const LESSONS: LessonMeta[] = [
     description: nt('How the interview works, how examiners mark it, and a lesson for each part.'),
     image: '/pics/speaking-part1.png',
     level: nt('Intermediate') as LessonLevel,
-    minutes: 8,
+    minutes: 10,
   },
   {
     slug: 'listening',
@@ -132,7 +135,7 @@ export const LESSONS: LessonMeta[] = [
     description: nt('How the test works, how it is scored, and a lesson for each part and every question type.'),
     image: '/pics/listening.png',
     level: nt('Beginner') as LessonLevel,
-    minutes: 8,
+    minutes: 10,
   },
   {
     slug: 'vocabulary',
@@ -141,7 +144,7 @@ export const LESSONS: LessonMeta[] = [
     description: nt('Why vocabulary decides your band, a lesson per exam topic, and a quiz.'),
     image: '/pics/vocabulary.png',
     level: nt('All levels') as LessonLevel,
-    minutes: 8,
+    minutes: 10,
   },
 ];
 

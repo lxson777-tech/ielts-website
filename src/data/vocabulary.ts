@@ -28,7 +28,7 @@ export const VOCABULARY_PARTS: VocabularyPart[] = [
     blurb: nt('Although, whereas, therefore, provided that. The linking words that lift Coherence and Cohesion.'),
     stage: 1,
     eyebrow: nt('18 words · 6 functions · exercise'),
-    minutes: 10,
+    minutes: 15,
   },
   {
     slug: 'environment',

@@ -270,8 +270,16 @@ test('week one teaches Speaking overview before Part 1, with familiar vocabulary
   const days = buildSchedule(makePlan()).filter((d) => d.weekNumber === 1);
   const lessons = days.flatMap((d) => d.items.filter((i) => i.type === 'lesson'));
   assert.deepEqual(lessons.map((l) => l.id), buildCourse()[0]!.lessons.map((l) => l.key));
-  assert.equal(lessons[0]!.minutes, 8);
-  assert.equal(lessons[1]!.minutes, 20);
+  /* CHANGED 2026-10-03: lesson minutes now cover the whole page (teaching
+     plus practice), from tools/estimate-lesson-minutes.mjs. The overview is
+     a short read (the 10 minute minimum); Part 1 is about 3,200 words plus
+     forty practice questions to answer out loud, 45 minutes. What this pins
+     is that the calendar carries each lesson's own registry minutes. */
+  const registry = new Map(buildCourse()[0]!.lessons.map((l) => [l.key, l.minutes]));
+  assert.equal(lessons[0]!.minutes, registry.get('speaking'));
+  assert.equal(lessons[1]!.minutes, registry.get('speaking-part1'));
+  assert.equal(lessons[0]!.minutes, 10);
+  assert.equal(lessons[1]!.minutes, 45);
   assert.ok(days.every((d) => d.focus === 'Start speaking with confidence'));
 });
 
