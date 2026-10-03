@@ -516,11 +516,8 @@ export const listeningFull025: PracticeTest = {
             {
               "id": "q38",
               "textHtml": "Question 38",
-              "answer": [
-                "airliners",
-                "airlines"
-              ],
-              "explanation": "Near the end of the lecture the speaker says the speed and popularity of airliners made the airship look superseded, so write what you hear, airliners, meaning the aeroplanes that had taken over the routes.",
+              "answer": "airliners",
+              "explanation": "Near the end of the lecture the speaker says the speed and popularity of airliners made the airship look superseded, so write what you hear, airliners, meaning the aeroplanes that had taken over the routes. Airlines, the companies that fly them, is a different word from the one he says, so it is not accepted.",
               "evidence": "the speed and popularity of airliners meant that the airship appeared superseded"
             },
             {

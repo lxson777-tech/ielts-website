@@ -1,0 +1,8 @@
+# t29-q15-long: test 29 audio 08:57.00-09:16.00, model large-v3, speed x1.0, no prompt
+
+[08:57.00-09:04.74] and Sundays. Lunch will be served from half past twelve till two, and light snacks will
+    words: and@08:57.00 Sundays.@08:57.32 Lunch@08:58.82 will@08:59.54 be@08:59.78 served@08:59.94 from@09:00.34 half@09:00.70 past@09:01.04 twelve@09:01.26 till@09:01.68 two,@09:02.34 and@09:02.90 light@09:03.60 snacks@09:03.90 will@09:04.22
+[09:04.74-09:12.80] be available all day. Of course, this programme is just the start, and we expect to be announcing
+    words: be@09:04.74 available@09:04.88 all@09:05.30 day.@09:05.92 Of@09:07.26 course,@09:07.98 this@09:08.34 programme@09:08.60 is@09:09.00 just@09:09.58 the@09:10.06 start,@09:10.38 and@09:11.04 we@09:11.46 expect@09:11.64 to@09:12.06 be@09:12.30 announcing@09:12.42
+[09:12.80-09:15.84] many additional events in the near future.
+    words: many@09:12.80 additional@09:13.50 events@09:14.02 in@09:14.62 the@09:15.26 near@09:15.40 future.@09:15.64

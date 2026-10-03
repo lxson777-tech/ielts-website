@@ -49,7 +49,13 @@ const importedListeningAnswerHashes = [
      "sea level", "southsea", "after 11'o clock"), over-limit forms removed,
      and accepted variants added that IELTS also marks right (numbers as
      words, date orders, heard plurals, British and American spellings
-     the marker does not fold). Re-run tools/refresh_listening_hashes.mjs
+     the marker does not fold). Refreshed once more the same day after the
+     doubtful keys were checked against the recordings
+     (docs/audits/prepublish-2026-10-03/audio-checks/, segment transcripts): Test 22 Q37
+     accepts its three activities in any order (anyOrder, now part of the
+     fingerprint), Test 25 Q38 drops "airlines" (he says airliners), Test 29
+     Q15 becomes "all day" (heard, and within TWO WORDS), Test 30 Q4 drops
+     "5 months" (never said). Re-run tools/refresh_listening_hashes.mjs
      only after deciding a key change is right, and say here why. */
   'da3127400675e0a464aa2d9419106be496bea586d91eb90a6cb6e858a554a378',
   'a818e372b77fc3af187f0621ee44e9a779d7c8e917f577fc159f01dc09e49c59',
@@ -72,15 +78,15 @@ const importedListeningAnswerHashes = [
   '77cefb96fc74a932280b6f898c1100adf34216c9cc5d115c349a4fc7d739741b',
   '9dcde742c68c726b47e1208926601628f5f6a3323f3d54ad2a98570ce00eb721',
   '5b01cd377b1c3bafcfefdd2856e8cf177dee0c308941688b6c6d2c73703d7c07',
-  'a4eb14a8b2f1aebd295310f11bfa4158c909a3bdda431f28f60cd6318fcef413',
+  '09377ffaa616ecaeda88ab5cee69a222913674753ce8638ed501fd2aaf255c99',
   '5e89afa81ec938a99ba5d324d43972d9d31f9ffde957adf5ba30833a3adecbfc',
   '9df10d9fa4a06a1a1c43f416ca241928459f27965c166aa18f450c79246f4ccb',
-  '8cbbee493a91dfff17539c1c2191fd4a6cefbd71d192b0e0b4a9b579a79ed625',
+  '9fbee100807f1964c6075a4b61a38eb5cd47d14cff42883ac45f9fc1687fa4ea',
   'f49c0042b3facb2da20d4682549dc112920fc1ba415042bafc6ce68fea4f1018',
   '755f4006a8b461d2919f18fa12c47ad8c74a398fb0a81c788111bc5f7b8de6f1',
   '37aa60c419ca94525a630070d1bcf7547b5c91cd52ac2d7dfdc5c0d75c147c1b',
-  '07bc482913652121d7cbbf996f2cb4e7cf217cf0e86f1bf2a7e03135249f3e82',
-  'a3612d3222e114182d8bbd08b5f82ca48123fc8a47a616cd96a7ef1f67594bec',
+  'a2e06538a6393223a2609734d20434aecadc4d6dbe2bb586f57b5b1d895dfe09',
+  'f2390124bc6c474247bb43eb4edf6995af96a623a12693a6ba5ab8d6fbd289d5',
 ];
 
 test('catalog contains only authentic (sourced) reading tests and thirty distinct listening tests', () => {
@@ -138,7 +144,7 @@ test('question paper reformatting does not change any listening answer key', () 
 
   const currentHashes = listening.map((testRecord) => {
     const answerContract = allQuestions(testRecord).map(
-      ({ id, answer, answerPairId, multiSelect }) => ({ id, answer, answerPairId, multiSelect }),
+      ({ id, answer, answerPairId, multiSelect, anyOrder }) => ({ id, answer, answerPairId, multiSelect, anyOrder }),
     );
     return createHash('sha256').update(JSON.stringify(answerContract)).digest('hex');
   });

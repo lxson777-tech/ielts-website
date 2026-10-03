@@ -1,0 +1,6 @@
+# t28-whitfield-b: test 28 audio 12:09.00-12:30.00, model large-v3, speed x1.0, no prompt
+
+[12:09.00-12:25.78] go down there and turn right at the end go straight on and just on the corner with oxford street you'll see a two-story house this is the whitfield family house and this is where manjaro first stayed when he came to fairhaven
+    words: go@12:09.00 down@12:09.46 there@12:09.74 and@12:10.02 turn@12:10.40 right@12:10.72 at@12:11.00 the@12:11.18 end@12:11.24 go@12:11.56 straight@12:12.48 on@12:12.84 and@12:13.22 just@12:13.80 on@12:14.08 the@12:14.26 corner@12:14.36 with@12:14.66 oxford@12:15.00 street@12:15.50 you'll@12:15.72 see@12:16.54 a@12:16.78 two@12:16.96 -story@12:17.28 house@12:17.80 this@12:18.16 is@12:19.44 the@12:19.80 whitfield@12:19.94 family@12:20.38 house@12:20.82 and@12:21.40 this@12:22.28 is@12:22.50 where@12:22.68 manjaro@12:22.88 first@12:23.40 stayed@12:23.76 when@12:24.16 he@12:24.58 came@12:24.70 to@12:24.96 fairhaven@12:25.20
+[12:25.78-12:29.92] It's still a private residence, so please respect the
+    words: It's@12:25.78 still@12:27.14 a@12:27.30 private@12:27.52 residence,@12:27.88 so@12:28.60 please@12:29.00 respect@12:29.32 the@12:29.72

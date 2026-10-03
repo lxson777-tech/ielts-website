@@ -88,8 +88,6 @@ test('items are counted the IELTS way', () => {
    printed limit and left for Alex (tests/listening-answer-key.test.ts,
    tests/reading-key-lint.test.ts). */
 const KNOWN_OVER_LIMIT = new Set([
-  'listening-full-029 q15 served all day',
-  'listening-full-029 q15 available all day',
   'reading-full-010 q40 Learning style',
 ]);
 

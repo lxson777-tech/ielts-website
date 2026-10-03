@@ -1,0 +1,8 @@
+# t02-q1: test 2 audio 01:50.00-02:12.00, model large-v3, speed x0.8, no prompt
+
+[01:50.00-01:56.11] out a little more about your preferences and so forth. Thank you. So, first of all, can I take
+    words: out@01:50.00 a@01:50.11 little@01:50.26 more@01:50.40 about@01:50.59 your@01:50.85 preferences@01:51.15 and@01:51.65 so@01:51.97 forth.@01:52.10 Thank@01:52.53 you.@01:53.01 So,@01:53.70 first@01:54.27 of@01:54.80 all,@01:54.96 can@01:55.22 I@01:55.52 take@01:55.98
+[01:56.11-02:06.99] your name? It's Anubhat. Could you spell your name, please? Yes, A-N-U-B-H-A-T-T. Thanks.
+    words: your@01:56.11 name?@01:56.24 It's@01:56.74 Anubhat.@01:57.25 Could@01:58.14 you@01:58.66 spell@01:58.77 your@01:58.99 name,@01:59.23 please?@01:59.46 Yes,@01:59.86 A@02:00.48 -N@02:01.15 -U@02:01.71 -B@02:02.18 -H@02:03.30 -A@02:04.00 -T@02:04.62 -T.@02:05.46 Thanks.@02:06.48
+[02:07.14-02:11.44] And could I ask your date of birth? The 31st of March, 1970.
+    words: And@02:07.14 could@02:07.58 I@02:07.84 ask@02:08.05 your@02:08.27 date@02:08.38 of@02:08.54 birth?@02:08.66 The@02:09.17 31st@02:09.49 of@02:10.19 March,@02:10.30 1970.@02:10.93

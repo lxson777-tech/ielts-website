@@ -1,0 +1,24 @@
+# t18-q37: test 18 audio 21:44.00-22:16.00, model large-v3, speed x1.0, no prompt
+
+[21:44.00-21:46.36] and to wait a fight in Europe, never to return.
+    words: and@21:44.00 to@21:44.08 wait@21:44.18 a@21:44.38 fight@21:44.48 in@21:44.74 Europe,@21:44.90 never@21:45.36 to@21:45.82 return.@21:46.08
+[21:47.60-21:50.30] The College was building a reputation for learning
+    words: The@21:47.60 College@21:48.16 was@21:48.44 building@21:48.64 a@21:48.98 reputation@21:49.10 for@21:49.52 learning@21:49.94
+[21:50.30-21:52.26] and for tolerance of opposing views.
+    words: and@21:50.30 for@21:50.78 tolerance@21:50.94 of@21:51.38 opposing@21:51.58 views.@21:51.78
+[21:53.28-21:55.50] Scholastic House debate and discussion nights
+    words: Scholastic@21:53.28 House@21:53.84 debate@21:54.10 and@21:54.46 discussion@21:54.74 nights@21:55.08
+[21:55.50-21:57.90] were opened to the public in 1927
+    words: were@21:55.50 opened@21:55.80 to@21:56.14 the@21:56.30 public@21:56.38 in@21:56.72 1927@21:56.96
+[21:57.90-22:02.00] and have been available to anyone who wishes to attend ever since.
+    words: and@21:57.90 have@21:58.72 been@21:58.98 available@21:59.12 to@21:59.48 anyone@21:59.80 who@22:00.08 wishes@22:00.40 to@22:00.68 attend@22:00.94 ever@22:01.30 since.@22:01.72
+[22:02.56-22:04.62] It is a proud tradition of the College
+    words: It@22:02.56 is@22:03.12 a@22:03.24 proud@22:03.34 tradition@22:03.62 of@22:04.02 the@22:04.24 College@22:04.32
+[22:04.62-22:06.28] that any view may be expressed,
+    words: that@22:04.62 any@22:05.04 view@22:05.30 may@22:05.50 be@22:05.72 expressed,@22:05.92
+[22:06.58-22:08.68] provided that it can be defended intellectually.
+    words: provided@22:06.58 that@22:07.08 it@22:07.44 can@22:07.54 be@22:07.68 defended@22:07.78 intellectually.@22:08.22
+[22:09.70-22:12.78] Over the years, topics which were controversial at the time
+    words: Over@22:09.70 the@22:10.26 years,@22:10.44 topics@22:10.84 which@22:11.16 were@22:11.38 controversial@22:11.52 at@22:12.02 the@22:12.34 time@22:12.40
+[22:12.78-22:14.14] have been discussed and debated.
+    words: have@22:12.78 been@22:13.10 discussed@22:13.24 and@22:13.62 debated.@22:13.88

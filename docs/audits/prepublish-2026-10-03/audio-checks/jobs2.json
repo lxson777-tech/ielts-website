@@ -1,0 +1,6 @@
+[
+  {"name": "t29-q15-long", "test": 29, "start": "08:57", "end": "09:16", "tempos": [1.0, 0.8]},
+  {"name": "t30-q4-total", "test": 30, "start": "02:47", "end": "03:00", "tempos": [1.0, 0.8, 0.7]},
+  {"name": "t02-dob", "test": 2, "start": "02:05", "end": "02:16", "tempos": [1.0, 0.8]},
+  {"name": "t18-q23-wide", "test": 18, "start": "14:40", "end": "15:08", "tempos": [0.8]}
+]

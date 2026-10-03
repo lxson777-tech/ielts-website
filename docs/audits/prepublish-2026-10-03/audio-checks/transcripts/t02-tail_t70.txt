@@ -1,0 +1,6 @@
+# t02-tail: test 2 audio 02:02.00-02:09.00, model large-v3, speed x0.7, no prompt
+
+[02:02.00-02:05.98] U-B-H-A-T-T
+    words: U@02:02.00 -B@02:02.36 -H@02:03.30 -A@02:04.00 -T@02:04.63 -T@02:05.22
+[02:05.98-02:08.83] Thanks. And could I ask your date of birth?
+    words: Thanks.@02:05.98 And@02:07.15 could@02:07.63 I@02:07.85 ask@02:08.06 your@02:08.27 date@02:08.40 of@02:08.54 birth?@02:08.65

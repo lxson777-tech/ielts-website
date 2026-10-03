@@ -172,6 +172,13 @@ reviewer's edits merge cleanly).
 
 ## Left for Alex
 
+Update, same day: the audio items below were checked against the recordings with a local speech-to-text
+model (segment transcripts in `docs/audits/prepublish-2026-10-03/audio-checks/transcripts/`). Test 18 Q23
+keeps B; Bhatt and Hillsdunne are spelled exactly as keyed (two Ts, double L and double N); the printed 1972,
+DFD 33, "name of the manufacture", "per person", Haethcote and Whitefield were wrong and now read 1927,
+DFD 44, "the brand name", "per hour", Heathcote and Whitfield; Test 29 Q15 is now "all day"; Test 22 Q37
+accepts any order; Test 30 Q4 drops "5 months" and Test 25 Q38 drops "airlines", neither being said.
+
 - **Test 18 Q23** (average length of a TV programme): the tutor says "The average program might be ten
   minutes. Or even less. Just mini programs, say four to five minutes long." The publisher's key is B (4 to 5
   minutes); C (10 minutes) is also defensible. I kept B, the IELTS pattern where the speaker revises, and

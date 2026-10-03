@@ -1,0 +1,12 @@
+# t30-q4-total: test 30 audio 02:47.00-03:00.00, model large-v3, speed x0.7, no prompt
+
+[02:47.00-02:48.99] at the end of my first five-week course.
+    words: at@02:47.00 the@02:47.07 end@02:47.13 of@02:47.36 my@02:47.48 first@02:47.62 five@02:47.97 -week@02:48.36 course.@02:48.61
+[02:49.91-02:51.97] Right, so you've completed five weeks
+    words: Right,@02:49.79 so@02:50.26 you've@02:50.68 completed@02:50.88 five@02:51.31 weeks@02:51.58
+[02:51.97-02:54.11] and you have enrolled for another 15 weeks.
+    words: and@02:51.97 you@02:52.28 have@02:52.43 enrolled@02:52.56 for@02:52.85 another@02:53.16 15@02:53.36 weeks.@02:53.73
+[02:54.67-02:56.04] That's about four months altogether.
+    words: That's@02:54.60 about@02:54.90 four@02:55.06 months@02:55.39 altogether.@02:55.71
+[02:56.42-02:58.10] That's right, about four months.
+    words: That's@02:56.42 right,@02:56.88 about@02:57.18 four@02:57.46 months.@02:57.79

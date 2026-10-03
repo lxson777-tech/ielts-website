@@ -1,0 +1,6 @@
+# t29-q15: test 29 audio 08:50.00-09:06.00, model large-v3, speed x0.8, no prompt
+
+[08:50.00-09:00.30] to 11pm Mondays to Fridays and 11am to midnight Saturdays and Sundays. Lunch will be served
+    words: to@08:50.00 11pm@08:50.42 Mondays@08:51.15 to@08:52.30 Fridays@08:52.43 and@08:52.93 11am@08:54.00 to@08:54.80 midnight@08:55.42 Saturdays@08:55.84 and@08:57.26 Sundays.@08:57.42 Lunch@08:58.74 will@08:59.57 be@08:59.78 served@08:59.94
+[09:00.30-09:05.97] from half past twelve till two and light snacks will be available all week.
+    words: from@09:00.30 half@09:00.67 past@09:01.02 twelve@09:01.25 till@09:01.63 two@09:02.32 and@09:02.67 light@09:03.52 snacks@09:03.87 will@09:04.16 be@09:04.72 available@09:04.86 all@09:05.30 week.@09:05.87

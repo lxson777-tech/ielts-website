@@ -175,11 +175,8 @@ export const listeningFull029: PracticeTest = {
             {
               "id": "q15",
               "textHtml": "Question 15",
-              "answer": [
-                "served all day",
-                "available all day"
-              ],
-              "explanation": "Just before 9 minutes the director contrasts lunch, which runs only from half past 12 until 2, with light snacks, which can be had at any time of day. Lunch is the distractor here because its times come first in the same sentence.",
+              "answer": "all day",
+              "explanation": "Just after 9 minutes the director says lunch runs only from half past 12 until 2, \"and light snacks will be available all day\". The limit is TWO WORDS, so write all day: \"available all day\" is three words, one over the limit. Lunch is the distractor here because its times come first in the same sentence.",
               "evidence": "light snacks will be available all day"
             },
             {

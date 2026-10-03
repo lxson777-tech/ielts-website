@@ -1,0 +1,19 @@
+﻿[
+  {"name": "t18-q23", "test": 18, "start": "14:48", "end": "15:10", "tempos": [1.0]},
+  {"name": "t02-q1", "test": 2, "start": "01:50", "end": "02:12", "tempos": [1.0, 0.8],
+   "prompts": ["The speaker spells a name letter by letter."]},
+  {"name": "t03-q2", "test": 3, "start": "02:44", "end": "03:08", "tempos": [1.0, 0.8],
+   "prompts": ["The speaker spells a street name letter by letter."]},
+  {"name": "t18-q37", "test": 18, "start": "21:44", "end": "22:16", "tempos": [1.0, 0.8]},
+  {"name": "t26-dfd", "test": 26, "start": "06:26", "end": "06:46", "tempos": [1.0, 0.8]},
+  {"name": "t20-q36", "test": 20, "start": "21:44", "end": "22:12", "tempos": [1.0]},
+  {"name": "t13-q19", "test": 13, "start": "11:48", "end": "12:16", "tempos": [1.0]},
+  {"name": "t23-name", "test": 23, "start": "02:00", "end": "02:16", "tempos": [1.0, 0.8]},
+  {"name": "t28-whitfield-a", "test": 28, "start": "08:55", "end": "09:45", "tempos": [1.0]},
+  {"name": "t28-whitfield-b", "test": 28, "start": "12:09", "end": "12:30", "tempos": [1.0]},
+  {"name": "t29-q15", "test": 29, "start": "08:50", "end": "09:06", "tempos": [1.0, 0.8]},
+  {"name": "t22-q37", "test": 22, "start": "20:30", "end": "21:10", "tempos": [1.0]},
+  {"name": "t30-q4", "test": 30, "start": "02:35", "end": "03:05", "tempos": [1.0, 0.8]},
+  {"name": "t25-q38", "test": 25, "start": "22:56", "end": "23:12", "tempos": [1.0, 0.8]}
+]
+

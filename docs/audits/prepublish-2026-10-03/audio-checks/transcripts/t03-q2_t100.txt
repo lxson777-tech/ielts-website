@@ -1,0 +1,18 @@
+# t03-q2: test 3 audio 02:44.00-03:08.00, model large-v3, speed x1.0, no prompt
+
+[02:44.00-02:45.86] It wouldn't be a problem if I were to get the job.
+    words: It@02:44.00 wouldn't@02:44.00 be@02:44.14 a@02:44.16 problem@02:44.26 if@02:44.62 I@02:44.90 were@02:45.04 to@02:45.18 get@02:45.30 the@02:45.42 job.@02:45.56
+[02:46.22-02:49.58] Um, where exactly is the restaurant?
+    words: Um,@02:46.22 where@02:46.84 exactly@02:47.80 is@02:48.46 the@02:49.04 restaurant?@02:49.22
+[02:49.92-02:51.50] Well, we have two branches.
+    words: Well,@02:49.92 we@02:50.48 have@02:50.64 two@02:50.80 branches.@02:51.08
+[02:51.64-02:55.34] The one we're recruiting for is in Hillsdon Road.
+    words: The@02:51.64 one@02:52.22 we're@02:52.40 recruiting@02:52.70 for@02:52.96 is@02:53.40 in@02:53.90 Hillsdon@02:54.36 Road.@02:55.02
+[02:55.74-02:57.36] I don't know that.
+    words: I@02:55.74 don't@02:56.28 know@02:56.90 that.@02:57.06
+[02:57.82-02:59.46] How do you spell it, please?
+    words: How@02:57.82 do@02:58.46 you@02:58.66 spell@02:58.76 it,@02:59.06 please?@02:59.28
+[02:59.88-03:05.80] It's H-I-double-L-S-D-U-double-N-E Road.
+    words: It's@02:59.88 H@03:00.52 -I@03:00.72 -double@03:01.26 -L@03:01.70 -S@03:02.08 -D@03:02.70 -U@03:03.08 -double@03:03.70 -N@03:04.48 -E@03:04.82 Road.@03:04.96
+[03:06.90-03:07.86] Got that.
+    words: Got@03:06.90 that.@03:07.54

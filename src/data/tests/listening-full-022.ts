@@ -534,7 +534,8 @@ export const listeningFull022: PracticeTest = {
                 "fishing, cycling, ice-skating",
                 "hiking, cycling, ice-skating"
               ],
-              "explanation": "Around 20:45 Gina names five past Saturday morning outings in a single list: fishing, hiking, cycling, ice skating and going to the beach. You only need three of them, and the three word limit means you write three single-word activities: fishing, hiking, cycling or ice-skating (with the hyphen it counts as one word). Going to the beach is too long for the limit.",
+              "anyOrder": true,
+              "explanation": "Around 20:45 Gina names five past Saturday morning outings in one list: fishing, hiking, cycling, ice skating and going to the beach. Write any three of them, in any order: the question asks for three activities, not for the order they were said in. The three word limit means three single words: fishing, hiking, cycling or ice-skating (with the hyphen it counts as one word). Going to the beach is too long for the limit.",
               "evidence": "these trips have included going fishing, hiking, cycling, ice skating, and even going to the beach"
             },
             {

@@ -1,0 +1,6 @@
+# t23-name: test 23 audio 02:00.00-02:16.00, model large-v3, speed x1.0, no prompt
+
+[02:00.00-02:14.96] thousand five hundred c c thank you now i just have to ask you a few questions to verify your identity what name is the policy under heathcote let me just bring that up on the computer
+    words: thousand@02:00.00 five@02:00.34 hundred@02:00.60 c@02:01.14 c@02:01.34 thank@02:01.78 you@02:03.00 now@02:03.32 i@02:04.12 just@02:04.46 have@02:04.80 to@02:05.00 ask@02:05.18 you@02:05.42 a@02:05.58 few@02:05.66 questions@02:05.84 to@02:06.40 verify@02:06.86 your@02:07.30 identity@02:07.74 what@02:08.28 name@02:09.30 is@02:09.66 the@02:09.92 policy@02:10.06 under@02:10.40 heathcote@02:10.88 let@02:12.12 me@02:12.96 just@02:13.26 bring@02:13.48 that@02:13.76 up@02:13.98 on@02:14.24 the@02:14.38 computer@02:14.52
+[02:14.96-02:15.36] computer.
+    words: computer.@02:14.96

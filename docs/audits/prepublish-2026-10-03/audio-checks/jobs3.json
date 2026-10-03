@@ -1,0 +1,4 @@
+[
+  {"name": "t02-tail", "test": 2, "start": "02:02", "end": "02:09", "tempos": [1.0, 0.7],
+   "prompts": ["The speaker spells a name letter by letter."]}
+]

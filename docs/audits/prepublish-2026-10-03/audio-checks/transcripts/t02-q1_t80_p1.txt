@@ -1,0 +1,18 @@
+# t02-q1: test 2 audio 01:50.00-02:12.00, model large-v3, speed x0.8, prompt: 'The speaker spells a name letter by letter.'
+
+[01:50.00-01:52.40] Find out a little more about your preferences and so forth.
+    words: Find@01:50.00 out@01:50.06 a@01:50.14 little@01:50.27 more@01:50.40 about@01:50.58 your@01:50.85 preferences@01:51.14 and@01:51.65 so@01:51.97 forth.@01:52.10
+[01:52.59-01:53.23] Thank you.
+    words: Thank@01:52.59 you.@01:53.06
+[01:53.70-01:56.43] So, first of all, can I take your name?
+    words: So,@01:53.70 first@01:54.29 of@01:54.80 all,@01:54.96 can@01:55.22 I@01:55.52 take@01:55.98 your@01:56.11 name?@01:56.24
+[01:56.77-01:57.90] It's Anu Bhatt.
+    words: It's@01:56.77 Anu@01:57.25 Bhatt.@01:57.57
+[01:58.13-01:59.60] Could you spell your name, please?
+    words: Could@01:58.13 you@01:58.66 spell@01:58.77 your@01:59.01 name,@01:59.22 please?@01:59.46
+[01:59.86-02:05.95] Yes. A-N-U-B-H-A-T-T.
+    words: Yes.@01:59.86 A@02:00.62 -N@02:01.15 -U@02:01.71 -B@02:02.34 -H@02:03.28 -A@02:03.98 -T@02:04.66 -T.@02:05.38
+[02:06.48-02:08.85] Thanks. And could I ask your date of birth?
+    words: Thanks.@02:06.48 And@02:07.14 could@02:07.58 I@02:07.86 ask@02:08.05 your@02:08.27 date@02:08.38 of@02:08.54 birth?@02:08.66
+[02:09.15-02:11.46] The 31st of March, 1970.
+    words: The@02:09.15 31st@02:09.50 of@02:10.18 March,@02:10.30 1970.@02:10.93

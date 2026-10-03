@@ -56,11 +56,9 @@ export const listeningFull030: PracticeTest = {
               "textHtml": "Question 4",
               "answer": [
                 "20 weeks",
-                "5 months",
-                "twenty weeks",
-                "five months"
+                "twenty weeks"
               ],
-              "explanation": "Around 2:40 the student says the course she enrolled for is 20 weeks long, so write what she says, 20 weeks. The five weeks she has already finished and the 15 weeks still to come are both parts of that same course, so neither of those numbers is the answer.",
+              "explanation": "Around 2:40 the student says the course she enrolled for is 20 weeks long, so write what she says, 20 weeks. The five weeks she has already finished and the 15 weeks still to come are both parts of that same course, so neither of those numbers is the answer. Five months, the figure in the publisher's key, is never said in the recording, so it is not accepted.",
               "evidence": "I've enrolled for 20 weeks in the Advanced English Studies"
             },
             {

@@ -82,11 +82,10 @@ export function fitsLimit(answer: string, instructionHtml: string): boolean {
 
 /* Publisher keys that break their own printed limit and are kept for Alex to
    decide (see "Left for Alex" in the review). Each is named, so a new one
-   cannot slip in unseen. */
-const KNOWN_OVER_LIMIT = new Set([
-  'listening-full-029 q15 served all day',
-  'listening-full-029 q15 available all day',
-]);
+   cannot slip in unseen. Empty since 3 October 2026, when the last one
+   (Test 29 Q15, "served all day") was settled from the recording as
+   "all day" (docs/audits/prepublish-2026-10-03/audio-checks/, segment transcripts). */
+const KNOWN_OVER_LIMIT = new Set<string>([]);
 
 const FREE_TEXT: QuestionGroup['type'][] = ['sentence-completion', 'table-completion', 'diagram-labelling'];
 

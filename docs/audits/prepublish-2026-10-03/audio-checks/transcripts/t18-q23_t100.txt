@@ -1,0 +1,14 @@
+# t18-q23: test 18 audio 14:48.00-15:10.00, model large-v3, speed x1.0, no prompt
+
+[14:48.00-14:52.46] Now, you need to move on to the new social trends in connection with television.
+    words: Now,@14:48.00 you@14:48.72 need@14:49.20 to@14:49.36 move@14:49.54 on@14:49.68 to@14:49.88 the@14:49.96 new@14:50.04 social@14:50.24 trends@14:50.64 in@14:51.14 connection@14:51.46 with@14:51.76 television.@14:52.14
+[14:52.80-14:57.04] Is one of them the idea that programmes might become shorter and shorter?
+    words: Is@14:52.80 one@14:53.30 of@14:53.60 them@14:53.76 the@14:54.00 idea@14:54.28 that@14:54.60 programmes@14:54.92 might@14:55.26 become@14:55.72 shorter@14:56.04 and@14:56.56 shorter?@14:56.78
+[14:57.30-15:00.16] Ah, yes. The average programme might be ten minutes.
+    words: Ah,@14:57.30 yes.@14:57.48 The@14:58.04 average@14:58.22 programme@14:58.66 might@14:59.08 be@14:59.52 ten@14:59.68 minutes.@14:59.88
+[15:00.30-15:04.72] Or even less. Just mini-programmes, say, four to five minutes long.
+    words: Or@15:00.30 even@15:00.48 less.@15:00.74 Just@15:01.20 mini@15:01.46 -programmes,@15:01.98 say,@15:02.86 four@15:03.16 to@15:03.66 five@15:03.92 minutes@15:04.10 long.@15:04.44
+[15:05.26-15:08.76] Now, do you think you can get access to all the materials you need?
+    words: Now,@15:05.26 do@15:05.84 you@15:06.32 think@15:06.44 you@15:06.60 can@15:06.74 get@15:06.80 access@15:06.94 to@15:07.24 all@15:07.52 the@15:07.72 materials@15:07.86 you@15:08.26 need?@15:08.56
+[15:08.98-15:09.98] The problem at the moment is that we don't have enough materials.
+    words: The@15:08.98 problem@15:09.22 at@15:09.66 the@15:09.90 moment@15:09.94 is@15:09.98 that@15:09.98 we@15:09.98 don't@15:09.98 have@15:09.98 enough@15:09.98 materials.@15:09.98

@@ -1,0 +1,16 @@
+# t18-q37: test 18 audio 21:44.00-22:16.00, model large-v3, speed x0.8, no prompt
+
+[21:44.00-21:50.30] way to fight in Europe, never to return. The College was building a reputation for learning
+    words: way@21:44.00 to@21:44.24 fight@21:44.46 in@21:44.69 Europe,@21:44.90 never@21:45.34 to@21:45.81 return.@21:46.06 The@21:47.52 College@21:48.13 was@21:48.45 building@21:48.62 a@21:48.94 reputation@21:49.09 for@21:49.49 learning@21:49.92
+[21:50.30-21:56.10] and for tolerance of opposing views. Scholastic House debate and discussion nights were open
+    words: and@21:50.30 for@21:50.78 tolerance@21:50.93 of@21:51.36 opposing@21:51.55 views.@21:51.76 Scholastic@21:53.20 House@21:53.81 debate@21:54.10 and@21:54.45 discussion@21:54.72 nights@21:55.06 were@21:55.47 open@21:55.79
+[21:56.10-22:01.97] to the public in 1927 and have been available to anyone who wishes to attend ever since.
+    words: to@21:56.10 the@21:56.26 public@21:56.35 in@21:56.69 1927@21:56.94 and@21:57.89 have@21:58.67 been@21:58.98 available@21:59.10 to@21:59.47 anyone@21:59.78 who@22:00.05 wishes@22:00.40 to@22:00.69 attend@22:00.94 ever@22:01.28 since.@22:01.71
+[22:02.66-22:07.54] It is a proud tradition of the College that any view may be expressed, provided that it
+    words: It@22:02.66 is@22:03.10 a@22:03.22 proud@22:03.33 tradition@22:03.58 of@22:03.98 the@22:04.22 College@22:04.30 that@22:04.61 any@22:05.01 view@22:05.28 may@22:05.50 be@22:05.73 expressed,@22:05.90 provided@22:06.51 that@22:07.04 it@22:07.44
+[22:07.54-22:08.58] can be defended intellectually.
+    words: can@22:07.54 be@22:07.65 defended@22:07.79 intellectually.@22:08.13
+[22:10.08-22:12.75] Over the years, topics which were controversial at the time
+    words: Over@22:09.97 the@22:10.27 years,@22:10.43 topics@22:10.78 which@22:11.14 were@22:11.38 controversial@22:11.50 at@22:11.98 the@22:12.32 time@22:12.38
+[22:12.75-22:14.13] have been discussed and debated.
+    words: have@22:12.75 been@22:13.06 discussed@22:13.23 and@22:13.58 debated.@22:13.86

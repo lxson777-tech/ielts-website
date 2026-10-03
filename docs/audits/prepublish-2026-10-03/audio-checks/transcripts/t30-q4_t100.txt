@@ -1,0 +1,14 @@
+# t30-q4: test 30 audio 02:35.00-03:05.00, model large-v3, speed x1.0, no prompt
+
+[02:35.00-02:40.28] with homestay? About four months, longer if I like it. And what course are you enrolled in?
+    words: with@02:35.00 homestay?@02:35.08 About@02:35.78 four@02:36.12 months,@02:36.48 longer@02:37.04 if@02:37.42 I@02:37.64 like@02:37.74 it.@02:38.00 And@02:38.42 what@02:38.90 course@02:39.12 are@02:39.48 you@02:39.64 enrolled@02:39.72 in?@02:40.00
+[02:40.58-02:45.40] Well, I've enrolled for 20 weeks in the Advanced English Studies because I need help with my
+    words: Well,@02:40.58 I've@02:40.92 enrolled@02:41.14 for@02:41.44 20@02:41.72 weeks@02:42.04 in@02:42.38 the@02:42.58 Advanced@02:42.72 English@02:42.94 Studies@02:43.50 because@02:43.94 I@02:44.44 need@02:44.68 help@02:44.88 with@02:45.10 my@02:45.26
+[02:45.40-02:51.58] writing, and I'm nearly at the end of my first five-week course. Right, so you've completed five
+    words: writing,@02:45.40 and@02:45.98 I'm@02:46.46 nearly@02:46.66 at@02:46.86 the@02:47.04 end@02:47.14 of@02:47.36 my@02:47.48 first@02:47.60 five@02:47.98 -week@02:48.34 course.@02:48.60 Right,@02:49.62 so@02:50.28 you've@02:50.70 completed@02:50.88 five@02:51.32
+[02:51.58-02:57.06] weeks and you have enrolled for another 15 weeks. That's about four months altogether. That's right,
+    words: weeks@02:51.58 and@02:52.02 you@02:52.26 have@02:52.44 enrolled@02:52.56 for@02:52.90 another@02:53.18 15@02:53.36 weeks.@02:53.76 That's@02:54.38 about@02:54.90 four@02:55.08 months@02:55.40 altogether.@02:55.72 That's@02:56.48 right,@02:56.90
+[02:57.06-02:58.16] Right, about four months.
+    words: Right,@02:57.06 about@02:57.24 four@02:57.48 months.@02:57.80
+[03:00.20-03:04.20] Before they continue their conversation, look at questions.
+    words: Before@03:00.20 they@03:00.92 continue@03:01.20 their@03:01.64 conversation,@03:02.00 look@03:02.94 at@03:03.62 questions.@03:03.82

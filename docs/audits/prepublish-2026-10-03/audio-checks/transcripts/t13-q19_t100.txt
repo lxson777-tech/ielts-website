@@ -1,0 +1,10 @@
+# t13-q19: test 13 audio 11:48.00-12:16.00, model large-v3, speed x1.0, no prompt
+
+[11:48.00-11:58.34] co.uk. And in order to book lessons, you can either phone us on 020-7562-4028, or do it
+    words: co@11:48.00 .uk.@11:48.28 And@11:49.34 in@11:49.90 order@11:50.08 to@11:50.32 book@11:50.48 lessons,@11:50.68 you@11:51.28 can@11:51.60 either@11:51.82 phone@11:52.04 us@11:52.34 on@11:52.58 020@11:53.04 -7562@11:53.94 -4028,@11:55.80 or@11:57.36 do@11:58.00 it@11:58.22
+[11:58.34-12:03.28] online. There's an application form on our website, and you can just download that and
+    words: online.@11:58.34 There's@11:59.06 an@11:59.62 application@11:59.66 form@11:59.94 on@12:00.44 our@12:00.60 website,@12:00.74 and@12:01.38 you@12:01.88 can@12:01.98 just@12:02.08 download@12:02.32 that@12:02.72 and@12:03.04
+[12:03.28-12:10.80] send it in. We charge £27.50 per hour for one-to-one lessons, plus £6 for each extra
+    words: send@12:03.28 it@12:03.56 in.@12:03.70 We@12:04.06 charge@12:04.62 £27@12:04.96 .50@12:05.46 per@12:06.12 hour@12:06.50 for@12:06.94 one@12:07.28 -to@12:07.68 -one@12:07.84 lessons,@12:07.98 plus@12:08.52 £6@12:09.08 for@12:09.96 each@12:10.14 extra@12:10.48
+[12:10.80-12:15.54] person. So you're looking at just £39.50 for a family of three, say.
+    words: person.@12:10.80 So@12:11.58 you're@12:12.14 looking@12:12.42 at@12:12.66 just@12:12.84 £39@12:13.08 .50@12:13.58 for@12:14.12 a@12:14.42 family@12:14.52 of@12:14.78 three,@12:15.00 say.@12:15.32

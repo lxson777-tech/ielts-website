@@ -1,0 +1,20 @@
+# t28-whitfield-a: test 28 audio 08:55.00-09:45.00, model large-v3, speed x1.0, no prompt
+
+[08:55.00-08:58.86] and they were caught in a storm and shipwrecked on a small deserted island.
+    words: and@08:55.00 they@08:55.04 were@08:55.12 caught@08:55.24 in@08:55.48 a@08:55.74 storm@08:55.84 and@08:56.38 shipwrecked@08:56.72 on@08:57.42 a@08:57.54 small@08:57.66 deserted@08:58.02 island.@08:58.30
+[08:59.56-09:04.52] They had to wait for six months before they were rescued by an American whale ship
+    words: They@08:59.56 had@09:00.12 to@09:00.26 wait@09:00.46 for@09:00.66 six@09:00.86 months@09:01.16 before@09:01.56 they@09:02.14 were@09:02.34 rescued@09:02.48 by@09:02.86 an@09:03.20 American@09:03.36 whale@09:03.84 ship@09:04.18
+[09:04.52-09:06.90] that had stopped at the island by chance.
+    words: that@09:04.52 had@09:05.14 stopped@09:05.22 at@09:05.56 the@09:05.86 island@09:05.96 by@09:06.26 chance.@09:06.48
+[09:08.02-09:11.12] Four of the five Japanese were put ashore in Hawaii,
+    words: Four@09:08.02 of@09:08.36 the@09:08.56 five@09:08.66 Japanese@09:08.92 were@09:09.46 put@09:09.98 ashore@09:10.20 in@09:10.62 Hawaii,@09:10.82
+[09:11.42-09:15.82] but Manjiro had become friends with a captain, William Whitfield,
+    words: but@09:11.42 Manjiro@09:12.16 had@09:12.64 become@09:12.96 friends@09:13.22 with@09:13.60 a@09:13.90 captain,@09:14.00 William@09:14.60 Whitfield,@09:15.20
+[09:16.02-09:19.34] who came from the town of Fairhaven, where we are now,
+    words: who@09:16.02 came@09:16.50 from@09:16.70 the@09:16.96 town@09:17.06 of@09:17.34 Fairhaven,@09:17.58 where@09:18.36 we@09:18.76 are@09:18.94 now,@09:19.10
+[09:19.60-09:24.38] and he chose to remain aboard and return with the boat to the USA.
+    words: and@09:19.60 he@09:20.30 chose@09:20.48 to@09:20.86 remain@09:21.08 aboard@09:21.26 and@09:21.60 return@09:22.42 with@09:22.58 the@09:23.22 boat@09:23.38 to@09:23.64 the@09:23.84 USA.@09:23.94
+[09:25.00-09:44.78] so manjiru unwittingly became the first japanese ever to set foot on american soil he came back right here to fairhaven with whitfield and stayed with the whitfield family who paid for his education here in the town he studied mathematics and geography as well as shipbuilding and
+    words: so@09:25.00 manjiru@09:25.60 unwittingly@09:26.12 became@09:27.08 the@09:27.44 first@09:27.72 japanese@09:28.02 ever@09:28.64 to@09:29.08 set@09:29.28 foot@09:29.46 on@09:29.72 american@09:29.96 soil@09:30.24 he@09:30.72 came@09:32.18 back@09:32.42 right@09:32.76 here@09:33.12 to@09:33.46 fairhaven@09:33.62 with@09:34.22 whitfield@09:34.40 and@09:34.88 stayed@09:35.50 with@09:35.82 the@09:36.04 whitfield@09:36.10 family@09:36.44 who@09:36.84 paid@09:37.52 for@09:37.82 his@09:38.04 education@09:38.14 here@09:38.56 in@09:39.12 the@09:39.28 town@09:39.32 he@09:39.70 studied@09:41.06 mathematics@09:41.42 and@09:41.88 geography@09:42.46 as@09:42.86 well@09:43.64 as@09:43.76 shipbuilding@09:43.98 and@09:44.44
+[09:44.86-09:44.92] And now.
+    words: And@09:44.86 now.@09:44.90

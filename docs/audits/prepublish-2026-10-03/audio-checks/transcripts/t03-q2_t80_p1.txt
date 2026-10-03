@@ -1,0 +1,18 @@
+# t03-q2: test 3 audio 02:44.00-03:08.00, model large-v3, speed x0.8, prompt: 'The speaker spells a street name letter by letter.'
+
+[02:44.00-02:45.84] It wouldn't be a problem if I were to get the job.
+    words: It@02:44.00 wouldn't@02:44.00 be@02:44.11 a@02:44.14 problem@02:44.24 if@02:44.61 I@02:44.90 were@02:45.04 to@02:45.17 get@02:45.26 the@02:45.39 job.@02:45.52
+[02:46.30-02:49.57] Um, where exactly is the restaurant?
+    words: Um,@02:46.30 where@02:46.83 exactly@02:47.78 is@02:48.42 the@02:49.01 restaurant?@02:49.20
+[02:49.94-02:51.46] Well, we have two branches.
+    words: Well,@02:49.94 we@02:50.45 have@02:50.64 two@02:50.78 branches.@02:51.06
+[02:52.10-02:55.31] The one we're recruiting for is in Hillsdon Road.
+    words: The@02:51.87 one@02:52.19 we're@02:52.38 recruiting@02:52.69 for@02:52.96 is@02:53.38 in@02:53.87 Hillsdon@02:54.34 Road.@02:54.99
+[02:55.71-02:57.33] I don't know that.
+    words: I@02:55.71 don't@02:56.26 know@02:56.86 that.@02:57.07
+[02:57.79-02:59.44] How do you spell it, please?
+    words: How@02:57.79 do@02:58.43 you@02:58.64 spell@02:58.75 it,@02:59.04 please?@02:59.26
+[02:59.79-03:05.78] It's H-I-double-L-S-D-U-double-N-E Road.
+    words: It's@02:59.79 H@03:00.43 -I@03:00.70 -double@03:01.07 -L@03:01.68 -S@03:02.08 -D@03:02.67 -U@03:03.04 -double@03:03.54 -N@03:04.45 -E@03:04.80 Road.@03:04.94
+[03:06.85-03:07.86] Got that.
+    words: Got@03:06.85 that.@03:07.52

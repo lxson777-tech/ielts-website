@@ -1,0 +1,6 @@
+# t02-dob: test 2 audio 02:05.00-02:16.00, model large-v3, speed x0.8, no prompt
+
+[02:05.00-02:11.86] double T thanks and could I ask your date of birth the 31st of March 1972
+    words: double@02:05.00 T@02:05.75 thanks@02:05.96 and@02:06.84 could@02:07.54 I@02:07.88 ask@02:08.06 your@02:08.28 date@02:08.39 of@02:08.52 birth@02:08.66 the@02:08.84 31st@02:09.51 of@02:10.17 March@02:10.31 1972@02:10.66
+[02:12.52-02:15.22] thank you and where are you from India
+    words: thank@02:12.52 you@02:12.97 and@02:13.18 where@02:14.01 are@02:14.23 you@02:14.36 from@02:14.44 India@02:14.63

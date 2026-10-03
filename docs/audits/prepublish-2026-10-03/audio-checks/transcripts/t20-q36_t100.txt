@@ -1,0 +1,12 @@
+# t20-q36: test 20 audio 21:44.00-22:12.00, model large-v3, speed x1.0, no prompt
+
+[21:44.00-21:49.42] In fact, the name of the company, Kraft, is hardly noticeable on the package.
+    words: In@21:44.00 fact,@21:44.78 the@21:45.28 name@21:45.48 of@21:45.72 the@21:45.86 company,@21:45.94 Kraft,@21:46.52 is@21:47.18 hardly@21:47.82 noticeable@21:48.06 on@21:48.56 the@21:48.98 package.@21:49.10
+[21:50.72-21:55.76] The point is that these companies have successfully promoted the name of various products.
+    words: The@21:50.45 point@21:50.78 is@21:51.00 that@21:51.26 these@21:51.68 companies@21:52.00 have@21:52.46 successfully@21:52.90 promoted@21:53.42 the@21:54.20 name@21:54.58 of@21:54.88 various@21:55.08 products.@21:55.30
+[21:56.80-22:01.90] And consumers buy these products primarily because they recognize the brand name
+    words: And@21:56.51 consumers@21:56.84 buy@21:57.30 these@21:57.78 products@21:58.04 primarily@21:58.56 because@21:59.40 they@22:00.08 recognize@22:00.42 the@22:00.90 brand@22:01.32 name@22:01.56
+[22:01.90-22:05.60] and may not even know the name of the company that makes it.
+    words: and@22:01.90 may@22:02.92 not@22:03.12 even@22:03.30 know@22:03.56 the@22:03.86 name@22:04.08 of@22:04.30 the@22:04.48 company@22:04.56 that@22:04.94 makes@22:05.16 it.@22:05.42
+[22:06.48-22:11.80] So, advertising to promote a brand name is designed to create and keep strong
+    words: So,@22:06.48 advertising@22:07.14 to@22:07.80 promote@22:08.24 a@22:08.56 brand@22:08.84 name@22:09.06 is@22:09.30 designed@22:09.82 to@22:10.16 create@22:10.44 and@22:10.78 keep@22:11.20 strong@22:11.44

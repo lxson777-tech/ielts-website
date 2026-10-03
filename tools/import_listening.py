@@ -241,7 +241,8 @@ PAIRS = {
 # is stored exactly as given: a string, or a list of accepted forms (the
 # scorer accepts any member; see normalizeAnswer in src/lib/tests/schema.ts
 # for what it forgives). An optional `answerPairId` makes the slot part of an
-# unordered answer pool.
+# unordered answer pool. An optional `anyOrder: True` marks one blank that
+# asks for a list, so its items are accepted in any order.
 #
 # Every key in the data that differs from the publisher's is listed here,
 # including the corrections and accepted forms of the 3 October 2026 review
@@ -358,7 +359,7 @@ ANSWER_OVERRIDES: dict[tuple[int, str], dict] = {
     (22, "q33"): {"answer": "ping-pong tables", "reason": "The published key carried the misspelling 'pin-pong tables'; removed. 'ping-pong tables' (hyphenated, two words) is the key. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
     (22, "q34"): {"answer": ["2nd floor", "second floor"], "reason": "Accepted forms added because IELTS marks them right: 'second floor'. September 2026 review, recorded here on 3 October 2026."},
     (22, "q35"): {"answer": ["24 hours", "twenty-four hours"], "reason": "Accepted forms added because IELTS marks them right: 'twenty-four hours'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
-    (22, "q37"): {"answer": ["fishing, hiking, cycling", "fishing, hiking, ice-skating", "fishing, cycling, ice-skating", "hiking, cycling, ice-skating"], "reason": "The published key listed lists of activities over the three-word limit; only lists of three single words heard in the recording are kept. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
+    (22, "q37"): {"answer": ["fishing, hiking, cycling", "fishing, hiking, ice-skating", "fishing, cycling, ice-skating", "hiking, cycling, ice-skating"], "anyOrder": True, "reason": "The published key listed lists of activities over the three-word limit; only lists of three single words heard in the recording are kept. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md). The recording (20:53) lists 'going fishing, hiking, cycling, ice skating, and even going to the beach' and the paper only asks to list three, so any order is accepted (anyOrder). Settled from the recording on 3 October 2026 (docs/audits/prepublish-2026-10-03/audio-checks/, segment transcripts)."},
     (22, "q38"): {"answer": ["20", "twenty"], "reason": "Accepted forms added because IELTS marks them right: 'twenty'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
     (22, "q40"): {"answer": ["alcohol and drugs", "drugs and alcohol"], "reason": "Accepted forms added because IELTS marks them right: 'drugs and alcohol'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
     (23, "q2"): {"answer": ["2500cc", "2500 cc"], "reason": "Accepted forms added because IELTS marks them right: '2500 cc'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
@@ -377,7 +378,7 @@ ANSWER_OVERRIDES: dict[tuple[int, str], dict] = {
     (25, "q5"): {"answer": ["16 August", "16th August", "August 16", "August 16th"], "reason": "Accepted forms added because IELTS marks them right: '16th August', 'August 16', 'August 16th'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
     (25, "q6"): {"answer": ["11", "eleven"], "reason": "Accepted forms added because IELTS marks them right: 'eleven'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
     (25, "q29"): {"answer": ["color", "colour"], "reason": "Accepted forms added because IELTS marks them right: 'colour'. September 2026 review, recorded here on 3 October 2026."},
-    (25, "q38"): {"answer": ["airliners", "airlines"], "reason": "Heard 'airliners' against the published 'airlines'; both accepted (September 2026 decision). September 2026 review, recorded here on 3 October 2026."},
+    (25, "q38"): {"answer": "airliners", "reason": "The recording (22:59) says 'the speed and popularity of airliners meant that the airship appeared superseded'. The published 'airlines' (the companies) is a different word and is never said, so it is no longer accepted (it was kept in September 2026). Settled from the recording on 3 October 2026 (docs/audits/prepublish-2026-10-03/audio-checks/, segment transcripts)."},
     (26, "q3"): {"answer": ["09356788545", "09356 788 545"], "reason": "Accepted forms added because IELTS marks them right: '09356 788 545'. September 2026 review, recorded here on 3 October 2026."},
     (26, "q7"): {"answer": ["glass desk", "glass desks"], "reason": "Accepted forms added because IELTS marks them right: 'glass desks'. September 2026 review, recorded here on 3 October 2026."},
     (26, "q8"): {"answer": ["TG586", "TG 586"], "reason": "Accepted forms added because IELTS marks them right: 'TG 586'. September 2026 review, recorded here on 3 October 2026."},
@@ -400,7 +401,7 @@ ANSWER_OVERRIDES: dict[tuple[int, str], dict] = {
     (29, "q3"): {"answer": ["10.45", "10:45"], "reason": "Accepted forms added because IELTS marks them right: '10:45'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
     (29, "q12"): {"answer": ["7.30", "7:30"], "reason": "Accepted forms added because IELTS marks them right: '7:30'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
     (29, "q14"): {"answer": ["12 am", "midnight"], "reason": "Accepted forms added because IELTS marks them right: 'midnight'. September 2026 review, recorded here on 3 October 2026."},
-    (29, "q15"): {"answer": ["served all day", "available all day"], "reason": "Accepted forms added because IELTS marks them right: 'available all day'. September 2026 review, recorded here on 3 October 2026."},
+    (29, "q15"): {"answer": "all day", "reason": "The recording (09:02) says 'light snacks will be available all day'. The published 'served all day' is not what is said and, like 'available all day', is three words under a TWO WORDS AND/OR A NUMBER limit; 'all day' is the heard answer within the limit. Settled from the recording on 3 October 2026 (docs/audits/prepublish-2026-10-03/audio-checks/, segment transcripts)."},
     (29, "q17"): {"answer": ["£15", "15 pounds", "fifteen pounds"], "reason": "Accepted forms added because IELTS marks them right: '15 pounds', 'fifteen pounds'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
     (29, "q21"): {"answer": ["film studies", "film"], "reason": "He says 'film studies'; the published 'film studios' is a different word and was removed. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
     (29, "q24"): {"answer": ["volunteers", "English-speaking volunteers"], "reason": "Accepted forms added because IELTS marks them right: 'English-speaking volunteers'. September 2026 review, recorded here on 3 October 2026."},
@@ -408,7 +409,7 @@ ANSWER_OVERRIDES: dict[tuple[int, str], dict] = {
     (29, "q26"): {"answer": ["coordinator", "co-ordinator"], "reason": "'translator and translation ___' needs the job title, so 'coordinating' was removed and the hyphenated spelling added. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
     (29, "q28"): {"answer": ["18", "eighteen"], "reason": "Accepted forms added because IELTS marks them right: 'eighteen'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
     (29, "q34"): {"answer": ["wood", "beechwood", "beech wood", "beech"], "reason": "Accepted forms added because IELTS marks them right: 'beechwood', 'beech wood', 'beech'. September 2026 review, recorded here on 3 October 2026."},
-    (30, "q4"): {"answer": ["20 weeks", "5 months", "twenty weeks", "five months"], "reason": "The publisher's key is '5 months'; she says 'I've enrolled for 20 weeks'. Both are accepted (September 2026 decision). 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
+    (30, "q4"): {"answer": ["20 weeks", "twenty weeks"], "reason": "The publisher's key is '5 months'; the recording (02:40) says 'I've enrolled for 20 weeks', and the only months said nearby are 'about four months'. Five months is never said, so only the weeks are accepted (both had been kept in September 2026). Settled from the recording on 3 October 2026 (docs/audits/prepublish-2026-10-03/audio-checks/, segment transcripts)."},
     (30, "q5"): {"answer": ["about 4 months", "4 months", "about four months", "four months"], "reason": "Accepted forms added because IELTS marks them right: '4 months', 'about four months', 'four months'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
     (30, "q9"): {"answer": ["take the train", "catching trains", "catch the train", "take trains", "trains"], "reason": "Accepted forms added because IELTS marks them right: 'catching trains', 'catch the train', 'take trains', 'trains'. September 2026 review, recorded here on 3 October 2026."},
     (30, "q11"): {"answer": ["90 days", "ninety days"], "reason": "Accepted forms added because IELTS marks them right: 'ninety days'. 3 October 2026 content review (docs/audits/content-review-2026-10-03/listening-tests.md)."},
@@ -1352,6 +1353,8 @@ def make_group(n: int, section_index: int, group_index: int, meta: tuple[int, in
             q["answerPairId"] = pair_id
         if override and "answerPairId" in override:
             q["answerPairId"] = override["answerPairId"]
+        if override and override.get("anyOrder"):
+            q["anyOrder"] = True
         if (n, number) in PER_QUESTION_MULTI:
             correct, _labels = PER_QUESTION_MULTI[(n, number)]
             q["answer"] = ", ".join(correct)

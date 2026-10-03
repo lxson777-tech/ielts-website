@@ -1,0 +1,6 @@
+# t26-dfd: test 26 audio 06:26.00-06:46.00, model large-v3, speed x1.0, no prompt
+
+[06:26.00-06:34.14] sofa. Something soft and... I thought leather. Ah, yes, a good choice. There's a three-seater here,
+    words: sofa.@06:26.00 Something@06:26.80 soft@06:27.44 and...@06:28.16 I@06:28.86 thought@06:29.26 leather.@06:29.50 Ah,@06:30.22 yes,@06:30.74 a@06:31.24 good@06:31.46 choice.@06:31.64 There's@06:32.34 a@06:32.98 three@06:33.06 -seater@06:33.40 here,@06:33.88
+[06:35.54-06:45.22] DFD44. That seems to be in red, cream or chocolate brown. Yes, it does come in yellow as well. Yellow.
+    words: DFD44.@06:35.54 That@06:37.04 seems@06:37.68 to@06:38.06 be@06:38.38 in@06:38.54 red,@06:38.78 cream@06:39.38 or@06:39.88 chocolate@06:40.24 brown.@06:40.58 Yes,@06:41.38 it@06:42.10 does@06:42.72 come@06:42.98 in@06:43.28 yellow@06:43.54 as@06:43.90 well.@06:44.18 Yellow.@06:44.60
