@@ -30,6 +30,7 @@ import {
   serviceRpc,
   verifyAccessToken,
 } from '../../../src/lib/trial/gate';
+import { task1Visuals, withoutInlineImages, type Task1Visual } from './task1-visual';
 
 export interface Env {
   /** 'openai' (default) | 'gemini'. */
@@ -40,6 +41,10 @@ export interface Env {
   GEMINI_API_KEY?: string; // wrangler secret (rollback provider)
   GEMINI_MODEL?: string; // vars
   ALLOWED_ORIGINS: string; // vars, comma-separated
+  /** The published site, base path included (vars, default
+      https://lxson777-tech.github.io/ielts-website/). The only place a Task 1
+      chart is ever fetched from (./task1-visual.ts). */
+  SITE_URL?: string;
   /** How many independent grading runs to take the median of (vars,
       default 3). More runs = less band variance; all run in parallel. */
   GRADING_SAMPLES?: string;
@@ -214,8 +219,21 @@ export function descriptorText(task: 'task1' | 'task2'): string {
   return [DESCRIPTOR_PREAMBLE, ...scales, BAND_0].join('\n\n');
 }
 
-/** Exported for tests/descriptor-quotes.test.ts only. */
-export function systemInstruction(task: 'task1' | 'task2', variant?: string): string {
+/** What the examiner is told when a Task 1 question's visual is attached.
+    Every phrase in double quotes is from the Task 1 descriptors above
+    (tests/descriptor-quotes.test.ts checks it). */
+function visualGuidance(count: number): string {
+  const it = count > 1 ? `the ${count} images` : 'the image';
+  return `
+- The visual input the candidate was given (the chart, graph, table, map or diagram) is attached to the message as ${count > 1 ? `${count} images, in the order the question shows them` : 'an image'}. Study ${it} before reading the report, and judge Task Achievement against the visual, not against the question text alone. First decide for yourself which key features, and which main trends or differences, the visual shows. Then judge the report against that: whether "Key features are skilfully selected" (band 8) or "Few key features have been selected" (band 4); whether it "presents a clear overview" in which "main trends or differences are identified" (band 7), or "A relevant overview is attempted" (band 6); and whether the information is "supported using figures/data" (band 6) or "There may be no data to support the description" (band 5).
+- Check every figure, date, unit, category and trend the report states against the visual. Band 7 requires that "The content is relevant and accurate"; a figure that contradicts the visual is inaccurate, and a report built on misreading the visual may show "misunderstanding of the data/diagram/situation" (band 3). A reasonable approximation of a value read off a graph is accurate, not an error.
+- In taskResponse.evidence, name the key features the visual shows, say which of them the report covers and which it misses, and quote any figure that does not match the visual.`;
+}
+
+/** Exported for tests/descriptor-quotes.test.ts only. `visuals` is how many
+    of the question's images are attached (Task 1 only); 0 leaves the
+    instructions exactly as they were before images were attached. */
+export function systemInstruction(task: 'task1' | 'task2', variant?: string, visuals = 0): string {
   const isTask2 = task === 'task2';
   const trLabel = isTask2 ? 'Task Response' : 'Task Achievement';
   const taskDesc = isTask2
@@ -224,7 +242,8 @@ export function systemInstruction(task: 'task1' | 'task2', variant?: string): st
   const taskName = isTask2 ? 'Writing Task 2' : 'Writing Task 1';
   const variantLine = isTask2
     ? ''
-    : '\n- This site sets Academic Task 1 only. In the Task Achievement scale, apply the unmarked lines and the lines marked (Academic), and ignore every line marked (General Training).';
+    : '\n- This site sets Academic Task 1 only. In the Task Achievement scale, apply the unmarked lines and the lines marked (Academic), and ignore every line marked (General Training).' +
+      (visuals > 0 ? visualGuidance(visuals) : '');
   const band7Allows = isTask2
     ? 'Band 7 explicitly allows "a tendency to over-generalise" or "a lack of focus and precision in supporting ideas/material", cohesive devices used "with some inaccuracies or some over/under use" ("A few lapses may occur, but these are minor"), vocabulary where "inappropriacies occur" with "only a few errors in spelling and/or word formation", and grammar where "A few errors in grammar may persist"; band 8 allows "occasional omissions or lapses in content", "occasional inaccuracies in word choice and collocation" and "Occasional, non-systematic errors and inappropriacies".'
     : 'Band 7 explicitly allows "a few omissions or lapses", key features that "could be more fully or more appropriately illustrated or extended", cohesive devices used "with some inaccuracies or some over/under use" ("A few lapses may occur"), vocabulary where "inappropriacies occur" with "only a few errors in spelling and/or word formation", and grammar where "A few errors in grammar may persist"; band 8 allows "occasional omissions or lapses in content", "occasional inaccuracies in word choice and collocation" and "Occasional, non-systematic errors and inappropriacies".';
@@ -658,7 +677,7 @@ function json(body: unknown, status: number, cors: Record<string, string>): Resp
   });
 }
 
-function userMessage(req: GradeRequest): string {
+function userMessage(req: GradeRequest, visuals = 0): string {
   const m = req.mechanics ?? {};
   const signals: string[] = [];
   if (m.wordCount != null) signals.push(`word count: ${m.wordCount} (minimum ${req.prompt.minWords})`);
@@ -671,6 +690,9 @@ function userMessage(req: GradeRequest): string {
 
   return [
     `QUESTION:\n${stripHtml(req.prompt.promptHtml)}`,
+    visuals > 0
+      ? `VISUAL: the question's ${visuals > 1 ? `${visuals} images are` : 'image is'} attached after this text. Judge the report's figures, overview and key features against ${visuals > 1 ? 'them' : 'it'}.`
+      : '',
     signals.length
       ? `AUTOMATED SIGNALS (a spell-checker's guesses; verify against the essay before relying on them):\n- ${signals.join('\n- ')}`
       : '',
@@ -806,8 +828,12 @@ interface OpenAiRequestSpec {
 }
 
 /** Builds the OpenAI Responses API call: strict json_schema output, the
-    rubric as `instructions`, the question/signals/essay as the user input. */
-export function buildOpenAiRequest(env: Env, systemText: string, userText: string): OpenAiRequestSpec {
+    rubric as `instructions`, the question/signals/essay as the user input,
+    and a Task 1 question's confirmed site charts as image input after it
+    (none: the body is exactly what it was before images were attached).
+    "high" detail keeps a chart's labels and figures legible; every chart on
+    the site is far inside its 2,048-pixel, 2,500-patch budget. */
+export function buildOpenAiRequest(env: Env, systemText: string, userText: string, visuals: Task1Visual[] = []): OpenAiRequestSpec {
   return {
     url: 'https://api.openai.com/v1/responses',
     headers: {
@@ -817,7 +843,15 @@ export function buildOpenAiRequest(env: Env, systemText: string, userText: strin
     body: {
       model: env.OPENAI_MODEL || 'gpt-5.6-terra',
       instructions: systemText,
-      input: [{ role: 'user', content: [{ type: 'input_text', text: userText }] }],
+      input: [
+        {
+          role: 'user',
+          content: [
+            { type: 'input_text', text: userText },
+            ...visuals.map((v) => ({ type: 'input_image', image_url: `data:${v.mimeType};base64,${v.base64}`, detail: 'high' })),
+          ],
+        },
+      ],
       reasoning: { effort: env.OPENAI_REASONING_EFFORT || 'medium' },
       text: {
         format: {
@@ -870,8 +904,9 @@ async function gradeOnceOpenAi(
   env: Env,
   systemText: string,
   userText: string,
+  visuals: Task1Visual[],
 ): Promise<GradeOnceResult> {
-  const { url, headers, body } = buildOpenAiRequest(env, systemText, userText);
+  const { url, headers, body } = buildOpenAiRequest(env, systemText, userText, visuals);
   let resp: Response;
   try {
     resp = await fetchFn(url, {
@@ -918,10 +953,16 @@ async function gradeOnceGemini(
   env: Env,
   systemText: string,
   userText: string,
+  visuals: Task1Visual[],
 ): Promise<GradeOnceResult> {
   const geminiReq = {
     system_instruction: { parts: [{ text: systemText }] },
-    contents: [{ role: 'user', parts: [{ text: userText }] }],
+    contents: [
+      {
+        role: 'user',
+        parts: [{ text: userText }, ...visuals.map((v) => ({ inline_data: { mime_type: v.mimeType, data: v.base64 } }))],
+      },
+    ],
     generationConfig: {
       responseMimeType: 'application/json',
       responseSchema: RESPONSE_SCHEMA,
@@ -1006,7 +1047,12 @@ export function createHandler(deps: { fetch: typeof fetch }) {
       }
       // Guard the quota: real essays are <600 words; reject giant payloads.
       if (essay.length > 20000) return json({ error: 'Essay too long' }, 413, cors);
-      if (body.prompt.promptHtml.length > 20000) return json({ error: 'Question too long' }, 413, cors);
+      /* The text of a question is short. A commercial build carries a Task 1
+         chart inline as a data address (task1-visual.ts), so the inline
+         images are measured separately, against a generous ceiling. */
+      if (withoutInlineImages(body.prompt.promptHtml).length > 20000 || body.prompt.promptHtml.length > 1_500_000) {
+        return json({ error: 'Question too long' }, 413, cors);
+      }
       if (essay.split(/\s+/).length < 20) {
         return json({ error: 'Essay too short to assess — write at least a few sentences.' }, 422, cors);
       }
@@ -1047,8 +1093,14 @@ export function createHandler(deps: { fetch: typeof fetch }) {
       }
 
       const modelFetch = meteredFetch(deps.fetch, assessmentClaim);
-      const systemText = systemInstruction(task, body.prompt.variant);
-      const userText = userMessage(body);
+      /* Task 1: the chart the question shows, when it is one of the site's
+         own (task1-visual.ts). Looked up once, after the access check, and
+         shared by every sample. None found: graded on the text, as before. */
+      const visuals =
+        task === 'task1' ? await task1Visuals(deps.fetch, env, body.prompt.promptHtml, request.headers.get('Origin')) : [];
+      if (task === 'task1') console.log(`[grade-essay] task1 visuals attached: ${visuals.length}`);
+      const systemText = systemInstruction(task, body.prompt.variant, visuals.length);
+      const userText = userMessage(body, visuals.length);
 
       /* Ensemble grading: N independent runs in parallel, then the MEDIAN run
          (by mean criterion band) is returned. Single runs of any model
@@ -1061,8 +1113,8 @@ export function createHandler(deps: { fetch: typeof fetch }) {
       const samples = Math.max(1, Math.min(5, parseInt(env.GRADING_SAMPLES ?? '3', 10) || 3));
       const gradeOnce = (): Promise<GradeOnceResult> =>
         provider === 'openai'
-          ? gradeOnceOpenAi(modelFetch, env, systemText, userText)
-          : gradeOnceGemini(modelFetch, env, systemText, userText);
+          ? gradeOnceOpenAi(modelFetch, env, systemText, userText, visuals)
+          : gradeOnceGemini(modelFetch, env, systemText, userText, visuals);
 
       let runs: GradeOnceResult[];
       try {

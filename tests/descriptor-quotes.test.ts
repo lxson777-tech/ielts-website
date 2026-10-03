@@ -141,6 +141,17 @@ test('the essay grader guidance quotes only the May 2023 descriptors, for both t
   }
 });
 
+test('the Task 1 guidance for an attached chart quotes only the May 2023 Task 1 descriptors', () => {
+  const task1Only = norm(descriptorText('task1'));
+  for (const visuals of [1, 2]) {
+    const prompt = systemInstruction('task1', undefined, visuals);
+    assert.match(prompt, /attached to the message/);
+    const guidance = section(prompt, '=== HOW TO USE THE DESCRIPTORS ===', '=== EXAMINER STANDARDISATION');
+    assert.deepEqual(problems(guidance, task1Only, `task1 with ${visuals} visual(s)`), []);
+    assert.ok(prompt.includes(descriptorText('task1')));
+  }
+});
+
 test('the speaking grader method block and pronunciation guidance quote only the current Speaking descriptors', () => {
   assert.deepEqual(problems(METHOD_BLOCK, SPEAKING, 'method'), []);
   for (const anchors of [true, false]) {

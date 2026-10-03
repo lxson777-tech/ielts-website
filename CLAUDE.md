@@ -137,6 +137,11 @@ run on the OpenAI API by default (Gemini kept as a rollback switch in each Worke
   Recordings are converted to 16 kHz mono MP3 in the browser first (`src/lib/speaking/encode.ts`)
   because the audio model accepts only WAV or MP3. Neither grader has an offline stub any more:
   an unconfigured or unreachable grader is reported plainly to the student.
+- A Task 1 question's chart is attached to the essay grader's model call as an image, but
+  only when its bytes are one of the site's own charts (SHA-256 list in
+  `workers/grade-essay/src/task1-charts.ts`, regenerate with
+  `node tools/build-task1-chart-manifest.mjs` after a chart is added or replaced). The
+  Worker never fetches an address the browser chose; see `workers/grade-essay/README.md`.
 - `live-examiner` brokers OpenAI GPT-Live-1 voice sessions over WebRTC (sign-in required,
   per-student limits in Supabase, stage directions injected server-side through OpenAI's
   sideband); Gemini ephemeral tokens remain as the rollback provider. The Worker never sees
