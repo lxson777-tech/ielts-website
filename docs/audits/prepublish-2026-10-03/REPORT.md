@@ -103,6 +103,16 @@ ran against them and the one sign-up attempt never reached the form, so no produ
 created; the build was redone correctly and those suites rerun. And the page-loading suite's own sign-up
 did not tick the new consent box; fixed and rerun.
 
+## Alex's decisions, same day
+
+- Lesson minutes now cover the whole page (`durations/REPORT.md`).
+- Reading Test 10 Q40 accepts only "style".
+- The doubtful Listening items were settled from the recordings themselves (`audio-checks/REPORT.md`):
+  4 keys and 6 printed details corrected.
+- Band descriptors: Alex asked for the 2023 wording. Waiting for him to save the two official PDFs, since
+  the official text is not copied off the web; then the band guides and the two graders are updated, a
+  small paid check run is proposed before the graders are redeployed.
+
 ## Left for Alex (real choices, nothing here is broken)
 
 1. **Band descriptor wording.** The Writing and Speaking band guides and the AI graders quote the older
