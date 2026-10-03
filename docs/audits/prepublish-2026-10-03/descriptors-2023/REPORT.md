@@ -41,3 +41,11 @@ regenerating the paid content packs and restarting the local stand-in.
 - Both still run with ACCESS_MODE "open": no sign-in, allowance or usage records, exactly as before.
 - Rollback: `npx wrangler rollback <previous version id>` in the Worker's folder.
 - Paid spend today: check run $2.95, speaking tune $0.52, two live checks about $0.20.
+- Task 1 charts (Alex approved): the essay grader now receives the question's chart when it is byte for byte one of
+  the site's 31 charts (`workers/grade-essay/src/task1-visual.ts`); anything else is ignored. Check
+  (`grader-check/TASK1-CHART.md`, $0.87): with the chart, three wrong pie percentages were caught with their true
+  values (Task Achievement 6); text only, the same answer got 9. Deployed as version
+  af441823-c23b-4064-9f17-a4cf283d3b3b (previous 46483d01-3d1d-4ce9-8f6c-dac9d467f61a). All 31 live charts match
+  the grader's list; one live Task 1 grading returned 200 with figure-level comments.
+- Word count (site side, live after the next push): numbers now count as words (`src/lib/writing/mechanics.ts`).
+- Paid spend today in total: about $4.70.
