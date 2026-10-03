@@ -1,14 +1,18 @@
 /* "How to reach the next band" static guides for IELTS Writing and Speaking.
    Every claim in `whatChanges`, `doThis`, and `stopThis` is a plain-language
-   rephrasing of the official public IELTS Band Descriptors, quoted verbatim
-   in workers/grade-essay/src/index.ts (TR_TASK2, TA_TASK1_ACADEMIC, CC_SCALE,
-   LR_SCALE, GRA_SCALE) and workers/grade-speaking/src/index.ts (FC_SCALE,
-   LR_SCALE, GRA_SCALE, PRON_SCALE).
+   rephrasing of the official IELTS Band Descriptors (Writing "Updated May
+   2023" and the current Speaking descriptors, Alex's decision of 3 October
+   2026), quoted verbatim in workers/grade-essay/src/index.ts (TA_TASK1,
+   CC_TASK1, LR_TASK1, GRA_TASK1, TR_TASK2, CC_TASK2, LR_TASK2, GRA_TASK2) and
+   workers/grade-speaking/src/index.ts (FC_SCALE, LR_SCALE, GRA_SCALE,
+   PRON_SCALE). Anything inside double quotes in `whatChanges`, `task1Note`
+   or `example.why` is either the descriptor's own words or the step's
+   example language; tests/descriptor-quotes.test.ts checks every one.
 
    Named pronunciation features (word stress, sentence stress, chunking,
    intonation, weak forms, linking, individual sounds) are the concrete
    things examiners are listening for when the descriptors say "a range of
-   pronunciation features" (they are not verbatim band text themselves).
+   phonological features" (they are not verbatim band text themselves).
 
    `task1Note` (writing, taskResponse only) flags where Task 1 Academic (Task
    Achievement) asks for something materially different from the Task 2
@@ -64,7 +68,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 4,
       to: 5,
       whatChanges:
-        nt('At band 4 the essay format can be wrong and your position can be unclear. At band 5 the descriptors ask you to at least use the right format, take a position (even if the development is not always clear), and state main ideas that a reader can identify, even if they are limited.'),
+        nt('At band 4 the format may be inappropriate, the reader has to read carefully to find your position, and main ideas are difficult to identify. At band 5 the format may be inappropriate only "in places", you express a position (even if "the development is not always clear"), and you put forward main ideas a reader can identify, even if they are limited. Band 5 is also as high as you can go while the main parts of the prompt are "incompletely addressed".'),
       doThis: [
         nt('Write in the correct essay format: an introduction, two or more body paragraphs, and a conclusion. Not a list, not a letter.'),
         nt('State your opinion or position in one clear sentence in the introduction.'),
@@ -83,13 +87,13 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       practice:
         nt('Take 5 past Task 2 questions. Spend 2 minutes each writing only a one-sentence thesis statement that states your position. 10 to 15 minutes total, no essays.'),
       task1Note:
-        nt('Task 1 (Academic) is scored on Task Achievement, not Task Response: at band 5 you generally address the task and describe some detail, but there is no clear overview and there may be no data used to support the description. Focus first on covering every key feature of the chart or diagram.'),
+        nt('Task 1 (Academic) is scored on Task Achievement, not Task Response. At band 4 "Few key features have been selected". At band 5 you generally address the task, but the recounting of detail is "mainly mechanical", often without the bigger picture, and "There may be no data to support the description", a feature that keeps the band at 5 or below. Focus first on selecting the key features of the chart or diagram and backing each one with figures.'),
     },
     {
       from: 5,
       to: 6,
       whatChanges:
-        nt('Band 6 asks you to address the task even if some parts get more coverage than others, keep a relevant position (even if the conclusion becomes repetitive), and present relevant main ideas even if some are under-developed. Band 5 allows a task addressed only partially, with unclear development and possibly no conclusion.'),
+        nt('Band 6 asks you to address the main parts of the prompt (though some may be more fully covered than others), use an appropriate format, present a position that is directly relevant to the prompt (even if "the conclusions drawn may be unclear, unjustified or repetitive"), and give relevant main ideas, even if some are insufficiently developed. At band 5 the main parts are "incompletely addressed", the development of your position is not always clear, and main ideas are limited, which holds the band at 5.'),
       doThis: [
         nt('Give every part of a multi-part question real attention, at least several sentences, not one throwaway line.'),
         nt('Write an actual concluding sentence that restates your position in different words, not a copy of the introduction.'),
@@ -103,7 +107,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       example: {
         before: 'To conclude, this essay has looked at both sides of the question.',
         after: 'In conclusion, while there are some benefits to remote work, the advantages for employee wellbeing make it the better choice overall.',
-        why: nt('The first sentence only announces that a conclusion is happening. The second restates the actual position in fresh words, which band 6 requires for a "relevant position" to hold through the end.'),
+        why: nt('The first sentence only announces that a conclusion is happening. The second restates the actual position in fresh words, so the position stays "directly relevant to the prompt" right to the end and the conclusion is more than repetition.'),
       },
       practice:
         nt('Write one conclusion (1 or 2 sentences: a brief summary and your position restated in fresh words, with no new idea) for a question you already have an essay plan for. 10 minutes.'),
@@ -114,7 +118,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 6,
       to: 7,
       whatChanges:
-        nt('Band 7 requires all the main parts of the task to be properly addressed, not some covered much more fully than others, a clear position that holds to the end (not conclusions that become unclear or repetitive), and main ideas that are extended and supported, not just stated. The descriptor still allows some over-generalising at band 7.'),
+        nt('Band 7 requires the main parts of the prompt to be "appropriately addressed", not some covered much more fully than others, "A clear and developed position" (not conclusions that are unclear, unjustified or repetitive), and main ideas that are extended and supported, not just stated. The descriptor still allows "a tendency to over-generalise" or some lack of focus and precision in supporting material at band 7.'),
       doThis: [
         nt('Give equal, full development to every part of the question, including the part you find harder.'),
         nt('Extend every main idea with a specific reason, cause, or example, not just a stated claim.'),
@@ -128,18 +132,18 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       example: {
         before: 'Social media affects young people. It can be good or bad depending on how it is used.',
         after: 'Excessive social media use damages teenagers\' concentration, since constant notifications interrupt the sustained attention that schoolwork demands.',
-        why: nt('The first pair of sentences states a claim without extending it. The second names the specific effect and the reason behind it, which is what "extends and supports" means at band 7.'),
+        why: nt('The first pair of sentences states a claim without extending it. The second names the specific effect and the reason behind it, which is what "extended and supported" means at band 7.'),
       },
       practice:
         nt('Pick one body paragraph from an old essay. Rewrite it by adding one sentence of explanation and one specific example. 15 minutes.'),
       task1Note:
-        nt('For Task 1 (Academic), the step to band 7 is mainly the overview: band 7 Task Achievement asks for a clear overview of the main trends, differences or stages, while band 6 needs only a relevant one. Make your overview name the two or three key features of the whole visual, then check that every key feature is covered and highlighted in the detail paragraphs.'),
+        nt('For Task 1 (Academic), the step to band 7 is mainly the overview: band 7 Task Achievement asks that "It presents a clear overview", with the data "appropriately categorised" and the "main trends or differences" identified, while at band 6 "A relevant overview is attempted". Make your overview name the two or three key features of the whole visual, group the data sensibly, then check that every key feature is covered and clearly highlighted in the detail paragraphs.'),
     },
     {
       from: 7,
       to: 8,
       whatChanges:
-        nt('Band 8 requires all parts sufficiently addressed with a well-developed response, and ideas that are relevant, extended and supported, without the tendency to over-generalise that band 7 still allows. Support needs to be concrete, not a broad statement dressed up as an example.'),
+        nt('Band 8 requires the prompt to be "appropriately and sufficiently addressed", "A clear and well-developed position", and ideas that are "relevant, well extended and supported", without the tendency to over-generalise that band 7 still allows; only "occasional omissions or lapses in content" remain. Support needs to be concrete, not a broad statement dressed up as an example.'),
       doThis: [
         nt('Support every main idea with a specific, concrete example: a named scenario, a real situation, a precise fact, not a general statement.'),
         nt('Build each body paragraph from at least two or three connected sentences, not one.'),
@@ -162,7 +166,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 8,
       to: 9,
       whatChanges:
-        nt('Band 9 requires fully addressing all parts of the task, a fully developed position, and ideas that are fully extended and well supported, with no gaps anywhere. This band is rare: it means excellent task handling with no weak spot at all, not just strong writing overall.'),
+        nt('Band 9 requires the prompt to be "appropriately addressed and explored in depth", "A clear and fully developed position" that directly answers the question, and ideas that are "relevant, fully extended and well supported", with lapses in content or support "extremely rare". This band is rare: it means excellent task handling with no weak spot at all, not just strong writing overall.'),
       doThis: [
         nt('Address every angle of the question, including implications the prompt does not spell out directly.'),
         nt('Extend every idea as far as it reasonably goes: cause, effect, example, and a brief acknowledgement of a counterpoint.'),
@@ -179,7 +183,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       practice:
         nt('Choose one already-strong essay. For each body paragraph, add one sentence that acknowledges a counterpoint or limitation. 20 minutes.'),
       task1Note:
-        nt('For Task 1 (Academic), band 9 Task Achievement means fully satisfying every requirement of the task with a fully developed response and a clear, accurate overview. At this level the overview should already read as complete; the remaining work is making every supporting detail precise.'),
+        nt('For Task 1 (Academic), band 9 Task Achievement means "All the requirements of the task are fully and appropriately satisfied", with only "extremely rare lapses in content". At this level the overview should already read as complete; the remaining work is making every supporting detail precise.'),
     },
   ],
 
@@ -188,7 +192,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 4,
       to: 5,
       whatChanges:
-        nt('At band 4 the essay may have no real paragraphing and no progression at all. Band 5 asks for at least some organisation and, even if paragraphing is inadequate, an attempt at paragraphs rather than one unbroken block of text.'),
+        nt('At band 4 ideas are "not arranged coherently", there is no clear progression, and there may be no paragraphing and no clear main topic within paragraphs. Band 5 asks for organisation that "is evident", even if it is not wholly logical, and "a sense of underlying coherence". At band 5 paragraphing "may be inadequate or missing", but in Task 2 that is a feature that limits the rating: without proper paragraphs the band cannot rise above 5.'),
       doThis: [
         nt('Break your essay into clear paragraphs: introduction, body paragraphs, conclusion, each starting on a new line.'),
         nt('Use at least one linking word per paragraph (however, because, for example).'),
@@ -211,7 +215,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 5,
       to: 6,
       whatChanges:
-        nt('Band 6 asks for information arranged coherently with a clear overall progression, and cohesive devices used effectively even if sometimes mechanical. Band 5 allows a lack of overall progression and inaccurate or over-used cohesive devices.'),
+        nt('Band 6 asks for information "generally arranged coherently" with "a clear overall progression", and cohesive devices "used to some good effect", even if sometimes faulty or mechanical. In Task 2, band 6 also needs real paragraphs, though they "may not always be logical". Band 5 allows a lack of overall progression, limited or over-used cohesive devices, and paragraphing that is inadequate or missing.'),
       doThis: [
         nt('Make each paragraph follow logically from the one before it, using a transition sentence at the start.'),
         nt('Use referencing words (this, these, such) instead of repeating full noun phrases.'),
@@ -234,7 +238,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 6,
       to: 7,
       whatChanges:
-        nt('Band 7 requires clear progression THROUGHOUT the whole response, not just overall, a RANGE of cohesive devices used appropriately, and a clear central topic within EACH paragraph, not most of them.'),
+        nt('Band 7 requires "a clear progression throughout the response", not just overall (a few minor lapses are allowed), a RANGE of cohesive devices, including reference and substitution, "used flexibly", and paragraphing "generally used effectively to support overall coherence", with the ideas inside each paragraph in a logical order. At band 6 paragraphing "may not always be logical" and the central topic "may not always be clear".'),
       doThis: [
         nt('Use a variety of linking devices across the essay: addition, contrast, cause and result, and example connectors, not just "however" and "moreover" repeated.'),
         nt('Give every single paragraph one clear central topic sentence, with no exceptions.'),
@@ -257,7 +261,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 7,
       to: 8,
       whatChanges:
-        nt('Band 8 requires managing all aspects of cohesion well and sequencing ideas logically, with paragraphing that is both sufficient and appropriate. Band 7 still allows some under-use or over-use of cohesive devices; band 8 should feel controlled rather than occasionally mismatched.'),
+        nt('Band 8 requires a message that "can be followed with ease", ideas "logically sequenced", cohesion that "is well managed", and paragraphing "used sufficiently and appropriately". Band 7 still allows "some inaccuracies or some over/under use" of cohesive devices; band 8 should feel controlled, with only occasional lapses.'),
       doThis: [
         nt('Remove any linking word that is not needed. Let logical order do some of the work instead of a connector on every sentence.'),
         nt('Vary paragraph length according to content. Do not force every paragraph to the same length if an idea genuinely needs more room.'),
@@ -280,7 +284,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 8,
       to: 9,
       whatChanges:
-        nt('Band 9 requires cohesion managed so well it "attracts no attention", with skilful paragraphing throughout. This is a rare band: the organisation should be essentially invisible, carried by word choice and sentence order rather than visible connecting devices.'),
+        nt('Band 9 requires a message that "can be followed effortlessly", cohesion used so well that it "very rarely attracts attention", and paragraphing that "is skilfully managed". This is a rare band: the organisation should be essentially invisible, carried by word choice and sentence order rather than visible connecting devices.'),
       doThis: [
         nt('Let ideas connect through meaning and word choice rather than visible linking words. Aim for at least one paragraph with no explicit connector that still flows perfectly.'),
         nt('Vary sentence openings so the essay never leans on a small, repeated set of transition phrases.'),
@@ -304,7 +308,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 4,
       to: 5,
       whatChanges:
-        nt('Band 4 vocabulary is only basic and often repetitive or inappropriate for the task, with errors that can strain the reader. Band 5 asks for a range that is minimally adequate, so noticeable spelling or word-formation errors are allowed as long as they do not go beyond causing "some difficulty".'),
+        nt('Band 4 vocabulary is basic, may be used repetitively and can be "inadequate for or unrelated to the task", often leaning on "memorised phrases, formulaic language" or words copied from the question, with errors that may impede meaning. Band 5 asks for a resource that is "limited but minimally adequate for the task", so noticeable spelling or word-formation errors are allowed as long as they do not go beyond causing "some difficulty".'),
       doThis: [
         nt('Replace repeated general words (good, bad, big, very) with a more specific word each time you would otherwise repeat one.'),
         nt('Learn 5 to 10 words specific to common essay topics (environment, education, technology) and use them where relevant.'),
@@ -313,6 +317,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       ],
       stopThis: [
         nt('Stop using the exact same adjective or verb throughout the whole essay.'),
+        nt('Stop filling space with memorised phrases or wording copied from the question.'),
       ],
       example: {
         before: 'This is a very big problem. It is very bad for people.',
@@ -326,7 +331,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 5,
       to: 6,
       whatChanges:
-        nt('Band 6 asks for an adequate range of vocabulary for the task, with an attempt at less common words even if not always accurate, and spelling or word-formation errors that do not get in the way of communication. Band 5 vocabulary is described as only "minimally adequate".'),
+        nt('Band 6 asks for a resource that is "generally adequate and appropriate for the task", with meaning that is generally clear even if the range is rather restricted or word choice imprecise, and spelling or word-formation errors that "do not impede communication". The descriptor adds that "If the writer is a risk-taker", the range will be wider but less accurate, so trying less common words is fine at band 6 even when some go wrong. Band 5 vocabulary is described as only "minimally adequate".'),
       doThis: [
         nt('Use at least three or four topic-specific words or phrases per paragraph, tied to the essay\'s actual subject.'),
         nt('Attempt one or two less common words per paragraph, even if you are not fully confident in them.'),
@@ -339,7 +344,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       example: {
         before: 'The question asks about young people using phones too much. This is a problem for young people.',
         after: 'The question raises concerns about excessive smartphone use among teenagers, a habit that is now widespread.',
-        why: nt('The first version simply repeats the question\'s own words. The second paraphrases "young people using phones too much" into different vocabulary ("excessive smartphone use among teenagers"), which is the attempt at less common vocabulary band 6 rewards.'),
+        why: nt('The first version simply repeats the question\'s own words. The second paraphrases "young people using phones too much" into different vocabulary ("excessive smartphone use among teenagers"), which avoids the "frequent simplifications and/or repetitions" of band 5.'),
       },
       practice:
         nt('Take one past essay question. Rewrite the question in your own words twice, using different vocabulary each time. 10 minutes.'),
@@ -348,7 +353,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 6,
       to: 7,
       whatChanges:
-        nt('Band 7 asks for a sufficient range of vocabulary allowing some flexibility and precision, and the use of less common lexical items with some awareness of style and collocation (natural word pairings, like "heavy traffic" not "big traffic"). Occasional errors in word choice, spelling, or word formation are still allowed.'),
+        nt('Band 7 asks for a resource "sufficient to allow some flexibility and precision", "some ability to use less common and/or idiomatic items", and an evident awareness of style and collocation (natural word pairings, like "heavy traffic" not "big traffic"). Some inappropriate word choices and "only a few errors in spelling and/or word formation" are still allowed.'),
       doThis: [
         nt('Use at least one natural word pairing (collocation) per paragraph, such as "raise awareness" or "make a decision".'),
         nt('Paraphrase the question\'s key terms fully in your introduction, using entirely different vocabulary.'),
@@ -371,7 +376,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 7,
       to: 8,
       whatChanges:
-        nt('Band 8 asks you to use a wide range of vocabulary fluently and flexibly to convey precise meaning, skilfully using uncommon lexical items, with only occasional inaccuracies in word choice or collocation and only rare spelling errors. Band 7 still allows occasional errors in word choice and word formation more broadly.'),
+        nt('Band 8 asks for a wide resource "fluently and flexibly used to convey precise meanings", with "skilful use of uncommon and/or idiomatic items when appropriate", only occasional inaccuracies in word choice and collocation, and only occasional spelling or word-formation errors with minimal impact. Band 7 still allows inappropriacies in style and collocation more broadly.'),
       doThis: [
         nt('Use at least one uncommon or idiomatic phrase per paragraph, used accurately, not just inserted for effect.'),
         nt('Choose the most precise word for each idea rather than the first word that comes to mind. Check a synonym if you are unsure.'),
@@ -394,7 +399,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 8,
       to: 9,
       whatChanges:
-        nt('Band 9 asks for a wide range of vocabulary with very natural and sophisticated control, where rare minor errors occur only as "slips", momentary mistakes rather than gaps in knowledge. This band is rare: the vocabulary should read as native-like, not merely advanced.'),
+        nt('Band 9 asks for "Full flexibility and precise use", a wide range of vocabulary used accurately and appropriately "with very natural and sophisticated control of lexical features", and minor spelling or word-formation errors that "are extremely rare". This band is rare: the vocabulary should read as native-like, not merely advanced.'),
       doThis: [
         nt('Choose vocabulary a native speaker discussing the same topic would naturally use, not vocabulary that reads as deliberately "advanced".'),
         nt('Vary word choice so no content word appears more than two or three times across the whole essay.'),
@@ -418,7 +423,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 4,
       to: 5,
       whatChanges:
-        nt('Band 4 uses only a very limited range of structures with rare subordinate clauses, and errors predominate. Band 5 asks for an attempt at complex sentences, even if they tend to be less accurate than simple ones, and simple sentence forms that are usually correct.'),
+        nt('Band 4 uses "A very limited range of structures": "Subordinate clauses are rare and simple sentences predominate", a feature that holds the band at 4, and grammatical errors are frequent and may impede meaning. Band 5 asks for an attempt at complex sentences, even if "they tend to be faulty", with "the greatest accuracy" on simple sentences.'),
       doThis: [
         nt('Attempt at least one complex sentence per paragraph using because, although, which, or if, even if it is not perfect.'),
         nt('End every sentence with correct punctuation. Avoid running two sentences together with just a comma.'),
@@ -441,7 +446,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 5,
       to: 6,
       whatChanges:
-        nt('Band 6 asks for a mix of simple and complex sentence forms, with errors in grammar and punctuation that rarely reduce communication. Band 5 attempts complex sentences but they tend to be less accurate than the simple ones, and errors can cause the reader some real difficulty.'),
+        nt('Band 6 asks for "A mix of simple and complex sentence forms", even if flexibility is limited and the complex ones are less accurate than the simple ones, with errors in grammar and punctuation that "rarely impede communication". Band 5 attempts complex sentences but "they tend to be faulty", and errors can cause the reader "some difficulty".'),
       doThis: [
         nt('Use both simple and complex sentences in every paragraph, aiming for at least two complex sentences per paragraph.'),
         nt('Use a comma correctly before or after a subordinate clause (for example, "Although it rained, we went out.").'),
@@ -464,7 +469,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 6,
       to: 7,
       whatChanges:
-        nt('Band 7 asks for a variety of complex structures, frequent error-free sentences, and good control of grammar and punctuation with only a few errors. Band 6 allows errors that only "rarely reduce communication" but does not require frequent error-free sentences or a variety of complex forms.'),
+        nt('Band 7 asks for "A variety of complex structures" used "with some flexibility and accuracy", grammar and punctuation that are "generally well controlled", and error-free sentences that "are frequent", though a few errors may persist. Band 6 allows errors that "rarely impede communication" but does not require frequent error-free sentences or a variety of complex forms.'),
       doThis: [
         nt('Use at least three different complex structures across the essay: relative clauses, conditionals, passive voice, and comparatives.'),
         nt('Aim for at least two completely error-free complex sentences per paragraph.'),
@@ -487,7 +492,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 7,
       to: 8,
       whatChanges:
-        nt('Band 8 asks for a wide range of structures where the majority of sentences are error-free, with only very occasional errors or inappropriacies. Band 7 requires frequent error-free sentences but "a few errors" are still expected.'),
+        nt('Band 8 asks for "A wide range of structures" that "is flexibly and accurately used", where "The majority of sentences are error-free" and punctuation "is well managed", with only occasional, non-systematic errors. Band 7 requires frequent error-free sentences, but "A few errors in grammar may persist".'),
       doThis: [
         nt('Reread your essay and check that more than half of your sentences have zero grammar errors.'),
         nt('Combine structures within the same paragraph, for example a conditional, a relative clause, and a passive construction used together.'),
@@ -510,7 +515,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       from: 8,
       to: 9,
       whatChanges:
-        nt('Band 9 asks for a wide range of structures used with full flexibility and accuracy, where rare minor errors occur only as "slips", the kind of small mistake even a highly proficient writer occasionally makes. This band is genuinely rare: it means essentially no grammar weakness anywhere in the essay.'),
+        nt('Band 9 asks for a wide range of structures "used with full flexibility and control", punctuation and grammar "used appropriately throughout", and minor errors that "are extremely rare", the kind of small slip even a highly proficient writer occasionally makes. This band is genuinely rare: it means essentially no grammar weakness anywhere in the essay.'),
       doThis: [
         nt('Write every sentence so that, on a careful reread, you cannot find a grammar error in it.'),
         nt('Use complex structures so naturally that they never feel inserted for display.'),
@@ -522,7 +527,7 @@ export const WRITING_BAND_GUIDES: Record<CriterionKey, BandStepGuide[]> = {
       example: {
         before: 'Had the policy been implement earlier, the results would have been better probably.',
         after: 'Had the policy been implemented earlier, the results would probably have been better.',
-        why: nt('The original has a word-form error ("implement" instead of "implemented") and an awkward word order at the end. The revision is grammatically flawless and reads naturally, which is what "full flexibility and accuracy" at band 9 looks like in practice.'),
+        why: nt('The original has a word-form error ("implement" instead of "implemented") and an awkward word order at the end. The revision is grammatically flawless and reads naturally, which is what "full flexibility and control" at band 9 looks like in practice.'),
       },
       practice:
         nt('Write 3 conditional sentences about a serious topic ("Had the government..."). Check each one twice: once for the conditional form, once for every other word in the sentence. 15 minutes.'),
@@ -536,7 +541,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 4,
       to: 5,
       whatChanges:
-        nt('At band 4 you cannot respond without noticeable pauses and may speak slowly with frequent repetition. Band 5 asks you to usually maintain the flow of speech, even if you use repetition, self-correction, or slower speech to keep going. Simple speech should come fluently, even if more complex ideas still cause problems.'),
+        nt('At band 4 you are "Unable to keep going without noticeable pauses", and speech may be slow with frequent repetition. Band 5 asks you to be "Usually able to keep going", even if you rely on repetition, self-correction or slow speech to do so. Simple language should come fluently, even if more complex speech still causes disfluency.'),
       doThis: [
         nt('Answer every question immediately, without a long silent pause first, even if the answer starts simply.'),
         nt('Use a short filler phrase ("let me think", "that\'s an interesting question") instead of silence when you need a second.'),
@@ -559,7 +564,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 5,
       to: 6,
       whatChanges:
-        nt('Band 6 means being willing to speak at length, even if coherence is sometimes lost through occasional repetition, self-correction, or hesitation, and using a range of connectives and discourse markers, even if not always appropriately. Band 5 tends to over-use a small number of connectives and struggles once the topic gets more complex.'),
+        nt('Band 6 means being "Able to keep going" and showing "a willingness to produce long turns", even if coherence is lost at times through hesitation, repetition or self-correction, and using a range of spoken discourse markers and connectives, even if not always appropriately. Band 5 overuses certain discourse markers, often hesitates mid-sentence to search for fairly basic words and grammar, and struggles once the speech gets more complex.'),
       doThis: [
         nt('Extend your answers past the first sentence: in Part 1 that usually means 2 to 4 sentences, with a reason or example.'),
         nt('Use a range of connecting words (also, however, because, so, actually) rather than the same one repeatedly.'),
@@ -573,7 +578,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       example: {
         before: 'I like my hometown. It is nice.',
         after: 'I really like my hometown, because it has a good mix of parks and shopping areas, so there is always something to do at the weekend.',
-        why: nt('The first answer is two short, disconnected sentences. The second extends the idea with "because" and "so" and gives a reason, which is the willingness to speak at length band 6 is checking for.'),
+        why: nt('The first answer is two short, disconnected sentences. The second extends the idea with "because" and "so" and gives a reason, which is the "willingness to produce long turns" band 6 is checking for.'),
       },
       practice:
         nt('Pick 5 Part 1 questions. Answer each with at least 3 connected sentences, using a different connecting word each time. 15 minutes.'),
@@ -582,7 +587,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 6,
       to: 7,
       whatChanges:
-        nt('Band 7 means speaking at length WITHOUT noticeable effort or loss of coherence, using a range of connectives and discourse markers with some flexibility. Some language-related hesitation and self-correction are still allowed. Band 6 may lose coherence at times and does not always use its connectives appropriately.'),
+        nt('Band 7 means you "readily produce long turns without noticeable effort", with "Flexible use of spoken discourse markers, connectives and cohesive features". Some hesitation, repetition and self-correction while you search for language are still allowed, but "these will not affect coherence". Band 6 may lose coherence at times and does not always use its connectives appropriately.'),
       doThis: [
         nt('Keep talking for the full time available in Part 2 (up to 2 minutes) without long unplanned pauses.'),
         nt('Use discourse markers that organise a longer answer: firstly, what\'s more, on top of that, having said that.'),
@@ -596,7 +601,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       example: {
         before: 'I think... um... it is good for... um... the environment, I think.',
         after: 'I think it\'s good for the environment, mainly because it cuts down on the amount of packaging waste we produce every day.',
-        why: nt('The first answer stalls twice searching for what to say next. The second develops the same opinion in one continuous stretch with a discourse marker ("mainly because"), which is speaking at length without noticeable effort.'),
+        why: nt('The first answer stalls twice searching for what to say next. The second develops the same opinion in one continuous stretch with a discourse marker ("mainly because"), which is producing a long turn "without noticeable effort".'),
       },
       practice:
         nt('Take one Part 2 cue card. Speak for the full 2 minutes without stopping, even if you repeat a point, then note where you paused longest. 20 minutes.'),
@@ -605,7 +610,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 7,
       to: 8,
       whatChanges:
-        nt('Band 8 means speaking fluently with only OCCASIONAL repetition or self-correction, where hesitation is usually content-related rather than a search for words or grammar, and topics are developed coherently and appropriately. Band 7 still allows language-related hesitation and some repetition at times.'),
+        nt('Band 8 means being "Fluent with only very occasional repetition or self-correction", where hesitation "may occasionally be used to find words or grammar, but most will be content related", and "Topic development is coherent, appropriate and relevant". Band 7 still allows hesitation and repetition that come from searching for language, often mid-sentence.'),
       doThis: [
         nt('Prepare and practise topic vocabulary in advance so it becomes automatic, reducing hesitation caused by searching for words.'),
         nt('Develop each Part 3 answer with a clear structure: point, explanation, example, in that order.'),
@@ -628,7 +633,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 8,
       to: 9,
       whatChanges:
-        nt('Band 9 means speaking fluently with only RARE repetition or self-correction, where any hesitation is content-related rather than related to language at all, with fully appropriate cohesive features and topics developed fully and appropriately. This band is rare: it describes control close to a native speaker\'s.'),
+        nt('Band 9 keeps the "very occasional repetition or self-correction" of band 8, but any hesitation is "used only to prepare the content of the next utterance and not to find words or grammar". Speech is "situationally appropriate", cohesive features are "fully acceptable", and "Topic development is fully coherent and appropriately extended". This band is rare: it describes control close to a native speaker\'s.'),
       doThis: [
         nt('Aim to eliminate language-related hesitation entirely. Any pause should come from forming a thought, not from searching for a word or structure.'),
         nt('Develop topics as fully as a native speaker would in casual conversation, including nuance and qualification.'),
@@ -652,7 +657,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 4,
       to: 5,
       whatChanges:
-        nt('Band 4 can only convey basic meaning on unfamiliar topics and rarely attempts paraphrase. Band 5 asks you to manage familiar AND unfamiliar topics, even with limited flexibility, and to attempt paraphrase, even with mixed success.'),
+        nt('Band 4 can only convey basic meaning on unfamiliar topics and rarely attempts paraphrase. Band 5 asks you to manage familiar AND unfamiliar topics, even with limited flexibility, and to attempt paraphrase, even if "not always with success".'),
       doThis: [
         nt('Practise describing topics outside your daily routine (technology, environment, society) using simple vocabulary you already know.'),
         nt('When you do not know a word, describe it instead of stopping (a paraphrase, such as "the thing you use to...").'),
@@ -665,7 +670,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       example: {
         before: 'I don\'t know about this. I have no idea about environment.',
         after: 'I haven\'t studied this much, but I think it\'s about the thing that happens when factories put smoke into the air.',
-        why: nt('The first response gives up on the topic entirely. The second attempts a paraphrase of "pollution" using simple, available vocabulary, which is the "attempt paraphrase" band 5 is checking for, even without full success.'),
+        why: nt('The first response gives up on the topic entirely. The second attempts a paraphrase of "pollution" using simple, available vocabulary, which is the "Attempts paraphrase" band 5 is checking for, even without full success.'),
       },
       practice:
         nt('Pick 3 unfamiliar Part 3 topics (space exploration, urban planning, climate policy). Answer each with 2 sentences of simple, general vocabulary rather than staying silent. 15 minutes.'),
@@ -674,7 +679,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 5,
       to: 6,
       whatChanges:
-        nt('Band 6 asks for a wide enough vocabulary to discuss topics at length and make meaning clear despite some inappropriate word choices, and to generally paraphrase successfully. Band 5 manages this with limited flexibility and mixed success at paraphrase.'),
+        nt('Band 6 asks for a resource "sufficient to discuss topics at length", where vocabulary use may sometimes be inappropriate "but meaning is clear", and for you to be "Generally able to paraphrase successfully". Band 5 manages familiar and unfamiliar topics with limited flexibility, and its paraphrase does not always succeed.'),
       doThis: [
         nt('Build your Part 3 answers to 3 to 5 sentences using vocabulary specific to the topic, not just general words.'),
         nt('Paraphrase the question\'s key word at least once in your answer instead of repeating it.'),
@@ -743,7 +748,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 8,
       to: 9,
       whatChanges:
-        nt('Band 9 asks for full flexibility and precision in ALL topics, with idiomatic language used naturally and accurately. This band is very rare: it means near-native command that holds up even on unfamiliar or abstract topics, with no dip anywhere in the test.'),
+        nt('Band 9 asks for "Total flexibility and precise use in all contexts", with "Sustained use of accurate and idiomatic language". This band is very rare: it means near-native command that holds up even on unfamiliar or abstract topics, with no dip anywhere in the test.'),
       doThis: [
         nt('Use precise, natural vocabulary on every topic without exception, including unfamiliar or abstract ones.'),
         nt('Use idiomatic language the way a native speaker would, in context, not as a rehearsed insert.'),
@@ -755,7 +760,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       example: {
         before: 'I think this trend will probably keep growing in the future, and it will affect a lot of people.',
         after: 'I\'d expect this trend to keep gathering momentum, and its ripple effects will be felt well beyond the industries it starts in.',
-        why: nt('Both are fluent, but the second uses natural, idiomatic phrasing ("gathering momentum", "ripple effects") that a native speaker would reach for without effort, which is the full flexibility band 9 describes.'),
+        why: nt('Both are fluent, but the second uses natural, idiomatic phrasing ("gathering momentum", "ripple effects") that a native speaker would reach for without effort, which is the "Total flexibility" band 9 describes.'),
       },
       practice:
         nt('Answer one unfamiliar, abstract Part 3 question (for example, on globalisation or urban planning) and check your vocabulary control matches your best-prepared topic. 15 minutes.'),
@@ -767,7 +772,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 4,
       to: 5,
       whatChanges:
-        nt('Band 4 produces basic sentence forms with subordinate structures rare, and errors are frequent enough to cause misunderstanding. Band 5 asks for basic sentence forms with reasonable accuracy and a limited range of more complex structures, even if these usually contain errors.'),
+        nt('Band 4 produces basic sentence forms, but "Subordinate clauses are rare" and, overall, turns are short, structures are repetitive and errors are frequent. Band 5 asks for basic sentence forms that are "fairly well controlled for accuracy" and attempts at complex structures, even if these are limited in range and "nearly always contain errors".'),
       doThis: [
         nt('Attempt at least one subordinate clause per answer (because, when, if, which), even if it is not perfect.'),
         nt('Practise simple present, past, and future tense forms until they are accurate on familiar topics.'),
@@ -790,7 +795,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 5,
       to: 6,
       whatChanges:
-        nt('Band 6 asks for a mix of simple and complex structures, even with limited flexibility, where mistakes with complex structures rarely cause comprehension problems. Band 5 basic sentences are usually accurate, but the limited range of complex attempts usually contains errors that can cause some difficulty.'),
+        nt('Band 6 asks for "a mix of short and complex sentence forms and a variety of structures", even with limited flexibility, where errors in complex structures "rarely impede communication". Band 5 basic sentences are fairly well controlled, but its limited complex attempts nearly always contain errors and may need reformulating.'),
       doThis: [
         nt('Use both simple and complex sentences within the same answer, aiming for at least one complex sentence per answer.'),
         nt('Practise one complex structure at a time (for example, relative clauses with who, which, that) until it becomes automatic before adding another.'),
@@ -804,7 +809,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       example: {
         before: 'I have a friend. She work in hospital. She is very busy.',
         after: 'I have a friend who works at a hospital, and she\'s always very busy because of the long shifts.',
-        why: nt('The original has a subject-verb agreement error and three disconnected sentences. The revision uses a relative clause ("who works") correctly and links the ideas, which is the mix of simple and complex forms band 6 asks for.'),
+        why: nt('The original has a subject-verb agreement error and three disconnected sentences. The revision uses a relative clause ("who works") correctly and links the ideas, which is the "mix of short and complex sentence forms" band 6 asks for.'),
       },
       practice:
         nt('Describe 3 people you know, each time using a relative clause with who or which. Check subject-verb agreement in every sentence. 15 minutes.'),
@@ -813,7 +818,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 6,
       to: 7,
       whatChanges:
-        nt('Band 7 asks for a range of complex structures used with some flexibility, and sentences that are frequently error-free. Band 6 allows frequent mistakes with complex structures as long as they rarely cause comprehension problems, without requiring frequent error-free sentences.'),
+        nt('Band 7 asks for "A range of structures flexibly used", where "Error-free sentences are frequent" and "Both simple and complex sentences are used effectively despite some errors". A few basic errors may still persist. Band 6 allows frequent errors in complex structures as long as they rarely impede communication, without requiring frequent error-free sentences.'),
       doThis: [
         nt('Use at least two different complex structures per longer answer (Part 2 or Part 3): conditionals, relative clauses, comparatives, or passive voice.'),
         nt('Aim for most of your sentences on familiar topics to come out completely accurate.'),
@@ -836,7 +841,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 7,
       to: 8,
       whatChanges:
-        nt('Band 8 asks for a wide range of structures used flexibly, where the majority of sentences are error-free, with only very occasional inappropriacies or basic errors. Band 7 already produces frequent error-free sentences, but some grammatical mistakes still persist regularly.'),
+        nt('Band 8 asks for a "Wide range of structures, flexibly used", where "The majority of sentences are error free", with only occasional inappropriacies and non-systematic errors (a few basic errors may persist). Band 7 already produces frequent error-free sentences, but still makes "some errors" alongside them.'),
       doThis: [
         nt('Use a wide range of structures within a single answer, mixing tenses, conditionals, passive voice, and relative clauses naturally.'),
         nt('Check on a recording that more than half of all your sentences across the test are completely error-free.'),
@@ -850,7 +855,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       example: {
         before: 'This is a policy that has been introduce by many governments, and it help a lot of people.',
         after: 'This is a policy that has been introduced by many governments, and it has helped a great number of people.',
-        why: nt('The original repeats a past-participle error ("introduce" instead of "introduced") and a subject-verb agreement error ("it help"). The revision fixes both, matching the "majority of sentences error-free" standard at band 8.'),
+        why: nt('The original repeats a past-participle error ("introduce" instead of "introduced") and a subject-verb agreement error ("it help"). The revision fixes both, matching the "The majority of sentences are error free" standard at band 8.'),
       },
       practice:
         nt('Record yourself answering 3 unfamiliar Part 3 questions without preparation. Listen back and mark every recurring error type, then drill that one specifically. 20 minutes.'),
@@ -859,14 +864,14 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 8,
       to: 9,
       whatChanges:
-        nt('Band 9 asks for a full range of structures used naturally and appropriately, with consistently accurate structures apart from slips characteristic of native speaker speech. This band is extremely rare: it describes accuracy that holds up even under the pressure of real-time speech.'),
+        nt('Band 9 asks for structures that "are precise and accurate at all times", apart from the kind of mistakes "characteristic of native speaker speech". This band is extremely rare: it describes accuracy that holds up even under the pressure of real-time speech.'),
       doThis: [
         nt('Use complex structures so naturally they are indistinguishable from spontaneous native speech, with no visible effort attached to them.'),
         nt('Keep accuracy consistent across all topics, in both prepared and unprepared answers.'),
         nt('Accept that only slips a native speaker might also make (a false start, a minor self-correction) should remain.'),
       ],
       stopThis: [
-        nt('Stop treating any non-native-style error as a "slip". At this level, accuracy should hold even under pressure.'),
+        nt('Stop treating any non-native-style error as a harmless slip. At this level, accuracy should hold even under pressure.'),
       ],
       example: {
         before: 'What I would say is that, if the trend continues, it\'s going to have a big impact on how people work.',
@@ -883,7 +888,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 4,
       to: 5,
       whatChanges:
-        nt('Band 4 has a limited range of pronunciation features with frequent mispronunciations that cause the listener some difficulty. Band 5 shows all the positive features of band 4 plus some, but not all, of band 6: fewer frequent lapses, and some effective use of a wider range of features beginning to appear.'),
+        nt('Band 4 uses some acceptable phonological features (the sounds, stress, rhythm and intonation of speech), "but the range is limited": individual words or sounds are frequently mispronounced, and "Understanding requires some effort". Band 5 "Displays all the positive features of band 4, and some, but not all, of the positive features of band 6": fewer lapses in rhythm, and some effective use of stress and intonation beginning to appear.'),
       doThis: [
         nt('Identify your 3 to 5 most frequently mispronounced sounds (many students struggle with th, r/l, or final consonants) and drill them daily.'),
         nt('Mark word stress on new vocabulary when you learn it, and say the word aloud stressing the right syllable.'),
@@ -897,7 +902,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       example: {
         before: '"comfortable" said as com-for-TAB-le, with the wrong syllable stressed and each syllable given equal weight.',
         after: '"comfortable" said as COM-fter-bl, with the stress clearly on the first syllable and the middle syllables shortened naturally.',
-        why: nt('Wrong word stress is one of the clearest causes of the "frequent mispronunciation" that band 4 describes. Fixing stress on individual words is a concrete first step toward the more controlled features band 5 begins to show.'),
+        why: nt('Wrong word stress is one of the clearest causes of the words "frequently mispronounced" that band 4 describes. Fixing stress on individual words is a concrete first step toward the more controlled features band 5 begins to show.'),
       },
       practice:
         nt('Pick 5 words you use often and often mis-stress. Look up their stress pattern and say each one aloud 10 times, exaggerating the stressed syllable. 15 minutes.'),
@@ -906,7 +911,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 5,
       to: 6,
       whatChanges:
-        nt('Band 6 uses a range of pronunciation features with mixed control: some effective use, though not sustained, and the speaker can generally be understood throughout even though individual word or sound mispronunciations reduce clarity at times. Band 5 only shows some, not most, of these features.'),
+        nt('Band 6 "Uses a range of phonological features, but control is variable": chunking is "generally appropriate", there is "Some effective use of intonation and stress, but this is not sustained", and mispronounced words cause "only occasional lack of clarity", so you "Can generally be understood throughout without much effort". Band 5 shows only some of these features, not all of them.'),
       doThis: [
         nt('Practise sentence stress: stress the key content words (nouns, verbs, adjectives) in each sentence rather than every word equally.'),
         nt('Use chunking: group words into short meaningful phrases with a brief pause between them, rather than one long run-on stream.'),
@@ -920,7 +925,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       example: {
         before: 'A flat, evenly stressed reading of "I think it\'s a really good idea" with no word standing out.',
         after: 'The same sentence with clear stress on THINK and GOOD, and a small pause after "I think", so the key words stand out.',
-        why: nt('Flat stress makes speech harder to follow even when every sound is correct. Adding sentence stress and a chunking pause is the "some effective use of features" band 6 is listening for, even if it is not yet sustained throughout.'),
+        why: nt('Flat stress makes speech harder to follow even when every sound is correct. Adding sentence stress and a chunking pause is the "Some effective use of intonation and stress" band 6 is listening for, even if it is not yet sustained throughout.'),
       },
       practice:
         nt('Take one memorised sentence. Say it 5 times, each time stressing a different word, and notice how the meaning shifts. Then say it naturally, stressing only the key content words. 15 minutes.'),
@@ -929,7 +934,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 6,
       to: 7,
       whatChanges:
-        nt('Band 7 shows all the positive features of band 6 and some, but not all, of band 8: sustained control moving toward a wide range of features with only occasional lapses, easy to understand throughout, with accent having minimal effect on intelligibility.'),
+        nt('Band 7 "Displays all the positive features of band 6, and some, but not all, of the positive features of band 8": control moving toward a wide range of features, a rhythm you can sustain, and stress and intonation that stay flexible across longer answers, so you are getting close to being "easily understood throughout".'),
       doThis: [
         nt('Extend your control of stress and chunking so it holds up for longer answers (Part 2\'s 2-minute monologue), not just short Part 1 answers.'),
         nt('Add intonation that shows attitude and meaning: a rising tone for surprise or a question, a falling tone to sound confident and final.'),
@@ -952,7 +957,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 7,
       to: 8,
       whatChanges:
-        nt('Band 8 uses a wide range of pronunciation features and sustains flexible use of them with only occasional lapses, is easy to understand throughout, and any L1 accent has minimal effect on intelligibility. Band 7 shows only some of these positive features, not all of them.'),
+        nt('Band 8 "Uses a wide range of phonological features to convey precise and/or subtle meaning", "Can sustain appropriate rhythm", keeps stress and intonation flexible "across long utterances, despite occasional lapses", and "Can be easily understood throughout"; "Accent has minimal effect on intelligibility". Band 7 shows only some of these positive features, not all of them.'),
       doThis: [
         nt('Sustain strong stress, chunking, and intonation control across the entire test, all three parts, not just your strongest moments.'),
         nt('Use intonation deliberately to signal meaning (contrast, emphasis, a list), rather than by accident.'),
@@ -975,7 +980,7 @@ export const SPEAKING_BAND_GUIDES: Record<SpeakingCriterionKey, BandStepGuide[]>
       from: 8,
       to: 9,
       whatChanges:
-        nt('Band 9 uses a full range of pronunciation features with precision and subtlety, sustains flexible use of them throughout, and is effortless to understand at every point. This band is extremely rare: it describes control with no noticeable dip anywhere in the test.'),
+        nt('Band 9 "Uses a full range of phonological features to convey precise and/or subtle meaning", sustains "Flexible use of features of connected speech" throughout, and "Can be effortlessly understood throughout"; accent "has no effect on intelligibility". This band is extremely rare: it describes control with no noticeable dip anywhere in the test.'),
       doThis: [
         nt('Use the full range of stress, chunking, intonation, and linking with precision in every part of the test, with no noticeable dip in control.'),
         nt('Aim for speech that requires zero effort from the listener to follow, at any point across the 11 to 14 minutes.'),
