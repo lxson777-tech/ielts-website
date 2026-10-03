@@ -69,13 +69,22 @@ const MISSPELLINGS: Record<string, string> = {
   childrens: "children's / children",
 };
 
-const words = (text: string): string[] => text.toLowerCase().match(/[a-z']+/g) ?? [];
+/* Letters-only words, for the vocabulary statistics (diversity, repetition,
+   spelling, topic overlap): a figure is not word choice, and a Task 1 report
+   naming the same year four times is not repetition to fix. Curly apostrophes,
+   which phone keyboards type by default, are straightened first so "don’t"
+   stays one word here as it is in countWords. */
+const words = (text: string): string[] =>
+  text.replace(/[‘’ʼ]/g, "'").toLowerCase().match(/[a-z']+/g) ?? [];
 
+/* A full stop between two digits is a decimal point or a date ("3.5",
+   "12.5%", "12.06.2016"), not the end of a sentence. Splitting there made a
+   figure-heavy Task 1 report read as twice as many short sentences. */
 const sentences = (text: string): string[] =>
   text
-    .split(/[.!?]+/)
+    .split(/[!?]+|\.+(?!\d)|(?<!\d)\.+/)
     .map((s) => s.trim())
-    .filter((s) => s.length > 0);
+    .filter((s) => countWords(s) > 0);
 
 function stdev(nums: number[]): number {
   if (nums.length < 2) return 0;
@@ -140,7 +149,9 @@ export function analyzeEssay(input: EssayInput): MechanicsReport {
   const { essay, prompt } = input;
   const essayWords = words(essay);
   const sents = sentences(essay);
-  const sentLengths = sents.map((s) => words(s).length);
+  /* Sentence length uses the same count as wordCount, so the average and the
+     spread agree with each other: "rose to 7,200 in 2013" is five words long. */
+  const sentLengths = sents.map((s) => countWords(s));
 
   /* Length is counted the way IELTS counts it (countWords below); the
      vocabulary statistics keep using the letters-only words. */
