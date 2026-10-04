@@ -1,0 +1,389 @@
+/* The orb stage (src/components/speaking/OrbStage.tsx): the live interview
+   circle, kept at Alex's request (4 October 2026) while Ms. Taylor waits
+   behind the switch in src/lib/speaking/live/examiner-look.ts.
+
+   The caption, the cue card, the notes box and the buttons are shared with
+   Ms. Taylor's stage and styled in examiner-stage.css (.es-caption, .es-cue,
+   .es-controls, .es-btn); the root also carries .es-stage for its colour
+   variables and its width container. Everything here is the circle, its
+   card and the Tips drawer.
+
+   Light on purpose: no blur filters, and nothing large is repainted while it
+   moves. Only transform and opacity animate. The hue change between turns is
+   one short colour transition (a registered property), not a loop. */
+
+@property --ob-hue {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #7c5cd6;
+}
+
+.ob-stage {
+  --ob-violet: var(--color-speaking, #7c5cd6);
+  --ob-green: var(--color-writing, #0e9f6e);
+  --ob-amber: var(--color-warning, #d97706);
+  --ob-quiet: #8b918d;
+}
+
+.ob-card {
+  --ob-hue: var(--ob-violet);
+  /* Text on the tinted pill: the hue pulled toward ink so it stays readable. */
+  --ob-hue-ink: color-mix(in srgb, var(--ob-hue) 58%, var(--es-ink));
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--es-border);
+  border-radius: 22px;
+  background:
+    radial-gradient(70% 55% at 28% 22%, color-mix(in srgb, var(--ob-hue) 7%, transparent), transparent 72%),
+    var(--es-surface);
+  padding: 20px 20px 22px;
+  box-shadow: 0 18px 40px -30px rgb(38 60 53 / 30%);
+  transition: --ob-hue 600ms ease;
+}
+.ob-card[data-mode='listening'] { --ob-hue: var(--ob-green); }
+.ob-card[data-mode='prep'] { --ob-hue: var(--ob-amber); }
+.ob-card[data-mode='quiet'] { --ob-hue: var(--ob-quiet); }
+
+/* ── header ─────────────────────────────────────────────────────────── */
+
+.ob-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ob-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 4px 13px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ob-hue) 11%, var(--es-surface));
+  color: var(--ob-hue-ink);
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+.ob-head-end { display: inline-flex; align-items: center; gap: 12px; }
+.ob-clock {
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--es-muted);
+}
+
+/* The one small control for the coach and the hints. A 32 px pill with a
+   44 px touch area. */
+.ob-tips-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--es-border);
+  border-radius: 999px;
+  background: var(--es-surface);
+  color: var(--es-ink);
+  font-size: 13px;
+  font-weight: 650;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+.ob-tips-btn::before { content: ''; position: absolute; inset: -6px -4px; }
+.ob-tips-btn:hover { background: var(--es-canvas); border-color: #cfd3c8; }
+.ob-tips-btn[aria-expanded='true'] { background: var(--es-canvas); }
+.ob-tips-btn:focus-visible { outline: 2px solid var(--es-ink); outline-offset: 2px; }
+
+/* On the narrowest phones the button keeps just its bulb (the label is its
+   accessible name), so the part, the clock and the button share one row. */
+@container (max-width: 339px) {
+  .ob-tips-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .ob-tips-btn { width: 32px; justify-content: center; padding: 0; }
+  .ob-chip { font-size: 12px; padding: 4px 10px; }
+}
+
+/* ── body: the circle (with its status) and, in Part 2, the cue card ─── */
+
+.ob-body {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  margin-top: 8px;
+}
+.ob-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  text-align: center;
+}
+.ob-cuewrap { min-width: 0; }
+.ob-cuewrap .es-cue { animation-name: es-hand-down; }
+
+/* The circle's footprint. Everything that moves (the halo, the ripples) stays
+   inside it, so nothing beside it can be overlapped by a glow either. */
+.ob-orbwrap {
+  --ob-d: min(clamp(200px, 66cqw, 252px), 46svh);
+  position: relative;
+  flex: none;
+  width: var(--ob-d);
+  height: var(--ob-d);
+}
+.ob-orb { position: absolute; inset: 9%; }
+.ob-orb > * { position: absolute; border-radius: 9999px; pointer-events: none; }
+
+/* A soft halo: a conic gradient faded to nothing at both edges by a static
+   mask, then only rotated. No blur filter. */
+.ob-aura {
+  inset: -10%;
+  background: conic-gradient(
+    from 0deg,
+    color-mix(in srgb, var(--ob-hue) 62%, transparent),
+    transparent 30%,
+    color-mix(in srgb, var(--ob-hue) 40%, transparent) 55%,
+    transparent 80%,
+    color-mix(in srgb, var(--ob-hue) 62%, transparent)
+  );
+  -webkit-mask-image: radial-gradient(closest-side, transparent 56%, #000 76%, transparent 100%);
+  mask-image: radial-gradient(closest-side, transparent 56%, #000 76%, transparent 100%);
+  opacity: 0.55;
+  animation: ob-spin 24s linear infinite;
+  transition: opacity 600ms ease;
+  will-change: transform;
+}
+.ob-aura-hot { animation-duration: 8s; animation-direction: reverse; opacity: 0; }
+.ob-card[data-mode='speaking'] .ob-aura-hot { opacity: 0.8; }
+@keyframes ob-spin { to { transform: rotate(360deg); } }
+
+.ob-breathe {
+  inset: 6%;
+  border: 1.5px solid color-mix(in srgb, var(--ob-hue) 45%, transparent);
+  animation: ob-breathe 4.2s ease-in-out infinite;
+}
+@keyframes ob-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.55; }
+  50% { transform: scale(1.06); opacity: 0.2; }
+}
+
+.ob-ripple {
+  inset: 12%;
+  border: 2px solid color-mix(in srgb, var(--ob-hue) 60%, transparent);
+  animation: ob-ripple 1.8s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
+}
+@keyframes ob-ripple {
+  from { transform: scale(0.72); opacity: 0.8; }
+  to { transform: scale(1.4); opacity: 0; }
+}
+
+/* The student's voice: always the green of the site's palette. */
+.ob-micring {
+  inset: 15%;
+  border: 3px solid color-mix(in srgb, var(--ob-green) 80%, transparent);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* A pre-softened radial gradient: it fades out by itself, so it needs no
+   blur. Scaled and faded by the audio loop. */
+.ob-glow {
+  inset: 18%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--ob-hue) 70%, transparent), transparent 68%);
+  opacity: 0.35;
+  will-change: transform, opacity;
+}
+
+.ob-float {
+  inset: 0;
+  display: grid;
+  place-items: center;
+  animation: ob-float 6s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes ob-float {
+  0%, 100% { transform: translate3d(0, -3px, 0); }
+  50% { transform: translate3d(0, 3px, 0); }
+}
+
+.ob-core {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle at 32% 28%, rgb(255 255 255 / 85%), transparent 42%),
+    radial-gradient(circle at 68% 78%, color-mix(in srgb, var(--ob-hue) 55%, transparent), transparent 60%),
+    linear-gradient(145deg, color-mix(in srgb, var(--ob-hue) 92%, white), color-mix(in srgb, var(--ob-hue) 70%, black));
+  box-shadow:
+    inset 0 -14px 26px color-mix(in srgb, var(--ob-hue) 55%, transparent),
+    0 10px 34px color-mix(in srgb, var(--ob-hue) 36%, transparent);
+  will-change: transform;
+}
+.ob-core-icon {
+  color: rgb(255 255 255 / 95%);
+  filter: drop-shadow(0 1px 3px rgb(0 0 0 / 25%));
+  animation: ob-fade-up 450ms ease both;
+}
+@keyframes ob-fade-up {
+  from { transform: translate3d(0, 6px, 0); opacity: 0; }
+  to { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+
+/* ── the status pill: colour, dot and words all follow the turn ─────── */
+
+.ob-status {
+  display: inline-block;
+  max-width: 100%;
+  margin: 2px 0 0;
+  padding: 8px 18px;
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--ob-hue) 13%, var(--es-surface));
+  color: var(--ob-hue-ink);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  animation: ob-fade-up 450ms ease both;
+}
+.ob-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 9px;
+  border-radius: 999px;
+  background: var(--ob-hue);
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+}
+
+/* The shared caption and note, centred under the status. */
+.ob-main .es-caption,
+.ob-main .es-note { margin-top: 2px; }
+
+.ob-controls { margin-top: 18px; }
+
+/* ── wide: the circle takes the room; the cue card sits beside it ───── */
+
+@container (min-width: 660px) {
+  .ob-card { padding: 24px 28px 28px; }
+  .ob-orbwrap { --ob-d: min(clamp(280px, 40cqw, 340px), 48svh); }
+  .es-stage[data-cue='on'] .ob-body {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 28px;
+  }
+  .es-stage[data-cue='on'] .ob-orbwrap { --ob-d: min(clamp(280px, 36cqw, 340px), 50svh); }
+  .es-stage[data-cue='on'] .ob-cuewrap .es-cue { animation-name: es-hand-across; }
+  .ob-body { margin-top: 12px; }
+  .ob-status { font-size: 17px; padding: 9px 22px; border-radius: 999px; }
+}
+
+/* ── the Tips drawer: the existing coach content, on demand ─────────── */
+
+.ob-drawer {
+  position: fixed;
+  top: 112px;
+  right: 20px;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  width: min(390px, calc(100vw - 40px));
+  max-height: calc(100svh - 112px - 96px);
+  border: 1px solid var(--color-border, #dedfd7);
+  border-radius: 20px;
+  background: var(--color-surface, #fffefa);
+  box-shadow: 0 24px 60px -24px rgb(38 60 53 / 45%), 0 2px 8px rgb(38 60 53 / 8%);
+  animation: ob-drawer-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.ob-drawer[hidden] { display: none; }
+@keyframes ob-drawer-in {
+  from { opacity: 0; transform: translate3d(12px, 0, 0); }
+  to { opacity: 1; transform: none; }
+}
+.ob-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 10px 10px 18px;
+  border-bottom: 1px solid var(--color-border, #dedfd7);
+  color: var(--color-ink, #202522);
+  font-size: 14px;
+}
+.ob-drawer-close {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  color: var(--color-ink-muted, #69706c);
+  transition: background-color 160ms ease;
+}
+.ob-drawer-close:hover { background: var(--color-surface-alt, #f8f7f3); }
+.ob-drawer-close:focus-visible { outline: 2px solid var(--color-ink, #202522); outline-offset: -2px; }
+.ob-drawer-body { display: grid; gap: 12px; overflow-y: auto; padding: 14px 16px 18px; overscroll-behavior: contain; }
+/* The coach panel brings its own card; inside the drawer it is just content. */
+.ob-drawer-body > div:last-child {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* ── phones ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 720px) {
+  .ob-card { padding: 14px 14px 16px; border-radius: 20px; }
+  .ob-body { gap: 10px; margin-top: 4px; }
+  .ob-orbwrap { --ob-d: min(clamp(220px, 74cqw, 260px), 42svh); }
+  .ob-status { font-size: 16px; padding: 7px 16px; }
+  .ob-controls { margin-top: 14px; }
+  /* Part 2 on a phone: the card needs room under the circle, so the circle
+     steps down a little (it stays the largest thing on screen). */
+  .es-stage[data-cue='on'] .ob-orbwrap { --ob-d: min(clamp(190px, 60cqw, 220px), 34svh); }
+  .es-stage[data-cue='on'] .ob-main { gap: 6px; }
+  /* The coach opens as a sheet from the bottom edge. */
+  .ob-drawer {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    max-height: 72svh;
+    border-radius: 22px 22px 0 0;
+    border-bottom: 0;
+    animation-name: ob-sheet-in;
+  }
+}
+@keyframes ob-sheet-in {
+  from { opacity: 0; transform: translate3d(0, 24px, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ── reduced motion: nothing loops; each state still shows whose turn it is ─ */
+
+@media (prefers-reduced-motion: reduce) {
+  .ob-aura,
+  .ob-breathe,
+  .ob-ripple,
+  .ob-float,
+  .ob-status,
+  .ob-core-icon,
+  .ob-drawer { animation: none; }
+  .ob-card,
+  .ob-aura,
+  .ob-tips-btn { transition: none; }
+  /* Held poses (the loop writes nothing in this mode). */
+  .ob-aura-hot { opacity: 0; }
+  .ob-card[data-mode='speaking'] .ob-aura-hot { opacity: 0.7; }
+  .ob-card[data-mode='speaking'] .ob-glow { opacity: 0.85; transform: scale(1.25); }
+  .ob-card[data-mode='listening'] .ob-micring { opacity: 0.9; transform: scale(1.14); }
+  .ob-ripple { transform: scale(1.12); opacity: 0.55; }
+  .ob-ripple:nth-of-type(n + 2) { display: none; }
+}

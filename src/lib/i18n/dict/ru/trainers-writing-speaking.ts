@@ -242,6 +242,8 @@ export const strings: Record<string, string> = {
   'Prepare your talk:': 'Подготовьте своё выступление:',
   '{name} is speaking: listen': '{name} говорит: слушайте',
   'Your turn: speak': 'Ваша очередь: говорите',
+  'Tips': 'Подсказки',
+  'Close tips': 'Закрыть подсказки',
   'Hide captions': 'Скрыть субтитры',
   'Show captions': 'Показать субтитры',
   "I'm ready, start speaking": 'Я готов, начинаю говорить',
