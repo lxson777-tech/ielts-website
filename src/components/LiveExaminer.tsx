@@ -406,6 +406,23 @@ export default function LiveExaminer({
     };
   }, []);
 
+  /* The connection report (src/lib/speaking/live/connection-report.ts):
+     numbers about the connection only, never audio or words. A session that
+     ends normally sends it from link.close(); a page being left or closed
+     mid-interview sends it here, while the browser still allows a beacon.
+     Invisible to the student and silent on any failure. */
+  useEffect(() => {
+    const onPageHide = () => {
+      try {
+        linkRef.current?.reportConnection?.();
+      } catch {
+        /* never the student's problem */
+      }
+    };
+    window.addEventListener('pagehide', onPageHide);
+    return () => window.removeEventListener('pagehide', onPageHide);
+  }, []);
+
   /* Mock embed: skip the own-menu screen entirely and start the interview
      the moment the config fetch above has settled (success or failure) —
      MockExam's brief screen already showed the "Start speaking test"

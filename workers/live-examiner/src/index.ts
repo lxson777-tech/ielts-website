@@ -131,6 +131,14 @@ import {
 } from '../../../src/lib/trial/gate';
 import { parseDirectorCue, nextStage, cueEvent, CueError } from '../../../src/lib/speaking/live/cues';
 import type { SessionStage } from '../../../src/lib/speaking/live/cues';
+import { MAX_REPORT_BYTES, sanitizeConnectionReport } from '../../../src/lib/speaking/live/connection-report';
+import {
+  logScheduled,
+  timedFetch,
+  withRequestLog,
+  type LogSink,
+  type RequestTrace,
+} from '../../../src/lib/observability/request-log';
 
 export interface Env {
   /** 'trial' makes live sessions the three-day trial's Speaking test (Alex,
@@ -169,6 +177,11 @@ export interface Deps {
       calls this. */
   sideband(env: Env, sessionId: string, event: Record<string, unknown>): Promise<{ ok: boolean; error?: string }>;
   now(): Date;
+  /** The request's log line (src/lib/observability/request-log.ts): labels
+      only. Absent in tests. */
+  trace?: RequestTrace;
+  /** Where POST /report writes its one line. console.log when absent. */
+  log?: LogSink;
 }
 
 const TOKEN_TTL_MIN = 30; // whole-test window (a full mock is ~12-14 min)
@@ -535,6 +548,7 @@ async function handleOpenAiCreate(deps: Deps, request: Request, env: Env, cors: 
     if (err instanceof PlanRequestError) return json({ error: err.message }, 400, cors);
     return json({ error: 'plan is invalid' }, 400, cors);
   }
+  deps.trace?.set('mode', plan.mode);
 
   const ttlMin = Number(env.LIVE_SESSION_TTL_MIN) || DEFAULT_TTL_MIN;
   const maxConcurrent = Number(env.LIVE_MAX_CONCURRENT_PER_USER) || DEFAULT_MAX_CONCURRENT_PER_USER;
@@ -740,6 +754,7 @@ async function handleDirect(deps: Deps, request: Request, env: Env, cors: Record
     if (err instanceof CueError) return json({ error: err.message }, 400, cors);
     return json({ error: 'cue is invalid' }, 400, cors);
   }
+  deps.trace?.set('cue', cue.type);
 
   let row: SessionRow | null;
   try {
@@ -841,6 +856,57 @@ async function handleEnd(deps: Deps, request: Request, env: Env, cors: Record<st
   }
 
   return json(givenBack ? { ok: true, trial: { interviewGivenBack: true } } : { ok: true }, 200, cors);
+}
+
+/* -- POST /report: the browser's connection report --------------------
+   One small summary per live session, sent by the browser when it ends
+   (src/lib/speaking/live/connection-report.ts): connection numbers only,
+   never audio, words or ids. It is LOGGED and nothing else: it changes no
+   limit, no record and no allowance, and nothing reads it back. No sign-in
+   is needed (a beacon sent while the page closes cannot carry one), so it
+   is size-capped, rebuilt from known fields by sanitizeConnectionReport
+   (whatever else was sent is dropped unseen), and rate-limited per
+   connection. The limit is kept in this Worker instance's memory only, the
+   address is never written anywhere, and it is best-effort by design: the
+   worst a flood can do is add log lines, which the cap per instance
+   bounds. */
+const REPORT_WINDOW_MS = 10 * 60_000;
+const REPORT_MAX_PER_SOURCE = 6;
+const REPORT_SOURCES_CAP = 5000;
+const reportSources = new Map<string, { count: number; since: number }>();
+
+/** Exported for tests. True when this source may send one more report. */
+export function reportAllowed(
+  source: string,
+  nowMs: number,
+  store: Map<string, { count: number; since: number }> = reportSources,
+): boolean {
+  const entry = store.get(source);
+  if (!entry || nowMs - entry.since >= REPORT_WINDOW_MS) {
+    if (store.size >= REPORT_SOURCES_CAP) store.clear();
+    store.set(source, { count: 1, since: nowMs });
+    return true;
+  }
+  if (entry.count >= REPORT_MAX_PER_SOURCE) return false;
+  entry.count += 1;
+  return true;
+}
+
+async function handleReport(deps: Deps, request: Request, cors: Record<string, string>): Promise<Response> {
+  const source = request.headers.get('CF-Connecting-IP') ?? 'unknown';
+  if (!reportAllowed(source, deps.now().getTime())) return new Response(null, { status: 429, headers: cors });
+  const parsed = await readJsonBody(request, MAX_REPORT_BYTES);
+  if (!parsed.ok) return json({ error: parsed.error }, parsed.error === 'Request body is too large' ? 413 : 400, cors);
+  const report = sanitizeConnectionReport(parsed.value);
+  if (!report) return json({ error: 'Not a connection report' }, 400, cors);
+  deps.trace?.set('mode', report.mode);
+  const log: LogSink = deps.log ?? ((line) => console.log(line));
+  try {
+    log({ event: 'live-connection-report', worker: 'live-examiner', ...report });
+  } catch {
+    /* a log that fails is not the browser's problem */
+  }
+  return new Response(null, { status: 204, headers: cors });
 }
 
 /** Real sideband delivery: attaches to a running OpenAI session over the
@@ -965,6 +1031,7 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
 
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, '') || '/';
+    deps.trace?.set('provider', resolveProvider(env));
 
     if (request.method === 'GET') {
       if (path !== '/') return json({ error: 'Not found' }, 404, cors);
@@ -983,6 +1050,8 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
     }
 
     switch (path) {
+      case '/report':
+        return handleReport(deps, request, cors);
       case '/':
         return handleCreate(deps, request, env, cors);
       case '/direct':
@@ -1034,9 +1103,39 @@ export async function closeOverdueTrialSessions(deps: Deps, env: Env): Promise<{
   return { closed, failed };
 }
 
+/** Times a sideband delivery into the request's trace ('openai sideband',
+    101 when OpenAI acknowledged it, 0 when it did not). */
+function timedSideband(sideband: Deps['sideband'], trace: RequestTrace): Deps['sideband'] {
+  return async (env, sessionId, event) => {
+    const started = Date.now();
+    const result = await sideband(env, sessionId, event);
+    trace.call({ to: 'openai sideband', status: result.ok ? 101 : 0, ms: Date.now() - started });
+    return result;
+  };
+}
+
+function tracedDeps(deps: Deps, trace: RequestTrace): Deps {
+  return { ...deps, fetch: timedFetch(deps.fetch, trace), sideband: timedSideband(deps.sideband, trace), trace };
+}
+
+/** The deployed handler: createHandler with every outbound call timed and
+    one structured log line per request (src/lib/observability/request-log.ts). */
+export function createLoggedHandler(deps: Deps = defaultDeps) {
+  return withRequestLog<Env>('live-examiner', (request, env, trace) => createHandler(tracedDeps(deps, trace)).fetch(request, env));
+}
+
+/** The minute sweep, logged only when it closed or failed to close
+    something: in open mode (and on a quiet minute) it writes nothing of its
+    own, so 1,440 runs a day do not fill the log. */
+export function runScheduled(env: Env, deps: Deps = defaultDeps) {
+  return logScheduled('live-examiner', (trace) => closeOverdueTrialSessions(tracedDeps(deps, trace), env), {
+    skip: (result) => result.closed === 0 && result.failed === 0,
+  });
+}
+
 export default {
-  fetch: (request: Request, env: Env) => createHandler(defaultDeps).fetch(request, env),
+  fetch: createLoggedHandler(),
   scheduled: async (_controller: unknown, env: Env) => {
-    await closeOverdueTrialSessions(defaultDeps, env);
+    await runScheduled(env);
   },
 };

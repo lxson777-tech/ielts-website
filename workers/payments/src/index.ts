@@ -34,6 +34,7 @@
    back. */
 
 import { TrialServiceError, bearer, serviceRpc, verifyAccessToken, type TrialRpc } from '../../../src/lib/trial/gate';
+import { errorName, timedFetch, withRequestLog } from '../../../src/lib/observability/request-log';
 
 export interface Env {
   ALLOWED_ORIGINS: string; // vars, comma-separated
@@ -381,7 +382,7 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
       }
     } catch (err) {
       if (err instanceof SignInRequired) return refuse(401, 'sign-in-required', 'Sign in again.', cors);
-      if (!(err instanceof TrialServiceError)) console.error('payments: unexpected failure', err instanceof Error ? err.message : 'unknown');
+      if (!(err instanceof TrialServiceError)) console.error('payments: unexpected failure', errorName(err));
       // Fail closed. For a webhook, 503 tells the provider to try again later.
       return refuse(503, 'unavailable', 'Payments could not be reached just now. Nothing has changed. Try again shortly.', cors);
     }
@@ -391,6 +392,14 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
   return { fetch: handle };
 }
 
+/** The deployed handler: createHandler with every outbound call timed and
+    one structured log line per request (src/lib/observability/request-log.ts). */
+export function createLoggedHandler(deps: Deps = { fetch: (input, init) => fetch(input, init) }) {
+  return withRequestLog<Env>('payments', (request, env, trace) =>
+    createHandler({ ...deps, fetch: timedFetch(deps.fetch, trace) }).fetch(request, env),
+  );
+}
+
 export default {
-  fetch: (request: Request, env: Env) => createHandler({ fetch: (input, init) => fetch(input, init) }).fetch(request, env),
+  fetch: createLoggedHandler(),
 };

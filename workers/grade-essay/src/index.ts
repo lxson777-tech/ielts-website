@@ -31,6 +31,7 @@ import {
   verifyAccessToken,
 } from '../../../src/lib/trial/gate';
 import { task1Visuals, withoutInlineImages, type Task1Visual } from './task1-visual';
+import { NO_TRACE, timedFetch, withRequestLog, type RequestTrace } from '../../../src/lib/observability/request-log';
 
 export interface Env {
   /** 'openai' (default) | 'gemini'. */
@@ -1025,7 +1026,8 @@ async function gradeOnceGemini(
 /** Builds the request handler against injected dependencies, so tests can
     stub `fetch` without a real network call. Mirrors
     workers/live-examiner's createHandler(deps) / defaultDeps pattern. */
-export function createHandler(deps: { fetch: typeof fetch }) {
+export function createHandler(deps: { fetch: typeof fetch; trace?: RequestTrace }) {
+  const trace = deps.trace ?? NO_TRACE;
   return {
     async fetch(request: Request, env: Env): Promise<Response> {
       const cors = corsHeaders(request.headers.get('Origin'), env);
@@ -1058,6 +1060,10 @@ export function createHandler(deps: { fetch: typeof fetch }) {
       }
 
       const provider = resolveProvider(env);
+      /* Labels only, for the request's log line (src/lib/observability). */
+      trace.set('task', task);
+      trace.set('provider', provider);
+      trace.set('model', provider === 'openai' ? env.OPENAI_MODEL || 'gpt-5.6-terra' : env.GEMINI_MODEL ?? null);
       if (provider === 'openai' && !env.OPENAI_API_KEY) {
         return json({ error: 'The essay grader is not configured' }, 503, cors);
       }
@@ -1098,7 +1104,7 @@ export function createHandler(deps: { fetch: typeof fetch }) {
          shared by every sample. None found: graded on the text, as before. */
       const visuals =
         task === 'task1' ? await task1Visuals(deps.fetch, env, body.prompt.promptHtml, request.headers.get('Origin')) : [];
-      if (task === 'task1') console.log(`[grade-essay] task1 visuals attached: ${visuals.length}`);
+      if (task === 'task1') trace.set('visuals', visuals.length);
       const systemText = systemInstruction(task, body.prompt.variant, visuals.length);
       const userText = userMessage(body, visuals.length);
 
@@ -1111,6 +1117,7 @@ export function createHandler(deps: { fetch: typeof fetch }) {
          the lower wins, matching the examiner's "award the lower between
          bands" rule. Mirrors workers/grade-speaking. */
       const samples = Math.max(1, Math.min(5, parseInt(env.GRADING_SAMPLES ?? '3', 10) || 3));
+      trace.set('samples', samples);
       const gradeOnce = (): Promise<GradeOnceResult> =>
         provider === 'openai'
           ? gradeOnceOpenAi(modelFetch, env, systemText, userText, visuals)
@@ -1124,6 +1131,7 @@ export function createHandler(deps: { fetch: typeof fetch }) {
         throw err;
       }
       const good = runs.filter((r): r is { assessment: Record<string, unknown> } => 'assessment' in r);
+      trace.set('graded', good.length);
 
       if (good.length === 0) {
         const firstFail = runs.find((r): r is { failStatus: number; failError: string } => 'failStatus' in r)!;
@@ -1156,6 +1164,12 @@ export function createHandler(deps: { fetch: typeof fetch }) {
 // it in a plain arrow function rather than referencing it directly.
 export const defaultDeps: { fetch: typeof fetch } = { fetch: (input, init) => fetch(input, init) };
 
-const handler = createHandler(defaultDeps);
+/** The deployed handler: the one above, with every outbound call timed and
+    one structured log line per request (src/lib/observability/request-log.ts). */
+export function createLoggedHandler(deps: { fetch: typeof fetch } = defaultDeps) {
+  return withRequestLog<Env>('grade-essay', (request, env, trace) =>
+    createHandler({ ...deps, fetch: timedFetch(deps.fetch, trace), trace }).fetch(request, env),
+  );
+}
 
-export default { fetch: handler.fetch };
+export default { fetch: createLoggedHandler() };

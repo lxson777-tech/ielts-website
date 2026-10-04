@@ -65,6 +65,7 @@
    page and gets a fresh one. */
 
 import { bearer, serviceRpc, verifyAccessToken, TrialServiceError, PAID_REQUIRED_TEXT } from '../../../src/lib/trial/gate';
+import { timedFetch, withRequestLog } from '../../../src/lib/observability/request-log';
 
 /** What the handler needs from the private store: R2Bucket.get's shape. A
     ranged read returns just those bytes; `size` is always the whole object. */
@@ -353,6 +354,14 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
   return { fetch: handle };
 }
 
+/** The deployed handler: createHandler with every outbound call timed and
+    one structured log line per request (src/lib/observability/request-log.ts). */
+export function createLoggedHandler(deps: Deps = { fetch: (input, init) => fetch(input, init) }) {
+  return withRequestLog<Env>('content-gate', (request, env, trace) =>
+    createHandler({ ...deps, fetch: timedFetch(deps.fetch, trace) }).fetch(request, env),
+  );
+}
+
 export default {
-  fetch: (request: Request, env: Env) => createHandler({ fetch: (input, init) => fetch(input, init) }).fetch(request, env),
+  fetch: createLoggedHandler(),
 };

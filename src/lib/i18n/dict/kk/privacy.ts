@@ -197,6 +197,11 @@ export const strings: Record<string, string> = {
     'Тек бір нәрсе сақталады: әр төлемнің жазбасы (тариф, сома, күні және түбіртек нөмірі) атыңыз бен электрондық поштаңызсыз 5 жыл сақталады, себебі салық заңнамасы сату жазбаларын сақтауды талап етеді.',
   'The site has no button for deleting an account yet. To ask about removing your account or your information, use the support form.':
     'Сайтта аккаунтты жоюға арналған батырма әзірге жоқ. Аккаунтыңызды немесе деректеріңізді жою туралы сұрау үшін қолдау формасын пайдаланыңыз.',
+  'Service logs': 'Қызметтік журналдар',
+  'Kept by Cloudflare for up to 7 days, then deleted automatically.':
+    'Cloudflare оларды 7 күнге дейін сақтайды, содан кейін олар автоматты түрде жойылады.',
+  'The site’s services on Cloudflare keep short technical logs for up to 7 days, to find faults and slow connections: when each request came, how long it took, whether it worked, and your connection’s address. During a live interview your browser also sends one short summary of the connection’s quality (delays, lost sound, phone or computer), never your voice or your words. Your essays, recordings and messages are never in these logs.':
+    'Сайттың Cloudflare-дағы сервистері ақаулар мен баяу байланысты табу үшін қысқа техникалық журналдарды 7 күнге дейін сақтайды: әр сұрау қашан келгені, қанша уақыт алғаны, сәтті өткені және байланысыңыздың мекенжайы. Тікелей сұхбат кезінде браузеріңіз байланыс сапасы туралы бір қысқа есеп те жібереді (кідірістер, жоғалған дыбыс, телефон немесе компьютер), бірақ дауысыңызды немесе сөздеріңізді ешқашан жібермейді. Эсселеріңіз, жазбаларыңыз және хабарламаларыңыз бұл журналдарда ешқашан болмайды.',
 };
 
 export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {};

@@ -15,6 +15,17 @@
   "name": "ielts-support",
   "main": "src/index.ts",
   "compatibility_date": "2026-07-01",
+  // Cloudflare Workers Logs (4 October 2026, approved by Alex): keeps this
+  // Worker's log lines and one invocation log per request (method, path,
+  // status, timing; Cloudflare redacts Authorization, cookies and any
+  // header named like a key or token) for a few days, readable in the
+  // dashboard under Observability. head_sampling_rate 1 keeps every
+  // request. What this Worker itself logs is one structured line per
+  // request (src/lib/observability/request-log.ts): labels, statuses and
+  // timings, never an essay, a transcript, audio, a name or a token
+  // (tests/worker-log-privacy.test.ts). To stop the per-request invocation
+  // logs but keep those lines, add "logs": { "invocation_logs": false }.
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
   // Once an hour: erase source hashes that are older than the daily limit
   // needs (cleanup in src/index.ts, support_source_cleanup in the database).
   "triggers": { "crons": ["17 * * * *"] },

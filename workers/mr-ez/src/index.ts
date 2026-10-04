@@ -118,6 +118,7 @@ import { parseAccessMode } from '../../../src/lib/trial/offer';
 import { TrialRefusal, TrialServiceError, paidAccessRunning, paidRequired, serviceRpc } from '../../../src/lib/trial/gate';
 import type { ContentLocale as Locale } from '../../../src/lib/i18n/locale';
 import type { ProgressV1 } from '../../../src/lib/progress';
+import { errorName, timedFetch, withRequestLog, type RequestTrace } from '../../../src/lib/observability/request-log';
 import type { SavedPlan } from '../../../src/lib/study-plan';
 /* The learning layer. Every one of these is pure: the browser entry point
    (src/lib/learning/index.ts) is deliberately NOT imported here, because its
@@ -236,6 +237,9 @@ export interface Deps {
   fetch: typeof fetch;
   now(): Date;
   uuid(): string;
+  /** The request's log line (src/lib/observability/request-log.ts): the
+      task name only. Absent in tests. */
+  trace?: RequestTrace;
 }
 
 export const defaultDeps: Deps = {
@@ -883,7 +887,7 @@ async function loadLearningState(
     /* A learning table that exists but could not be read is not a reason to
        answer with a different student's plan or with none: fall back to the
        derivation, which uses data we already have in hand. */
-    console.error('mr-ez: learning tables unreadable, deriving instead', err instanceof Error ? err.message : 'unknown');
+    console.error('mr-ez: learning tables unreadable, deriving instead', err instanceof SupabaseError ? err.message : errorName(err));
     storedPlan = null;
     storedEvents = null;
     storedVocab = null;
@@ -1794,11 +1798,13 @@ export function createHandler(deps: Deps) {
          everything that protects a turn is shared, not copied. */
       if (isRecord(body) && isLearningTask(body.task)) {
         const learningReq = parseLearningRequest(body);
+        deps.trace?.set('task', learningReq.task);
         const reply = await withTrial(deps, env, userId, () => runLearningTurn(deps, env, userId, learningReq));
         return json(reply, 200, cors);
       }
 
       const req = parseTutorRequest(body);
+      deps.trace?.set('task', req.task);
 
       const reply = await withTrial(deps, env, userId, () => runTurn(deps, env, userId, req));
       return json(reply, 200, cors);
@@ -1830,7 +1836,8 @@ export function createHandler(deps: Deps) {
         console.error('mr-ez: supabase failure', err.message);
         return fail('unavailable', 'Mr EZ cannot reach your records right now. Try again shortly.', cors);
       }
-      console.error('mr-ez: unexpected failure', err instanceof Error ? err.message : 'unknown');
+      /* The class only: a message can quote the input that failed. */
+      console.error('mr-ez: unexpected failure', errorName(err));
       return fail('unavailable', 'Something went wrong. Try again in a moment.', cors);
     }
   };
@@ -2893,9 +2900,19 @@ async function maybeSummarise(
   }
 }
 
+/** The deployed handler: createHandler with every outbound call timed and
+    one structured log line per request (src/lib/observability/request-log.ts). */
+export function createLoggedHandler(deps: Deps = defaultDeps) {
+  return withRequestLog<Env>('mr-ez', (request, env, trace) =>
+    createHandler({ ...deps, fetch: timedFetch(deps.fetch, trace), trace })(request, env),
+  );
+}
+
+const loggedHandler = createLoggedHandler();
+
 export default {
   fetch(request: Request, env: Env): Promise<Response> {
-    return createHandler(defaultDeps)(request, env);
+    return loggedHandler(request, env);
   },
 };
 
