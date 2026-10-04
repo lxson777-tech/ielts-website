@@ -34,9 +34,17 @@ import SessionContinueBar from './learning/SessionContinueBar';
 
 type Paper = 'writing' | 'speaking';
 
+/* Each paper keeps its own skill colour, the same as everywhere else on the
+   site, so the choice reads at a glance and the criterion row and band buttons
+   below follow it. */
+const PAPER_COLOR: Record<Paper, string> = {
+  writing: 'var(--color-writing)',
+  speaking: 'var(--color-speaking)',
+};
+
 const PAPERS: TabDef[] = [
-  { id: 'writing', label: 'Writing' },
-  { id: 'speaking', label: 'Speaking' },
+  { id: 'writing', label: 'Writing', color: PAPER_COLOR.writing },
+  { id: 'speaking', label: 'Speaking', color: PAPER_COLOR.speaking },
 ];
 
 /* Task 1 is marked on Task Achievement and Task 2 on Task Response. The guides
@@ -200,6 +208,7 @@ export default function BandLadder() {
 
       <Tabs
         tabs={paper === 'writing' ? WRITING_TABS : SPEAKING_TABS}
+        accent={PAPER_COLOR[paper]}
         active={criterion}
         onChange={paper === 'writing' ? setWritingCriterion : setSpeakingCriterion}
       />
@@ -212,10 +221,11 @@ export default function BandLadder() {
             type="button"
             onClick={() => setFrom(b)}
             aria-pressed={from === b}
-            className={`rounded-full px-3.5 py-1.5 text-sm font-bold transition-colors ${
+            style={from === b ? { backgroundColor: PAPER_COLOR[paper], borderColor: PAPER_COLOR[paper] } : undefined}
+            className={`rounded-full border px-3.5 py-1.5 text-sm font-bold transition-colors ${
               from === b
-                ? 'bg-brand text-white'
-                : 'border border-border bg-surface text-ink-muted hover:border-brand hover:text-brand'
+                ? 'text-white'
+                : 'border-border bg-surface text-ink-muted hover:text-ink'
             }`}
           >
             {t('Band {n}', { n: b })}

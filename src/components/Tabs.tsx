@@ -1,29 +1,41 @@
-import { useRef } from 'react';
+import { useId, useRef } from 'react';
 import { motion, MotionConfig } from 'framer-motion';
 import { useT } from '../lib/i18n/react';
 
 export interface TabDef {
   id: string;
   label: string;
+  /** Optional colour for this tab's highlight when it is active, as a CSS
+      colour (usually a skill token, e.g. 'var(--color-speaking)'). */
+  color?: string;
 }
 
-/** Generic accessible tab switcher — a sliding brand-coloured indicator tracks the
+/** Generic accessible tab switcher — a sliding coloured indicator tracks the
     active tab via framer-motion's layoutId, arrow keys move focus between tabs per
     the WAI-ARIA tabs pattern. Presentational only: the parent owns which panel is
-    shown for the active id. */
+    shown for the active id.
+
+    Each instance has its own layoutId. Until 4 October 2026 every instance shared
+    "tabs-indicator", so a page with two tab rows (the band guide: paper, then
+    criterion) had one indicator fly between the rows and left the other row's
+    active tab as white text on the pale track, which read as the tab vanishing. */
 export default function Tabs({
   tabs,
   active,
   onChange,
   className,
+  accent,
 }: {
   tabs: TabDef[];
   active: string;
   onChange: (id: string) => void;
   className?: string;
+  /** The highlight colour for every tab in this row that has no colour of its own. */
+  accent?: string;
 }) {
   const { t: translateText } = useT();
   const listRef = useRef<HTMLDivElement>(null);
+  const indicatorId = `tabs-indicator-${useId()}`;
 
   function onKeyDown(e: React.KeyboardEvent) {
     const i = tabs.findIndex((t) => t.id === active);
@@ -49,6 +61,7 @@ export default function Tabs({
       >
         {tabs.map((t) => {
           const isActive = t.id === active;
+          const color = t.color ?? accent;
           return (
             <button
               key={t.id}
@@ -63,9 +76,10 @@ export default function Tabs({
             >
               {isActive && (
                 <motion.span
-                  layoutId="tabs-indicator"
+                  layoutId={indicatorId}
                   transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
                   className="absolute inset-0 rounded-button bg-brand"
+                  style={color ? { backgroundColor: color } : undefined}
                 />
               )}
               <span className={`relative ${isActive ? 'text-white' : 'text-ink-muted hover:text-ink'}`}>{translateText(t.label)}</span>
