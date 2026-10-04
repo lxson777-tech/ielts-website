@@ -1829,12 +1829,16 @@ export default function LiveExaminer({
     !!cue &&
     (stage === 'part2prep' || stage === 'part2talk' || (stage === 'wrapup' && modeRef.current === 'part2'));
 
+  /* The cue card's own wording stays English in every language, exactly as on
+     the exam paper (the topic and bullets come from the card data). */
+  const CUE_CARD_PROMPT = 'You should say:';
+
   const cueCard =
     showCueCard && cue ? (
       <section aria-label={t('Cue card')}>
         <p className="es-cue-title" lang="en">{cue.topic}</p>
         {/* English as printed on the real exam paper, like the topic and bullets. */}
-        <p className="es-cue-label mt-2" lang="en">You should say:</p>
+        <p className="es-cue-label mt-2" lang="en">{CUE_CARD_PROMPT}</p>
         <ul lang="en">
           {cue.bullets.map((b) => (
             <li key={b}>{b}</li>
