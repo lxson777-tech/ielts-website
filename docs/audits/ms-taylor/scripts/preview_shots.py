@@ -8,7 +8,7 @@ preview feeds synthetic audio levels, so every scene can be photographed.
 
 Default base: http://127.0.0.1:4600/ielts-website. Screens land in
 docs/audits/ms-taylor/screens/ as preview-<state>-<lang>-<width>.png, plus a
-frame sequence of her mouth while she speaks (mouth-<n>.png) and a JSON log
+frame sequence of her mouth while she speaks (mouth/preview-<n>.png) and a JSON log
 of the frames the stage showed.
 """
 import json
@@ -53,6 +53,18 @@ def wait_frame(page, frames, timeout=12000):
     page.wait_for_function(js, arg=frames, timeout=timeout)
 
 
+def wait_scene(page, scene, timeout=12000):
+    js = "(s) => document.querySelector('.es-card')?.dataset.scene === s"
+    page.wait_for_function(js, arg=scene, timeout=timeout)
+
+
+def force_frame(page, frame):
+    """Shows one frame by hand (the judgement shots only)."""
+    page.evaluate("""(f) => { const card = document.querySelector('.es-card');
+      card.querySelectorAll('.es-frame').forEach(img => { const on = img.src.includes('/' + f + '.webp');
+        img.classList.toggle('is-on', on); img.classList.toggle('is-top', on); img.classList.add('no-fade'); }); }""", frame)
+
+
 def fits(page):
     """Is everything the student needs inside the first screen, uncovered?"""
     return page.evaluate("""() => {
@@ -84,9 +96,12 @@ with sync_playwright() as pw:
                 open_state(page, state)
                 if state == "part1":
                     # her turn to speak, then the student's, then the pause
-                    for want, name in ((["speak1", "speak2", "speak3"], "speaking"), (["listen", "blink"], "your-turn"), (["glance"], "pause")):
+                    for want, name in ((["speak1", "speak2", "speak3"], "speaking"), ("your-turn", "your-turn"), ("pause", "pause")):
                         try:
-                            wait_frame(page, want)
+                            if isinstance(want, str):
+                                wait_scene(page, want)
+                            else:
+                                wait_frame(page, want)
                             # the 250 ms status poll catches up
                             page.wait_for_timeout(320 if name != "pause" else 60)
                         except Exception as e:  # noqa: BLE001
@@ -98,11 +113,29 @@ with sync_playwright() as pw:
                     continue
                 if state == "talk":
                     page.wait_for_timeout(2500)
+                if state == "part3":
+                    try:
+                        wait_scene(page, "discussion")
+                        page.wait_for_timeout(500)
+                    except Exception as e:  # noqa: BLE001
+                        print("no discussion", e)
                 p = OUT / f"preview-{state}-{lang}-{size}.png"
                 page.screenshot(path=str(p))
                 results[f"{state}-{lang}-{size}"] = {"frame": page.evaluate("document.querySelector('.es-card').dataset.frame"), **fits(page)}
                 print(p)
             c.close()
+
+    # The glance judgement: the drawn `glance` against `listen`, in the card.
+    for size in SIZES:
+        c = ctx(browser, "en", size)
+        page = c.new_page()
+        open_state(page, "part1")
+        wait_scene(page, "your-turn")
+        page.wait_for_timeout(400)
+        for f in ("glance", "listen"):
+            force_frame(page, f)
+            page.locator(".es-tile-her").screenshot(path=str(OUT / f"judgement-{f}-{size}.png"))
+        c.close()
 
     # Her mouth moving: a sequence of frames while she speaks (desktop, English).
     c = ctx(browser, "en", "1440")
@@ -110,12 +143,13 @@ with sync_playwright() as pw:
     open_state(page, "part1")
     wait_frame(page, ["speak1", "speak2", "speak3"])
     tile = page.locator(".es-tile-her")
+    (OUT / "mouth").mkdir(exist_ok=True)
     seq = []
-    for i in range(16):
+    for i in range(24):
         f = page.evaluate("document.querySelector('.es-card').dataset.frame")
         seq.append(f)
-        tile.screenshot(path=str(OUT / f"mouth-{i:02d}-{f}.png"))
-        page.wait_for_timeout(90)
+        tile.screenshot(path=str(OUT / "mouth" / f"preview-{i:02d}.png"))
+        page.wait_for_timeout(60)
     results["mouth-sequence"] = seq
     # The frame log over one full preview cycle, sampled every animation frame.
     log = page.evaluate("""() => new Promise(res => { const out = []; const t0 = performance.now();

@@ -1,0 +1,93 @@
+{
+  "drill-ru-1440": {
+    "connecting": {
+      "live": "true",
+      "exam": "true",
+      "session": "active",
+      "launcherVisible": true,
+      "dockVisible": false,
+      "headingVisible": false,
+      "status": "Подключаем вас к Ms. Taylor…",
+      "label": "Подключение к звонку"
+    },
+    "speaking": {
+      "live": "true",
+      "exam": "true",
+      "session": "active",
+      "launcherVisible": true,
+      "dockVisible": false,
+      "headingVisible": false,
+      "status": "Ms. Taylor говорит: слушайте",
+      "label": "Part 1 · Интервью"
+    },
+    "your-turn": {
+      "live": "true",
+      "exam": "true",
+      "session": "active",
+      "launcherVisible": true,
+      "dockVisible": false,
+      "headingVisible": false,
+      "status": "Ваша очередь: говорите",
+      "label": "Part 1 · Интервью"
+    },
+    "closing": {
+      "live": "true",
+      "exam": "true",
+      "session": "active",
+      "launcherVisible": true,
+      "dockVisible": false,
+      "headingVisible": false,
+      "status": "На этом тест окончен.",
+      "label": "Завершение…"
+    },
+    "closed": {
+      "live": "true",
+      "exam": "true",
+      "session": "active",
+      "launcherVisible": true,
+      "dockVisible": false,
+      "headingVisible": false,
+      "status": "На этом тест окончен.",
+      "label": "Завершение…"
+    },
+    "grading": {
+      "live": null,
+      "exam": null,
+      "session": null,
+      "launcherVisible": true,
+      "dockVisible": false,
+      "headingVisible": true,
+      "status": null,
+      "label": null
+    },
+    "report": {
+      "live": null,
+      "exam": null,
+      "session": null,
+      "launcherVisible": true,
+      "dockVisible": false,
+      "headingVisible": true,
+      "status": null,
+      "label": null
+    },
+    "report-mrez": {
+      "explainButton": true,
+      "note": null,
+      "avatar": true
+    },
+    "explain": {
+      "answer": "MR EZ\nСимуляция, это не настоящий ответ ИИ\n\nСимулированный ответ репетитора от локального dev-сервера. Запрос к ИИ не отправлялся. Разбирается результат (speaking), записанный 2026-10-04T12:55:20.313Z.\n\nЛюбой балл на этой платформе получен по ИИ-проверке и не является официальным результатом IELTS.\n",
+      "error": null
+    },
+    "fixture": {
+      "creates": 1,
+      "directs": [
+        "begin"
+      ],
+      "graded": 1
+    }
+  },
+  "errors": [
+    "drill-ru-1440: no pause seen (Page.wait_for_function: Timeout 6000ms exceeded.)"
+  ]
+}

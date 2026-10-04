@@ -40,7 +40,7 @@ export const EXAMINER_FRAMES: readonly ExaminerFrame[] = [
 export const EXAMINER_ART_SIZE = 768;
 
 /** Flip to true once every file in EXAMINER_ART exists in public/ms-taylor/. */
-export const hasExaminerArtwork = false;
+export const hasExaminerArtwork = true;
 
 /** Paths relative to the site base (the screen runs them through withBase). */
 export const EXAMINER_ART: Readonly<Record<ExaminerFrame, string>> = {

@@ -235,11 +235,28 @@ const ExaminerStage = forwardRef<ExaminerStageHandle, ExaminerStageProps>(functi
     [],
   );
 
+  /* The call opens with the stage at the top of the screen, just below the
+     workspace header (which stays on screen), wherever the page placed the
+     examiner: the trainer page mounts it further down, and the menu it
+     replaces was long. So on a phone the stage, the caption and the buttons
+     are all in view. Once, when the stage first appears. */
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      const el = rootRef.current;
+      if (!el) return;
+      const headerBottom = Math.max(0, document.querySelector('.ws-header')?.getBoundingClientRect().bottom ?? 0);
+      const top = el.getBoundingClientRect().top - headerBottom;
+      if (top >= 0 && top < 120) return;
+      window.scrollTo({ top: Math.max(0, window.scrollY + top - 8), behavior: reducedRef.current ? 'auto' : 'smooth' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
   const cueOn = Boolean(cueCard);
 
   return (
-    <div className="es-stage" data-cue={cueOn ? 'on' : 'off'}>
-      <div ref={rootRef} className="es-card" data-scene="" data-breathe="off" data-speaker="">
+    <div className="es-stage" data-cue={cueOn ? 'on' : 'off'} data-mic={micPaused ? 'paused' : 'on'}>
+      <div ref={rootRef} className="es-card" data-scene="" data-breathe="off" data-speaker="" data-art={useArt ? 'drawn' : 'placeholder'}>
         <div className="es-head">
           <span className="es-chip">{label}</span>
           {elapsed && <span className="es-clock">{elapsed}</span>}

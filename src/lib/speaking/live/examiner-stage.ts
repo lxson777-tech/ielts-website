@@ -17,8 +17,17 @@
    2. createFrameDriver: WHICH FRAME shows that scene, moment to moment. Her
       mouth follows her voice level in four bands (smoothed, and at most
       twelve changes a second), she blinks every four to six seconds while
-      she listens, and she glances at her notes in the pause between your
-      answer and her reply.
+      she listens, and in the pause between your answer and her reply she
+      blinks once and keeps looking at you.
+
+   WHY NOT `glance` IN THE PAUSE (4 October 2026). The plan said she glances
+   down at her notes there. The drawn `glance` frame has heavy lids and the
+   eyes turned down and to one side; seen in motion, the moment a student
+   stops talking, it reads as a sideways look at the answer rather than a
+   look at her notes, which is exactly the reaction to an answer she must
+   never have. So the pause (and the moment before the closing line) rests
+   on `listen` with one blink. `glance` stays in the contract and the frame
+   set: put it back in SCENE_FRAME if a redrawn frame looks plainly down.
 
    Reduced motion (prefers-reduced-motion): no blinks, no breathing and no
    crossfades (the stage swaps frames instantly), and while she speaks the
@@ -35,7 +44,7 @@ export type ExaminerScene =
   | 'connecting' // joining the call
   | 'speaking' // her voice is playing
   | 'your-turn' // she is listening to you
-  | 'pause' // you stopped a moment ago and she has not replied yet
+  | 'pause' // you stopped a moment ago and she has not replied yet (one blink)
   | 'prep' // the Part 2 preparation minute: she writes
   | 'talk' // your Part 2 talk: she listens
   | 'discussion' // Part 3: she leans in slightly
@@ -87,10 +96,10 @@ export const MOUTH_BANDS = { closed: 0.06, slight: 0.16, open: 0.3 } as const;
 export const MIC_SPEECH_LEVEL = 0.08;
 /** The student must have spoken this long in the turn for a pause to count. */
 export const MIN_ANSWER_MS = 600;
-/** Quiet this long after the student's speech before she glances down. */
+/** Quiet this long after the student's speech before it counts as the pause. */
 export const PAUSE_AFTER_MS = 700;
-/** She looks back up after this long, if she has still not replied (the
-    student may simply be thinking). */
+/** The pause ends after this long if she has still not replied (the
+    student may simply be thinking), and she is plainly listening again. */
 export const GLANCE_MAX_MS = 3500;
 /** Blinks while she listens: every four to six seconds, randomised. */
 export const BLINK_EVERY_MIN_MS = 4000;
@@ -128,17 +137,19 @@ export const SCENE_FRAME: Readonly<Record<ExaminerScene, ExaminerFrame>> = {
   connecting: 'greet',
   speaking: 'listen',
   'your-turn': 'listen',
-  pause: 'glance',
+  pause: 'listen',
   prep: 'write',
   talk: 'listen',
   discussion: 'lean',
-  finishing: 'glance',
+  finishing: 'listen',
   closed: 'close',
 };
 
 /** Scenes in which she blinks (only over `listen`, the frame `blink` is
     aligned with). */
-const BLINKING_SCENES: ReadonlySet<ExaminerScene> = new Set(['your-turn', 'talk', 'speaking']);
+const BLINKING_SCENES: ReadonlySet<ExaminerScene> = new Set(['your-turn', 'talk', 'speaking', 'pause', 'finishing']);
+/** Delay before the one blink that marks the pause. */
+export const PAUSE_BLINK_AFTER_MS = 120;
 
 /** Scenes in which the portrait breathes (a 1 to 2 percent scale, CSS). */
 export function sceneBreathes(scene: ExaminerScene): boolean {
@@ -187,6 +198,7 @@ export function createFrameDriver({ reducedMotion, random = Math.random }: Frame
   /* Blinks. */
   let nextBlinkAt: number | null = null;
   let blinkUntil = -Infinity;
+  let lastScene: ExaminerScene | null = null;
 
   const between = (min: number, max: number) => min + random() * (max - min);
 
@@ -211,6 +223,9 @@ export function createFrameDriver({ reducedMotion, random = Math.random }: Frame
         !sample.speaking && answerMs >= MIN_ANSWER_MS && quietFor >= PAUSE_AFTER_MS && quietFor < PAUSE_AFTER_MS + GLANCE_MAX_MS;
 
       const scene = pickScene(signals, sample.speaking, inPause);
+      /* The pause is marked by one blink, a moment after it begins. */
+      if (scene === 'pause' && lastScene !== 'pause') nextBlinkAt = now + PAUSE_BLINK_AFTER_MS;
+      lastScene = scene;
 
       let want: ExaminerFrame = SCENE_FRAME[scene];
       if (scene === 'speaking') {

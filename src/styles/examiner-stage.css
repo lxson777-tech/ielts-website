@@ -61,7 +61,7 @@
 
 .es-tile {
   position: relative;
-  border-radius: 18px;
+  border-radius: 20px;
   overflow: hidden;
   transition: box-shadow 200ms ease;
 }
@@ -78,20 +78,37 @@
 }
 .es-stage[data-cue='on'] .es-tile-her { aspect-ratio: 2 / 1; }
 /* The desk, continued across the whole tile: the portrait is square and the
-   tile is wider, so the desk edge drawn in the picture carries on to both
-   sides here. --es-desk is where the picture's desk edge sits, measured from
-   the bottom (the placeholder's is 34/320 of its height; set it to the real
-   artwork's once it arrives). */
-.es-tile-her { --es-desk: 10.625%; }
+   tile is wider, so the desk drawn in the picture carries on to both sides
+   here, at the same height and in the same colours. Measured from the
+   artwork (public/ms-taylor/*.webp, 768 x 768): the desk's dark top edge
+   starts at y 661 in every frame (13.93% of the height from the bottom) and
+   is about 4.5 px thick (4.2% of that band); the wood is #f3bc80. The
+   placeholder's desk is 34/320 of its height, edged in forest ink. */
+.es-tile-her {
+  --es-desk: 13.93%;
+  --es-desk-fill: #f3bc80;
+  --es-desk-line: #210b00;
+  --es-desk-edge: 4.2%;
+}
+.es-card[data-art='placeholder'] .es-tile-her {
+  --es-desk: calc(10.625% + 1px);
+  --es-desk-fill: #e2ddd0;
+  --es-desk-line: var(--es-ink);
+  --es-desk-edge: 2px;
+}
 .es-tile-her::before {
   content: '';
   position: absolute;
   inset: auto 0 0;
-  height: calc(var(--es-desk) + 1px);
-  border-top: 2px solid var(--es-ink);
-  background: #e2ddd0;
+  height: var(--es-desk);
+  background: linear-gradient(180deg, var(--es-desk-line) 0 var(--es-desk-edge), var(--es-desk-fill) var(--es-desk-edge));
   z-index: 0;
 }
+/* Part 2 on a narrow screen: the call shrinks to a speaker thumbnail, so
+   she is shown from the chest up (the desk is below the crop). */
+.es-stage[data-cue='on'] .es-frame,
+.es-stage[data-cue='on'] .es-ph { top: -3%; bottom: auto; height: 150%; }
+.es-stage[data-cue='on'] .es-tile-her::before { display: none; }
 
 .es-breathe,
 .es-figure {
@@ -228,7 +245,7 @@
 .es-cue {
   position: relative;
   border: 1px solid var(--es-border);
-  border-radius: 16px;
+  border-radius: 14px;
   background: var(--es-surface);
   padding: 16px 16px 18px;
   box-shadow: 0 14px 30px -24px rgb(38 60 53 / 45%);
@@ -242,12 +259,12 @@
 .es-cue-label { font-size: 12px; font-weight: 600; color: var(--es-muted); letter-spacing: 0.02em; }
 .es-cue ul { margin: 6px 0 0; padding: 0; list-style: none; display: grid; gap: 3px; font-size: 14px; color: var(--es-muted); }
 .es-cue li { display: flex; gap: 8px; }
-.es-cue li::before { content: ''; flex: none; width: 4px; height: 4px; margin-top: 0.62em; border-radius: 99px; background: currentColor; opacity: 0.6; }
+.es-cue li::before { content: ''; flex: none; width: 4px; height: 4px; margin-top: 0.62em; border-radius: 999px; background: currentColor; opacity: 0.6; }
 .es-cue textarea {
   margin-top: 10px;
   width: 100%;
   border: 1px solid var(--es-border);
-  border-radius: 12px;
+  border-radius: 14px;
   background: var(--es-canvas);
   padding: 10px 12px;
   font-size: 14px;
@@ -300,7 +317,7 @@
   flex: none;
   width: 8px;
   height: 8px;
-  border-radius: 99px;
+  border-radius: 999px;
   background: var(--es-muted);
   opacity: 0.5;
   transition: background-color 200ms ease, opacity 200ms ease;
@@ -366,6 +383,9 @@
   }
   .es-tile-her,
   .es-stage[data-cue='on'] .es-tile-her { aspect-ratio: 5 / 4; }
+  .es-stage[data-cue='on'] .es-frame,
+  .es-stage[data-cue='on'] .es-ph { top: auto; bottom: 0; height: 100%; }
+  .es-stage[data-cue='on'] .es-tile-her::before { display: block; }
   /* No cue card: the student's tile matches hers, centred. */
   .es-stage[data-cue='off'] .es-side { grid-template-rows: 1fr; }
   .es-stage[data-cue='off'] .es-tile-you {
@@ -383,6 +403,12 @@
 @keyframes es-hand-across {
   from { opacity: 0; transform: translate3d(-34%, 6px, 0) rotate(-3deg); }
   to { opacity: 1; transform: none; }
+}
+
+/* On a short desktop window (a laptop, or the drills with the coach
+   beside the stage) her tile never pushes the controls off the screen. */
+@media (min-width: 721px) {
+  .es-tile-her { max-height: 46vh; }
 }
 
 /* ── the placeholder portrait ───────────────────────────────────────── */
@@ -478,6 +504,12 @@ body[data-live-interview='true'] .section-heading,
 body[data-live-interview='true'] .skill-speaking > .skill-resource-card { display: none; }
 body[data-live-interview='true'] .skill-speaking { padding-top: 12px; }
 
+/* The shared signal with the recorded Speaking trainer (same selector as
+   its speaking-practice.css), so either screen hides the phone menu bar. */
+@media (max-width: 767px) {
+  body[data-speaking-session="active"] .ws-tabbar { display: none !important; }
+}
+
 @media (max-width: 720px) {
   body[data-live-interview='true'] .ws-tabbar,
   body[data-live-interview='true'] .mrez-launcher,
@@ -491,6 +523,8 @@ body[data-live-interview='true'] .skill-speaking { padding-top: 12px; }
   .es-controls { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); width: 100%; gap: 8px; }
   .es-controls .es-btn { padding: 6px 12px; font-size: 14px; line-height: 1.2; }
   .es-card { padding: 14px 14px 16px; border-radius: 20px; }
+  .es-nameplate { left: 9px; bottom: 9px; padding: 4px 10px; font-size: 12px; gap: 5px; }
+  .es-nameplate span { font-size: 11px; }
   .es-head { margin-bottom: 10px; }
   .es-under { margin-top: 12px; gap: 6px; }
   .es-caption { font-size: 13.5px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
@@ -506,6 +540,11 @@ body[data-live-interview='true'] .skill-speaking { padding-top: 12px; }
   .es-stage[data-cue='on'] .es-you-text { grid-auto-flow: column; justify-content: start; align-items: center; gap: 10px; }
   .es-stage[data-cue='on'] .es-caption { -webkit-line-clamp: 2; }
   .es-stage[data-cue='on'] .es-call { gap: 8px; }
+  /* The preparation minute: the notes need the room. Her tile becomes a
+     thin thumbnail and the student's strip steps aside (the status line
+     already says the minute is running and nothing is being heard). */
+  .es-stage[data-cue='on'][data-mic='paused'] .es-tile-her { aspect-ratio: 5 / 2; }
+  .es-stage[data-cue='on'][data-mic='paused'] .es-tile-you { display: none; }
 }
 
 /* ── the result: Mr EZ beside the band ─────────────────────────────── */

@@ -454,21 +454,42 @@ export default function LiveExaminer({
        embed or the placement, whose page owns that flag for the whole
        sitting and must not have it cleared from under it.
      Both are removed the moment the interview ends, and on unmount. */
+  /* - data-speaking-session="active": the same signal the recorded Speaking
+       trainer sets while it is running, so the two share one rule for the
+       phone's menu bar (body[data-speaking-session="active"] .ws-tabbar).
+     All three come off on every way out: the interview ending (finished,
+     ended early, failed), the component going away, and the page being
+     hidden (put back if the page is shown again and the call is still on
+     screen). */
   useEffect(() => {
     if (typeof document === 'undefined') return;
     const body = document.body;
     const live = phase === 'connecting' || phase === 'interview';
-    if (live) body.dataset.liveInterview = 'true';
-    else delete body.dataset.liveInterview;
-    if (!mock) {
-      if (live) body.dataset.examRunning = 'true';
-      else delete body.dataset.examRunning;
-    }
-    return () => {
+    const set = () => {
+      body.dataset.liveInterview = 'true';
+      body.dataset.speakingSession = 'active';
+      if (!mock) body.dataset.examRunning = 'true';
+    };
+    const clear = () => {
       delete body.dataset.liveInterview;
+      delete body.dataset.speakingSession;
       if (!mock) delete body.dataset.examRunning;
     };
+    if (live) set();
+    else clear();
+    const onHide = () => clear();
+    const onShow = () => {
+      if (live) set();
+    };
+    window.addEventListener('pagehide', onHide);
+    window.addEventListener('pageshow', onShow);
+    return () => {
+      window.removeEventListener('pagehide', onHide);
+      window.removeEventListener('pageshow', onShow);
+      clear();
+    };
   }, [phase, mock]);
+
 
   /* Mock embed: skip the own-menu screen entirely and start the interview
      the moment the config fetch above has settled (success or failure) —

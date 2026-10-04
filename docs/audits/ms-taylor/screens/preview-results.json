@@ -1,0 +1,569 @@
+{
+  "connecting-en-1440": {
+    "frame": "greet",
+    "cardBottom": 749,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part1-speaking-en-1440": {
+    "frame": "speak2",
+    "cardBottom": 795,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part1-your-turn-en-1440": {
+    "frame": "listen",
+    "cardBottom": 795,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part1-pause-en-1440": {
+    "frame": "blink",
+    "cardBottom": 795,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part2-en-1440": {
+    "frame": "write",
+    "cardBottom": 795,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "talk-en-1440": {
+    "frame": "listen",
+    "cardBottom": 795,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part3-en-1440": {
+    "frame": "lean",
+    "cardBottom": 795,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "finishing-en-1440": {
+    "frame": "close",
+    "cardBottom": 733,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": false,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "connecting-en-390": {
+    "frame": "greet",
+    "cardBottom": 541,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": false,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part1-speaking-en-390": {
+    "frame": "speak3",
+    "cardBottom": 604,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": false,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part1-your-turn-en-390": {
+    "frame": "listen",
+    "cardBottom": 604,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": false,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part1-pause-en-390": {
+    "frame": "blink",
+    "cardBottom": 604,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": false,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part2-en-390": {
+    "frame": "write",
+    "cardBottom": 743,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "talk-en-390": {
+    "frame": "listen",
+    "cardBottom": 722,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part3-en-390": {
+    "frame": "lean",
+    "cardBottom": 604,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": false,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "finishing-en-390": {
+    "frame": "close",
+    "cardBottom": 544,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": false,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "connecting-ru-1440": {
+    "frame": "greet",
+    "cardBottom": 749,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part1-speaking-ru-1440": {
+    "frame": "speak2",
+    "cardBottom": 795,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part1-your-turn-ru-1440": {
+    "frame": "listen",
+    "cardBottom": 795,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part1-pause-ru-1440": {
+    "frame": "blink",
+    "cardBottom": 795,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part2-ru-1440": {
+    "frame": "write",
+    "cardBottom": 795,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "talk-ru-1440": {
+    "frame": "listen",
+    "cardBottom": 795,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part3-ru-1440": {
+    "frame": "lean",
+    "cardBottom": 795,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "finishing-ru-1440": {
+    "frame": "close",
+    "cardBottom": 733,
+    "viewport": 900,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": false,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": true,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "connecting-ru-390": {
+    "frame": "greet",
+    "cardBottom": 561,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": false,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part1-speaking-ru-390": {
+    "frame": "speak3",
+    "cardBottom": 604,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": false,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part1-your-turn-ru-390": {
+    "frame": "listen",
+    "cardBottom": 604,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": false,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part1-pause-ru-390": {
+    "frame": "blink",
+    "cardBottom": 604,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": false,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part2-ru-390": {
+    "frame": "write",
+    "cardBottom": 757,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "talk-ru-390": {
+    "frame": "listen",
+    "cardBottom": 744,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": true,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "part3-ru-390": {
+    "frame": "lean",
+    "cardBottom": 604,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": false,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "finishing-ru-390": {
+    "frame": "close",
+    "cardBottom": 544,
+    "viewport": 844,
+    "buttonsInView": true,
+    "captionInView": true,
+    "scrollable": false,
+    "horizontalOverflow": false,
+    "dockVisible": false,
+    "mrEzVisible": false,
+    "headingVisible": false,
+    "bodyFlags": {
+      "live": "true",
+      "exam": "true"
+    }
+  },
+  "mouth-sequence": [
+    "speak1",
+    "speak3",
+    "speak2",
+    "speak3",
+    "speak2",
+    "speak2",
+    "speak3",
+    "speak2",
+    "speak3",
+    "speak2",
+    "speak1",
+    "speak3",
+    "speak2",
+    "speak3",
+    "speak2",
+    "speak1",
+    "listen",
+    "listen",
+    "listen",
+    "listen",
+    "listen",
+    "listen",
+    "listen",
+    "listen"
+  ],
+  "frame-log": {
+    "samples": 601,
+    "changes": 47,
+    "min_gap_ms": 84,
+    "frames_seen": [
+      "blink",
+      "listen",
+      "speak1",
+      "speak2",
+      "speak3"
+    ],
+    "scenes_seen": [
+      "pause",
+      "speaking",
+      "your-turn"
+    ]
+  },
+  "reduced-motion": {
+    "frames_while_speaking": [
+      "speak2"
+    ],
+    "frames_seen": [
+      "listen",
+      "speak2"
+    ],
+    "breathing_animation": [
+      "none"
+    ]
+  }
+}

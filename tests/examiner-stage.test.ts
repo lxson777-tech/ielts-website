@@ -12,6 +12,7 @@ import {
   GLANCE_MAX_MS,
   MIN_FRAME_MS,
   PAUSE_AFTER_MS,
+  PAUSE_BLINK_AFTER_MS,
   PREVIEW_CYCLE_MS,
   SCENE_FRAME,
   createFrameDriver,
@@ -83,7 +84,11 @@ test('finishing, the closing line and the end', () => {
   assert.equal(SCENE_FRAME.connecting, 'greet');
   assert.equal(SCENE_FRAME.prep, 'write');
   assert.equal(SCENE_FRAME.discussion, 'lean');
-  assert.equal(SCENE_FRAME.pause, 'glance');
+  /* The drawn glance reads as a side-eye in motion: the pause rests on
+     listen (see the header of examiner-stage.ts). */
+  assert.equal(SCENE_FRAME.pause, 'listen');
+  assert.equal(SCENE_FRAME.finishing, 'listen');
+  assert.ok(!Object.values(SCENE_FRAME).includes('glance'));
 });
 
 test('only the listening scenes breathe', () => {
@@ -152,29 +157,34 @@ test('on your turn she listens and blinks every four to six seconds', () => {
   assert.ok(blinkFrames <= blinkStarts.length * Math.ceil((BLINK_MS + MIN_FRAME_MS) / (1000 / 60)), 'blinks are short');
 });
 
-test('the pause after the student stops: a glance, then back to listening if she still has not replied', () => {
+test('the pause after the student stops: one blink while she keeps looking at the student, then the pause ends', () => {
   const driver = createFrameDriver({ reducedMotion: false, random: () => 0.99 });
   // The student answers for two seconds.
   run(driver, sig(), 0, 2000, () => ({ output: 0, mic: 0.4, speaking: false }));
   // Just stopped: still listening.
   const soon = run(driver, sig(), 2000, 300, quiet);
-  assert.ok(soon.every((f) => f.frame === 'listen'), 'not straight away');
+  assert.ok(soon.every((f) => f.frame === 'listen' && f.scene === 'your-turn'), 'not straight away');
   const later = run(driver, sig(), 2300, 1500, quiet);
-  assert.ok(later.some((f) => f.frame === 'glance' && f.scene === 'pause'), 'glances down');
-  // Long silence: the student is thinking, she looks back up.
+  const pause = later.filter((f) => f.scene === 'pause');
+  assert.ok(pause.length > 0, 'the pause is recognised');
+  const pauseStart = pause[0]!.now;
+  const blinks = pause.filter((f) => f.frame === 'blink');
+  assert.ok(blinks.length > 0 && blinks[0]!.now - pauseStart < PAUSE_BLINK_AFTER_MS + MIN_FRAME_MS + 20, 'one blink as it begins');
+  assert.ok(pause.every((f) => f.frame === 'listen' || f.frame === 'blink'), 'never glance');
+  // Long silence: the student is thinking; the pause ends, she simply listens.
   const thinking = run(driver, sig(), 3800, PAUSE_AFTER_MS + GLANCE_MAX_MS, quiet);
-  assert.equal(thinking.at(-1)!.frame, 'listen');
+  assert.equal(thinking.at(-1)!.scene, 'your-turn');
   // Her voice starts: the turn is over, and the next quiet is not a pause.
   run(driver, sig(), 9000, 1000, () => ({ output: 0.3, mic: 0, speaking: true }));
   const afterHer = run(driver, sig(), 10_000, 2000, quiet);
-  assert.ok(afterHer.every((f) => f.frame !== 'glance'), 'no glance without an answer');
+  assert.ok(afterHer.every((f) => f.scene !== 'pause'), 'no pause without an answer');
 });
 
 test('a cough or a short noise is not an answer: no glance', () => {
   const driver = createFrameDriver({ reducedMotion: false, random: () => 0.99 });
   run(driver, sig(), 0, 200, () => ({ output: 0, mic: 0.5, speaking: false }));
   const after = run(driver, sig(), 200, 2500, quiet);
-  assert.ok(after.every((f) => f.frame !== 'glance'));
+  assert.ok(after.every((f) => f.scene !== 'pause'));
 });
 
 test('Part 2: she writes during the minute, listens during the talk; Part 3: she leans in', () => {
@@ -220,5 +230,5 @@ test('the design preview cycles through her speech, the answer and the pause', (
   const scenes = new Set(frames.map((f) => f.scene));
   for (const s of ['speaking', 'your-turn', 'pause']) assert.ok(scenes.has(s), s);
   const seen = new Set(frames.map((f) => f.frame));
-  for (const f of ['speak1', 'speak2', 'speak3', 'listen', 'glance'] as const) assert.ok(seen.has(f), f);
+  for (const f of ['speak1', 'speak2', 'speak3', 'listen', 'blink'] as const) assert.ok(seen.has(f), f);
 });

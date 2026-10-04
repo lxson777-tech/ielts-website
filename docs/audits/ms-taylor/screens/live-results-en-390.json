@@ -1,0 +1,178 @@
+{
+  "drill-en-390": {
+    "connecting": {
+      "live": "true",
+      "exam": "true",
+      "session": "active",
+      "launcherVisible": false,
+      "dockVisible": false,
+      "headingVisible": false,
+      "status": "Connecting you to Ms. Taylor…",
+      "label": "Joining the call"
+    },
+    "speaking": {
+      "live": "true",
+      "exam": "true",
+      "session": "active",
+      "launcherVisible": false,
+      "dockVisible": false,
+      "headingVisible": false,
+      "status": "Ms. Taylor is speaking: listen",
+      "label": "Part 1 · Interview"
+    },
+    "your-turn": {
+      "live": "true",
+      "exam": "true",
+      "session": "active",
+      "launcherVisible": false,
+      "dockVisible": false,
+      "headingVisible": false,
+      "status": "Your turn: speak",
+      "label": "Part 1 · Interview"
+    },
+    "closing": {
+      "live": "true",
+      "exam": "true",
+      "session": "active",
+      "launcherVisible": false,
+      "dockVisible": false,
+      "headingVisible": false,
+      "status": "That is the end of the test.",
+      "label": "Finishing…"
+    },
+    "closed": {
+      "live": "true",
+      "exam": "true",
+      "session": "active",
+      "launcherVisible": false,
+      "dockVisible": false,
+      "headingVisible": false,
+      "status": "That is the end of the test.",
+      "label": "Finishing…"
+    },
+    "grading": {
+      "live": null,
+      "exam": null,
+      "session": null,
+      "launcherVisible": true,
+      "dockVisible": true,
+      "headingVisible": true,
+      "status": null,
+      "label": null
+    },
+    "report": {
+      "live": null,
+      "exam": null,
+      "session": null,
+      "launcherVisible": true,
+      "dockVisible": true,
+      "headingVisible": true,
+      "status": null,
+      "label": null
+    },
+    "report-mrez": {
+      "explainButton": true,
+      "note": null,
+      "avatar": true
+    },
+    "explain": {
+      "answer": "MR EZ\nSimulated, not a real AI reply\n\nSimulated tutor reply from the local dev server. No AI was called. The result being explained is the speaking attempt recorded at 2026-10-04T12:50:18.191Z.\n\nEvery band on this platform is an estimate from its own AI marking, not an official IELTS result.\n\nA SUGG",
+      "error": null
+    },
+    "fixture": {
+      "creates": 1,
+      "directs": [
+        "begin"
+      ],
+      "graded": 1
+    }
+  },
+  "full-en-390": {
+    "connecting": {
+      "live": "true",
+      "exam": "true",
+      "session": "active",
+      "launcherVisible": false,
+      "dockVisible": false,
+      "headingVisible": false,
+      "status": "Connecting you to Ms. Taylor…",
+      "label": "Joining the call"
+    },
+    "speaking": {
+      "live": "true",
+      "exam": "true",
+      "session": "active",
+      "launcherVisible": false,
+      "dockVisible": false,
+      "headingVisible": false,
+      "status": "Ms. Taylor is speaking: listen",
+      "label": "Part 1 · Interview"
+    },
+    "your-turn": {
+      "live": "true",
+      "exam": "true",
+      "session": "active",
+      "launcherVisible": false,
+      "dockVisible": false,
+      "headingVisible": false,
+      "status": "Your turn: speak",
+      "label": "Part 1 · Interview"
+    },
+    "closing": {
+      "live": "true",
+      "exam": "true",
+      "session": "active",
+      "launcherVisible": false,
+      "dockVisible": false,
+      "headingVisible": false,
+      "status": "That is the end of the test.",
+      "label": "Finishing…"
+    },
+    "closed": {
+      "live": "true",
+      "exam": "true",
+      "session": "active",
+      "launcherVisible": false,
+      "dockVisible": false,
+      "headingVisible": false,
+      "status": "That is the end of the test.",
+      "label": "Finishing…"
+    },
+    "grading": {
+      "live": null,
+      "exam": null,
+      "session": null,
+      "launcherVisible": true,
+      "dockVisible": true,
+      "headingVisible": true,
+      "status": null,
+      "label": null
+    },
+    "report": {
+      "live": null,
+      "exam": null,
+      "session": null,
+      "launcherVisible": true,
+      "dockVisible": true,
+      "headingVisible": true,
+      "status": null,
+      "label": null
+    },
+    "report-mrez": {
+      "explainButton": false,
+      "note": "Questions about this report? Ask Mr EZ, your tutor, from his button at the corner of the page.",
+      "avatar": true
+    },
+    "fixture": {
+      "creates": 1,
+      "directs": [
+        "begin"
+      ],
+      "graded": 1
+    }
+  },
+  "errors": [
+    "drill-en-390: no pause seen (Page.wait_for_function: Timeout 6000ms exceeded.)",
+    "full-en-390: no pause seen (Page.wait_for_function: Timeout 6000ms exceeded.)"
+  ]
+}
