@@ -1783,15 +1783,18 @@ export default function LiveExaminer({
      turn: speak" after the closing line (4 October 2026): once the test is
      over, or being concluded, it says so. */
   let status: React.ReactNode;
+  /* What a screen reader is told, through a polite live region. It changes
+     only when the scene changes, never with the preparation countdown. */
+  let announce: string;
   let statusTone: 'examiner' | 'student' | 'quiet';
   if (connecting) {
-    status = t('Connecting you to {name}…', { name: EXAMINER_NAME });
+    status = announce = t('Connecting you to {name}…', { name: EXAMINER_NAME });
     statusTone = 'quiet';
   } else if (over) {
-    status = t('That is the end of the test.');
+    status = announce = t('That is the end of the test.');
     statusTone = 'quiet';
   } else if (examinerTalking) {
-    status = t('{name} is speaking: listen', { name: EXAMINER_NAME });
+    status = announce = t('{name} is speaking: listen', { name: EXAMINER_NAME });
     statusTone = 'examiner';
   } else if (stage === 'part2prep') {
     status = (
@@ -1799,12 +1802,13 @@ export default function LiveExaminer({
         {t('Prepare your talk:')} <span className="tabular-nums">{prepSecondsLeft || Math.round(PREP_MS / 1000)}s</span>
       </>
     );
+    announce = t('Prepare your talk:');
     statusTone = 'quiet';
   } else if (stage === 'wrapup' && !roundingOff) {
-    status = t('Finishing the test…');
+    status = announce = t('Finishing the test…');
     statusTone = 'quiet';
   } else {
-    status = t('Your turn: speak');
+    status = announce = t('Your turn: speak');
     statusTone = 'student';
   }
 
@@ -1828,9 +1832,9 @@ export default function LiveExaminer({
   const cueCard =
     showCueCard && cue ? (
       <section aria-label={t('Cue card')}>
-        <p className="es-cue-title">{cue.topic}</p>
+        <p className="es-cue-title" lang="en">{cue.topic}</p>
         <p className="es-cue-label mt-2">{t('You should say:')}</p>
-        <ul>
+        <ul lang="en">
           {cue.bullets.map((b) => (
             <li key={b}>{b}</li>
           ))}
@@ -1856,7 +1860,7 @@ export default function LiveExaminer({
     <p className="ai-voice-note es-note">{t('{name} is an AI voice, not a real person. Your interview is marked by AI.', { name: EXAMINER_NAME })}</p>
   ) : (
     <p className="es-caption">
-      {showCaptions && caption && <q>{caption}</q>}
+      {showCaptions && caption && <q lang="en">{caption}</q>}
       <button type="button" className="es-caption-toggle" onClick={() => setShowCaptions((v) => !v)}>
         {showCaptions ? t('Hide captions') : t('Show captions')}
       </button>
@@ -1891,6 +1895,7 @@ export default function LiveExaminer({
         label={stageLabel}
         elapsed={connecting ? undefined : `${Math.floor(elapsedS / 60)}:${String(elapsedS % 60).padStart(2, '0')}`}
         status={status}
+        announce={announce}
         statusTone={statusTone}
         caption={captionBlock}
         cueCard={cueCard}

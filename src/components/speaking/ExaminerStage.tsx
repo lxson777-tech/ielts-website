@@ -60,6 +60,9 @@ export interface ExaminerStageProps {
   elapsed?: string;
   /** The written status line (the same sentences as before). */
   status: ReactNode;
+  /** The same message as plain text without any countdown, read out once
+      per scene change by screen readers (a polite live region). */
+  announce?: string;
   /** Who has the turn, for the status dot only. */
   statusTone: 'examiner' | 'student' | 'quiet';
   /** A line under the status (connecting). */
@@ -99,7 +102,7 @@ function prefersReducedMotion(): boolean {
 }
 
 const ExaminerStage = forwardRef<ExaminerStageHandle, ExaminerStageProps>(function ExaminerStage(props, ref) {
-  const { signals, label, elapsed, status, statusTone, note, caption, cueCard, prepProgress, talkRing, micPaused, controls } = props;
+  const { signals, label, elapsed, status, announce, statusTone, note, caption, cueCard, prepProgress, talkRing, micPaused, controls } = props;
   const { t } = useT();
   const [artBroken, setArtBroken] = useState(false);
   const useArt = hasExaminerArtwork && !artBroken;
@@ -346,6 +349,12 @@ const ExaminerStage = forwardRef<ExaminerStageHandle, ExaminerStageProps>(functi
           <p className="es-status" data-tone={statusTone}>
             <span className="es-dot" aria-hidden="true" />
             <span>{status}</span>
+          </p>
+          {/* Screen readers hear the scene change once, politely; the visible
+              line above can carry a ticking countdown, so it is not the live
+              region itself. */}
+          <p className="sr-only" role="status" aria-live="polite">
+            {announce}
           </p>
           {note}
           {caption}

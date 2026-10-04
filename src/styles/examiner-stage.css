@@ -344,6 +344,13 @@
   text-decoration: underline;
   text-underline-offset: 2px;
   white-space: nowrap;
+  position: relative;
+}
+/* A 44 px tall touch area around the small link, without changing its look. */
+.es-caption-toggle::before {
+  content: '';
+  position: absolute;
+  inset: -12px -8px;
 }
 .es-caption-toggle:hover { color: var(--es-ink); }
 .es-caption-toggle:focus-visible { outline: 2px solid var(--es-ink); outline-offset: 2px; }
