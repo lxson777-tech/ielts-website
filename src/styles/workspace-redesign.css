@@ -17,8 +17,9 @@
   --shadow-card: 0 4px 16px rgb(38 60 53 / 3%);
   background: var(--color-surface-alt);
 }
-.workspace-v2 .ws-header { height: 108px; padding: 20px 28px 12px; border: 0; background: var(--color-surface-alt); box-shadow: none; }
-.workspace-v2 .ws-header-inner { max-width: 1192px; height: 68px; padding: 8px 13px 8px 27px; border: 1px solid #dfe2d9; border-radius: 999px; background: #fffefa; box-shadow: 0 8px 26px -18px rgb(38 60 53 / 24%); }
+.workspace-v2 .ws-header { height: 108px; padding: 20px 28px 12px; border: 0; background: transparent; box-shadow: none; backdrop-filter: none; pointer-events: none; }
+/* Only the capsule sits on top of the page: the sticky band around it is empty, see-through and lets clicks reach the content beneath. */
+.workspace-v2 .ws-header-inner { max-width: 1192px; height: 68px; padding: 8px 13px 8px 27px; border: 1px solid #dfe2d9; border-radius: 999px; background: #fffefa; box-shadow: 0 8px 26px -18px rgb(38 60 53 / 24%); pointer-events: auto; }
 .workspace-v2 .ws-header.is-scrolled .ws-header-inner { box-shadow: 0 12px 30px -16px rgb(38 60 53 / 28%); }
 .workspace-v2 .ws-wordmark { font-size: 22px; letter-spacing: -.04em; }
 .workspace-v2 .ws-tabs { position: relative; flex: 0 1 auto; max-width: none; gap: 5px; padding: 4px; }
