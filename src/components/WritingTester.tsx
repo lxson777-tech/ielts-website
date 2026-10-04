@@ -874,7 +874,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         <button type="button" aria-pressed={mobileView === 'write'} onClick={() => setMobileView('write')}>{t('Writing')}</button>
         <button type="button" aria-pressed={mobileView === 'help'} onClick={() => setMobileView('help')}>{t('Help')}</button>
       </div>}
-      <div data-mobile-view={mobileView} className={`writing-workspace screen-in ${coached ? 'lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start lg:gap-8' : ''}`}>
+      <div data-mobile-view={mobileView} className={`writing-workspace screen-in ${coached ? 'lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-8' : ''}`}>
         <div className="writing-editor space-y-4">
           <div
             className="writing-prompt max-w-[820px] rounded-card border border-border bg-surface p-5 shadow-card"
@@ -984,7 +984,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             exam: question, clock, word count, nothing to lean on. */}
         {coached && (
           <div className="writing-guidance mt-4 lg:sticky lg:top-24 lg:mt-0">
-            <WritingCoachPanel key={prompt.id} prompt={prompt} />
+            <WritingCoachPanel key={prompt.id} prompt={prompt} essay={essay} />
           </div>
         )}
       </div>

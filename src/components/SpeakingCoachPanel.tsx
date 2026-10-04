@@ -1,178 +1,149 @@
-/* Speaking coach panel: the speaking twin of WritingCoachPanel. Replaces the
-   old one-line structure cheat-sheet accordion with a tabbed coach that stays
-   on screen while the student answers. Plan is an interactive stage checklist
-   (A.R.E. / PEEL / OREO with timings), Phrases groups functional language as
-   chips, Vocab surfaces the current topic's vocabulary as tap-to-reveal
-   cards, Avoid lists the part's common mistakes. Mount with a key that
-   changes per attempt so checked/revealed state resets for free. */
+/* Speaking coach panel: the speaking twin of WritingCoachPanel, beside the
+   recorded trainer, inside the live examiner's drill Tips drawer, and next
+   to the classic examiner stage.
 
-import { useState } from 'react';
+   Plan     the part's method (A.R.E. / PEEL / OREO) as a short numbered
+            path, every stage's line and starter phrases on show, then how
+            to answer this part. Speech is not tracked, so nothing is
+            marked done and there is nothing to tick.
+   Phrases  the current topic's words (when the prompt bank has them), then
+            the functional phrases. (Until 4 October 2026 the topic words
+            were their own Vocab tab of tap-to-reveal cards.)
+   Avoid    the part's common mistakes.
+
+   The props are unchanged (method, vocab), so LiveExaminer mounts it as
+   before. Nothing here is stored. */
+
+import { useId, useState } from 'react';
 import type { StructureMethod } from '../data/speaking-structure-guides';
 import { SPEAKING_STRUCTURE_GUIDES } from '../data/speaking-structure-guides';
 import type { TopicVocab } from '../lib/speaking/schema';
 import { useT } from '../lib/i18n/react';
-import Tabs, { type TabDef } from './Tabs';
-
-function toggle(set: Set<string>, value: string): Set<string> {
-  const next = new Set(set);
-  if (next.has(value)) next.delete(value);
-  else next.add(value);
-  return next;
-}
+import CoachTabs, { coachPanelId, coachTabId, type CoachTab } from './coach/CoachTabs';
+import StepPath, { type PathStep } from './coach/StepPath';
+import { AvoidIcon } from './coach/CoachIcons';
+import '../styles/coach-panel.css';
 
 export default function SpeakingCoachPanel({ method, vocab }: { method: StructureMethod; vocab?: TopicVocab[] }) {
   // 'structures' is a lazily loaded dictionary part: this guidance is only
   // shown on the speaking trainers, so it is not in the chunk every Russian
   // page downloads. See src/lib/i18n/dict/parts.ts.
   const { t } = useT('structures');
+  const idBase = useId();
   const guide = SPEAKING_STRUCTURE_GUIDES[method];
   const hasVocab = !!vocab && vocab.length > 0;
-  const tabs: TabDef[] = [
+  const tabs: CoachTab[] = [
     { id: 'plan', label: t('Plan') },
     { id: 'phrases', label: t('Phrases') },
-    ...(hasVocab ? [{ id: 'vocab', label: t('Vocab') }] : []),
-    { id: 'avoid', label: t('Avoid') },
+    { id: 'avoid', label: t('Avoid', undefined, 'coach tab') },
   ];
-
   const [active, setActive] = useState('plan');
-  const [checked, setChecked] = useState<Set<string>>(new Set());
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const [revealed, setRevealed] = useState<Set<string>>(new Set());
+
+  const panelProps = (id: string) => ({
+    id: coachPanelId(idBase, id),
+    role: 'tabpanel' as const,
+    'aria-labelledby': coachTabId(idBase, id),
+    tabIndex: 0,
+    className: 'coach-tabpanel',
+  });
+
+  // Stage names stay English: they spell the method out (A.R.E. is Answer,
+  // Reason, Extend). The Russian description sits underneath.
+  const steps: PathStep[] = guide.stages.map((stage) => ({
+    key: stage.name,
+    title: stage.name,
+    meta: stage.timing ? t(stage.timing) : undefined,
+    body: (
+      <>
+        <p>{t(stage.description)}</p>
+        {stage.phrases.length > 0 && (
+          <ul className="coach-chips coach-chips-quiet" lang="en">
+            {stage.phrases.map((phrase) => (
+              <li key={phrase}>{phrase}</li>
+            ))}
+          </ul>
+        )}
+      </>
+    ),
+  }));
 
   return (
-    <div className="rounded-card border border-border bg-surface p-4 shadow-card">
-      <h3 className="font-display text-sm font-bold">
+    <div className="coach-panel" data-skill="speaking">
+      <h3 className="coach-title">
         {t('Speaking coach: {structure}', { structure: t(guide.title) })}
-        <span className="ml-1.5 font-semibold text-ink-muted">· {guide.part}</span>
+        <span className="coach-title-meta">{guide.part}</span>
       </h3>
-      <Tabs tabs={tabs} active={active} onChange={setActive} className="mt-3" />
+      <CoachTabs tabs={tabs} active={active} onChange={setActive} idBase={idBase} label={t('Speaking coach')} />
 
       {active === 'plan' && (
-        <div id="tabpanel-plan" role="tabpanel" aria-labelledby="tab-plan" className="mt-4">
-          <div className="mb-3 rounded-lg bg-brand-tint/60 p-3">
-            <p className="text-xs font-bold uppercase tracking-wider text-brand">{t('How to answer')}</p>
-            <ul className="mt-1.5 space-y-1 text-sm text-ink-muted">
+        <div {...panelProps('plan')}>
+          <section className="coach-section coach-section-first">
+            <h4 id={`${idBase}-path`} className="coach-heading">
+              {t('Your answer, step by step')}
+            </h4>
+            <StepPath steps={steps} labelledBy={`${idBase}-path`} />
+          </section>
+          <section className="coach-brief">
+            <h4 className="coach-heading">{t('How to answer')}</h4>
+            <ul className="coach-bullets">
               {guide.notes.map((n) => (
-                <li key={n} className="flex gap-2">
-                  <span aria-hidden="true">·</span>
-                  <span>{t(n)}</span>
-                </li>
+                <li key={n}>{t(n)}</li>
               ))}
             </ul>
-          </div>
-          <div className="space-y-2">
-            {guide.stages.map((stage) => {
-              const isChecked = checked.has(stage.name);
-              const isOpen = expanded.has(stage.name);
-              return (
-                <div key={stage.name} className="rounded-lg border border-border">
-                  <div className="flex items-center gap-2 px-3 py-2">
-                    <input
-                      type="checkbox"
-                      checked={isChecked}
-                      onChange={() => setChecked((s) => toggle(s, stage.name))}
-                      className="h-4 w-4 shrink-0 rounded border-border text-brand focus:ring-brand"
-                      aria-label={t('Mark "{label}" done', { label: stage.name })}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setExpanded((s) => toggle(s, stage.name))}
-                      aria-expanded={isOpen}
-                      className="flex flex-1 items-center justify-between gap-2 text-left text-sm font-semibold"
-                    >
-                      <span className={isChecked ? 'text-ink-muted line-through' : ''}>
-                        {stage.name}
-                        {stage.timing && <span className="ml-1.5 font-normal text-ink-muted">({t(stage.timing)})</span>}
-                      </span>
-                      <span aria-hidden="true" className="shrink-0 text-ink-muted">
-                        {isOpen ? '▾' : '▸'}
-                      </span>
-                    </button>
-                  </div>
-                  {/* The clip wrapper must stay padding-free: padding on it sets a
-                      floor on the collapsed 0fr track and leaks clipped text. */}
-                  <div className={`grid-reveal ${isOpen ? 'is-open' : ''}`}>
-                    <div className="min-h-0 overflow-hidden">
-                      <div className="px-3 pb-3 pl-9">
-                        <p className="text-sm text-ink-muted">{t(stage.description)}</p>
-                        {stage.phrases.length > 0 && (
-                          <div className="mt-1.5 flex flex-wrap gap-1.5">
-                            {stage.phrases.map((phrase) => (
-                              <span key={phrase} className="rounded-full bg-brand-tint px-2.5 py-0.5 text-xs font-semibold text-brand">
-                                {phrase}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          </section>
         </div>
       )}
 
       {active === 'phrases' && (
-        <div id="tabpanel-phrases" role="tabpanel" aria-labelledby="tab-phrases" className="mt-4 space-y-3">
-          {guide.language.map((row) => (
-            <div key={row.job}>
-              <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{t(row.job)}</p>
-              <div className="mt-1.5 flex flex-wrap gap-1.5">
-                {row.phrases.map((phrase) => (
-                  <span key={phrase} className="rounded-full bg-brand-tint px-2.5 py-1 text-xs font-semibold text-brand">
-                    {phrase}
-                  </span>
+        <div {...panelProps('phrases')}>
+          {hasVocab && (
+            <section className="coach-section coach-section-first">
+              <h4 className="coach-heading">{t('Topic words')}</h4>
+              <ul className="coach-words">
+                {vocab.map((v) => (
+                  <li key={v.phrase}>
+                    <div>
+                      <p className="coach-word" lang="en">
+                        {v.phrase}
+                      </p>
+                      <p>{v.meaning}</p>
+                      <p className="coach-word-example" lang="en">
+                        {v.example}
+                      </p>
+                    </div>
+                  </li>
                 ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {active === 'vocab' && hasVocab && (
-        <div id="tabpanel-vocab" role="tabpanel" aria-labelledby="tab-vocab" className="mt-4 space-y-2.5">
-          <p className="text-xs text-ink-muted">{t('Topic words to work into your answers. Tap to see what they mean.')}</p>
-          {vocab.map((v) => {
-            const isOpen = revealed.has(v.phrase);
-            return (
-              <div
-                key={v.phrase}
-                className="rounded-lg border border-[var(--color-vocabulary)]/25 bg-[var(--color-vocabulary-tint)]/60 p-3"
-              >
-                <button
-                  type="button"
-                  onClick={() => setRevealed((s) => toggle(s, v.phrase))}
-                  aria-expanded={isOpen}
-                  className="flex w-full items-center justify-between gap-2 text-left text-sm font-bold text-[var(--color-vocabulary)]"
-                >
-                  <span>{v.phrase}</span>
-                  <span aria-hidden="true" className="shrink-0">
-                    {isOpen ? '▾' : '▸'}
-                  </span>
-                </button>
-                <div className={`grid-reveal ${isOpen ? 'is-open' : ''}`}>
-                  <div className="min-h-0 overflow-hidden">
-                    <p className="pt-2 text-sm text-ink-muted">{v.meaning}</p>
-                    <p className="mt-1.5 border-l-2 border-[var(--color-vocabulary)]/40 pl-2.5 text-sm italic text-ink-muted">
-                      {v.example}
-                    </p>
-                  </div>
+              </ul>
+            </section>
+          )}
+          <section className={`coach-section ${hasVocab ? '' : 'coach-section-first'}`}>
+            <h4 className="coach-heading">{t('Useful phrases')}</h4>
+            <div className="coach-phrase-groups">
+              {guide.language.map((row) => (
+                <div key={row.job}>
+                  <p className="coach-subheading">{t(row.job)}</p>
+                  <ul className="coach-chips" lang="en">
+                    {row.phrases.map((phrase) => (
+                      <li key={phrase}>{phrase}</li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
-            );
-          })}
+              ))}
+            </div>
+          </section>
         </div>
       )}
 
       {active === 'avoid' && (
-        <div id="tabpanel-avoid" role="tabpanel" aria-labelledby="tab-avoid" className="mt-4 flex flex-wrap gap-1.5">
-          {guide.mistakes.map((m, i) => (
-            <span key={i} className="rounded-full bg-error-tint px-2.5 py-0.5 text-xs font-semibold text-error">
-              ⚠ {t(m)}
-            </span>
-          ))}
+        <div {...panelProps('avoid')}>
+          <ul className="coach-avoid coach-section-first">
+            {guide.mistakes.map((m, i) => (
+              <li key={i}>
+                <AvoidIcon />
+                <span>{t(m)}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>

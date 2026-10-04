@@ -1,0 +1,336 @@
+/* Writing and Speaking coach panels (WritingCoachPanel, SpeakingCoachPanel,
+   src/components/coach/*). One calm column: a one-row tab control, then
+   plain sections separated by space, a numbered path for the paragraphs or
+   stages, and no nested cards.
+
+   Colour: forest ink carries the text, the selected tab and the step being
+   written now. The skill colour (writing green, speaking violet) appears
+   only in small places: a finished step's check, the phrase chips. */
+
+.coach-panel {
+  --coach-accent: var(--color-writing);
+  --coach-tint: color-mix(in srgb, var(--coach-accent) 9%, var(--color-surface));
+  --coach-line: var(--color-border);
+  --coach-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  container-type: inline-size;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-surface);
+  padding: 20px;
+  color: var(--color-ink);
+}
+.coach-panel[data-skill='speaking'] { --coach-accent: var(--color-speaking); }
+/* The writing trainer's column already strips the old card shadow. */
+.workspace-v2 .writing-guidance > .coach-panel { padding: 20px; }
+
+.coach-title {
+  margin: 0 0 14px;
+  font-family: var(--font-display-ui, var(--font-display));
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.coach-title-meta { color: var(--color-ink-muted); font-weight: 500; }
+.coach-title-meta::before { content: '\00b7'; margin: 0 6px; }
+
+/* ── the tab row: a segmented control, one line, never wraps ─────────── */
+
+.coach-tabs {
+  position: relative;
+  display: flex;
+  gap: 0;
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface-alt);
+  overflow-x: auto;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.coach-tabs::-webkit-scrollbar { display: none; }
+.coach-tab {
+  position: relative;
+  flex: 1 0 auto;
+  min-height: 44px;
+  padding: 0 8px;
+  border-radius: 999px;
+  color: var(--color-ink-muted);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color 180ms ease, background-color 180ms ease;
+}
+.coach-tab:hover { color: var(--color-ink); background: color-mix(in srgb, var(--color-ink) 5%, transparent); }
+.coach-tab[aria-selected='true'] { color: var(--color-surface); background: transparent; }
+.coach-tab:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+.coach-tab-highlight {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--color-ink);
+  box-shadow: 0 1px 2px rgb(38 60 53 / 18%);
+}
+.coach-tab-label { position: relative; }
+
+/* ── panel body ─────────────────────────────────────────────────────── */
+
+.coach-tabpanel { margin-top: 22px; display: grid; gap: 26px; font-size: 14px; line-height: 1.6; color: var(--color-ink-muted); }
+.coach-tabpanel:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 6px; border-radius: 8px; }
+.coach-tabpanel p { margin: 0; }
+.coach-section { display: grid; gap: 10px; }
+.coach-heading {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: 13.5px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+.coach-subheading { color: var(--color-ink); font-size: 13px; font-weight: 600; }
+.coach-text-ink { color: var(--color-ink); }
+.coach-footnote { font-size: 12.5px; line-height: 1.55; color: var(--color-ink-muted); }
+.coach-footnote strong { color: var(--color-ink); font-weight: 600; }
+
+/* A quiet block for the question brief and "how to answer": the one place
+   with a fill, so it reads as context rather than as a task. */
+.coach-brief {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--color-surface-alt);
+}
+
+.coach-bullets { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.coach-bullets > li { position: relative; padding-left: 14px; }
+.coach-bullets > li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.68em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-ink-muted) 70%, transparent);
+}
+.coach-numbered { display: grid; gap: 6px; margin: 0; padding-left: 20px; }
+.coach-numbered > li::marker { color: var(--color-ink); font-weight: 600; font-size: 12.5px; }
+
+.coach-empty {
+  padding: 28px 12px;
+  border: 1px dashed var(--color-border);
+  border-radius: 14px;
+  text-align: center;
+}
+
+/* ── the numbered path ──────────────────────────────────────────────── */
+
+.coach-path-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.coach-path-count { flex: none; font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--color-ink-muted); }
+
+.coach-path { display: grid; margin: 4px 0 0; padding: 0; list-style: none; }
+.coach-step {
+  --mark: 26px;
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--mark) minmax(0, 1fr);
+  column-gap: 12px;
+  padding-bottom: 18px;
+}
+.coach-step:last-child { padding-bottom: 0; }
+/* The thread between the circles. */
+.coach-step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--mark) / 2 - 0.5px);
+  top: calc(var(--mark) + 4px);
+  bottom: 4px;
+  width: 1px;
+  background: var(--coach-line);
+  transition: background-color 300ms ease;
+}
+.coach-step[data-state='done']:not(:last-child)::before { background: color-mix(in srgb, var(--coach-accent) 45%, var(--color-border)); }
+
+.coach-step-mark {
+  display: grid;
+  place-items: center;
+  width: var(--mark);
+  height: var(--mark);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-ink-muted);
+  font-size: 12px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  transition: background-color 300ms var(--coach-ease), border-color 300ms var(--coach-ease), color 300ms var(--coach-ease), transform 300ms var(--coach-ease);
+}
+.coach-step-mark svg { width: 14px; height: 14px; }
+.coach-step[data-state='plain'] .coach-step-mark { color: var(--color-ink); background: var(--color-surface-alt); border-color: transparent; }
+.coach-step[data-state='now'] .coach-step-mark {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-surface);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-ink) 9%, transparent);
+}
+.coach-step[data-state='done'] .coach-step-mark {
+  border-color: transparent;
+  background: var(--coach-tint);
+  color: var(--coach-accent);
+}
+.coach-step[data-state='optional'] .coach-step-mark { border-style: dashed; }
+
+.coach-step-text { min-width: 0; padding-top: 2px; display: grid; gap: 4px; }
+.coach-step-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; line-height: 1.4; }
+.coach-step-name { color: var(--color-ink); font-size: 14px; font-weight: 650; transition: color 300ms ease; }
+.coach-step-meta { font-size: 12.5px; color: var(--color-ink-muted); }
+.coach-step-now {
+  align-self: center;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-ink) 8%, var(--color-surface));
+  color: var(--color-ink);
+  font-size: 11.5px;
+  font-weight: 650;
+  line-height: 1.6;
+}
+.coach-step-body { display: grid; gap: 8px; }
+.coach-step[data-state='done'] .coach-step-name { color: var(--color-ink-muted); }
+.coach-step[data-state='done'] .coach-step-body { color: color-mix(in srgb, var(--color-ink-muted) 85%, var(--color-surface)); }
+.coach-step[data-state='now'] .coach-step-body { color: var(--color-ink); }
+
+/* One small, quiet disclosure for a step's longer extra. */
+.coach-more summary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  color: var(--color-ink);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+  border-radius: 6px;
+}
+.coach-more summary::-webkit-details-marker { display: none; }
+/* 44px of touch target without 44px of visual weight. */
+.coach-more summary::after { content: ''; position: absolute; inset: -7px -6px; }
+.coach-more summary::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 220ms var(--coach-ease);
+  margin-right: 2px;
+}
+.coach-more[open] summary::before { transform: rotate(45deg) translate(-1px, -1px); }
+.coach-more summary:hover { text-decoration: underline; text-underline-offset: 3px; }
+.coach-more summary:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 3px; }
+.coach-more-body { display: grid; gap: 10px; padding: 6px 0 2px; color: var(--color-ink-muted); }
+.coach-example {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--color-surface-alt);
+  color: var(--color-ink);
+  font-style: italic;
+  line-height: 1.55;
+}
+
+/* ── phrases ────────────────────────────────────────────────────────── */
+
+.coach-phrase-groups { display: grid; gap: 16px; }
+.coach-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; padding: 0; list-style: none; }
+.coach-chips > li {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--coach-tint);
+  color: color-mix(in srgb, var(--coach-accent) 82%, var(--color-ink));
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.coach-chips-quiet { margin-top: 0; }
+.coach-chips-quiet > li { background: var(--color-surface-alt); color: var(--color-ink); font-weight: 500; font-style: italic; }
+
+.coach-words { display: grid; margin: 0; padding: 0; list-style: none; }
+.coach-words > li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: start;
+  padding: 11px 0;
+  border-top: 1px solid var(--color-border);
+}
+.coach-words > li:first-child { border-top: 0; padding-top: 2px; }
+.coach-words > li > div { display: grid; gap: 2px; }
+.coach-word { color: color-mix(in srgb, var(--coach-accent) 82%, var(--color-ink)); font-weight: 650; }
+.coach-word-example { font-style: italic; font-size: 13px; }
+
+.coach-copy {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  color: var(--color-ink-muted);
+  transition: background-color 160ms ease, color 160ms ease;
+}
+.coach-copy::after { content: ''; position: absolute; inset: -7px; }
+.coach-copy svg { width: 15px; height: 15px; }
+.coach-copy:hover { background: var(--color-surface-alt); color: var(--color-ink); }
+.coach-copy:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 1px; }
+
+.coach-jump {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-ink);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+.coach-jump svg { flex: none; width: 14px; height: 14px; color: var(--color-ink-muted); transition: transform 220ms var(--coach-ease); }
+.coach-jump:hover { background: var(--color-surface-alt); border-color: color-mix(in srgb, var(--color-ink) 22%, var(--color-border)); }
+.coach-jump:hover svg { transform: translateX(2px); }
+.coach-jump:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+
+/* ── avoid ──────────────────────────────────────────────────────────── */
+
+.coach-avoid { display: grid; margin: 0; padding: 0; list-style: none; }
+.coach-avoid > li {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px solid var(--color-border);
+}
+.coach-avoid > li:first-child { border-top: 0; padding-top: 0; }
+.coach-avoid > li > svg { width: 15px; height: 15px; margin-top: 3px; color: var(--color-error); }
+.coach-avoid > li > span { color: var(--color-ink); }
+
+@media (max-width: 600px) {
+  .coach-panel { padding: 18px 16px; }
+  .workspace-v2 .writing-guidance > .coach-panel { padding: 18px 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coach-tab,
+  .coach-step-mark,
+  .coach-step-name,
+  .coach-step:not(:last-child)::before,
+  .coach-more summary::before,
+  .coach-jump,
+  .coach-jump svg,
+  .coach-copy { transition: none; }
+}

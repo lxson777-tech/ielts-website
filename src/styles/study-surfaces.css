@@ -24,8 +24,7 @@
 .workspace-v2 .writing-editor textarea { min-height: 440px; padding: 24px; line-height: 1.85; resize: vertical; }
 .workspace-v2 .writing-prompt { padding: 24px; box-shadow: none; }
 .workspace-v2 .writing-guidance > div { box-shadow: none; padding: 22px; }
-.workspace-v2 .writing-guidance [role='tablist'] { flex-wrap: wrap; gap: 5px; }
-.workspace-v2 .writing-guidance [role='tab'] { min-height: 40px; }
+/* The coach's own tab row lives in src/styles/coach-panel.css. */
 .workspace-v2 .writing-submit-row { flex-wrap: wrap; gap: 12px; padding: 12px 0; }
 .workspace-v2 .writing-submit-row button { min-height: 48px; border-radius: 999px; }
 .test-result-overlay { overflow-y: auto; align-items: safe center; padding-block: 24px; }

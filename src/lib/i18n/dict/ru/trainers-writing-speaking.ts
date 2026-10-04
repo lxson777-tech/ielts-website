@@ -89,6 +89,24 @@ export const strings: Record<string, string> = {
   'Copy "{phrase}"': 'Скопировать «{phrase}»',
   'No topic vocabulary for this task yet.': 'Для этого задания пока нет тематической лексики.',
 
+  /* Coach panels, redesigned 4 October 2026 (WritingCoachPanel.tsx,
+     SpeakingCoachPanel.tsx, components/coach/*): a numbered path instead of
+     checkboxes, and one row of short tabs. The tab "Avoid" has its own short
+     Russian under a context key, because the long "Чего избегать" does not
+     fit the narrow tab row. */
+  'coach tab\u0004Avoid': 'Ошибки',
+  'Writing coach': 'Помощник по письму',
+  'Speaking coach': 'Помощник по говорению',
+  'Paragraph plan': 'План по абзацам',
+  'Start each paragraph on a new line and the steps follow your writing. Nothing here is marked.':
+    'Начинайте каждый абзац с новой строки, и шаги будут следовать за вашим текстом. Здесь ничего не оценивается.',
+  'Tips and example': 'Советы и пример',
+  done: 'готово',
+  'For this question': 'Для этого вопроса',
+  'Useful phrases': 'Полезные фразы',
+  'Topic words': 'Слова по теме',
+  'Your answer, step by step': 'Ваш ответ по шагам',
+
   /* WritingHistory.tsx */
   'Estimated band over attempts': 'Примерный балл по попыткам',
   'Writing band across {count} attempts, from {from} to {to}':
