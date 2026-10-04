@@ -1,0 +1,535 @@
+/* Ms. Taylor's interview stage (src/components/speaking/ExaminerStage.tsx).
+   A quiet video-call card on the workspace palette: warm neutral canvas,
+   forest ink, the speaking violet as the one restrained accent. No glows, no
+   blurred halos, nothing spinning. Animated properties are transform and
+   opacity only. */
+
+.es-stage {
+  --es-ink: var(--color-ink, #263c35);
+  --es-muted: var(--color-ink-muted, #616c64);
+  --es-surface: var(--color-surface, #fffefa);
+  --es-canvas: var(--color-surface-alt, #f5f5f0);
+  --es-border: var(--color-border, #dddfd6);
+  --es-accent: var(--skill, #7453aa);
+  --es-wall: #efece4;
+  --es-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  container-type: inline-size;
+}
+
+.es-card {
+  border: 1px solid var(--es-border);
+  border-radius: 22px;
+  background: var(--es-surface);
+  padding: 18px 18px 20px;
+  box-shadow: 0 18px 40px -30px rgb(38 60 53 / 30%);
+}
+
+/* ── header: the part and the clock ─────────────────────────────────── */
+
+.es-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.es-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 4px 13px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--es-accent) 9%, var(--es-surface));
+  color: color-mix(in srgb, var(--es-accent) 82%, var(--es-ink));
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+.es-clock {
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--es-muted);
+}
+
+/* ── the call: her tile and the student's side ──────────────────────── */
+
+.es-call {
+  display: grid;
+  gap: 10px;
+}
+
+.es-tile {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  transition: box-shadow 200ms ease;
+}
+/* The active speaker gets a thin outline, the way a video call marks it. */
+.es-card[data-speaker='examiner'] .es-tile-her,
+.es-card[data-speaker='student'] .es-tile-you {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--es-accent) 70%, transparent);
+}
+
+.es-tile-her {
+  aspect-ratio: 4 / 3;
+  background:
+    linear-gradient(180deg, #f3f0e8 0%, var(--es-wall) 62%, #e7e2d6 100%);
+}
+.es-stage[data-cue='on'] .es-tile-her { aspect-ratio: 2 / 1; }
+/* The desk, continued across the whole tile: the portrait is square and the
+   tile is wider, so the desk edge drawn in the picture carries on to both
+   sides here. --es-desk is where the picture's desk edge sits, measured from
+   the bottom (the placeholder's is 34/320 of its height; set it to the real
+   artwork's once it arrives). */
+.es-tile-her { --es-desk: 10.625%; }
+.es-tile-her::before {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: calc(var(--es-desk) + 1px);
+  border-top: 2px solid var(--es-ink);
+  background: #e2ddd0;
+  z-index: 0;
+}
+
+.es-breathe,
+.es-figure {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.es-breathe { transform-origin: 50% 100%; }
+.es-card[data-breathe='on'] .es-breathe { animation: es-breathe 5.6s ease-in-out infinite; }
+@keyframes es-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.015); }
+}
+
+.es-figure { transform-origin: 50% 85%; }
+.es-figure.is-nod { animation: es-nod 900ms var(--es-ease) 1; }
+@keyframes es-nod {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0); }
+  35% { transform: translate3d(0, 5px, 0) rotate(0.6deg); }
+  70% { transform: translate3d(0, -1px, 0) rotate(0); }
+}
+
+/* Real frames: stacked, one visible; the new one fades in on top. */
+.es-frame {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  height: 100%;
+  width: auto;
+  max-width: none;
+  transform: translateX(-50%);
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 240ms ease;
+  user-select: none;
+  pointer-events: none;
+}
+.es-frame.is-on { opacity: 1; }
+.es-frame.is-top { z-index: 2; }
+.es-frame.no-fade { transition: none; }
+
+.es-nameplate {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgb(255 254 250 / 90%);
+  color: var(--es-ink);
+  font-size: 13px;
+  line-height: 1.2;
+  box-shadow: 0 4px 14px -8px rgb(38 60 53 / 35%);
+}
+.es-nameplate strong { font-weight: 650; }
+.es-nameplate span { color: var(--es-muted); font-size: 12px; }
+
+/* The student's side. */
+.es-side {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+.es-tile-you {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 60px;
+  padding: 10px 14px;
+  background: var(--es-canvas);
+  color: var(--es-ink);
+}
+.es-you-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--es-surface);
+  color: var(--es-muted);
+  border: 1px solid var(--es-border);
+}
+.es-you-glyph { width: 22px; height: 22px; }
+.es-you-text { display: grid; gap: 3px; min-width: 0; }
+.es-you-text strong { font-size: 14px; font-weight: 650; }
+.es-mic {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--es-muted);
+}
+.es-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
+.es-bars span {
+  width: 3px;
+  border-radius: 2px;
+  background: var(--es-ink);
+  opacity: 0.16;
+  transition: opacity 120ms ease;
+}
+.es-bars span:nth-child(1) { height: 5px; }
+.es-bars span:nth-child(2) { height: 8px; }
+.es-bars span:nth-child(3) { height: 10px; }
+.es-bars span:nth-child(4) { height: 12px; }
+.es-bars span.is-lit { opacity: 0.85; background: color-mix(in srgb, var(--es-accent) 75%, var(--es-ink)); }
+
+/* The quiet two-minute ring around the student's avatar (Part 2 talk). */
+.es-ring {
+  position: absolute;
+  inset: -5px;
+  width: calc(100% + 10px);
+  height: calc(100% + 10px);
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+.es-ring circle { fill: none; stroke-width: 2.4; }
+.es-ring-track { stroke: color-mix(in srgb, var(--es-accent) 14%, transparent); }
+.es-ring-fill {
+  stroke: color-mix(in srgb, var(--es-accent) 70%, transparent);
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: es-ring 120s linear forwards;
+}
+@keyframes es-ring { to { stroke-dashoffset: 0; } }
+
+/* The cue card she hands across: from her side (above, on a phone) to the
+   student's. */
+.es-cue {
+  position: relative;
+  border: 1px solid var(--es-border);
+  border-radius: 16px;
+  background: var(--es-surface);
+  padding: 16px 16px 18px;
+  box-shadow: 0 14px 30px -24px rgb(38 60 53 / 45%);
+  animation: es-hand-down 620ms var(--es-ease) both;
+}
+@keyframes es-hand-down {
+  from { opacity: 0; transform: translate3d(0, -18px, 0) rotate(-1.5deg); }
+  to { opacity: 1; transform: none; }
+}
+.es-cue-title { font-weight: 650; color: var(--es-ink); }
+.es-cue-label { font-size: 12px; font-weight: 600; color: var(--es-muted); letter-spacing: 0.02em; }
+.es-cue ul { margin: 6px 0 0; padding: 0; list-style: none; display: grid; gap: 3px; font-size: 14px; color: var(--es-muted); }
+.es-cue li { display: flex; gap: 8px; }
+.es-cue li::before { content: ''; flex: none; width: 4px; height: 4px; margin-top: 0.62em; border-radius: 99px; background: currentColor; opacity: 0.6; }
+.es-cue textarea {
+  margin-top: 10px;
+  width: 100%;
+  border: 1px solid var(--es-border);
+  border-radius: 12px;
+  background: var(--es-canvas);
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--es-ink);
+  resize: vertical;
+}
+.es-cue textarea { min-height: 64px; }
+@container (min-width: 640px) { .es-cue textarea { min-height: 88px; } }
+.es-cue textarea:focus { outline: 2px solid color-mix(in srgb, var(--es-accent) 55%, transparent); outline-offset: 1px; border-color: transparent; }
+
+/* The preparation minute as a thin pencil line along the card's foot. */
+.es-pencil {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 8px;
+  height: 2px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--es-ink) 16%, transparent) 0 6px, transparent 6px 10px);
+  overflow: hidden;
+}
+.es-pencil span {
+  position: absolute;
+  inset: 0;
+  background: var(--es-ink);
+  border-radius: 2px;
+  transform-origin: left center;
+  transition: transform 1s linear;
+}
+
+/* ── under the call: status, captions, controls ─────────────────────── */
+
+.es-under {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  text-align: center;
+}
+.es-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--es-ink);
+}
+.es-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background: var(--es-muted);
+  opacity: 0.5;
+  transition: background-color 200ms ease, opacity 200ms ease;
+}
+.es-status[data-tone='examiner'] .es-dot { background: var(--es-accent); opacity: 1; }
+.es-status[data-tone='student'] .es-dot { background: var(--es-ink); opacity: 1; }
+.es-note { margin: 0; font-size: 13px; color: var(--es-muted); }
+
+.es-caption {
+  max-width: 34rem;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--es-muted);
+}
+.es-caption q { font-style: italic; quotes: '\201C' '\201D'; }
+.es-caption-toggle {
+  margin-left: 6px;
+  padding: 2px 4px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--es-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+.es-caption-toggle:hover { color: var(--es-ink); }
+.es-caption-toggle:focus-visible { outline: 2px solid var(--es-ink); outline-offset: 2px; }
+
+.es-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+.es-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 650;
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms var(--es-ease);
+}
+.es-btn:active { transform: scale(0.98); }
+.es-btn:focus-visible { outline: 2px solid var(--es-ink); outline-offset: 3px; }
+.es-btn-primary { background: var(--es-ink); color: var(--es-surface); }
+.es-btn-primary:hover { background: #1b2d27; }
+.es-btn-quiet { border: 1px solid var(--es-border); background: var(--es-surface); color: var(--es-ink); }
+.es-btn-quiet:hover { background: var(--es-canvas); border-color: #cfd3c8; }
+
+/* ── wide: side by side, like a two-person call ─────────────────────── */
+
+@container (min-width: 640px) {
+  .es-card { padding: 22px 22px 24px; }
+  .es-call {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 12px;
+  }
+  .es-tile-her,
+  .es-stage[data-cue='on'] .es-tile-her { aspect-ratio: 5 / 4; }
+  /* No cue card: the student's tile matches hers, centred. */
+  .es-stage[data-cue='off'] .es-side { grid-template-rows: 1fr; }
+  .es-stage[data-cue='off'] .es-tile-you {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 14px;
+  }
+  .es-stage[data-cue='off'] .es-you-avatar { width: 76px; height: 76px; }
+  .es-stage[data-cue='off'] .es-you-glyph { width: 36px; height: 36px; }
+  .es-stage[data-cue='off'] .es-you-text { justify-items: center; }
+  .es-stage[data-cue='off'] .es-you-text strong { font-size: 16px; }
+  .es-cue { animation-name: es-hand-across; }
+}
+@keyframes es-hand-across {
+  from { opacity: 0; transform: translate3d(-34%, 6px, 0) rotate(-3deg); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ── the placeholder portrait ───────────────────────────────────────── */
+
+.es-ph {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  height: 100%;
+  width: auto;
+  transform: translateX(-50%);
+  overflow: visible;
+}
+.es-ph .ph-line { fill: none; stroke: var(--es-ink); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.es-ph .ph-thin { stroke-width: 1.7; }
+.es-ph .ph-faint { stroke-width: 1.2; opacity: 0.35; }
+.es-ph .ph-ink { fill: var(--es-ink); }
+.es-ph .ph-skin { fill: #ecd6c1; stroke: var(--es-ink); stroke-width: 2; }
+.es-ph .ph-hair { fill: #4b3c35; stroke: var(--es-ink); stroke-width: 2; stroke-linejoin: round; }
+.es-ph .ph-jacket { fill: #3a5650; stroke: var(--es-ink); stroke-width: 2; stroke-linejoin: round; }
+.es-ph .ph-top { fill: #f6f2ea; stroke: var(--es-ink); stroke-width: 1.6; }
+.es-ph .ph-mouth { fill: #7d4a44; stroke: var(--es-ink); stroke-width: 1.6; }
+.es-ph .ph-desk { fill: #e2ddd0; }
+.es-ph .ph-desk-edge { stroke-width: 2px; vector-effect: non-scaling-stroke; }
+.es-ph .ph-paper { fill: #fffefa; stroke: var(--es-ink); stroke-width: 1.6; }
+.es-ph .ph-pen, .es-ph .ph-pen-held { stroke-width: 3; }
+.es-ph .ph-folder rect { fill: color-mix(in srgb, var(--es-accent) 22%, #f3efe7); stroke: var(--es-ink); stroke-width: 1.8; }
+
+/* Poses: small, so a frame change reads as a glance, not a jump. */
+.es-ph .ph-figure,
+.es-ph .ph-head { transform-box: view-box; transition: transform 260ms var(--es-ease); }
+.es-ph .ph-figure { transform-origin: 160px 300px; }
+.es-ph .ph-head { transform-origin: 160px 176px; }
+.es-ph[data-frame='glance'] .ph-head { transform: translateY(3px) rotate(-1deg); }
+.es-ph[data-frame='write'] .ph-head { transform: translateY(6px) rotate(-3deg); }
+.es-ph[data-frame='greet'] .ph-head { transform: translateY(2px) rotate(2deg); }
+.es-ph[data-frame='lean'] .ph-figure { transform: translateY(5px) scale(1.035); }
+
+/* Which eyes, which mouth, which props. */
+.es-ph .ph-eyes-closed,
+.es-ph .ph-eyes-down,
+.es-ph .ph-m1,
+.es-ph .ph-m2,
+.es-ph .ph-m3,
+.es-ph .ph-hand,
+.es-ph .ph-folder { display: none; }
+.es-ph[data-frame='blink'] .ph-eyes-open { display: none; }
+.es-ph[data-frame='blink'] .ph-eyes-closed { display: inline; }
+.es-ph[data-frame='glance'] .ph-eyes-open,
+.es-ph[data-frame='write'] .ph-eyes-open { display: none; }
+.es-ph[data-frame='glance'] .ph-eyes-down,
+.es-ph[data-frame='write'] .ph-eyes-down { display: inline; }
+.es-ph[data-frame='speak1'] .ph-m0,
+.es-ph[data-frame='speak2'] .ph-m0,
+.es-ph[data-frame='speak3'] .ph-m0 { display: none; }
+.es-ph[data-frame='speak1'] .ph-m1,
+.es-ph[data-frame='speak2'] .ph-m2,
+.es-ph[data-frame='speak3'] .ph-m3 { display: inline; }
+.es-ph[data-frame='write'] .ph-pen { display: none; }
+.es-ph[data-frame='write'] .ph-hand { display: inline; animation: ph-write 1.4s ease-in-out infinite; }
+.es-ph[data-frame='close'] .ph-pad,
+.es-ph[data-frame='close'] .ph-pen { display: none; }
+.es-ph[data-frame='close'] .ph-folder { display: inline; }
+@keyframes ph-write {
+  0%, 100% { transform: translate(0, 0); }
+  30% { transform: translate(4px, -1px); }
+  60% { transform: translate(8px, 0); }
+}
+
+/* ── reduced motion: instant swaps, no breathing, no nod, no slide ──── */
+
+@media (prefers-reduced-motion: reduce) {
+  .es-card[data-breathe='on'] .es-breathe,
+  .es-figure.is-nod,
+  .es-cue,
+  .es-ph[data-frame='write'] .ph-hand { animation: none; }
+  .es-frame,
+  .es-ph .ph-figure,
+  .es-ph .ph-head,
+  .es-tile,
+  .es-bars span,
+  .es-dot,
+  .es-btn { transition: none; }
+}
+
+/* ── the interview as a focus screen ────────────────────────────────────
+   LiveExaminer sets <body data-live-interview="true"> while the call is
+   connecting or running, and removes it after. The page heading and intro
+   step aside, and on a phone the floating menu bar and the Mr EZ button
+   are hidden so they can never cover the controls. */
+
+body[data-live-interview='true'] .section-heading,
+body[data-live-interview='true'] .skill-speaking > .skill-resource-card { display: none; }
+body[data-live-interview='true'] .skill-speaking { padding-top: 12px; }
+
+@media (max-width: 720px) {
+  body[data-live-interview='true'] .ws-tabbar,
+  body[data-live-interview='true'] .mrez-launcher,
+  body[data-live-interview='true'] .mrez-panel { display: none !important; }
+  body[data-live-interview='true'] .workspace-v2 .ws-main,
+  body[data-live-interview='true'] .ws-main { padding-bottom: 24px !important; }
+  body[data-live-interview='true'] .ws-page { padding-top: 6px; }
+  body[data-live-interview='true'] .skill-speaking { padding-top: 0; padding-left: 12px; padding-right: 12px; }
+  /* The two buttons side by side, each wrapping its own words if it must
+     (the Russian labels are long), so neither drops below the screen. */
+  .es-controls { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); width: 100%; gap: 8px; }
+  .es-controls .es-btn { padding: 6px 12px; font-size: 14px; line-height: 1.2; }
+  .es-card { padding: 14px 14px 16px; border-radius: 20px; }
+  .es-head { margin-bottom: 10px; }
+  .es-under { margin-top: 12px; gap: 6px; }
+  .es-caption { font-size: 13.5px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .es-cue { padding: 13px 14px 16px; }
+  .es-cue ul { font-size: 13.5px; gap: 1px; }
+  .es-cue textarea { margin-top: 8px; min-height: 52px; }
+  /* Part 2 on a phone: the card she hands across takes the room, so her
+     tile and the student's strip get smaller, and the caption keeps two
+     lines. */
+  .es-stage[data-cue='on'] .es-tile-you { min-height: 44px; padding: 6px 12px; }
+  .es-stage[data-cue='on'] .es-you-avatar { width: 32px; height: 32px; }
+  .es-stage[data-cue='on'] .es-you-glyph { width: 18px; height: 18px; }
+  .es-stage[data-cue='on'] .es-you-text { grid-auto-flow: column; justify-content: start; align-items: center; gap: 10px; }
+  .es-stage[data-cue='on'] .es-caption { -webkit-line-clamp: 2; }
+  .es-stage[data-cue='on'] .es-call { gap: 8px; }
+}
+
+/* ── the result: Mr EZ beside the band ─────────────────────────────── */
+
+.es-result-mrez {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border, #dddfd6);
+  text-align: left;
+}
+.es-result-mrez .mrez-explain { margin: 0; padding: 0; border: 0; background: transparent; }
+@media (min-width: 640px) {
+  .es-result-mrez {
+    margin-top: 0;
+    padding: 4px 0 4px 28px;
+    border-top: 0;
+    border-left: 1px solid var(--color-border, #dddfd6);
+  }
+}
+.es-result-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-ink-muted, #616c64);
+}

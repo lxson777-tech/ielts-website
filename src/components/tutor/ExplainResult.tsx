@@ -22,9 +22,11 @@ export interface ExplainResultProps {
   attempt: TutorAttemptRef;
   /** Shown above the button, e.g. "estimated band 6.5". */
   summary?: string;
+  /** His face beside the button, in px (34 by default). */
+  avatarSize?: number;
 }
 
-export default function ExplainResult({ attempt, summary }: ExplainResultProps) {
+export default function ExplainResult({ attempt, summary, avatarSize = 34 }: ExplainResultProps) {
   const { t } = useT();
   const [text, setText] = useState<string | null>(null);
   const [recommendation, setRecommendation] = useState<TutorRecommendation | null>(null);
@@ -70,7 +72,7 @@ export default function ExplainResult({ attempt, summary }: ExplainResultProps) 
     <div className="mrez-explain">
       {!text && (
         <div className="mrez-explain-cta">
-          <MrEzAvatar mood={busy ? 'thinking' : 'idle'} size={34} />
+          <MrEzAvatar mood={busy ? 'thinking' : 'idle'} size={avatarSize} />
           <div>
             <p className="mrez-explain-lead">
               {summary ? `${summary}. ` : ''}{t('Want this explained, and one thing to work on next?')}

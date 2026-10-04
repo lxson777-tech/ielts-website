@@ -45,6 +45,10 @@ export interface BandReportProps {
   /** 3 to 5 numbered priority steps; when present, replaces the "Improve next" card */
   actionPlan?: string[];
   children?: React.ReactNode;
+  /** Shown beside the band in the header card (on a phone, under it): the
+      live examiner puts Mr EZ there (4 October 2026). Optional; nothing
+      changes for a caller that does not pass it. */
+  aside?: React.ReactNode;
 }
 
 export default function BandReport({
@@ -57,6 +61,7 @@ export default function BandReport({
   improvements,
   actionPlan,
   children,
+  aside,
 }: BandReportProps) {
   // 'band-guides' is the lazily loaded dictionary part holding the band
   // playbooks (src/lib/i18n/dict/parts.ts). example.before / example.after
@@ -64,7 +69,12 @@ export default function BandReport({
   const { t } = useT('band-guides');
   return (
     <>
-      <div className="rounded-card border border-border bg-surface p-6 text-center shadow-card">
+      <div
+        className={`rounded-card border border-border bg-surface p-6 text-center shadow-card${
+          aside ? ' sm:grid sm:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] sm:items-center sm:gap-8' : ''
+        }`}
+      >
+        <div>
         <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">
           {live ? `✨ ${t('AI-assessed')}` : t('Sample assessment (offline)')} · {title}
         </p>
@@ -75,6 +85,8 @@ export default function BandReport({
             ⚠ {offlineWarning}
           </p>
         )}
+        </div>
+        {aside}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">

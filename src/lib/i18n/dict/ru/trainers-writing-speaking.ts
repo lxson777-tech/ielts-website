@@ -248,6 +248,20 @@ export const strings: Record<string, string> = {
   "I've finished my talk": 'Я закончил выступление',
   'End test early': 'Закончить тест досрочно',
 
+  /* LiveExaminer.tsx and speaking/ExaminerStage.tsx: Ms. Taylor's video-call
+     stage and Mr EZ beside the band (4 October 2026). "Part 2" stays
+     English, as everywhere in this file. */
+  Examiner: 'Экзаменатор',
+  'Microphone on': 'Микрофон включён',
+  'Microphone paused while you prepare': 'Микрофон на паузе, пока вы готовитесь',
+  'Joining the call': 'Подключение к звонку',
+  'Part 2 · Rounding off': 'Part 2 · Завершающий вопрос',
+  'That is the end of the test.': 'На этом тест окончен.',
+  'Finishing the test…': 'Тест завершается…',
+  'Estimated band {band}': 'Примерный балл {band}',
+  'Questions about this report? Ask Mr EZ, your tutor, from his button at the corner of the page.':
+    'Есть вопросы по отчёту? Спросите Mr EZ, вашего репетитора: его кнопка в углу страницы.',
+
   /* BandReport.tsx */
   'AI-assessed': 'Оценено ИИ',
   'Sample assessment (offline)': 'Примерная оценка (офлайн)',

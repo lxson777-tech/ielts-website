@@ -6,8 +6,9 @@
    the model's own sense of time. In parallel, a MediaRecorder keeps the
    candidate's whole mic track; when the examiner says the closing line, the
    recording + transcript go to the grade-speaking Worker for the band
-   report. Visuals are deliberately minimal: a talking orb, the current
-   part, the cue card when it matters.
+   report. Visuals are deliberately minimal: Ms. Taylor in a quiet video-call
+   card (./speaking/ExaminerStage.tsx, 4 October 2026, replacing the talking
+   orb), the current part, the cue card when it matters.
 
    Two variants share everything above. variant="full" is the complete
    three-part test on /speaking/examiner; variant="drills" is the Speaking
@@ -162,6 +163,10 @@ import { examinerLeftScreen } from '../lib/tests/mock';
 import { nt } from '../lib/i18n/translate';
 import { speakingActivityId, speakingPart3ActivityId } from '../lib/learning/catalog';
 import { parseSpeakingDeepLink } from './attempt-recording';
+import ExaminerStage, { preloadExaminerArt, type ExaminerStageHandle } from './speaking/ExaminerStage';
+import { previewSample, type StageSignals } from '../lib/speaking/live/examiner-stage';
+import ExplainResult from './tutor/ExplainResult';
+import MrEzAvatar from './tutor/MrEzAvatar';
 
 /* What a failed start says to the student. Our own errors carry sentences
    written for students; an error the BROWSER raised (a WebRTC
@@ -208,6 +213,11 @@ const DRILL_GRADE_SCOPE: Record<DrillMode, string> = {
   part3: 'a Part 3 IELTS Speaking practice drill (abstract discussion questions only — there was no Part 1 or Part 2)',
 };
 const DRILL_METHOD: Record<DrillMode, StructureMethod> = { part1: 'ARE', part2: 'PEEL', part3: 'OREO' };
+
+/** ?preview only: the synthetic audio that suits the stage on screen. */
+function previewModeFor(stage: string): 'conversation' | 'prep' | 'talk' {
+  return stage === 'part2prep' ? 'prep' : stage === 'part2talk' ? 'talk' : 'conversation';
+}
 
 type Phase = 'menu' | 'connecting' | 'interview' | 'grading' | 'report' | 'error';
 type Stage = 'part1' | 'part2prep' | 'part2talk' | 'part3' | 'wrapup';
@@ -283,6 +293,17 @@ export default function LiveExaminer({
   const [caption, setCaption] = useState('');
   const [showCaptions, setShowCaptions] = useState(true);
   const [examinerTalking, setExaminerTalking] = useState(false);
+  /* Presentation only (Ms. Taylor's stage, 4 October 2026): the closing
+     line has been heard, and the finish has begun. Neither changes when or
+     how the interview ends; they let the screen stop saying "Your turn"
+     once it is over. */
+  const [closing, setClosing] = useState(false);
+  const [finishing, setFinishing] = useState(false);
+  /* A drill's graded attempt, as stored, so "Ask Mr EZ to explain this
+     result" points at marking that already happened (the same pointer the
+     recorded trainer sends). The full interview keeps no such row. */
+  const [explainAt, setExplainAt] = useState<string | null>(null);
+  const keptAtRef = useRef<string | null>(null);
   const [elapsedS, setElapsedS] = useState(0);
   const [notes, setNotes] = useState('');
   const [result, setResult] = useState<SpeakingGradeResult | null>(null);
@@ -317,9 +338,9 @@ export default function LiveExaminer({
   const recChunksRef = useRef<BlobPart[]>([]);
   const recActiveSinceRef = useRef(0);
   const recAccumMsRef = useRef(0);
-  const coreRef = useRef<HTMLDivElement | null>(null);
-  const glowRef = useRef<HTMLDivElement | null>(null);
-  const micRingRef = useRef<HTMLDivElement | null>(null);
+  /* Ms. Taylor's stage, driven from the animation loop below. */
+  const stageApiRef = useRef<ExaminerStageHandle | null>(null);
+  const loopIdRef = useRef(0);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const intervalsRef = useRef<ReturnType<typeof setInterval>[]>([]);
   const stageRef = useRef<Stage>('part1');
@@ -423,6 +444,32 @@ export default function LiveExaminer({
     return () => window.removeEventListener('pagehide', onPageHide);
   }, []);
 
+  /* While the call is connecting or running (4 October 2026):
+     - data-live-interview: the page becomes a focus screen (the heading and
+       intro step aside; on a phone the floating menu bar and the Mr EZ
+       button are hidden so they never cover the controls), see
+       src/styles/examiner-stage.css;
+     - data-exam-running: Mr EZ steps back, exactly as he does during a
+       timed paper (readPlace() in ./tutor/MrEzPanel.tsx). Not in the mock
+       embed or the placement, whose page owns that flag for the whole
+       sitting and must not have it cleared from under it.
+     Both are removed the moment the interview ends, and on unmount. */
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const body = document.body;
+    const live = phase === 'connecting' || phase === 'interview';
+    if (live) body.dataset.liveInterview = 'true';
+    else delete body.dataset.liveInterview;
+    if (!mock) {
+      if (live) body.dataset.examRunning = 'true';
+      else delete body.dataset.examRunning;
+    }
+    return () => {
+      delete body.dataset.liveInterview;
+      if (!mock) delete body.dataset.examRunning;
+    };
+  }, [phase, mock]);
+
   /* Mock embed: skip the own-menu screen entirely and start the interview
      the moment the config fetch above has settled (success or failure) —
      MockExam's brief screen already showed the "Start speaking test"
@@ -525,6 +572,11 @@ export default function LiveExaminer({
     setNotes('');
     setCaption('');
     setResult(null);
+    setClosing(false);
+    setFinishing(false);
+    setExplainAt(null);
+    keptAtRef.current = null;
+    preloadExaminerArt();
 
     let config = liveConfig;
     if (!config) {
@@ -756,6 +808,7 @@ export default function LiveExaminer({
     if (lastExaminer && lastExaminer.text.toLowerCase().includes(CLOSING_PHRASE) && !endedRef.current) {
       if (forceEndTimerRef.current) clearTimeout(forceEndTimerRef.current);
       setStageBoth('wrapup');
+      setClosing(true);
       const session = sessionRef.current;
       void (async () => {
         await linkRef.current?.waitUntilQuiet();
@@ -909,6 +962,7 @@ export default function LiveExaminer({
     const session = sessionRef.current;
     if (!session || !session.current()) return;
     endedRef.current = true;
+    setFinishing(true);
     if (forceEndTimerRef.current) clearTimeout(forceEndTimerRef.current);
     timersRef.current.forEach(clearTimeout);
     intervalsRef.current.forEach(clearInterval);
@@ -1045,6 +1099,7 @@ export default function LiveExaminer({
             });
             // Drills feed the same band-over-time history as the recorded checker did.
             if (m !== 'full') {
+              keptAtRef.current = at;
               recordSpeakingAttemptFor(owner, {
                 at,
                 mode: m,
@@ -1058,6 +1113,7 @@ export default function LiveExaminer({
           show: (graded) => {
             attempt?.graded();
             setResult(graded);
+            setExplainAt(keptAtRef.current);
             setPhase('report');
             // Mock embed: report straight back to MockExam instead of waiting on a
             // "Done" click. It swaps to its own combined results screen the
@@ -1275,14 +1331,18 @@ export default function LiveExaminer({
   ); // page navigation cleanup
 
   /* Design preview: /speaking/examiner?preview renders the interview stage
-     with synthetic audio levels — no mic, no session, no API cost. The orb
-     alternates between "examiner speaking" and "listening" every few
-     seconds so every animation state can be reviewed. */
+     with synthetic audio levels: no mic, no session, no API cost. Ms. Taylor
+     speaks, the "student" answers, and there is a short pause between, so
+     every frame can be reviewed (previewSample in
+     ../lib/speaking/live/examiner-stage.ts). ?preview=connecting, part2
+     (the preparation minute), talk (the two-minute talk), part3 and
+     finishing show those stages; ?preview=grading the grading wait. */
   const previewRef = useRef(false);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (!params.has('preview')) return;
-    if (params.get('preview') === 'grading') {
+    const which = params.get('preview');
+    if (which === 'grading') {
       setGradingStartedAt(Date.now());
       setGradingAudioSeconds(720);
       setPhase('grading');
@@ -1290,7 +1350,11 @@ export default function LiveExaminer({
     }
     previewRef.current = true;
     const previewPlan = buildExamPlan();
-    const isPart2Preview = params.get('preview') === 'part2';
+    if (which === 'connecting') {
+      setPhase('connecting');
+      return;
+    }
+    const isPart2Preview = which === 'part2' || which === 'talk';
     // In the drills variant, preview as a drill so the coach panel renders
     // too — with the vocab a real drill of that mode would draw (Part 1 from
     // the topic, Part 2 from the cue card), or the preview misrepresents it.
@@ -1300,52 +1364,46 @@ export default function LiveExaminer({
       vocab: isPart2Preview ? previewPlan.cueCard.vocab : previewPlan.part1Topics[0]?.vocab,
     };
     setPhase('interview');
-    if (isPart2Preview) {
-      // ?preview=part2 renders the cue-card stage (card + prep notes + orb).
+    if (which === 'part2') {
+      // The cue-card stage: the card handed across, notes, the minute.
       setStageBoth('part2prep');
       setPrepSecondsLeft(47);
+      every(() => setPrepSecondsLeft((s) => (s <= 1 ? 60 : s - 1)), 1000);
+    } else if (which === 'talk') {
+      setStageBoth('part2talk');
+    } else if (which === 'part3') {
+      setStageBoth('part3');
+    } else if (which === 'finishing') {
+      setStageBoth('wrapup');
+      setClosing(true);
+      setFinishing(true);
     } else {
       setStageBoth('part1');
     }
     setCaption(t('This is a design preview. The examiner is not connected.'));
+    if (which === 'finishing') return;
     startOrbLoop();
     every(() => setElapsedS((s) => s + 1), 1000);
-    every(() => setExaminerTalking(Math.floor(performance.now() / 4500) % 2 === 0), 250);
+    every(() => setExaminerTalking(previewSample(performance.now(), previewModeFor(stageRef.current)).speaking), 250);
   }, []);
 
-  /* ── orb animation (direct DOM writes — no per-frame re-render) ───────
-     Audio levels are lerp-smoothed so the orb swells with the voice instead
-     of jittering per audio frame. Everything animated here and in the CSS
-     below touches only transform/opacity (GPU-composited). Under
-     prefers-reduced-motion the loop parks all layers at rest. */
+  /* ── the animation loop (direct DOM writes, no per-frame re-render) ─────
+     Reads the link's levels once a frame and hands them to Ms. Taylor's
+     stage, which decides her frame (../lib/speaking/live/examiner-stage.ts)
+     and writes only what changed. Reduced motion is handled there. One loop
+     at a time: a new start retires the previous one. */
 
   function startOrbLoop() {
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let exSmooth = 0;
-    let meSmooth = 0;
+    const id = ++loopIdRef.current;
     const step = () => {
+      if (id !== loopIdRef.current) return;
       if (endedRef.current && !linkRef.current) return;
-      if (reduced) return;
-      let exL = linkRef.current?.outputLevel() ?? 0;
-      let meL = linkRef.current?.micLevel() ?? 0;
-      if (previewRef.current) {
-        const t = performance.now();
-        const talking = Math.floor(t / 4500) % 2 === 0;
-        const wobble = (Math.sin(t / 90) + Math.sin(t / 41) + 2) / 4;
-        exL = talking ? 0.15 + wobble * 0.5 : 0;
-        meL = talking ? 0 : 0.1 + wobble * 0.45;
-      }
-      exSmooth += (exL - exSmooth) * 0.22;
-      meSmooth += (meL - meSmooth) * 0.25;
-      if (coreRef.current) coreRef.current.style.transform = `scale(${1 + exSmooth * 0.32})`;
-      if (glowRef.current) {
-        glowRef.current.style.opacity = String(0.35 + exSmooth * 0.65);
-        glowRef.current.style.transform = `scale(${1 + exSmooth * 0.5})`;
-      }
-      if (micRingRef.current) {
-        micRingRef.current.style.opacity = String(Math.min(1, meSmooth * 2.2));
-        micRingRef.current.style.transform = `scale(${1.04 + meSmooth * 0.28})`;
-      }
+      const now = performance.now();
+      const link = linkRef.current;
+      const sample = previewRef.current
+        ? previewSample(now, previewModeFor(stageRef.current))
+        : { now, output: link?.outputLevel() ?? 0, mic: link?.micLevel() ?? 0, speaking: link?.isSpeaking() ?? false };
+      stageApiRef.current?.tick(sample);
       requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
@@ -1392,6 +1450,29 @@ export default function LiveExaminer({
           strengths={result.strengths}
           improvements={result.improvements}
           actionPlan={result.actionPlan}
+          aside={
+            /* Mr EZ beside the band (4 October 2026). Ms. Taylor gives no
+               feedback; the tutor explains. A drill's grade is a stored
+               attempt, so the recorded trainer's own "Ask Mr EZ to explain
+               this result" works on it; a full interview keeps no such
+               attempt for him to read, so there he points to his panel. */
+            mock ? undefined : (
+              <div className="es-result-mrez">
+                {explainAt && user ? (
+                  <ExplainResult
+                    attempt={{ kind: 'speaking', at: explainAt }}
+                    summary={t('Estimated band {band}', { band: result.overallBand.toFixed(1) })}
+                    avatarSize={52}
+                  />
+                ) : (
+                  <p className="es-result-note">
+                    <MrEzAvatar mood="idle" size={52} />
+                    <span>{t('Questions about this report? Ask Mr EZ, your tutor, from his button at the corner of the page.')}</span>
+                  </p>
+                )}
+              </div>
+            )
+          }
         >
           <div className="rounded-card border border-border bg-surface p-5 shadow-card">
             <h3 className="font-display font-bold">{t('Timing check')}</h3>
@@ -1612,18 +1693,10 @@ export default function LiveExaminer({
         )}
       </div>
     );
-  } else if (phase === 'connecting') {
-    content = (
-      <div className="rounded-card border border-border bg-surface p-10 text-center shadow-card">
-        <p className="text-sm text-ink-muted">{t('Connecting you to {name}…', { name: EXAMINER_NAME })}</p>
-        <p className="ai-voice-note">{t('{name} is an AI voice, not a real person. Your interview is marked by AI.', { name: EXAMINER_NAME })}</p>
-      </div>
-    );
   } else if (phase === 'grading') {
     content = (
       <div className="relative overflow-hidden rounded-card border border-border bg-surface p-10 text-center shadow-card">
         <style>{LX_STYLES}</style>
-        <div className="lx-ambient" aria-hidden="true" style={{ animationDuration: '18s' }} />
         <div className="relative flex flex-col items-center">
           {notice && <p className="mb-6 max-w-md rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">{notice}</p>}
 
@@ -1661,165 +1734,150 @@ export default function LiveExaminer({
       </div>
     );
   } else {
-  /* ── the interview screen ── */
+  /* ── the interview screen (and the call connecting) ──
+     Ms. Taylor's stage (./speaking/ExaminerStage.tsx). The written status
+     line carries the meaning; the picture only illustrates it. */
+  const connecting = phase === 'connecting';
   const cue = planRef.current?.cueCard;
   /* Drills get the coach beside the stage; the full mock test stays
      exam-clean, no coaching aids, like the real thing. */
-  const drillMethod = variant === 'drills' && modeRef.current !== 'full' ? DRILL_METHOD[modeRef.current] : null;
-  const stageLabel =
-    stage === 'part1' ? t('Part 1 · Interview') :
-    stage === 'part2prep' ? t('Part 2 · Preparation') :
-    stage === 'part2talk' ? t('Part 2 · Your talk') :
-    stage === 'part3' ? t('Part 3 · Discussion') : t('Finishing…');
+  const drillMethod = !connecting && variant === 'drills' && modeRef.current !== 'full' ? DRILL_METHOD[modeRef.current] : null;
+  /* Over: the closing line was heard, or the finish has begun. */
+  const over = closing || finishing;
+  /* A Part 2 drill's rounding-off question is still a conversation. */
+  const roundingOff = stage === 'wrapup' && modeRef.current === 'part2' && !over;
+  const prepRunning = stage === 'part2prep' && prepSecondsLeft > 0;
+  const stageLabel = connecting
+    ? t('Joining the call')
+    : over
+      ? t('Finishing…')
+      : roundingOff
+        ? t('Part 2 · Rounding off')
+        : stage === 'part1' ? t('Part 1 · Interview') :
+          stage === 'part2prep' ? t('Part 2 · Preparation') :
+          stage === 'part2talk' ? t('Part 2 · Your talk') :
+          stage === 'part3' ? t('Part 3 · Discussion') : t('Finishing…');
 
-  const orbMode = stage === 'part2prep' ? 'lx-prep' : examinerTalking ? 'lx-speaking' : 'lx-listening';
+  /* The status line. Fixes the "Finishing" label sitting beside "Your
+     turn: speak" after the closing line (4 October 2026): once the test is
+     over, or being concluded, it says so. */
+  let status: React.ReactNode;
+  let statusTone: 'examiner' | 'student' | 'quiet';
+  if (connecting) {
+    status = t('Connecting you to {name}…', { name: EXAMINER_NAME });
+    statusTone = 'quiet';
+  } else if (over) {
+    status = t('That is the end of the test.');
+    statusTone = 'quiet';
+  } else if (examinerTalking) {
+    status = t('{name} is speaking: listen', { name: EXAMINER_NAME });
+    statusTone = 'examiner';
+  } else if (stage === 'part2prep') {
+    status = (
+      <>
+        {t('Prepare your talk:')} <span className="tabular-nums">{prepSecondsLeft || Math.round(PREP_MS / 1000)}s</span>
+      </>
+    );
+    statusTone = 'quiet';
+  } else if (stage === 'wrapup' && !roundingOff) {
+    status = t('Finishing the test…');
+    statusTone = 'quiet';
+  } else {
+    status = t('Your turn: speak');
+    statusTone = 'student';
+  }
 
-  // Like the paper card in the real exam: on screen for ALL of Part 2 —
+  const signals: StageSignals = {
+    phase: connecting ? 'connecting' : 'interview',
+    stage,
+    prepRunning,
+    closing: over,
+    finished: finishing,
+    roundingOff,
+  };
+
+  // Like the paper card in the real exam: on screen for ALL of Part 2:
   // preparation, the talk, and (in the Part 2 drill) the rounding-off
-  // question. Rendered above the orb and sticky, so it can't scroll away
-  // while the student is talking.
+  // question. Handed across to the student's side of the call.
   const showCueCard =
+    !connecting &&
     !!cue &&
     (stage === 'part2prep' || stage === 'part2talk' || (stage === 'wrapup' && modeRef.current === 'part2'));
+
+  const cueCard =
+    showCueCard && cue ? (
+      <section aria-label={t('Cue card')}>
+        <p className="es-cue-title">{cue.topic}</p>
+        <p className="es-cue-label mt-2">{t('You should say:')}</p>
+        <ul>
+          {cue.bullets.map((b) => (
+            <li key={b}>{b}</li>
+          ))}
+        </ul>
+        {drillMethod && cue.ideas && cue.ideas.length > 0 && (
+          <div className="mt-3">
+            <IdeaHints ideas={cue.ideas} label={t('Stuck? Ideas for this card')} />
+          </div>
+        )}
+        {stage === 'part2prep' && (
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            rows={2}
+            aria-label={t("Your notes (not graded, the examiner can't see them)…")}
+            placeholder={t("Your notes (not graded, the examiner can't see them)…")}
+          />
+        )}
+      </section>
+    ) : undefined;
+
+  const captionBlock = connecting ? (
+    <p className="ai-voice-note es-note">{t('{name} is an AI voice, not a real person. Your interview is marked by AI.', { name: EXAMINER_NAME })}</p>
+  ) : (
+    <p className="es-caption">
+      {showCaptions && caption && <q>{caption}</q>}
+      <button type="button" className="es-caption-toggle" onClick={() => setShowCaptions((v) => !v)}>
+        {showCaptions ? t('Hide captions') : t('Show captions')}
+      </button>
+    </p>
+  );
+
+  const controls =
+    connecting || stage === 'wrapup' ? undefined : (
+      <>
+        {stage === 'part2prep' && (
+          <button type="button" onClick={beginPart2Talk} className="es-btn es-btn-primary">
+            {t("I'm ready, start speaking")}
+          </button>
+        )}
+        {stage === 'part2talk' && (
+          <button type="button" onClick={() => beginPart3(false)} className="es-btn es-btn-primary">
+            {t("I've finished my talk")}
+          </button>
+        )}
+        <button type="button" onClick={() => endEarly('candidate')} className="es-btn es-btn-quiet">
+          {t('End test early')}
+        </button>
+      </>
+    );
 
   content = (
     <div className={drillMethod ? 'lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-4' : ''}>
     <div className="space-y-4">
-      <style>{LX_STYLES}</style>
-
-      {showCueCard && cue && (
-        <div className="sticky top-20 z-10 rounded-card border border-border bg-surface p-5 shadow-card">
-          <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{t('Cue card')}</p>
-          <p className="mt-2 font-semibold">{cue.topic}</p>
-          <p className="mt-2 text-sm text-ink-muted">{t('You should say:')}</p>
-          <ul className="mt-1 space-y-1 text-sm text-ink-muted">
-            {cue.bullets.map((b) => (
-              <li key={b} className="flex gap-2">
-                <span aria-hidden="true">·</span>
-                <span>{b}</span>
-              </li>
-            ))}
-          </ul>
-          {drillMethod && cue.ideas && cue.ideas.length > 0 && (
-            <div className="mt-3">
-              <IdeaHints ideas={cue.ideas} label={t('Stuck? Ideas for this card')} />
-            </div>
-          )}
-          {stage === 'part2prep' && (
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={3}
-              placeholder={t("Your notes (not graded, the examiner can't see them)…")}
-              className="mt-3 w-full rounded-lg border border-border bg-surface-alt p-3 text-sm focus:border-brand focus:outline-none"
-            />
-          )}
-        </div>
-      )}
-
-      <div className={`lx-stage relative overflow-hidden rounded-card border border-border bg-surface p-6 shadow-card ${orbMode}`}>
-        {/* ambient drifting glow behind everything */}
-        <div className="lx-ambient" aria-hidden="true" />
-
-        <div className="relative flex items-center justify-between gap-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">{stageLabel}</span>
-          <span className="text-xs font-semibold tabular-nums text-ink-muted">
-            {Math.floor(elapsedS / 60)}:{String(elapsedS % 60).padStart(2, '0')}
-          </span>
-        </div>
-
-        {/* the orb */}
-        <div className="relative mt-8 flex flex-col items-center">
-          <div className="relative flex h-52 w-52 items-center justify-center">
-            {/* slow-spinning aurora halo */}
-            <div className="lx-aura" aria-hidden="true" />
-            {/* second, brighter aurora that only shows while the examiner speaks */}
-            <div className="lx-aura lx-aura-hot" aria-hidden="true" />
-            {/* idle breathing ring */}
-            <div className="lx-breathe" aria-hidden="true" />
-            {/* voice ripples while the examiner speaks */}
-            {examinerTalking && (
-              <>
-                <span className="lx-ripple" aria-hidden="true" />
-                <span className="lx-ripple" style={{ animationDelay: '0.6s' }} aria-hidden="true" />
-                <span className="lx-ripple" style={{ animationDelay: '1.2s' }} aria-hidden="true" />
-              </>
-            )}
-            {/* mic-reactive ring (student's voice, section green) */}
-            <div ref={micRingRef} className="lx-micring" aria-hidden="true" />
-            {/* audio-reactive glow + glassy core */}
-            <div ref={glowRef} className="lx-glow" aria-hidden="true" />
-            <div className="lx-float" aria-hidden="true">
-              <div ref={coreRef} className="lx-core">
-                <div className="lx-core-icon" key={orbMode}>
-                  {orbMode === 'lx-speaking' ? <IconSpeaker /> : orbMode === 'lx-prep' ? <IconPencil /> : <IconMic />}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* turn indicator: pill color + icon + wording all flip with the turn */}
-          <p
-            className="lx-status mt-6 rounded-full px-4 py-1.5 text-sm font-bold"
-            style={{
-              background: 'color-mix(in srgb, var(--lx-hue) 13%, transparent)',
-              color: 'var(--lx-hue)',
-            }}
-            key={orbMode}
-          >
-            {stage === 'part2prep' ? (
-              <>
-                ✍ {t('Prepare your talk:')}{' '}
-                <span className="lx-tick inline-block font-display text-base font-extrabold" key={prepSecondsLeft}>
-                  {prepSecondsLeft}s
-                </span>
-              </>
-            ) : examinerTalking ? (
-              t('{name} is speaking: listen', { name: EXAMINER_NAME })
-            ) : (
-              t('Your turn: speak')
-            )}
-          </p>
-          {showCaptions && caption && (
-            <p className="lx-caption mt-2 max-w-lg text-center text-sm italic text-ink-muted">&ldquo;{caption}&rdquo;</p>
-          )}
-        </div>
-
-        <div className="relative mt-6 flex flex-wrap items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={() => setShowCaptions((v) => !v)}
-            className="rounded-button border border-border px-3 py-1.5 text-xs font-semibold hover:bg-surface-alt"
-          >
-            {showCaptions ? t('Hide captions') : t('Show captions')}
-          </button>
-          {stage === 'part2prep' && (
-            <button
-              type="button"
-              onClick={beginPart2Talk}
-              className="rounded-button bg-brand px-4 py-1.5 text-xs font-semibold text-white hover:bg-brand-hover"
-            >
-              {t("I'm ready, start speaking")}
-            </button>
-          )}
-          {stage === 'part2talk' && (
-            <button
-              type="button"
-              onClick={() => beginPart3(false)}
-              className="rounded-button border border-border px-3 py-1.5 text-xs font-semibold hover:bg-surface-alt"
-            >
-              {t("I've finished my talk")}
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={() => endEarly('candidate')}
-            className="rounded-button border border-border px-3 py-1.5 text-xs font-semibold text-ink-muted hover:bg-surface-alt"
-          >
-            {t('End test early')}
-          </button>
-        </div>
-      </div>
+      <ExaminerStage
+        ref={stageApiRef}
+        signals={signals}
+        label={stageLabel}
+        elapsed={connecting ? undefined : `${Math.floor(elapsedS / 60)}:${String(elapsedS % 60).padStart(2, '0')}`}
+        status={status}
+        statusTone={statusTone}
+        caption={captionBlock}
+        cueCard={cueCard}
+        prepProgress={stage === 'part2prep' && showCueCard ? (prepRunning ? 1 - prepSecondsLeft / Math.round(PREP_MS / 1000) : 0) : null}
+        talkRing={!connecting && stage === 'part2talk'}
+        micPaused={prepRunning}
+        controls={controls}
+      />
 
       {notice && <p className="rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">{notice}</p>}
     </div>
@@ -1844,7 +1902,7 @@ export default function LiveExaminer({
           changes still fade in. */}
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
-          key={phase}
+          key={phase === 'connecting' ? 'interview' : phase}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -1857,106 +1915,11 @@ export default function LiveExaminer({
   );
 }
 
-/* Scoped styles for the interview stage. Only transform/opacity are
-   animated (GPU-composited); hues come from the theme tokens via color-mix,
-   so the orb follows the site palette. The stage mode class (lx-speaking /
-   lx-listening / lx-prep) retargets --lx-hue and the loops' intensity. */
+/* Scoped styles for the grading wait (the interview stage itself lives in
+   src/styles/examiner-stage.css since 4 October 2026: the orb, its blurred
+   spinning halos and its ripples are gone). Only transform and opacity are
+   animated. */
 const LX_STYLES = `
-.lx-stage { --lx-hue: var(--color-brand, #4f46e5); }
-.lx-stage.lx-listening { --lx-hue: var(--skill, #0E9F6E); }
-.lx-stage.lx-prep { --lx-hue: #d97706; }
-
-.lx-ambient {
-  position: absolute; inset: -40%; pointer-events: none;
-  background:
-    radial-gradient(38% 34% at 30% 35%, color-mix(in srgb, var(--lx-hue) 16%, transparent), transparent 70%),
-    radial-gradient(30% 30% at 72% 60%, color-mix(in srgb, var(--lx-hue) 10%, transparent), transparent 70%);
-  animation: lx-drift 26s ease-in-out infinite alternate;
-  transition: background 0.8s ease;
-}
-@keyframes lx-drift {
-  from { transform: translate3d(-2%, -1%, 0) rotate(0deg); }
-  to   { transform: translate3d(2%, 2%, 0) rotate(6deg); }
-}
-
-.lx-aura {
-  position: absolute; inset: -1.5rem; border-radius: 9999px; pointer-events: none;
-  background: conic-gradient(
-    from 0deg,
-    color-mix(in srgb, var(--lx-hue) 55%, transparent),
-    transparent 30%,
-    color-mix(in srgb, var(--lx-hue) 35%, transparent) 55%,
-    transparent 80%,
-    color-mix(in srgb, var(--lx-hue) 55%, transparent)
-  );
-  filter: blur(18px);
-  opacity: 0.5;
-  animation: lx-spin 24s linear infinite;
-  transition: opacity 0.6s ease;
-}
-.lx-aura-hot { animation-duration: 7s; animation-direction: reverse; opacity: 0; filter: blur(12px); }
-.lx-speaking .lx-aura-hot { opacity: 0.75; }
-@keyframes lx-spin { to { transform: rotate(360deg); } }
-
-.lx-breathe {
-  position: absolute; inset: 0.75rem; border-radius: 9999px; pointer-events: none;
-  border: 1.5px solid color-mix(in srgb, var(--lx-hue) 45%, transparent);
-  animation: lx-breathe 4.2s ease-in-out infinite;
-}
-@keyframes lx-breathe {
-  0%, 100% { transform: scale(1); opacity: 0.55; }
-  50%      { transform: scale(1.06); opacity: 0.2; }
-}
-
-.lx-ripple {
-  position: absolute; inset: 1.5rem; border-radius: 9999px; pointer-events: none;
-  border: 2px solid color-mix(in srgb, var(--lx-hue) 60%, transparent);
-  animation: lx-ripple 1.8s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
-}
-@keyframes lx-ripple {
-  from { transform: scale(0.72); opacity: 0.8; }
-  to   { transform: scale(1.45); opacity: 0; }
-}
-
-.lx-micring {
-  position: absolute; inset: 2.25rem; border-radius: 9999px; pointer-events: none;
-  border: 3px solid color-mix(in srgb, var(--skill, #0E9F6E) 80%, transparent);
-  opacity: 0; will-change: transform, opacity;
-}
-
-.lx-glow {
-  position: absolute; inset: 3rem; border-radius: 9999px; pointer-events: none;
-  background: radial-gradient(circle, color-mix(in srgb, var(--lx-hue) 75%, transparent), transparent 70%);
-  filter: blur(14px);
-  opacity: 0.35; will-change: transform, opacity;
-}
-
-.lx-float { animation: lx-float 6s ease-in-out infinite; will-change: transform; }
-@keyframes lx-float {
-  0%, 100% { transform: translate3d(0, -3px, 0); }
-  50%      { transform: translate3d(0, 3px, 0); }
-}
-
-.lx-core {
-  display: grid; place-items: center;
-  height: 7rem; width: 7rem; border-radius: 9999px;
-  background:
-    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.85), transparent 42%),
-    radial-gradient(circle at 68% 78%, color-mix(in srgb, var(--lx-hue) 55%, transparent), transparent 60%),
-    linear-gradient(145deg, color-mix(in srgb, var(--lx-hue) 92%, white), color-mix(in srgb, var(--lx-hue) 70%, black));
-  box-shadow:
-    inset 0 -14px 26px color-mix(in srgb, var(--lx-hue) 55%, transparent),
-    0 10px 34px color-mix(in srgb, var(--lx-hue) 38%, transparent);
-  transition: background 0.8s ease, box-shadow 0.8s ease;
-  will-change: transform;
-}
-
-.lx-core-icon {
-  color: rgba(255, 255, 255, 0.94);
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.25));
-  animation: lx-fade-up 0.45s ease both;
-}
-
 .lx-eq { display: flex; align-items: center; gap: 0.4rem; height: 3.5rem; }
 .lx-eq span {
   width: 0.55rem; height: 3rem; border-radius: 9999px;
@@ -1973,54 +1936,11 @@ const LX_STYLES = `
   50%      { transform: scaleY(1); }
 }
 
-.lx-status { animation: lx-fade-up 0.45s ease both; }
-.lx-caption { animation: lx-fade-up 0.6s ease both; }
-@keyframes lx-fade-up {
-  from { transform: translate3d(0, 6px, 0); opacity: 0; }
-  to   { transform: translate3d(0, 0, 0); opacity: 1; }
-}
-
-.lx-tick { animation: lx-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-@keyframes lx-pop {
-  from { transform: scale(1.3); }
-  to   { transform: scale(1); }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .lx-ambient, .lx-aura, .lx-aura-hot, .lx-breathe, .lx-ripple,
-  .lx-float, .lx-status, .lx-caption, .lx-tick, .lx-eq span, .lx-core-icon { animation: none; }
-  .lx-aura-hot { opacity: 0; }
+  .lx-eq span { animation: none; }
   .lx-eq span { transform: scaleY(0.6); }
 }
 `;
-
-function IconMic() {
-  return (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="9" y="2.5" width="6" height="11" rx="3" />
-      <path d="M5 11a7 7 0 0 0 14 0" />
-      <path d="M12 18v3.5" />
-    </svg>
-  );
-}
-
-function IconSpeaker() {
-  return (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M11 5.5 6.5 9H3v6h3.5L11 18.5z" fill="currentColor" stroke="none" />
-      <path d="M15 9.5a3.5 3.5 0 0 1 0 5" />
-      <path d="M17.5 7a7 7 0 0 1 0 10" />
-    </svg>
-  );
-}
-
-function IconPencil() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M17 3.5 20.5 7 8.5 19l-4.5 1.5L5.5 16z" />
-    </svg>
-  );
-}
 
 function Stat({ label, value, bad }: { label: string; value: string; bad?: boolean }) {
   return (
