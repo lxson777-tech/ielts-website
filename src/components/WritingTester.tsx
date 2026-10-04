@@ -34,7 +34,8 @@ import { getModelAnswers } from '../data/model-answers';
 import { nextInRotation } from '../lib/rotation';
 import { withBase } from '../lib/url';
 import { recordWritingAttemptFor } from '../lib/progress';
-import { useT } from '../lib/i18n/react';
+import { useT } from '../lib/i18n/react';
+import { readTrainerTimerShown, writeTrainerTimerShown } from '../lib/writing/timer-pref';
 import { getLocale, contentLocale } from '../lib/i18n/locale';
 import BandReport from './BandReport';
 import Html from './Html';
@@ -146,6 +147,20 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   // image at 560px inline, and students need to read exact numbers off it,
   // so a click opens it full-size instead of asking them to squint.
   const [lightboxImg, setLightboxImg] = useState<{ src: string; alt: string } | null>(null);
+
+  /* In the trainer the clock is optional (Alex, 4 October 2026): hidden until
+     the student asks for it, and the choice is remembered on this device. It
+     keeps counting either way, so the time saved with an attempt is unchanged.
+     Read after the first render so the server-built page and the browser's
+     first render agree. */
+  const [timerShown, setTimerShownState] = useState(false);
+  useEffect(() => {
+    setTimerShownState(readTrainerTimerShown());
+  }, []);
+  function setTimerShown(on: boolean) {
+    setTimerShownState(on);
+    writeTrainerTimerShown(on);
+  }
 
   // Elapsed time — starts the moment the task begins, exactly like the real
   // exam clock (it doesn't wait for the first keystroke).
@@ -854,6 +869,8 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
 
   /* ── 2. Editor ── */
   const under = wordCount < prompt.minWords;
+  /* The checker is exam conditions, so its clock always shows. */
+  const timerVisible = !coached || timerShown;
   const totalSeconds = Math.floor(elapsedMs / 1000);
   const timerOvertime = elapsedMs >= prompt.suggestedMinutes * 60_000;
   return (
@@ -886,7 +903,16 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
                 · ~{t('{n} min', { n: prompt.suggestedMinutes })}
               </span>
               <div className="flex shrink-0 items-center gap-2">
-                {timerStartedRef.current && (
+                {timerStartedRef.current && coached && !timerVisible && (
+                  <button
+                    type="button"
+                    onClick={() => setTimerShown(true)}
+                    className="py-2 -my-2 text-xs font-semibold text-ink-muted hover:text-ink"
+                  >
+                    ⏱ {t('Show timer')}
+                  </button>
+                )}
+                {timerStartedRef.current && timerVisible && (
                   <span
                     className={`flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-xs font-bold tabular-nums ${
                       timerOvertime ? 'border-error text-error' : 'border-border text-ink'
@@ -894,6 +920,17 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
                     title={timerOvertime ? t('Over the suggested time') : t('Time spent writing')}
                   >
                     {timerOvertime ? '⚠' : '⏱'} {pad(Math.floor(totalSeconds / 60))}:{pad(totalSeconds % 60)}
+                    {coached && (
+                      <button
+                        type="button"
+                        onClick={() => setTimerShown(false)}
+                        aria-label={t('Hide timer')}
+                        title={t('Hide timer')}
+                        className="-my-2 -mr-1 ml-0.5 px-1.5 py-2 font-sans text-ink-muted hover:text-ink"
+                      >
+                        ×
+                      </button>
+                    )}
                   </span>
                 )}
                 {/* Exam conditions: you get the question you're given. The

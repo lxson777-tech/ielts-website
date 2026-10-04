@@ -53,6 +53,8 @@ export const strings: Record<string, string> = {
   /* WritingTester.tsx: editor */
   'Over the suggested time': 'Больше рекомендованного времени',
   'Time spent writing': 'Время, потраченное на письмо',
+  'Show timer': 'Показать таймер',
+  'Hide timer': 'Скрыть таймер',
   'New task': 'Новое задание',
   'View larger: click the chart to open it full-size.': 'Увеличить: нажмите на диаграмму, чтобы открыть её на весь экран.',
   'Write your answer here…': 'Напишите здесь свой ответ…',
