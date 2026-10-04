@@ -25,7 +25,7 @@ import { upgradeOnRefusal } from '../access/refusal-upgrade';
 import { countWords } from '../../lib/writing/mechanics';
 import { deviceStorage, runOwnedGrade, type OwnerBinding } from '../../lib/store-owner';
 import { useT } from '../../lib/i18n/react';
-import Html from '../Html';
+import PromptWithCharts from '../PromptWithCharts';
 import GradingProgress from '../GradingProgress';
 import { PLACEMENT } from '../../data/placement';
 import { settlePlacementPart, type NotAssessedReason, type PlacementStateV1 } from '../../lib/placement/state';
@@ -283,7 +283,8 @@ export default function PlacementWriting({
       </div>
       <div className="pl-card" style={{ padding: '26px 28px' }}>
         {/* Exam material stays English. */}
-        <Html className="pl-prompt" html={prompt.promptHtml} />
+        {/* The chart zooms in place (ZoomableChart); display only. */}
+        <PromptWithCharts className="pl-prompt" chartClassName="zchart-exam" html={prompt.promptHtml} />
       </div>
       <label className="sr-only" htmlFor="pl-essay">
         {t('Your answer')}

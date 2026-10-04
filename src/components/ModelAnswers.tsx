@@ -24,7 +24,7 @@ import { canLinkModelAnswer, parseLibraryReason, LIBRARY_REASON_SENTENCES, type 
 import { recordLessonStudied } from '../lib/learning/store.browser';
 import SessionContinueBar from './learning/SessionContinueBar';
 import Tabs, { type TabDef } from './Tabs';
-import Html from './Html';
+import PromptWithCharts from './PromptWithCharts';
 
 /* Labels are marked with nt() here (module scope, grouped once per data
    change via useMemo) and translated with t() where they're rendered
@@ -410,7 +410,7 @@ export default function ModelAnswers() {
           <summary className="ma-prompt-eyebrow">
             {t('View question')} · {prompt.task === 'task2' ? 'Task 2' : 'Task 1'} · {prompt.title}
           </summary>
-          <Html as="div" className="ma-prompt-html" html={prompt.promptHtml} />
+          <PromptWithCharts as="div" className="ma-prompt-html" html={prompt.promptHtml} />
         </details>
 
         <div className="ma-controls">

@@ -465,28 +465,19 @@
    exact numbers off these charts, so the image should fill the prompt block
    instead of sitting small inside it; the block itself is capped at 820px
    (src/components/WritingTester.tsx) so text prompts keep a comfortable line
-   length too. A click opens the full-size lightbox rendered in that component. */
+   length too. */
 /* Height-capped since 4 October 2026 (Alex: "super big, it takes up the whole
    screen"): at full width a tall chart pushed the question and the answer box
-   off the screen. The chart now fits beside them on one screen, and a click
-   still opens the full-size lightbox for reading exact figures. */
-.writing-prompt img {
-  display: block;
-  max-width: 100% !important;
-  width: auto !important;
-  max-height: min(34vh, 300px);
-  height: auto;
-  margin-inline: auto;
-  object-fit: contain;
-  cursor: zoom-in;
-  border-radius: 10px;
-  transition: opacity 0.15s ease;
+   off the screen. The chart now fits beside them on one screen. Since the
+   same day the chart is a ZoomableChart (src/components/ZoomableChart.tsx,
+   styles in src/styles/zoomable-chart.css): a click zooms in place to read
+   exact figures, and Full size opens the larger view. The cap is handed to
+   it through --zchart-max-h. */
+.writing-prompt .zchart {
+  --zchart-max-h: min(34vh, 300px);
 }
 @media (max-width: 640px) {
-  .writing-prompt img { max-height: 30vh; }
-}
-.writing-prompt img:hover {
-  opacity: 0.92;
+  .writing-prompt .zchart { --zchart-max-h: 30vh; }
 }
 
 /* The Writing Trainer's two-column task+coach layout needs more room

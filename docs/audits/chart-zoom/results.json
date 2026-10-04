@@ -1,0 +1,262 @@
+[
+  {
+    "check": "desktop: chart starts unzoomed in its capped frame",
+    "ok": true,
+    "detail": "{\"s\": 1, \"x\": 0, \"y\": 0, \"fw\": 346.875, \"fh\": 300, \"fl\": 344.5625, \"ft\": 380.96875, \"nw\": 518, \"dw\": 347, \"dh\": 300, \"zoomed\": \"false\"}"
+  },
+  {
+    "check": "desktop: frame is exactly the picture size",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "desktop: hint text",
+    "ok": true,
+    "detail": "Click the chart to zoom in. Use Full size to open it larger."
+  },
+  {
+    "check": "desktop: old hint gone",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "desktop: a click zooms in (2.5x or the sharpness cap)",
+    "ok": true,
+    "detail": "s=2.239 cap=2.239 natural=518 drawn=347"
+  },
+  {
+    "check": "desktop: the clicked point stays under the pointer",
+    "ok": true,
+    "detail": "q=(249.8,90.0) p=(249.8,90.0)"
+  },
+  {
+    "check": "desktop: no dialog opened by the click",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "desktop: moving the pointer pans",
+    "ok": true,
+    "detail": "before=(-309.5,-111.5) after=(-64.5,-316.0)"
+  },
+  {
+    "check": "desktop: pan stays inside the chart",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "desktop: wheel while zoomed zooms, page does not scroll",
+    "ok": true,
+    "detail": "s 2.24 -> 1.36"
+  },
+  {
+    "check": "desktop: a second click zooms back out",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "desktop: wheel while unzoomed scrolls the page",
+    "ok": true,
+    "detail": "scrollY 0 -> 300"
+  },
+  {
+    "check": "desktop: Ctrl + wheel zooms the unzoomed chart",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "controls: Reset returns to the whole chart",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "controls: at 1x only Zoom in and Full size show (Zoom out and Reset hidden)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "controls: Zoom in steps up 1.5x",
+    "ok": true,
+    "detail": "s=1.5"
+  },
+  {
+    "check": "controls: Zoom in stays put when the others appear",
+    "ok": true,
+    "detail": "602.4375 -> 602.4375"
+  },
+  {
+    "check": "controls: Zoom out and Reset appear once zoomed",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "controls: Zoom in stops at the sharpness cap and disables",
+    "ok": true,
+    "detail": "s=2.239 cap=2.239"
+  },
+  {
+    "check": "controls: Zoom out steps down",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "controls: every control has a 44px target and a name",
+    "ok": true,
+    "detail": "[{\"w\": 44, \"h\": 44, \"name\": \"Reset zoom\"}, {\"w\": 44, \"h\": 44, \"name\": \"Zoom out\"}, {\"w\": 44, \"h\": 44, \"name\": \"Zoom in\"}, {\"w\": 44, \"h\": 44, \"name\": \"Full size\"}]"
+  },
+  {
+    "check": "controls: Full size opens the larger view",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "controls: Escape closes it and focus returns to Full size",
+    "ok": true,
+    "detail": "focus=Full size"
+  },
+  {
+    "check": "controls: Reset by keyboard hands focus to Zoom in, not the page",
+    "ok": true,
+    "detail": "focus=Zoom in"
+  },
+  {
+    "check": "keyboard: + zooms",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "keyboard: arrows pan",
+    "ok": true,
+    "detail": "(-86.8,-75.0) -> (-138.8,-120.0)"
+  },
+  {
+    "check": "keyboard: the zoom level is announced politely",
+    "ok": true,
+    "detail": "Zoomed to 224%"
+  },
+  {
+    "check": "keyboard: - zooms out",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "keyboard: 0 resets",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "keyboard: Escape resets",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "keyboard: reset announced",
+    "ok": true,
+    "detail": "Zoom reset: the whole chart is shown."
+  },
+  {
+    "check": "keyboard: unzoomed, arrows are left to the page",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "reduced motion: no transform transition",
+    "ok": true,
+    "detail": "1e-05s"
+  },
+  {
+    "check": "motion: eased transition otherwise",
+    "ok": true,
+    "detail": "0.28s"
+  },
+  {
+    "check": "grader: the request carries the original promptHtml, byte for byte",
+    "ok": true,
+    "detail": "441 chars, img tag kept: True"
+  },
+  {
+    "check": "grader: request shape unchanged",
+    "ok": true,
+    "detail": "[\"essay\", \"mechanics\", \"prompt\"]"
+  },
+  {
+    "check": "desktop: no page errors",
+    "ok": true,
+    "detail": "[]"
+  },
+  {
+    "check": "checker: zoomable chart on the Writing Checker",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "focused: Task 1 exercise chart zooms in place",
+    "ok": true,
+    "detail": "s=1.50"
+  },
+  {
+    "check": "phone: touch hint",
+    "ok": true,
+    "detail": "Pinch or double-tap the chart to zoom. Use Full size to open it larger."
+  },
+  {
+    "check": "phone: chart height capped at 30vh",
+    "ok": true,
+    "detail": "h=253"
+  },
+  {
+    "check": "phone: swipe on the unzoomed chart scrolls the page",
+    "ok": true,
+    "detail": "scrollY 66 -> 191"
+  },
+  {
+    "check": "phone: double tap zooms in",
+    "ok": true,
+    "detail": "s=2.50 cap=2.65"
+  },
+  {
+    "check": "phone: drag pans the zoomed chart",
+    "ok": true,
+    "detail": "x -131.7 -> -195.7, scrollY 66 -> 66"
+  },
+  {
+    "check": "phone: double tap again zooms out",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "phone: pinch zooms (capped 1x to 4x and sharp)",
+    "ok": true,
+    "detail": "s=2.65 cap=2.65"
+  },
+  {
+    "check": "phone: pinch in returns to the whole chart",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "phone: Full size opens the larger view",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "phone: no horizontal overflow",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "phone: no page errors",
+    "ok": true,
+    "detail": "[]"
+  },
+  {
+    "check": "ru: hint and control names in Russian",
+    "ok": true,
+    "detail": "Нажмите на диаграмму, чтобы приблизить её. Кнопка «Во весь размер» откроет её крупнее. | ['Сбросить масштаб', 'Отдалить', 'Приблизить', 'Во весь размер']"
+  },
+  {
+    "check": "mock: Writing Task 1 chart zooms in place, height capped",
+    "ok": true,
+    "detail": "s=2.21 frame h=300"
+  }
+]

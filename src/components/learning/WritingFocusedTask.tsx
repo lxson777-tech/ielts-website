@@ -70,7 +70,7 @@ import { planHistoryText } from '../../lib/learning/plan-history';
 import { getLocale, contentLocale } from '../../lib/i18n/locale';
 import { nt } from '../../lib/i18n/translate';
 import { withBase } from '../../lib/url';
-import Html from '../Html';
+import PromptWithCharts from '../PromptWithCharts';
 import {
   ensureLearningWired,
   getCurrentSession,
@@ -707,7 +707,8 @@ export default function WritingFocusedTask({ view }: Props) {
       <div className="written-body">
         <section className="written-prompt" aria-label={t('The task')}>
           <p className="written-prompt-label">{t(writtenTaskLabel(view.task))} · {view.promptTitle}</p>
-          <Html as="div" className="written-prompt-text" html={view.promptHtml} />
+          {/* The Task 1 chart zooms in place (ZoomableChart); display only. */}
+          <PromptWithCharts as="div" className="written-prompt-text" html={view.promptHtml} />
         </section>
 
         <section className="written-work" aria-label={t(wording.yourWorkKey)}>

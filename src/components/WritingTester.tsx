@@ -34,11 +34,11 @@ import { getModelAnswers } from '../data/model-answers';
 import { nextInRotation } from '../lib/rotation';
 import { withBase } from '../lib/url';
 import { recordWritingAttemptFor } from '../lib/progress';
-import { useT } from '../lib/i18n/react';
+import { useT } from '../lib/i18n/react';
 import { readTrainerTimerShown, writeTrainerTimerShown } from '../lib/writing/timer-pref';
 import { getLocale, contentLocale } from '../lib/i18n/locale';
 import BandReport from './BandReport';
-import Html from './Html';
+import PromptWithCharts from './PromptWithCharts';
 import WritingCoachPanel from './WritingCoachPanel';
 import GradingProgress from './GradingProgress';
 import ExplainResult from './tutor/ExplainResult';
@@ -146,7 +146,6 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   // Lightbox for the Task 1 chart: the imported prompt markup hard-caps the
   // image at 560px inline, and students need to read exact numbers off it,
   // so a click opens it full-size instead of asking them to squint.
-  const [lightboxImg, setLightboxImg] = useState<{ src: string; alt: string } | null>(null);
 
   /* In the trainer the clock is optional (Alex, 4 October 2026): hidden until
      the student asks for it, and the choice is remembered on this device. It
@@ -237,7 +236,6 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
     setResult(null);
     setAttemptAt(null);
     setGradingError(null);
-    setLightboxImg(null);
     /* A sign-out followed by a sign-in is two changes of owner. If the first
        one took an essay that was being graded, that notice is still the
        explanation the incoming student needs, until they start writing. */
@@ -286,27 +284,6 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
   }
 
   const wordCount = useMemo(() => countWords(essay), [essay]);
-
-  useEffect(() => {
-    if (!lightboxImg) return;
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') setLightboxImg(null);
-    }
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [lightboxImg]);
-
-  /* Event delegation on the prompt card: the prompt body is raw HTML from
-     the data files (rendered via <Html>), so there's no per-image React
-     handler to attach — a click anywhere in the card that landed on an
-     <img> opens the lightbox. */
-  function handlePromptClick(e: React.MouseEvent<HTMLDivElement>) {
-    const target = e.target as HTMLElement;
-    if (target.tagName === 'IMG') {
-      const img = target as HTMLImageElement;
-      setLightboxImg({ src: img.src, alt: img.alt });
-    }
-  }
 
   async function submit() {
     if (!prompt || grading || !isGraderConfigured()) return;
@@ -895,7 +872,6 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         <div className="writing-editor space-y-4">
           <div
             className="writing-prompt max-w-[820px] rounded-card border border-border bg-surface p-5 shadow-card"
-            onClick={handlePromptClick}
           >
             <div className="flex items-start justify-between gap-3">
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
@@ -945,13 +921,11 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             {/* Via <Html> (memoized), not an inline dangerouslySetInnerHTML:
                 the writing clock re-renders this component every 500ms and
                 every keystroke, and an inline one would reparse the prompt on
-                each of those — visibly re-loading the Task 1 chart image. */}
-            <Html as="p" className="mt-2 text-[0.95rem] leading-relaxed" html={prompt.promptHtml} />
-            {prompt.promptHtml.includes('<img') && (
-              <p className="mt-2 text-xs font-medium text-ink-muted">
-                {t('View larger: click the chart to open it full-size.')}
-              </p>
-            )}
+                each of those — visibly re-loading the Task 1 chart image.
+                A Task 1 chart is drawn by ZoomableChart: zoom in place, Full
+                size for the larger view, and its own hint line. Display only:
+                submit() still sends `prompt` itself, untouched. */}
+            <PromptWithCharts as="p" className="mt-2 text-[0.95rem] leading-relaxed" html={prompt.promptHtml} />
           </div>
 
           {ownerNote && (
@@ -1026,30 +1000,6 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         )}
       </div>
 
-      {lightboxImg && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={lightboxImg.alt || t('Chart, larger view')}
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4"
-          onClick={() => setLightboxImg(null)}
-        >
-          <button
-            type="button"
-            onClick={() => setLightboxImg(null)}
-            aria-label={t('Close')}
-            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full text-2xl leading-none text-white/90 transition-colors hover:bg-white/10 hover:text-white"
-          >
-            ×
-          </button>
-          <img
-            src={lightboxImg.src}
-            alt={lightboxImg.alt}
-            className="max-h-[95vh] max-w-[95vw] rounded-lg object-contain shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
-      )}
     </>
   );
 }

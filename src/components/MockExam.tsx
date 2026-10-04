@@ -58,7 +58,8 @@ import { useT } from '../lib/i18n/react';
 import { isAuthConfigured } from '../lib/auth/supabase';
 import { onAuthChange } from '../lib/auth/session';
 import { fetchLiveConfig, type LiveConfig } from '../lib/speaking/live/link';
-import Html from './Html';
+import PromptWithCharts from './PromptWithCharts';
+import ZoomableChart from './ZoomableChart';
 import TestPlayer from './TestPlayer';
 import GatedPaper from './trial/GatedPaper';
 import LiveExaminer from './LiveExaminer';
@@ -1407,9 +1408,12 @@ function WritingTaskBlock({
         <span className="text-xs font-bold uppercase tracking-wider text-brand">
           {t('{label} · ~{minutes} min', { label, minutes: prompt.suggestedMinutes })}
         </span>
-        <Html as="p" className="mt-2 text-[0.95rem] leading-relaxed" html={prompt.promptHtml} />
+        {/* The Task 1 chart zooms in place (ZoomableChart), capped in height
+            like the trainer's so question, chart and answer box share one
+            screen. Display only: the essay is graded from `prompt` itself. */}
+        <PromptWithCharts as="p" className="mt-2 text-[0.95rem] leading-relaxed" chartClassName="zchart-exam" html={prompt.promptHtml} />
         {prompt.imageUrl && (
-          <img src={asset(prompt.imageUrl)} alt={t('Task visual')} className="mt-3 w-full rounded-lg border border-border" />
+          <ZoomableChart src={asset(prompt.imageUrl)} alt={t('Task visual')} className="zchart-exam" />
         )}
       </div>
       <textarea
@@ -1728,7 +1732,7 @@ function EssayCard({ label, prompt, text }: { label: string; prompt?: EssayPromp
         <span className="text-xs font-bold uppercase tracking-wider text-brand">{label}</span>
         <span className="text-xs text-ink-muted">{tn(wordCount, { one: '{n} word', other: '{n} words' })}</span>
       </div>
-      {prompt && <Html as="p" className="mt-2 text-sm text-ink-muted" html={prompt.promptHtml} />}
+      {prompt && <PromptWithCharts as="p" className="mt-2 text-sm text-ink-muted" chartClassName="zchart-exam" hint={false} html={prompt.promptHtml} />}
       <p className="mt-3 whitespace-pre-wrap text-[0.95rem] leading-relaxed">{text || <span className="text-ink-muted">{t('(left blank)')}</span>}</p>
     </div>
   );

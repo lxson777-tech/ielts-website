@@ -1,0 +1,6 @@
+{
+  "task": "task1",
+  "variant": "combination",
+  "promptHtml": "The chart and table below show the results of a survey of library users at a university. <strong>Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</strong>\n      <img src=\"/ielts-website/pics/writing/imported/wt-132-task1.webp\" alt=\"Chart and table showing library users at a university\" loading=\"lazy\" style=\"width:100%;max-width:560px;height:auto;margin-top:12px;background:#fff\">",
+  "minWords": 150
+}

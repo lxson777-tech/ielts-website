@@ -3,7 +3,8 @@
 
    Covers: src/components/WritingTester.tsx, src/components/SpeakingTester.tsx,
    src/components/LiveExaminer.tsx, src/components/BandReport.tsx,
-   src/components/WritingHistory.tsx, src/pages/trainers/*,
+   src/components/WritingHistory.tsx, src/components/ZoomableChart.tsx,
+   src/pages/trainers/*,
    src/pages/writing/*, src/pages/speaking/* interface copy.
 
    Essay prompts, cue cards and model answers stay in English.
@@ -56,7 +57,6 @@ export const strings: Record<string, string> = {
   'Show timer': 'Показать таймер',
   'Hide timer': 'Скрыть таймер',
   'New task': 'Новое задание',
-  'View larger: click the chart to open it full-size.': 'Увеличить: нажмите на диаграмму, чтобы открыть её на весь экран.',
   'Write your answer here…': 'Напишите здесь свой ответ…',
   "AI feedback is not available on this build ({envVar} is not set). You can still write and time yourself, but essays can't be graded here yet.":
     'ИИ-разбор недоступен в этой версии сайта (переменная {envVar} не задана). Вы можете писать и засекать время, но проверить эссе здесь пока нельзя.',
@@ -64,8 +64,27 @@ export const strings: Record<string, string> = {
     'Не удалось связаться со службой проверки. Ваше эссе никуда не делось, попробуйте ещё раз через минуту.',
   '{count} / {min}+ words': '{count} / {min}+ слов',
   'Check my essay': 'Проверить эссе',
-  'Chart, larger view': 'Диаграмма, увеличенный вид',
   Close: 'Закрыть',
+
+  /* ZoomableChart.tsx: the Task 1 chart, zoomed in place (4 October 2026).
+     Shared by the trainer, the Checker, the mock exam, the placement test,
+     the focused Task 1 exercises, model answers and lesson examples. */
+  'Click the chart to zoom in. Use Full size to open it larger.':
+    'Нажмите на диаграмму, чтобы приблизить её. Кнопка «Во весь размер» откроет её крупнее.',
+  'Pinch or double-tap the chart to zoom. Use Full size to open it larger.':
+    'Сведите или разведите пальцы либо дважды коснитесь диаграммы, чтобы приблизить её. Кнопка «Во весь размер» откроет её крупнее.',
+  'Zoom reset: the whole chart is shown.': 'Масштаб сброшен: диаграмма видна целиком.',
+  'Zoomed to {n}%': 'Масштаб {n}%',
+  'Chart: {alt}. Zoomable.': 'Диаграмма: {alt}. Можно приблизить.',
+  'Zoomable chart': 'Диаграмма, которую можно приблизить',
+  'Chart zoom': 'Масштаб диаграммы',
+  'Zoom out': 'Отдалить',
+  'Zoom in': 'Приблизить',
+  'Reset zoom': 'Сбросить масштаб',
+  'Full size': 'Во весь размер',
+  'Plus and minus zoom, the arrow keys move around the zoomed chart, and 0 or Escape shows the whole chart again.':
+    'Плюс и минус меняют масштаб, стрелки двигают приближенную диаграмму, а 0 или Escape снова показывают её целиком.',
+  'Chart, larger view': 'Диаграмма, увеличенный вид',
 
   /* WritingCoachPanel.tsx (also reused by SpeakingCoachPanel.tsx tabs, and
      the shared 'Language' / 'Vocabulary' tab keys already live in shell.ts). */

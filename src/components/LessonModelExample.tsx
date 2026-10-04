@@ -30,7 +30,8 @@ import { getModelAnswers, type ModelAnswer } from '../data/model-answers';
 import { countWords } from '../lib/writing/mechanics';
 import { withBase } from '../lib/url';
 import { useT } from '../lib/i18n/react';
-import Html from './Html';
+import PromptWithCharts from './PromptWithCharts';
+import ZoomableChart from './ZoomableChart';
 
 /** Which prompt variants belong to each writing lesson. */
 const LESSON_VARIANTS: Record<string, string[]> = {
@@ -158,8 +159,8 @@ function ModelView({
 
       <div className="px-5 py-4">
         <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">{t('The task')}</p>
-        <Html as="div" className="lesson-model-prompt mt-1.5 text-sm leading-relaxed" html={prompt.promptHtml} />
-        {prompt.imageUrl && <img src={prompt.imageUrl.startsWith('data:') ? prompt.imageUrl : withBase(prompt.imageUrl)} alt={t('Writing task chart')} className="mt-4 max-h-96 max-w-full object-contain" loading="lazy" />}
+        <PromptWithCharts as="div" className="lesson-model-prompt mt-1.5 text-sm leading-relaxed" html={prompt.promptHtml} />
+        {prompt.imageUrl && <ZoomableChart src={prompt.imageUrl.startsWith('data:') ? prompt.imageUrl : withBase(prompt.imageUrl)} alt={t('Writing task chart')} />}
 
         {!open ? (
           <div className="mt-4 flex flex-wrap items-center gap-3">

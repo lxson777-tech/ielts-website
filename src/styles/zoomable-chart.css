@@ -1,0 +1,247 @@
+/* ZoomableChart (src/components/ZoomableChart.tsx): a Task 1 chart that
+   zooms and pans inside its own frame.
+
+   Sizing: the frame is exactly the picture's displayed size, so the zoom
+   arithmetic (src/lib/chart-zoom.ts) can treat "frame" and "picture" as
+   the same box. The picture is never drawn wider than its own pixels
+   (width: auto) and never taller than --zchart-max-h, which each screen
+   sets for itself so the question, the chart and the answer box still
+   share one screen. The controls are a small capsule in the frame's
+   bottom-right corner (a sibling of the frame, so pressing one never
+   counts as a click on the chart); the hint line sits under the chart. */
+
+.zchart {
+  --zchart-max-h: min(60vh, 520px);
+  --zchart-ink: var(--color-ink, #263c35);
+  --zchart-muted: var(--color-ink-muted, #616c64);
+  --zchart-border: var(--color-border, #dddfd6);
+  --zchart-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  margin-top: 12px;
+}
+
+/* Exam screens (the mock's Writing Task 1, the placement test): the same cap
+   as the trainer, so question, chart and answer box share one screen. */
+.zchart.zchart-exam {
+  --zchart-max-h: min(34vh, 300px);
+}
+@media (max-width: 640px) {
+  .zchart.zchart-exam { --zchart-max-h: 30vh; }
+}
+
+.zchart-stage {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.zchart-frame {
+  position: relative;
+  overflow: hidden;
+  max-width: 100%;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--zchart-border) 70%, transparent);
+  cursor: zoom-in;
+  /* Unzoomed, a one-finger swipe scrolls the page and a pinch is ours (the
+     browser's own pinch and double-tap zoom are switched off here only). */
+  touch-action: pan-x pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  transition: box-shadow 0.2s var(--zchart-ease);
+}
+.zchart-frame[data-zoomed='true'] {
+  cursor: zoom-out;
+  /* Zoomed, one finger moves the chart instead of the page. */
+  touch-action: none;
+}
+.zchart-frame:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--color-surface, #fffefa),
+    0 0 0 4px var(--zchart-ink);
+}
+
+.zchart-img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: var(--zchart-max-h);
+  transform-origin: 0 0;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+.zchart-img[data-motion='step'] {
+  transition: transform 0.28s var(--zchart-ease);
+}
+.zchart-img[data-motion='follow'] {
+  transition: transform 0.14s var(--zchart-ease);
+}
+/* Only while a finger or the wheel is moving it: left on, the browser would
+   keep the picture rasterised at 1x and the zoomed figures would blur. */
+.zchart-img[data-active='true'] {
+  will-change: transform;
+}
+
+/* ── Controls: a quiet capsule in the frame's bottom-right corner ──── */
+.zchart-controls {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 2px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface, #fffefa) 94%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--zchart-border) 85%, transparent),
+    0 2px 10px rgba(38, 60, 53, 0.1);
+}
+
+.zchart-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--zchart-muted);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color 0.18s var(--zchart-ease),
+    background-color 0.18s var(--zchart-ease),
+    opacity 0.18s var(--zchart-ease);
+}
+.zchart-btn[hidden] {
+  display: none;
+}
+/* Reset and Zoom out arrive once zoomed: a short settle, not a pop. */
+.zchart-btn-extra:not([hidden]) {
+  animation: zchart-arrive 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes zchart-arrive {
+  from { opacity: 0; transform: translateX(6px); }
+  to { opacity: 1; transform: none; }
+}
+/* 36px to the eye, 44px to the finger: the target overhangs the chip. */
+.zchart-btn::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+}
+.zchart-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.zchart-btn:hover:not(:disabled) {
+  color: var(--zchart-ink);
+  background: var(--color-surface-alt, #f5f5f0);
+}
+.zchart-btn:active:not(:disabled) {
+  background: color-mix(in srgb, var(--zchart-ink) 10%, transparent);
+}
+.zchart-btn:focus-visible {
+  outline: 2px solid var(--zchart-ink);
+  outline-offset: 0;
+  color: var(--zchart-ink);
+}
+.zchart-btn:disabled {
+  opacity: 0.32;
+  cursor: default;
+}
+
+.zchart-divider {
+  width: 1px;
+  height: 16px;
+  margin: 0 3px;
+  background: var(--zchart-border);
+}
+
+.zchart-hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--zchart-muted);
+}
+
+/* ── The larger view, opened by Full size ─────────────────────────────── */
+.zchart-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.8);
+  animation: zchart-fade 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.zchart-lightbox-img {
+  max-width: 95vw;
+  max-height: 95vh;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+.zchart-lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.zchart-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.zchart-lightbox-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+.zchart-lightbox-close svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+}
+@keyframes zchart-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Reduced motion: every step lands at once. */
+@media (prefers-reduced-motion: reduce) {
+  .zchart-img[data-motion],
+  .zchart-frame,
+  .zchart-btn {
+    transition: none;
+  }
+  .zchart-lightbox,
+  .zchart-btn-extra:not([hidden]) { animation: none; }
+}
