@@ -319,6 +319,45 @@
 .coach-avoid > li > svg { width: 15px; height: 15px; margin-top: 3px; color: var(--color-error); }
 .coach-avoid > li > span { color: var(--color-ink); }
 
+/* ── the rail beside the trainers (Alex, 4 October 2026) ─────────────────
+   On a computer the coach used to be as tall as everything in it (about
+   1,500px on a Task 1 question), which made the whole trainer page four
+   screens long. Now it is one screen tall at most and stays beside the work
+   as the page moves: the title and the tab row stay put, and only the tab's
+   own content scrolls inside the panel. Used by the Writing and Speaking
+   trainers (.trainer-coach-rail on the column that holds the panel). */
+@media (min-width: 1024px) {
+  .trainer-coach-rail {
+    --rail-top: 104px; /* clears the floating top menu */
+    position: sticky;
+    top: var(--rail-top);
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100dvh - var(--rail-top) - 24px);
+  }
+  .trainer-coach-rail > .coach-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .trainer-coach-rail > .coach-panel > .coach-title,
+  .trainer-coach-rail > .coach-panel > .coach-tabs { flex: none; }
+  .trainer-coach-rail > .coach-panel > .coach-tabpanel {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--color-ink) 22%, transparent) transparent;
+    /* room for the scrollbar without crowding the text */
+    margin-right: -12px;
+    padding-right: 12px;
+    padding-bottom: 6px;
+  }
+  /* inside a scrolling box an outside focus ring would be cut off */
+  .trainer-coach-rail > .coach-panel > .coach-tabpanel:focus-visible { outline-offset: -2px; }
+}
+
 @media (max-width: 600px) {
   .coach-panel { padding: 18px 16px; }
   .workspace-v2 .writing-guidance > .coach-panel { padding: 18px 16px; }

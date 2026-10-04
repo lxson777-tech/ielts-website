@@ -27,6 +27,26 @@
 /* The coach's own tab row lives in src/styles/coach-panel.css. */
 .workspace-v2 .writing-submit-row { flex-wrap: wrap; gap: 12px; padding: 12px 0; }
 .workspace-v2 .writing-submit-row button { min-height: 48px; border-radius: 999px; }
+/* Writing without hunting for the button (Alex, 4 October 2026): the answer
+   box grows with the essay instead of scrolling inside itself, and the word
+   count with "Check my essay" stays pinned to the bottom of the screen while
+   the answer is in view. On a phone it sits just above the bottom menu. */
+.workspace-v2 .writing-editor textarea { field-sizing: content; }
+.workspace-v2 .writing-submit-row {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 18px 0 14px;
+  background: linear-gradient(to bottom, transparent, var(--color-surface-alt) 16px);
+}
+/* The browser keeps the line being typed clear of this much space at the
+   bottom of the screen, so the pinned row never hides it (measured: the row
+   is 80px tall, plus the bottom menu on a phone). */
+html:has(.workspace-v2 .writing-submit-row) { scroll-padding-bottom: 104px; }
+@media (max-width: 719px) {
+  .workspace-v2 .writing-submit-row { bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
+  html:has(.workspace-v2 .writing-submit-row) { scroll-padding-bottom: calc(184px + env(safe-area-inset-bottom, 0px)); }
+}
 .test-result-overlay { overflow-y: auto; align-items: safe center; padding-block: 24px; }
 .test-result-panel { max-width: 520px; max-height: calc(100dvh - 48px); overflow-y: auto; border-radius: 22px; }
 .test-result-panel .band-score-pop { color: var(--color-ink); }
@@ -65,8 +85,9 @@
   .workspace-v2 .library-filters button { padding-inline: 14px; }
   .workspace-v2 .writing-editor textarea { padding: 18px; min-height: 360px; }
   .workspace-v2 .writing-prompt { padding: 20px; }
-  .workspace-v2 .writing-submit-row { align-items: stretch; flex-direction: column; }
-  .workspace-v2 .writing-submit-row button { width: 100%; }
+  /* one slim pinned line on a phone: the count on the left, the button on the right */
+  .workspace-v2 .writing-submit-row { flex-wrap: nowrap; align-items: center; }
+  .workspace-v2 .writing-submit-row button { flex: none; padding-inline: 22px; }
   .workspace-v2 .report-page header h1 { font-size: 30px; }
   .test-result-panel { padding: 24px 20px; }
 }

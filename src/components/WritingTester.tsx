@@ -934,6 +934,10 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             </p>
           )}
 
+          {/* The answer, its notes and the pinned Check row share one box, so
+              the row only sticks to the bottom of the screen while the answer
+              itself is in view (study-surfaces.css), never over the question. */}
+          <div className="writing-answer-zone space-y-4">
           {/* A persistent visible label (audit 2026-09-29, F07): the
               placeholder disappears as soon as the student types, and it
               was the box's only name. One label serves the trainer, the
@@ -989,12 +993,13 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
               {t('Check my essay')}
             </button>
           </div>
+          </div>
         </div>
 
         {/* The coach is what makes the trainer a trainer. The Checker is the
             exam: question, clock, word count, nothing to lean on. */}
         {coached && (
-          <div className="writing-guidance mt-4 lg:sticky lg:top-24 lg:mt-0">
+          <div className="writing-guidance trainer-coach-rail mt-4 lg:mt-0">
             <WritingCoachPanel key={prompt.id} prompt={prompt} essay={essay} />
           </div>
         )}

@@ -815,7 +815,7 @@ export default function SpeakingTester({ trialRecorded = false }: { trialRecorde
           <span className="text-xs font-bold uppercase tracking-wider text-[var(--skill,#0E9F6E)]">
             {MODE_LABEL[mode!]} · {promptTitle}
           </span>
-          <span className="text-xs font-semibold text-ink-muted">
+          <span className="shrink-0 whitespace-nowrap text-xs font-semibold text-ink-muted">
             {t('Question {current} / {total}', { current: turnIndex + 1, total: turnCount })}
           </span>
         </div>
@@ -888,7 +888,7 @@ export default function SpeakingTester({ trialRecorded = false }: { trialRecorde
 
     {/* The coach: remounts per question so the stage checklist starts fresh
         for every answer (one A.R.E./OREO pass per question). */}
-    <div className="mt-4 lg:sticky lg:top-20 lg:mt-0">
+    <div className="trainer-coach-rail mt-4 lg:mt-0">
       <SpeakingCoachPanel key={`${promptTitle}-${turnIndex}`} method={STRUCTURE_METHOD[mode!]} vocab={vocab} />
     </div>
     </div>

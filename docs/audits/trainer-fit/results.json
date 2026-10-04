@@ -1,0 +1,72 @@
+[
+ {
+  "check": "desktop: coach is at most one screen tall",
+  "ok": true,
+  "detail": "{'top': 271, 'bottom': 1043, 'h': 772}"
+ },
+ {
+  "check": "desktop: coach content scrolls inside the panel",
+  "ok": true,
+  "detail": "[2527, 620, 0]"
+ },
+ {
+  "check": "desktop: page is much shorter than before (3575px)",
+  "ok": true,
+  "detail": "1947"
+ },
+ {
+  "check": "desktop: wheel over the coach scrolls the coach",
+  "ok": true,
+  "detail": "[2527, 620, 500]"
+ },
+ {
+  "check": "desktop: answer box grows with the essay (no inner scroll)",
+  "ok": true,
+  "detail": "{'top': -97, 'bottom': 825, 'h': 922}"
+ },
+ {
+  "check": "desktop: word count and Check stay on screen",
+  "ok": true,
+  "detail": "{'top': 820, 'bottom': 900, 'h': 80}"
+ },
+ {
+  "check": "desktop: coach stays beside the work after scrolling",
+  "ok": true,
+  "detail": "{'top': 104, 'bottom': 876, 'h': 772}"
+ },
+ {
+  "check": "desktop: the line being typed stays above the pinned bar",
+  "ok": true,
+  "detail": "{'lastLineTop': 774, 'lastLineBottom': 802, 'barTop': 820, 'vh': 900}"
+ },
+ {
+  "check": "desktop: no page errors",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "check": "phone: Check bar does not float over the question",
+  "ok": true,
+  "detail": "({'top': 880, 'bottom': 960, 'h': 80}, {'top': 908, 'bottom': 1268, 'h': 360})"
+ },
+ {
+  "check": "phone: Check bar stays above the bottom menu while writing",
+  "ok": true,
+  "detail": "({'top': 684, 'bottom': 764, 'h': 80}, {'top': 767, 'bottom': 832, 'h': 65})"
+ },
+ {
+  "check": "phone: no sideways scrolling",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "check": "phone: the line being typed stays above the pinned bar",
+  "ok": true,
+  "detail": "{'lastLineTop': 637, 'lastLineBottom': 666, 'barTop': 684, 'vh': 844}"
+ },
+ {
+  "check": "phone: no page errors",
+  "ok": true,
+  "detail": "[]"
+ }
+]
