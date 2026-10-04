@@ -97,6 +97,10 @@ export interface OpenAiSessionOptions {
   /** Pulled by the screen the moment it lets go: the transport is closed
       and the start rejects with LiveStartCancelled at once (R2E-01). */
   handle?: StartHandle;
+  /** Sees every event after the session has started, before it is handled
+      (the connection report, ./connection-report.ts, reads only its type
+      and timing). Anything it throws is ignored. */
+  observer?: (ev: LiveServerEvent) => void;
 }
 
 interface CloseResult {
@@ -114,6 +118,7 @@ export class OpenAiLiveSession {
   private cb: OpenAiSessionCallbacks;
   private closeTimeoutMs: number;
   private turnGapMs: number;
+  private observer: ((ev: LiveServerEvent) => void) | undefined;
 
   readonly sessionId: string;
 
@@ -133,6 +138,7 @@ export class OpenAiLiveSession {
     this.sessionId = sessionId;
     this.closeTimeoutMs = opts.closeTimeoutMs ?? DEFAULT_CLOSE_TIMEOUT_MS;
     this.turnGapMs = opts.turnGapMs ?? DEFAULT_TURN_GAP_MS;
+    this.observer = opts.observer;
   }
 
   /** Resolves on session.started; rejects (and calls transport.close()) on:
@@ -233,6 +239,13 @@ export class OpenAiLiveSession {
   }
 
   private handleEvent(ev: LiveServerEvent): void {
+    if (this.observer) {
+      try {
+        this.observer(ev);
+      } catch {
+        /* an observer never changes how the session runs */
+      }
+    }
     switch (ev.type) {
       case 'session.input_transcript.delta':
         this.appendDelta('candidate', ev);

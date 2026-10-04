@@ -219,6 +219,11 @@ export const strings: Record<string, string> = {
   'Deleting your account, and what is kept': 'Удаление аккаунта и что остаётся',
   'One thing is kept: a record of each payment (the plan, the amount, the date and the receipt number), without your name or email, for 5 years, because the tax law requires sales records to be kept.':
     'Остаётся только одно: запись о каждой оплате (тариф, сумма, дата и номер квитанции) без вашего имени и почты, на 5 лет, потому что налоговое законодательство требует хранить записи о продажах.',
+  'Service logs': 'Служебные журналы',
+  'Kept by Cloudflare for up to 7 days, then deleted automatically.':
+    'Cloudflare хранит их до 7 дней, затем они удаляются автоматически.',
+  'The site’s services on Cloudflare keep short technical logs for up to 7 days, to find faults and slow connections: when each request came, how long it took, whether it worked, and your connection’s address. During a live interview your browser also sends one short summary of the connection’s quality (delays, lost sound, phone or computer), never your voice or your words. Your essays, recordings and messages are never in these logs.':
+    'Сервисы сайта на Cloudflare хранят краткие технические журналы до 7 дней, чтобы находить сбои и медленные подключения: когда пришёл каждый запрос, сколько времени он занял, прошёл ли он успешно, и адрес вашего подключения. Во время живого собеседования браузер также отправляет одну короткую сводку о качестве связи (задержки, пропавший звук, телефон или компьютер), но никогда не ваш голос и не ваши слова. Ваших эссе, записей и сообщений в этих журналах нет.',
 };
 
 export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {};

@@ -1250,6 +1250,23 @@ Source file: `src/lib/i18n/dict/kk/privacy.ts`
    - **KK:** Сайтта аккаунтты жоюға арналған батырма әзірге жоқ. Аккаунтыңызды немесе деректеріңізді жою туралы сұрау үшін қолдау формасын пайдаланыңыз.
    - **Correction:**
 
+Added 4 October 2026 (service logs, both builds; the retention row in the paid build only):
+
+228a. **EN:** Service logs
+   - **RU:** Служебные журналы
+   - **KK:** Қызметтік журналдар
+   - **Correction:**
+
+228b. **EN:** Kept by Cloudflare for up to 7 days, then deleted automatically.
+   - **RU:** Cloudflare хранит их до 7 дней, затем они удаляются автоматически.
+   - **KK:** Cloudflare оларды 7 күнге дейін сақтайды, содан кейін олар автоматты түрде жойылады.
+   - **Correction:**
+
+228c. **EN:** The site’s services on Cloudflare keep short technical logs for up to 7 days, to find faults and slow connections: when each request came, how long it took, whether it worked, and your connection’s address. During a live interview your browser also sends one short summary of the connection’s quality (delays, lost sound, phone or computer), never your voice or your words. Your essays, recordings and messages are never in these logs.
+   - **RU:** Сервисы сайта на Cloudflare хранят краткие технические журналы до 7 дней, чтобы находить сбои и медленные подключения: когда пришёл каждый запрос, сколько времени он занял, прошёл ли он успешно, и адрес вашего подключения. Во время живого собеседования браузер также отправляет одну короткую сводку о качестве связи (задержки, пропавший звук, телефон или компьютер), но никогда не ваш голос и не ваши слова. Ваших эссе, записей и сообщений в этих журналах нет.
+   - **KK:** Сайттың Cloudflare-дағы сервистері ақаулар мен баяу байланысты табу үшін қысқа техникалық журналдарды 7 күнге дейін сақтайды: әр сұрау қашан келгені, қанша уақыт алғаны, сәтті өткені және байланысыңыздың мекенжайы. Тікелей сұхбат кезінде браузеріңіз байланыс сапасы туралы бір қысқа есеп те жібереді (кідірістер, жоғалған дыбыс, телефон немесе компьютер), бірақ дауысыңызды немесе сөздеріңізді ешқашан жібермейді. Эсселеріңіз, жазбаларыңыз және хабарламаларыңыз бұл журналдарда ешқашан болмайды.
+   - **Correction:**
+
 ## Consent, your data, deleting the account, AI labels
 
 Source file: `src/lib/i18n/dict/kk/consent.ts`

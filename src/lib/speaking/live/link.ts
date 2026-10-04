@@ -66,6 +66,7 @@ import { OpenAiLiveSession, connectWebRtc, type LiveSessionPurpose } from './ope
 import type { DirectorCue } from './cues';
 import { cueText } from './cues';
 import { watchStart, type MayContinue, type StartHandle } from './start-check';
+import { ConnectionMonitor, deviceKind, networkType, sendConnectionReport, type EndReason } from './connection-report';
 
 export {
   LiveStartCancelled,
@@ -87,7 +88,7 @@ export interface LiveConfig {
     one of the three endpoints the Worker contract defines. Used for every
     request to the session-broker Worker, so a stray trailing slash on
     PUBLIC_LIVE_EXAMINER_URL never produces a double slash or a missing one. */
-export function liveEndpoint(base: string, path: '' | 'direct' | 'end'): string {
+export function liveEndpoint(base: string, path: '' | 'direct' | 'end' | 'report'): string {
   const trimmed = base.replace(/\/+$/, '');
   return path === '' ? `${trimmed}/` : `${trimmed}/${path}`;
 }
@@ -157,6 +158,10 @@ export interface ExaminerLink {
       Must NOT stop the mic stream's tracks (the component owns the stream).
       Idempotent. */
   close(): Promise<void>;
+  /** OpenAI path only: sends the connection report now (the page is being
+      hidden or left), if it has not been sent. Never throws, sends at most
+      once per session (./connection-report.ts). */
+  reportConnection?(): void;
 }
 
 export interface OpenExaminerLinkOptions {
@@ -335,6 +340,23 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
   let releasing: Promise<void> | null = null;
   /** Sessions already ended at the Worker, so none is ended twice. */
   const ended = new Set<string>();
+  /* The connection report (./connection-report.ts): numbers about the
+     connection only, sent once, silently, when the session ends. */
+  let monitor: ConnectionMonitor | null = null;
+  let reported = false;
+  const report = (end: EndReason): void => {
+    if (reported || !monitor) return;
+    reported = true;
+    try {
+      const nav = typeof navigator !== 'undefined' ? navigator : null;
+      sendConnectionReport(liveEndpoint(base, 'report'), monitor.finish(end), {
+        sendBeacon: nav && typeof nav.sendBeacon === 'function' ? nav.sendBeacon.bind(nav) : undefined,
+        fetch: typeof fetch === 'function' ? fetch : undefined,
+      });
+    } catch {
+      /* the report is never the student's problem */
+    }
+  };
 
   /** Posts one cue to the Worker's /direct endpoint. Never throws: a stale
       transition (409) is logged and swallowed, anything else surfaces
@@ -396,6 +418,7 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
   const release = (): Promise<void> => {
     if (releasing) return releasing;
     released = true;
+    report('setup-failed');
     if (peer) {
       peer.transport.close();
       endAtWorker(peer.sessionId);
@@ -434,6 +457,7 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
       handle: opts.handle,
       onSessionUnused: endAtWorker,
     });
+    monitor = startMonitor(peer.peer, opts.mode);
     /* The paid session exists now. If the start was let go while its
        request was out, do not use it: the catch below closes the peer, and
        the session is ended at the Worker. */
@@ -442,13 +466,20 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
       peer.transport,
       {
         onTranscript: opts.cb.onTranscript,
-        onClosed: opts.cb.onClosed,
+        onClosed: (reason, wasClean) => {
+          report(wasClean ? 'closed' : 'connection-lost');
+          opts.cb.onClosed(reason, wasClean);
+        },
         onError: opts.cb.onError,
         onDelegation: (id) => {
           void sendCue({ type: 'delegation', delegationId: id });
         },
       },
-      { mayContinue: opts.mayContinue, handle: opts.handle },
+      {
+        mayContinue: opts.mayContinue,
+        handle: opts.handle,
+        observer: (ev) => monitor?.observe(ev),
+      },
     );
   } catch (err) {
     /* Every failure after the session was created ends it at the Worker:
@@ -494,10 +525,28 @@ async function openOpenAiLink(opts: OpenExaminerLinkOptions): Promise<ExaminerLi
       if (closed) return;
       closed = true;
       const sessionId = activeSession.sessionId;
+      report('closed');
       await activeSession.close();
       await output.stop();
       await micMeter.stop();
       endAtWorker(sessionId);
     },
+    reportConnection() {
+      report('page-hidden');
+    },
   };
+}
+
+/** Starts the connection report's sampling on the session's own peer
+    connection. Null (no report) if anything about it fails. */
+function startMonitor(peerConnection: RTCPeerConnection, mode: LiveMode): ConnectionMonitor | null {
+  try {
+    const width = typeof screen !== 'undefined' ? screen.width : null;
+    const nav = typeof navigator !== 'undefined' ? navigator : null;
+    const monitor = new ConnectionMonitor(peerConnection, { mode, device: deviceKind(width), network: networkType(nav) });
+    monitor.start();
+    return monitor;
+  } catch {
+    return null;
+  }
 }

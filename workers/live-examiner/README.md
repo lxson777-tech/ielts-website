@@ -283,6 +283,40 @@ live examiner was unusable until it was redeployed.
 **Rule: whenever `src/data/speaking-prompts.ts` changes, run
 `npx wrangler deploy` in this folder as part of the same release.**
 
+## Logs and the connection report (4 October 2026)
+
+Workers Logs is on (`observability` in `wrangler.jsonc`). Every request
+writes one structured line, `{ event: 'request', worker: 'live-examiner',
+route, status, ms, provider, mode, calls }`, where `calls` lists each
+outbound call with its time (`supabase /auth/v1/user`, `openai
+/v1/live/sessions`, `openai sideband`, ...). The minute sweep writes a line
+only when it closed, or failed to close, a session; in open mode it writes
+nothing of its own.
+
+`POST /report` takes the browser's connection report, sent once per OpenAI
+session when it ends or the page is hidden
+(`src/lib/speaking/live/connection-report.ts`, wired in `link.ts` and
+`LiveExaminer.tsx`). It holds numbers only: WebRTC round trip, jitter and
+packets lost (sampled every 5 seconds), whether examiner and microphone
+audio levels were seen, the session length, how many examiner replies
+started more than 3 seconds after the student stopped and the longest such
+wait (from the transcript events' timing fields, never their words), phone
+or desktop from the screen width, and `navigator.connection.effectiveType`.
+No sign-in (a beacon from a closing page cannot carry one), a 4 KB cap, the
+same Origin rule as every route, and at most 6 reports per connection per
+10 minutes per Worker instance (memory only, the address is never stored).
+The body is rebuilt by `sanitizeConnectionReport` before it is logged as
+`{ event: 'live-connection-report', ... }`; nothing else reads it and it
+changes no limit or record. Answers 204.
+
+To find a laggy evening: in the Cloudflare dashboard, Workers & Pages,
+ielts-live-examiner, Observability, filter `event = live-connection-report`
+and sort by `longestWaitMs` or `rttMs.max`. A high round trip or loss with
+normal waits points at the student's network; normal round trip with long
+waits points at the examiner's reply time. A "slow reply" also counts a wait
+the examiner chose (it lets a student think), so read the count beside the
+longest wait and the round trip, not alone.
+
 ## Rollback to Gemini
 
 If the OpenAI path misbehaves, switch back without touching code:

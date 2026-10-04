@@ -51,6 +51,7 @@ import {
   serviceRpc,
   verifyAccessToken,
 } from '../../../src/lib/trial/gate';
+import { NO_TRACE, timedFetch, withRequestLog, type RequestTrace } from '../../../src/lib/observability/request-log';
 
 export interface Env {
   /** vars: 'openai' (default) | 'gemini'. */
@@ -115,6 +116,9 @@ export interface Deps {
       injected so tests can stub it and assert on the wait durations
       without actually waiting. */
   sleep?: (ms: number) => Promise<void>;
+  /** The request's log line (src/lib/observability/request-log.ts): labels
+      and counts only. Absent in tests. */
+  trace?: RequestTrace;
 }
 
 /* ── request shape (mirrors the site's schema.ts) ── */
@@ -750,6 +754,21 @@ type OpenAiFailure = { failStatus: number; failError: string };
     from OpenAI's `error.code` / `error.type` values
     ("insufficient_quota" / "credit_balance_exhausted"), which appear
     verbatim in the JSON error body. */
+/** "type/code" from an OpenAI error body, e.g. "invalid_request_error/
+    invalid_value", or "unreadable". Both are OpenAI's own short labels. */
+export function openAiErrorCode(bodyText: string): string {
+  try {
+    const parsed = JSON.parse(bodyText) as { error?: { type?: unknown; code?: unknown } };
+    const label = (v: unknown) => (typeof v === 'string' && /^[a-z0-9_.-]{1,60}$/i.test(v) ? v : '-');
+    if (parsed && typeof parsed === 'object' && parsed.error && typeof parsed.error === 'object') {
+      return `${label(parsed.error.type)}/${label(parsed.error.code)}`;
+    }
+  } catch {
+    /* not JSON */
+  }
+  return 'unreadable';
+}
+
 function isQuotaExhausted(bodyText: string): boolean {
   return /insufficient_quota|credit_balance_exhausted/i.test(bodyText);
 }
@@ -843,7 +862,11 @@ async function fetchOpenAiWithRetry(deps: Deps, input: string, init: RequestInit
     if (quotaExhausted) {
       console.error(`OpenAI ${label} failed: account out of credits`);
     } else {
-      console.error(`OpenAI ${label} failed`, resp.status, bodyText.slice(0, 300));
+      /* Only OpenAI's error type and code, never the body: an error body
+         can quote the request, and the request is a student's recording
+         and transcript. */
+      const upstreamCode = openAiErrorCode(bodyText);
+      console.error(`OpenAI ${label} failed`, resp.status, upstreamCode);
     }
     const rebuilt = new Response(bodyText, { status: resp.status, statusText: resp.statusText, headers: resp.headers });
 
@@ -1892,6 +1915,12 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
     } else {
       return json({ error: 'kind must be "part1", "part2and3" or "interview"' }, 400, cors);
     }
+    /* Labels and counts only, for the request's log line. */
+    const trace = deps.trace ?? NO_TRACE;
+    trace.set('kind', body.kind);
+    trace.set('provider', provider);
+    if (provider === 'openai') trace.set('mode', resolveOpenAiMode(env));
+    trace.set('clips', allClips(body).length);
 
     // OpenAI's input_audio only accepts mp3/wav; reject anything else before
     // spending an upstream call on it. Gemini takes any audio mime, so this
@@ -1956,6 +1985,7 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
 
     const modelDeps = {...deps, fetch: meteredFetch(deps.fetch, assessmentClaim)};
     const samples = resolveSamples(env, provider);
+    trace.set('samples', samples);
 
     let runs: GradeRunResult[];
     try {
@@ -1986,6 +2016,7 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
     }
 
     const good = runs.filter((r): r is { assessment: Record<string, unknown> } => 'assessment' in r);
+    trace.set('graded', good.length);
 
     if (good.length === 0) {
       const firstFail = runs.find((r): r is { failStatus: number; failError: string } => 'failStatus' in r)!;
@@ -2006,4 +2037,14 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
   return { fetch: handle };
 }
 
-export default { fetch: (request: Request, env: Env) => createHandler(defaultDeps).fetch(request, env) };
+/** The deployed handler: the one above, with every outbound call timed (so
+    the log line shows how long transcription, text grading and the
+    pronunciation call each took) and one structured log line per request
+    (src/lib/observability/request-log.ts). */
+export function createLoggedHandler(deps: Deps = defaultDeps) {
+  return withRequestLog<Env>('grade-speaking', (request, env, trace) =>
+    createHandler({ ...deps, fetch: timedFetch(deps.fetch, trace), trace }).fetch(request, env),
+  );
+}
+
+export default { fetch: createLoggedHandler() };

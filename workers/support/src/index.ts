@@ -48,6 +48,7 @@
    with the account. */
 
 import { TrialServiceError, serviceRpc } from '../../../src/lib/trial/gate';
+import { logScheduled, timedFetch, withRequestLog } from '../../../src/lib/observability/request-log';
 import { SUPPORT_LIMITS, SUPPORT_REASONS, isSupportEmail, isSupportTopic } from '../../../src/lib/support-rules';
 
 export interface Env {
@@ -369,7 +370,21 @@ export async function hourly(deps: Deps, env: Env): Promise<void> {
 
 const defaultDeps: Deps = { fetch: (input, init) => fetch(input, init) };
 
+/** The deployed handler: createHandler with every outbound call timed and
+    one structured log line per request (src/lib/observability/request-log.ts). */
+export function createLoggedHandler(deps: Deps = defaultDeps) {
+  return withRequestLog<Env>('support', (request, env, trace) =>
+    createHandler({ ...deps, fetch: timedFetch(deps.fetch, trace) }).fetch(request, env),
+  );
+}
+
 export default {
-  fetch: (request: Request, env: Env) => createHandler(defaultDeps).fetch(request, env),
-  scheduled: async (_controller: unknown, env: Env) => hourly(defaultDeps, env),
+  fetch: createLoggedHandler(),
+  /* One line an hour: how long the two cleanups took and how they answered. */
+  scheduled: async (_controller: unknown, env: Env) => {
+    await logScheduled('support', async (trace) => {
+      await hourly({ ...defaultDeps, fetch: timedFetch(defaultDeps.fetch, trace) }, env);
+      return {};
+    });
+  },
 };

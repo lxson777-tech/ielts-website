@@ -93,7 +93,19 @@
      such as the language (localStorage); no advertising or analytics code
      anywhere in src/, and no third-party fonts or scripts;
    - asking a person to review an AI result: the support form, reason
-     `ai-review` (Builder C).
+     `ai-review` (Builder C);
+   - service logs (4 October 2026): Workers Logs is on for every Worker
+     (the observability block in workers/<name>/wrangler.jsonc). Cloudflare
+     keeps them up to 7 days (3 on its free plan): its own invocation log
+     per request (method, path, status, timing and request headers, with
+     Authorization, cookies and key-like headers redacted, so the
+     connection's address can be in it) and our one line per request
+     (src/lib/observability/request-log.ts: labels, statuses, timings).
+     The live examiner's connection report
+     (src/lib/speaking/live/connection-report.ts) is numbers only: round
+     trip, jitter, packets lost, whether audio levels were seen, reply waits,
+     phone or desktop, network type. tests/worker-log-privacy.test.ts keeps
+     essays, transcripts, audio and tokens out of every log line.
    If a Worker is ever switched to its Gemini rollback, the "OpenAI" lines
    below must change first. If the Supabase region is confirmed, the
    "European Union or the United States" line should name it. */
@@ -190,6 +202,7 @@ const retention: { what: string; how: string }[] = [
   { what: nt('Payment records'), how: nt('Kept for 5 years as anonymous sale records, because the tax law requires it, then deleted.') },
   { what: nt('Messages sent without signing in'), how: nt('Kept for 12 months, then deleted automatically.') },
   { what: nt('The scrambled code of your connection'), how: nt('Kept for 24 hours, only to limit how often one sender can write.') },
+  { what: nt('Service logs'), how: nt('Kept by Cloudflare for up to 7 days, then deleted automatically.') },
   { what: nt('What OpenAI receives'), how: nt('OpenAI may keep it for up to 30 days to check for misuse, then deletes it, unless the law requires longer. It does not use it to train its models. This site also tells OpenAI not to store the replies it writes.') },
 ];
 
@@ -375,6 +388,7 @@ const rights: string[] = [
       ) : (
         <p style="margin-top: 16px" data-i18n>In a live Speaking interview, your voice goes straight from your browser to OpenAI. It does not pass through this site, which keeps only a short record of when the interview started and ended, to apply the daily limits.</p>
       )}
+      <p data-i18n>The site’s services on Cloudflare keep short technical logs for up to 7 days, to find faults and slow connections: when each request came, how long it took, whether it worked, and your connection’s address. During a live interview your browser also sends one short summary of the connection’s quality (delays, lost sound, phone or computer), never your voice or your words. Your essays, recordings and messages are never in these logs.</p>
     </section>
 
     {legal && (
