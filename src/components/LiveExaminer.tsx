@@ -164,6 +164,8 @@ import { nt } from '../lib/i18n/translate';
 import { speakingActivityId, speakingPart3ActivityId } from '../lib/learning/catalog';
 import { parseSpeakingDeepLink } from './attempt-recording';
 import ExaminerStage, { preloadExaminerArt, type ExaminerStageHandle } from './speaking/ExaminerStage';
+import OrbStage from './speaking/OrbStage';
+import { EXAMINER_LOOK } from '../lib/speaking/live/examiner-look';
 import { previewSample, type StageSignals } from '../lib/speaking/live/examiner-stage';
 import ExplainResult from './tutor/ExplainResult';
 import MrEzAvatar from './tutor/MrEzAvatar';
@@ -597,7 +599,7 @@ export default function LiveExaminer({
     setFinishing(false);
     setExplainAt(null);
     keptAtRef.current = null;
-    preloadExaminerArt();
+    if (EXAMINER_LOOK === 'taylor') preloadExaminerArt();
 
     let config = liveConfig;
     if (!config) {
@@ -1844,7 +1846,9 @@ export default function LiveExaminer({
             <li key={b}>{b}</li>
           ))}
         </ul>
-        {drillMethod && cue.ideas && cue.ideas.length > 0 && (
+        {/* With Ms. Taylor the hints sit on the card; with the circle they are
+            tucked into the Tips drawer with the coach. */}
+        {EXAMINER_LOOK === 'taylor' && drillMethod && cue.ideas && cue.ideas.length > 0 && (
           <div className="mt-3">
             <IdeaHints ideas={cue.ideas} label={t('Stuck? Ideas for this card')} />
           </div>
@@ -1891,6 +1895,42 @@ export default function LiveExaminer({
       </>
     );
 
+  const notices = notice && <p className="rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">{notice}</p>;
+  const elapsedText = connecting ? undefined : `${Math.floor(elapsedS / 60)}:${String(elapsedS % 60).padStart(2, '0')}`;
+  const prepProgress = stage === 'part2prep' && showCueCard ? (prepRunning ? 1 - prepSecondsLeft / Math.round(PREP_MS / 1000) : 0) : null;
+
+  if (EXAMINER_LOOK === 'orb') {
+    /* The circle. The coach and the "Stuck? Ideas" hints are one small Tips
+       control on the stage (a drawer), so they never crowd the circle; the
+       full mock test still has neither. */
+    const hasIdeas = !!cue && !!cue.ideas && cue.ideas.length > 0 && showCueCard;
+    const tips = drillMethod ? (
+      <>
+        {hasIdeas && cue && <IdeaHints ideas={cue.ideas ?? []} label={t('Stuck? Ideas for this card')} />}
+        <SpeakingCoachPanel method={drillMethod} vocab={planRef.current?.vocab} />
+      </>
+    ) : undefined;
+    content = (
+      <div className="space-y-4">
+        <OrbStage
+          ref={stageApiRef}
+          signals={signals}
+          label={stageLabel}
+          elapsed={elapsedText}
+          status={status}
+          announce={announce}
+          statusTone={statusTone}
+          caption={captionBlock}
+          cueCard={cueCard}
+          prepProgress={prepProgress}
+          micPaused={prepRunning}
+          controls={controls}
+          tips={tips}
+        />
+        {notices}
+      </div>
+    );
+  } else {
   content = (
     <div className={drillMethod ? 'lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-4' : ''}>
     <div className="space-y-4">
@@ -1898,19 +1938,19 @@ export default function LiveExaminer({
         ref={stageApiRef}
         signals={signals}
         label={stageLabel}
-        elapsed={connecting ? undefined : `${Math.floor(elapsedS / 60)}:${String(elapsedS % 60).padStart(2, '0')}`}
+        elapsed={elapsedText}
         status={status}
         announce={announce}
         statusTone={statusTone}
         caption={captionBlock}
         cueCard={cueCard}
-        prepProgress={stage === 'part2prep' && showCueCard ? (prepRunning ? 1 - prepSecondsLeft / Math.round(PREP_MS / 1000) : 0) : null}
+        prepProgress={prepProgress}
         talkRing={!connecting && stage === 'part2talk'}
         micPaused={prepRunning}
         controls={controls}
       />
 
-      {notice && <p className="rounded-lg bg-warning-tint px-3 py-2 text-xs text-ink-muted">{notice}</p>}
+      {notices}
     </div>
 
     {/* Drills keep a coach beside the stage: a structure to follow, phrases
@@ -1923,6 +1963,7 @@ export default function LiveExaminer({
     )}
     </div>
   );
+  }
   }
 
   return (
