@@ -1833,7 +1833,8 @@ export default function LiveExaminer({
     showCueCard && cue ? (
       <section aria-label={t('Cue card')}>
         <p className="es-cue-title" lang="en">{cue.topic}</p>
-        <p className="es-cue-label mt-2">{t('You should say:')}</p>
+        {/* English as printed on the real exam paper, like the topic and bullets. */}
+        <p className="es-cue-label mt-2" lang="en">You should say:</p>
         <ul lang="en">
           {cue.bullets.map((b) => (
             <li key={b}>{b}</li>
