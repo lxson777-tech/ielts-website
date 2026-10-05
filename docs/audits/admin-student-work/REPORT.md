@@ -1,0 +1,7 @@
+# Seeing a student's tests and essays on the admin page (5 October 2026)
+
+On /admin, opening a student now shows their Tests and Writing. A test opens in place: every question in order, the question, the student's answer, the correct answer, a right or wrong mark and a folded explanation, with an All / Wrong only switch. An essay opens with the task, the full text and the feedback. Speaking shows scores only, because no recordings are kept. Tests taken before answers were saved say so. Only the site owner can see any of this, because the database itself refuses everyone else. The privacy page now says this in English, Russian and Kazakh (the Kazakh is item 186 in docs/legal/KAZAKH-REVIEW.md).
+
+Checked in a real browser against a local copy of the site and a stand-in database: 54 of 54 checks passed, including phone width and a non-admin student being shut out (builder run, commit 5aa9d60). The automatic tests also passed (2740 of 2740). The essay in the check was placed in the synthetic student's saved progress directly, because no essay marker runs locally and a real one costs money.
+
+To go live, apply one database update, `supabase/migrations/2026-10-05-admin-student-work.sql`, to production. It only adds one read-only function, `admin_student_work`, which refuses anyone who is not in public.admins. This needs Alex's yes. Until then the live admin page works as before, with a one-line note.
