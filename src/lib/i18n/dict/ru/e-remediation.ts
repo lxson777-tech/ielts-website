@@ -149,8 +149,8 @@ export const strings: Record<string, string> = {
   'A parent or guardian, under 18 only': 'Родитель или опекун, только до 18 лет',
   'Their name, their phone number and their agreement to you using the site. The time of that agreement is recorded.':
     'Имя, номер телефона и согласие на то, что вы пользуетесь сайтом. Время согласия записывается.',
-  'Your details are seen only by you and by the person who runs the site, on a private admin page. Other students never see them.':
-    'Ваши данные видите только вы и тот, кто ведёт сайт, на закрытой странице администратора. Другие ученики их не видят.',
+  'Your details are seen only by you and by the person who runs the site, on a private admin page. To help you study, that person can also see your test answers and your essays there. Other students never see any of it.':
+    'Ваши данные видите только вы и тот, кто ведёт сайт, на закрытой странице администратора. Чтобы помогать вам в учёбе, этот человек также видит там ваши ответы в тестах и ваши эссе. Другие ученики ничего из этого не видят.',
   'What the site keeps from your studies': 'Что сайт сохраняет о вашей учёбе',
   'Lessons you finish, your test answers and results, your study plan and how much you study each day.':
     'Пройденные уроки, ответы и результаты тестов, учебный план и сколько вы занимаетесь каждый день.',

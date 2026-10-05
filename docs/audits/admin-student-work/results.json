@@ -1,0 +1,333 @@
+{
+ "stamp": "1791192536",
+ "student": "aw-student-1791192536@example.test",
+ "checks": [
+  {
+   "section": "setup",
+   "check": "the synthetic student signed up and reached Today",
+   "ok": true,
+   "detail": "http://localhost:4630/ielts-website/dashboard"
+  },
+  {
+   "section": "setup",
+   "check": "the test's per-question answers were saved to the account (learning_events)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "setup",
+   "check": "40 questions recorded, blank ones included",
+   "ok": true,
+   "detail": "40"
+  },
+  {
+   "section": "setup",
+   "check": "the stored answers are what was entered",
+   "ok": true,
+   "detail": "{'q1': 'True', 'q2': 'True', 'q3': '', 'q4': 'Not Given', 'q8': 'cow dung', 'q9': 'heat'}"
+  },
+  {
+   "section": "setup",
+   "check": "the player marked q1, q4 and q8 right and q2, q9 wrong",
+   "ok": true,
+   "detail": "3"
+  },
+  {
+   "section": "setup",
+   "check": "the essay was added to the student's saved progress",
+   "ok": true,
+   "detail": "ielts.progress.v1::u:4f9ea63c-2f92-4af3-a302-401f2fb608b5"
+  },
+  {
+   "section": "setup",
+   "check": "the site's sync pushed the essay to the account (user_state)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "admin",
+   "check": "the student's row shows a Tests section and a Writing section",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "admin",
+   "check": "the attempt is listed with its score and band",
+   "ok": true,
+   "detail": "5 Oct\nReading\nReading test 1\n3/40 · Band 0.0"
+  },
+  {
+   "section": "admin",
+   "check": "the speaking line says only scores are kept",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "attempt",
+   "check": "every question of the paper is listed (40)",
+   "ok": true,
+   "detail": "40"
+  },
+  {
+   "section": "attempt",
+   "check": "questions are numbered in order 1 to 40",
+   "ok": true,
+   "detail": "['1', '2', '3', '4', '5']"
+  },
+  {
+   "section": "attempt",
+   "check": "q1: marked right",
+   "ok": true,
+   "detail": "admin-q is-right"
+  },
+  {
+   "section": "attempt",
+   "check": "q1: shows the student's answer (True)",
+   "ok": true,
+   "detail": "True"
+  },
+  {
+   "section": "attempt",
+   "check": "q1: shows the correct answer (True)",
+   "ok": true,
+   "detail": "True"
+  },
+  {
+   "section": "attempt",
+   "check": "q1: shows the question text",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "attempt",
+   "check": "q2: marked wrong",
+   "ok": true,
+   "detail": "admin-q is-wrong"
+  },
+  {
+   "section": "attempt",
+   "check": "q2: shows the student's answer (True)",
+   "ok": true,
+   "detail": "True"
+  },
+  {
+   "section": "attempt",
+   "check": "q2: shows the correct answer (False)",
+   "ok": true,
+   "detail": "False"
+  },
+  {
+   "section": "attempt",
+   "check": "q2: shows the question text",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "attempt",
+   "check": "q3: marked blank",
+   "ok": true,
+   "detail": "admin-q is-blank"
+  },
+  {
+   "section": "attempt",
+   "check": "q3: shows the student's answer (No answer)",
+   "ok": true,
+   "detail": "No answer"
+  },
+  {
+   "section": "attempt",
+   "check": "q3: shows the correct answer (True)",
+   "ok": true,
+   "detail": "True"
+  },
+  {
+   "section": "attempt",
+   "check": "q3: shows the question text",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "attempt",
+   "check": "q4: marked right",
+   "ok": true,
+   "detail": "admin-q is-right"
+  },
+  {
+   "section": "attempt",
+   "check": "q4: shows the student's answer (Not Given)",
+   "ok": true,
+   "detail": "Not Given"
+  },
+  {
+   "section": "attempt",
+   "check": "q4: shows the correct answer (Not given)",
+   "ok": true,
+   "detail": "Not given"
+  },
+  {
+   "section": "attempt",
+   "check": "q4: shows the question text",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "attempt",
+   "check": "q8: marked right",
+   "ok": true,
+   "detail": "admin-q is-right"
+  },
+  {
+   "section": "attempt",
+   "check": "q8: shows the student's answer (cow dung)",
+   "ok": true,
+   "detail": "cow dung"
+  },
+  {
+   "section": "attempt",
+   "check": "q8: shows the correct answer (Cow dung)",
+   "ok": true,
+   "detail": "Cow dung"
+  },
+  {
+   "section": "attempt",
+   "check": "q9: marked wrong",
+   "ok": true,
+   "detail": "admin-q is-wrong"
+  },
+  {
+   "section": "attempt",
+   "check": "q9: shows the student's answer (heat)",
+   "ok": true,
+   "detail": "heat"
+  },
+  {
+   "section": "attempt",
+   "check": "q9: shows the correct answer (Fermentation)",
+   "ok": true,
+   "detail": "Fermentation"
+  },
+  {
+   "section": "attempt",
+   "check": "the wrong mark has a spoken label for screen readers",
+   "ok": true,
+   "detail": "Wrong"
+  },
+  {
+   "section": "attempt",
+   "check": "explanations are folded away at first",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "attempt",
+   "check": "an explanation opens under its question",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "attempt",
+   "check": "Wrong only hides every right answer",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "attempt",
+   "check": "Wrong only shows the 37 wrong or blank questions",
+   "ok": true,
+   "detail": "37"
+  },
+  {
+   "section": "attempt",
+   "check": "Wrong only keeps the blank question",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "attempt",
+   "check": "Back returns to the list of work",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "essay",
+   "check": "the essay text is shown in full",
+   "ok": true,
+   "detail": "Some people believe that primary schools spend too much time on formal lessons. "
+  },
+  {
+   "section": "essay",
+   "check": "the task the student answered is shown",
+   "ok": true,
+   "detail": "Some people argue that primary schools focus too much on formal learning. To wha"
+  },
+  {
+   "section": "essay",
+   "check": "the overall band and word count are shown",
+   "ok": true,
+   "detail": "5 October 2026 at 14:29\n63 words\nBand 6.5"
+  },
+  {
+   "section": "essay",
+   "check": "each criterion band is shown with its comment",
+   "ok": true,
+   "detail": "['Task response\\n7.0\\nA clear position is kept throughout.\\nNext step: Develop the second reason with an example.', 'Coherence and cohesion\\n6.0\\nParagraphs are logical but linking is repetitive.', 'Vocabulary\\n6.0\\nAdequate range with some repetition.', 'Grammar\\n6.0\\nA mix of simple and complex sentences.']"
+  },
+  {
+   "section": "essay",
+   "check": "strengths and improvements are shown",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "phone",
+   "check": "student row with work: no sideways scroll at 390",
+   "ok": true,
+   "detail": "{'doc': 390, 'body': 390, 'view': 390}"
+  },
+  {
+   "section": "phone",
+   "check": "opened attempt: no sideways scroll at 390",
+   "ok": true,
+   "detail": "{'doc': 390, 'body': 390, 'view': 390}"
+  },
+  {
+   "section": "phone",
+   "check": "opened essay: no sideways scroll at 390",
+   "ok": true,
+   "detail": "{'doc': 390, 'body': 390, 'view': 390}"
+  },
+  {
+   "section": "locked",
+   "check": "a student opening /admin is told the page is not available",
+   "ok": true,
+   "detail": "IELTS is EZ\nToday\nCourse\nPractice\nTests\nVocabulary\nEN\nRU\nKZ\nAS\nSkip to content\nThis page isn’t available\n\nYour account doesn’t have access to it.\n\nBack to Today\nIELTS is EZ\nHelp\nPrivacy\nTerms\nAsk Mr E"
+  },
+  {
+   "section": "locked",
+   "check": "a student opening /admin sees no one's work",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "section": "locked",
+   "check": "the database refuses a student asking for their own work through the admin function",
+   "ok": true,
+   "detail": "(403, {'message': 'admin only', 'code': '42501'})"
+  },
+  {
+   "section": "locked",
+   "check": "the database refuses a signed-out caller",
+   "ok": true,
+   "detail": "(403, {'message': 'permission denied for function admin_student_work', 'code': '42501'})"
+  },
+  {
+   "section": "locked",
+   "check": "the same call as the admin returns the work",
+   "ok": true,
+   "detail": "200"
+  }
+ ],
+ "pageErrors": [],
+ "passed": 54,
+ "failed": 0
+}

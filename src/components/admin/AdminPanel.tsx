@@ -1,6 +1,7 @@
 import SmoothReveal from '../SmoothReveal';
 import SupportRequests from './SupportRequests'; // [E trust] support requests section
 import StudentAccess from './StudentAccess'; // [G free account] access and complimentary grants
+import StudentWork from './StudentWork'; // each test question by question, and each essay
 import { ACCESS_MODE } from '../../lib/trial/mode';
 import { SUPPORT_ENABLED } from '../../lib/support';
 import { accessTag, loadAccessOverview, type AccessOverview } from './admin-access';
@@ -455,6 +456,10 @@ function StudentRow({
 }
 
 function StudentDetail({ user: u, access }: { user: AdminUserRow; access?: React.ReactNode }) {
+  /* Once the full list of tests and essays has loaded, it replaces the short
+     "Recent work" list; until then (or if the database has not got the
+     function yet) the short list stays. */
+  const [workShown, setWorkShown] = useState(false);
   return (
     <div className="admin-detail-inner">
       {access}
@@ -536,25 +541,29 @@ function StudentDetail({ user: u, access }: { user: AdminUserRow; access?: React
         </section>
       </div>
 
-      <section className="admin-recent">
-        <h3>Recent work</h3>
-        {u.recent.length === 0 ? (
-          <p className="admin-note">Nothing scored yet.</p>
-        ) : (
-          <ol>
-            {u.recent.map((r, i) => (
-              <li key={`${r.at}-${i}`}>
-                <span className="admin-recent-date">{shortDate(r.at)}</span>
-                <span className="admin-recent-what">
-                  <span className="admin-recent-kind">{recentKind(r)}</span>
-                  <span className="admin-recent-title">{recentTitle(r)}</span>
-                </span>
-                <span className="admin-recent-band">Band {band(r.band)}</span>
-              </li>
-            ))}
-          </ol>
-        )}
-      </section>
+      {!workShown && (
+        <section className="admin-recent">
+          <h3>Recent work</h3>
+          {u.recent.length === 0 ? (
+            <p className="admin-note">Nothing scored yet.</p>
+          ) : (
+            <ol>
+              {u.recent.map((r, i) => (
+                <li key={`${r.at}-${i}`}>
+                  <span className="admin-recent-date">{shortDate(r.at)}</span>
+                  <span className="admin-recent-what">
+                    <span className="admin-recent-kind">{recentKind(r)}</span>
+                    <span className="admin-recent-title">{recentTitle(r)}</span>
+                  </span>
+                  <span className="admin-recent-band">Band {band(r.band)}</span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
+      )}
+
+      <StudentWork userId={u.user_id} onLoaded={setWorkShown} />
     </div>
   );
 }

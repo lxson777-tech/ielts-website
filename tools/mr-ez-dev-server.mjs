@@ -124,6 +124,7 @@ import { readFileSync, existsSync, statSync, openSync, readSync, closeSync } fro
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createSupportStandIn } from './stand-in/support.mjs'; // [E trust] support requests, see that file
+import { createAdminWorkStandIn } from './stand-in/admin-work.mjs'; // one student's work for /admin, see that file
 
 const PORT = Number(process.env.MR_EZ_DEV_PORT ?? 8787);
 const LIVE = process.argv.includes('--live');
@@ -2080,6 +2081,7 @@ async function handlePayments(req, res, url) {
   return res.end(text);
 }
 const support = createSupportStandIn({ db, userByToken, send, readBody }); // [E trust]
+const adminWork = createAdminWorkStandIn({ db, support, userByToken, send, readBody }); // the real admin_student_work in PGlite
 
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -2088,6 +2090,7 @@ const server = createServer(async (req, res) => {
 
   try {
     if (await support.handle(req, res, url)) return; // [E trust] before /rest/v1, which would refuse these rpc names
+    if (await adminWork.handle(req, res, url)) return; // admin_student_work, answered by the real function
     if (url.pathname.startsWith('/auth/v1')) return await handleAuth(req, res, url);
     if (url.pathname.startsWith('/rest/v1/')) return await handleRest(req, res, url);
     if (url.pathname.startsWith('/tutor')) return await handleTutor(req, res, url);
@@ -2253,6 +2256,7 @@ server.listen(PORT, '127.0.0.1', () => {
   console.log(`Mr EZ dev backend on http://127.0.0.1:${PORT}`);
   console.log('  Supabase stand-in : /auth/v1/*  /rest/v1/*');
   console.log('  Support           : /support  (real Worker for signed-out visitors, real migration in PGlite)'); // [R01 support]
+  console.log('  Admin student work: /rest/v1/rpc/admin_student_work  (the real function in PGlite, reads the accounts and records kept by this stand-in)');
   if (TRIAL) {
     console.log('  Trial database    : /rest/v1/rpc/trial_*  (the real migration, in PGlite)');
     console.log('  Tutor             : /tutor  (real Worker, ACCESS_MODE=trial, simulated replies)');

@@ -324,5 +324,6 @@ export function createSupportStandIn({ db, userByToken, send, readBody }) {
     return false;
   }
 
-  return { handle };
+  // `database` is read by tools/stand-in/admin-work.mjs for the admins list.
+  return { handle, database };
 }

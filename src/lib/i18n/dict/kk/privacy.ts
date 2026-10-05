@@ -129,8 +129,8 @@ export const strings: Record<string, string> = {
   'Run by': 'Иесі',
   Contact: 'Байланыс',
   'What we ask for, and why': 'Біз нені сұраймыз және не үшін',
-  'Your details are seen only by you and by the person who runs the site, on a private admin page. Other students never see them.':
-    'Деректеріңізді тек сіз және сайтты жүргізетін адам жабық әкімші бетінде көресіздер. Басқа оқушылар оларды ешқашан көрмейді.',
+  'Your details are seen only by you and by the person who runs the site, on a private admin page. To help you study, that person can also see your test answers and your essays there. Other students never see any of it.':
+    'Деректеріңізді тек сіз және сайтты жүргізетін адам жабық әкімші бетінде көресіздер. Оқуыңызға көмектесу үшін бұл адам сол жерде тесттердегі жауаптарыңызды және эсселеріңізді де көреді. Басқа оқушылар мұның ешқайсысын көрмейді.',
   'What the site keeps from your studies': 'Сайт оқуыңыздан нені сақтайды',
   'Your progress is also kept in this browser, on this device. Signing in keeps it on your account too.':
     'Үлгеріміңіз осы құрылғыдағы осы браузерде де сақталады. Аккаунтқа кірсеңіз, ол аккаунтыңызда да сақталады.',

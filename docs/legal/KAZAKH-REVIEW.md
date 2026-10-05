@@ -1035,9 +1035,9 @@ Source file: `src/lib/i18n/dict/kk/privacy.ts`
    - **KK:** Біз нені сұраймыз және не үшін
    - **Correction:**
 
-186. **EN:** Your details are seen only by you and by the person who runs the site, on a private admin page. Other students never see them.
-   - **RU:** Ваши данные видите только вы и тот, кто ведёт сайт, на закрытой странице администратора. Другие ученики их не видят.
-   - **KK:** Деректеріңізді тек сіз және сайтты жүргізетін адам жабық әкімші бетінде көресіздер. Басқа оқушылар оларды ешқашан көрмейді.
+186. **EN:** Your details are seen only by you and by the person who runs the site, on a private admin page. To help you study, that person can also see your test answers and your essays there. Other students never see any of it. (changed 5 October 2026: the owner can now see test answers and essays)
+   - **RU:** Ваши данные видите только вы и тот, кто ведёт сайт, на закрытой странице администратора. Чтобы помогать вам в учёбе, этот человек также видит там ваши ответы в тестах и ваши эссе. Другие ученики ничего из этого не видят.
+   - **KK:** Деректеріңізді тек сіз және сайтты жүргізетін адам жабық әкімші бетінде көресіздер. Оқуыңызға көмектесу үшін бұл адам сол жерде тесттердегі жауаптарыңызды және эсселеріңізді де көреді. Басқа оқушылар мұның ешқайсысын көрмейді.
    - **Correction:**
 
 187. **EN:** What the site keeps from your studies
