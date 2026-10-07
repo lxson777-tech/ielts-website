@@ -359,3 +359,15 @@ only. It touches no existing table. It is tested in `tests/trial-sql.test.ts` ag
 real Postgres (PGlite, `tools/trial-db.mjs`), never against a real project. How to
 apply, verify and roll it back, and what else must be decided first:
 `docs/TRIAL-IMPLEMENTATION.md`. Nobody but Alex applies it.
+
+## Owner's view of a student's work (applied to production on 2026-10-07)
+
+`2026-10-05-admin-student-work.sql` adds `public.admin_student_work(p_user)`, which
+the admin page uses to open a student's tests question by question and read their
+essays. Applied through the Supabase connector as migration `20261007175119`
+(`admin_student_work`) after Alex's yes, once a read-only check confirmed its
+dependencies (learning_events, user_state, admins, is_admin) were present. Checked
+afterwards on the live project: security definer with an empty search_path, not
+executable by anon (a signed-out call gets 42501), and a signed-in non-admin is
+refused inside a test block. The file keeps its original "NOT applied" header
+because tests/admin-student-work-sql.test.ts pins it; this note is the record.
