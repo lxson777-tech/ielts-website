@@ -77,6 +77,42 @@ test('no option or word list is glued onto a question', () => {
   assert.deepEqual([...new Set(glued)], [], `a list is stuck to these questions:\n${glued.join('\n')}`);
 });
 
+/* Reading Test 22's map question printed four drawings, A-D, but offered
+   only A, B and C, so the distractor was missing and the choice gave half the
+   answer away. Matching and ending lists must offer every letter the
+   instruction names. (Heading and multiple-answer groups name letters for
+   paragraphs or statements, not for the choices, so they are left out.) */
+test('a matching list offers every letter its instruction names', () => {
+  const short: string[] = [];
+  for (const t of READING) {
+    for (const { group } of groups(t)) {
+      if (!['matching-features', 'sentence-endings', 'categorisation'].includes(group.type)) continue;
+      const range = /\b([A-Z])\s*[-–]\s*([A-Z])\b/.exec(group.instructionHtml.replace(/<[^>]+>/g, ''));
+      if (!range || !group.options) continue;
+      for (let c = range[1].charCodeAt(0); c <= range[2].charCodeAt(0); c++) {
+        const letter = String.fromCharCode(c);
+        if (!group.options.includes(letter)) short.push(`${t.id} ${group.title}: ${letter} is named but not offered`);
+      }
+    }
+  }
+  assert.deepEqual(short, [], `a choice is missing from these lists:\n${short.join('\n')}`);
+});
+
+/* A lettered word list printed out of order (Test 1 had G, J, H, I) makes a
+   student hunt for a letter that is right there. */
+test('a lettered list in a question key runs in alphabetical order', () => {
+  const jumbled: string[] = [];
+  for (const t of READING) {
+    for (const { group } of groups(t)) {
+      const letters = [...(group.legendHtml ?? '').matchAll(/<span>(?:<strong>)?([A-Z])(?:<\/strong>)?[. ]/g)].map((m) => m[1]);
+      // A short run is more likely a word ("A team of...", a map labelled M, A, P).
+      if (letters.length < 4) continue;
+      if (letters.join('') !== [...letters].sort().join('')) jumbled.push(`${t.id} ${group.title}: ${letters.join('')}`);
+    }
+  }
+  assert.deepEqual(jumbled, [], `these lists are out of order:\n${jumbled.join('\n')}`);
+});
+
 /* The 40/40 check in reading-answer-key.test.ts only walks tests 1 to 20.
    Tests 21 to 40 were edited in 2026-09 (explanations, accepted variants,
    three corrected keys), so hold the whole bank to the same bar. */

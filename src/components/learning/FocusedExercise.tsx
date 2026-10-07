@@ -618,7 +618,7 @@ export default function FocusedExercise({ view }: Props) {
             {sheetBesideRecording && (
               <div className="focused-audio-sheet">
                 <p className="focused-passage-label">{t('Question paper')}</p>
-                <div className="focused-legend" dangerouslySetInnerHTML={{ __html: view.legendHtml! }} />
+                <div className="focused-legend question-key" dangerouslySetInnerHTML={{ __html: view.legendHtml! }} />
               </div>
             )}
           </section>
@@ -627,7 +627,7 @@ export default function FocusedExercise({ view }: Props) {
         <section className="focused-questions" aria-label={t('Questions')}>
           <div className="focused-instructions" dangerouslySetInnerHTML={{ __html: view.instructionHtml }} />
           {view.legendHtml && !sheetBesideRecording && (
-            <div className="focused-legend" dangerouslySetInnerHTML={{ __html: view.legendHtml }} />
+            <div className="focused-legend question-key" dangerouslySetInnerHTML={{ __html: view.legendHtml }} />
           )}
 
           <ol className="focused-items">

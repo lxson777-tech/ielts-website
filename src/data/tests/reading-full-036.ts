@@ -288,7 +288,7 @@ const test: PracticeTest = {
               "evidence": "Given the doctor’s medical training and background"
             }
           ],
-          "legendHtml": "<table><tbody><tr><td width=\"151\"><strong>Source of knowledge</strong></td><td width=\"442\"><strong>Examples </strong></td></tr><tr><td width=\"151\">Personal experience</td><td width=\"442\"><p> </p><p>Symptoms of a (14)……………..and tiredness</p><p> </p><p>Doctor’s measurement by taking (15)…………….and temperature</p><p> </p><p>Common judgement from (16)…………….around you</p><p> </p></td></tr><tr><td width=\"151\">Scientific evidence</td><td width=\"442\"><p> </p><p>Medical knowledge from the general (17)……………e.g. doctor’s medical (18)………….</p><p> </p><p>Examine the medical hypothesis with the previous drill and(19)………….</p><p> </p></td></tr></tbody></table>",
+          "legendHtml": "<table><tbody><tr><td width=\"151\"><strong>Source of knowledge</strong></td><td width=\"442\"><strong>Examples </strong></td></tr><tr><td width=\"151\">Personal experience</td><td width=\"442\"><p>Symptoms of a (14)……………..and tiredness</p><p>Doctor’s measurement by taking (15)…………….and temperature</p><p>Common judgement from (16)…………….around you</p></td></tr><tr><td width=\"151\">Scientific evidence</td><td width=\"442\"><p>Medical knowledge from the general (17)……………e.g. doctor’s medical (18)………….</p><p>Examine the medical hypothesis with the previous drill and(19)………….</p></td></tr></tbody></table>",
           "wordLimit": 3,
           "table": {
             "rows": [
