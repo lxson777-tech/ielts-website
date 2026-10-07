@@ -211,7 +211,8 @@
   .workspace-v2 .ws-page { padding: 22px 20px 40px; }
   .workspace-v2 .ws-tabbar { left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); height: 65px; padding: 6px; border: 1px solid #dce0d6; border-radius: 999px; background: #fffefa; box-shadow: 0 10px 35px -12px rgb(38 60 53 / 25%); }
   .workspace-v2 .ws-tabbar-link { border-radius: 999px; font-size: 10px; gap: 5px; color: #56665c; }
-  .workspace-v2 .ws-tabbar-link.is-active { background: #263c35; color: #fffefa; }
+  .workspace-v2 .ws-tabbar-link.is-active { background: #263c35; color: #fffefa; } /* Each item is as wide as its label plus room for the pill, sharing what is left, so the longest label ("Vocabulary", or a Russian one) no longer touches the edge of its pill when it is the active tab (8 October 2026). */
+  .workspace-v2 .ws-tabbar-link { flex: 1 1 auto; min-width: 0; padding-inline: 5px; }
   .workspace-v2 .ws-tabbar-icon { width: 18px; height: 18px; }
   .workspace-v2 .ws-tabbar-label { transform: none; }
   .workspace-v2 .ws-main { padding-bottom: calc(85px + env(safe-area-inset-bottom, 0px)); }
