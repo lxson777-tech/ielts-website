@@ -1706,7 +1706,7 @@ function TestPlayerBody({
                   </div>
                   {group.legendHtml && (
                     <Html
-                      className="mb-4 rounded-card border border-border bg-surface-alt p-3 text-sm"
+                      className="question-key mb-4 rounded-card border border-border bg-surface-alt p-3 text-sm"
                       html={group.legendHtml}
                     />
                   )}

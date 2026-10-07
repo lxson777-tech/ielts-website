@@ -1,0 +1,236 @@
+/* The Vocabulary home (/review) and its topic pages, rebuilt 8 October 2026
+   (src/components/VocabTopics.tsx and src/components/vocab/home/). Also the
+   topic picture at the top of each topic lesson
+   (src/pages/lessons/vocabulary/[part].astro).
+
+   Built on the approved workspace system (DESIGN.md): warm surfaces on the
+   pale canvas, forest ink, the ochre vocabulary colour used sparingly, the
+   dark forest panel with the pale green action for the one thing to do
+   today, fine borders instead of nested cards, and one authored motion:
+   the card turning over. Everything older (.vocab-review-space, the list
+   view, the practice round) keeps its rules in platform-pages.css. */
+
+.vh-home,
+.vh-topic-page,
+.vh-lesson-art {
+  --vh-tint: color-mix(in srgb, var(--color-vocabulary, #8b681a) 9%, var(--color-surface, #fffefa));
+  --vh-frame: color-mix(in srgb, var(--color-vocabulary, #8b681a) 13%, #f3eee2);
+  --vh-ease: cubic-bezier(.16, 1, .3, 1);
+  --vh-lift: 0 18px 32px -24px rgb(38 60 53 / 42%);
+}
+
+/* The two views use the full page width the workspace gives them, not the
+   narrow column of the practice round. */
+.vocab-review-space.vh-home,
+.vocab-review-space.vh-topic-page { max-width: 1032px; padding: 6px 0 56px; }
+.vh-home .vocab-review-head { margin-bottom: 26px; }
+.vh-home .vocab-review-head h1,
+.vh-topic-heading h1 { margin: .35rem 0 0; font-family: var(--font-display); font-size: clamp(30px, 3.4vw, 42px); font-weight: 600; line-height: 1.12; letter-spacing: -.03em; color: var(--color-ink); text-wrap: balance; }
+.vh-home .vocab-review-head p { max-width: 52ch; font-size: 15px; }
+
+.vh-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ── Today strip ─────────────────────────────────────────────────── */
+.vh-today { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin: 0 0 22px; padding: 18px 18px 18px 28px; border-radius: 22px; background: var(--color-ink, #263c35); color: #fffefa; }
+.vh-today-stats { display: flex; flex-wrap: wrap; gap: 10px 34px; margin: 0; padding: 0; list-style: none; }
+.vh-today-stats li { display: flex; align-items: center; gap: 11px; font-size: 15px; font-weight: 550; line-height: 1.35; }
+.vh-today-icon { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 999px; background: rgb(255 254 250 / 9%); color: #e0ebbc; }
+.vh-today-intro { margin: 0; max-width: 56ch; font-size: 15px; line-height: 1.55; color: #d0d9ca; }
+.vh-today-intro strong { color: #fffefa; font-weight: 650; }
+.vh-today-start { flex: none; display: inline-flex; align-items: center; justify-content: space-between; gap: 22px; min-height: 50px; padding: 12px 18px 12px 22px; border-radius: 999px; background: #e0ebbc; color: var(--color-ink, #263c35); font-size: 14px; font-weight: 700; text-decoration: none; transition: background 180ms ease, gap 260ms var(--vh-ease); }
+.vh-today-start:hover { background: #eef6d4; gap: 30px; }
+.vh-today-start:focus-visible { outline: 2px solid #e0ebbc; outline-offset: 3px; }
+
+/* ── Word of the day ─────────────────────────────────────────────── */
+.vh-wotd { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; align-items: end; margin: 0 0 56px; }
+.vh-wotd-main { min-width: 0; }
+.vh-wotd-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 12px; }
+.vh-wotd-head h2,
+.vh-topics-head h2,
+.vh-games h2 { margin: 0; font-family: var(--font-display); font-size: 20px; font-weight: 600; letter-spacing: -.015em; color: var(--color-ink); }
+.vh-wotd-topic { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0; border: 0; background: none; color: var(--color-vocabulary, #8b681a); font: inherit; font-size: 13px; font-weight: 650; text-align: right; cursor: pointer; transition: gap 220ms var(--vh-ease); }
+.vh-wotd-topic svg { width: 15px; height: 15px; flex: none; }
+.vh-wotd-topic:hover { gap: 9px; }
+.vh-wotd-topic:focus-visible { outline: 2px solid var(--color-vocabulary, #8b681a); outline-offset: 3px; border-radius: 6px; }
+.vh-wotd-pic { display: block; padding: 0; border: 0; border-radius: 20px; overflow: hidden; background: none; cursor: pointer; transition: transform 260ms var(--vh-ease), box-shadow 260ms ease; }
+.vh-wotd-pic .vh-pic { border-radius: 20px; }
+.vh-wotd-pic:focus-visible { outline: 2px solid var(--color-vocabulary, #8b681a); outline-offset: 3px; }
+@media (hover: hover) {
+  .vh-wotd-pic:hover { transform: translateY(-3px); box-shadow: var(--vh-lift); }
+  .vh-wotd-pic:hover .vh-pic img { transform: scale(1.03); }
+}
+
+/* ── The card that turns over ────────────────────────────────────── */
+.vh-flip { position: relative; display: grid; width: 100%; padding: 0; border: 0; border-radius: 18px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; perspective: 1400px; -webkit-tap-highlight-color: transparent; transition: transform 260ms var(--vh-ease); }
+.vh-flip-inner { display: grid; transform-style: preserve-3d; transition: transform 620ms cubic-bezier(.2, .75, .2, 1); }
+.vh-flip.is-flipped .vh-flip-inner { transform: rotateY(180deg); }
+.vh-flip-face { position: relative; grid-area: 1 / 1; display: flex; flex-direction: column; justify-content: center; gap: 8px; min-width: 0; padding: 20px; border: 1px solid var(--color-border); border-radius: 18px; background: var(--color-surface); backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: border-color 200ms ease, box-shadow 260ms ease; }
+.vh-flip-back { transform: rotateY(180deg); justify-content: flex-start; background: var(--vh-tint); }
+.vh-flip-word { font-family: var(--font-display); font-size: 19px; font-weight: 600; line-height: 1.25; letter-spacing: -.015em; color: var(--color-ink); overflow-wrap: anywhere; }
+.vh-flip-back-word { color: var(--color-vocabulary, #8b681a); font-size: 12.5px; font-weight: 700; }
+.vh-flip-meaning { font-size: 14px; line-height: 1.5; color: var(--color-ink); }
+.vh-flip-example { font-size: 13px; line-height: 1.5; font-style: italic; color: var(--color-ink-muted); }
+.vh-flip-example::before { content: '\201C'; }
+.vh-flip-example::after { content: '\201D'; }
+.vh-flip:focus-visible { outline: 2px solid var(--color-vocabulary, #8b681a); outline-offset: 3px; }
+@media (hover: hover) {
+  .vh-flip:hover { transform: translateY(-2px); }
+  .vh-flip:hover .vh-flip-face { border-color: color-mix(in srgb, var(--color-vocabulary, #8b681a) 45%, var(--color-border)); box-shadow: var(--vh-lift); }
+}
+.vh-flip:active { transform: translateY(0) scale(.995); }
+
+.vh-flip--grid .vh-flip-face { min-height: 124px; }
+.vh-flip-turn { position: absolute; top: 14px; right: 14px; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; background: var(--vh-tint); color: color-mix(in srgb, var(--color-vocabulary, #8b681a) 80%, var(--color-ink)); transition: transform 420ms var(--vh-ease), background 200ms ease; }
+@media (hover: hover) { .vh-flip:hover .vh-flip-turn { transform: rotate(-35deg); } }
+.vh-flip--feature .vh-flip-turn { top: 22px; right: 22px; width: 34px; height: 34px; background: var(--color-surface); }
+.vh-flip--grid .vh-flip-front { justify-content: flex-end; }
+
+.vh-flip--feature .vh-flip-face { min-height: 210px; padding: 28px 32px; border-radius: 22px; }
+.vh-flip--feature { border-radius: 22px; }
+.vh-flip--feature .vh-flip-front { background: linear-gradient(135deg, var(--vh-tint), var(--color-surface) 70%); }
+.vh-flip--feature .vh-flip-word { font-size: clamp(34px, 4.6vw, 52px); font-weight: 600; line-height: 1.05; letter-spacing: -.035em; text-wrap: balance; }
+.vh-flip--feature .vh-flip-back-word { font-size: 14px; }
+.vh-flip--feature .vh-flip-meaning { font-size: 18px; line-height: 1.5; max-width: 52ch; }
+.vh-flip--feature .vh-flip-example { font-size: 15px; max-width: 60ch; }
+.vh-flip-hint { font-size: 13px; color: var(--color-ink-muted); }
+.vh-flip--placeholder { min-height: 210px; border: 1px solid var(--color-border); border-radius: 22px; background: var(--vh-tint); cursor: default; }
+
+.vh-learnt { align-self: flex-start; display: inline-flex; align-items: center; gap: 4px; margin-bottom: auto; padding: 3px 9px 3px 7px; border-radius: 999px; background: color-mix(in srgb, var(--color-success, #237346) 11%, var(--color-surface)); color: var(--color-success, #237346); font-size: 11.5px; font-weight: 700; }
+
+/* ── Pictures ────────────────────────────────────────────────────── */
+.vh-pic { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; background: radial-gradient(120% 90% at 30% 20%, #fbf8ef 0%, var(--vh-frame) 70%); }
+.vh-pic img { display: block; width: 100%; height: 100%; object-fit: cover; color: transparent; font-size: 0; transition: transform 700ms var(--vh-ease); }
+
+/* ── Topics ──────────────────────────────────────────────────────── */
+.vh-topics-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px 24px; margin: 0 0 18px; }
+.vh-topics-head p { margin: 0; max-width: 46ch; font-size: 13px; line-height: 1.5; color: var(--color-ink-muted); }
+.vh-topic-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.vh-topic { display: flex; flex-direction: column; min-width: 0; padding: 0; border: 1px solid var(--color-border); border-radius: 20px; overflow: hidden; background: var(--color-surface); color: inherit; font: inherit; text-align: left; cursor: pointer; transition: transform 280ms var(--vh-ease), box-shadow 280ms ease, border-color 200ms ease; }
+.vh-topic:focus-visible { outline: 2px solid var(--color-vocabulary, #8b681a); outline-offset: 3px; }
+@media (hover: hover) {
+  .vh-topic:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--color-vocabulary, #8b681a) 40%, var(--color-border)); box-shadow: var(--vh-lift); }
+  .vh-topic:hover .vh-pic img { transform: scale(1.035); }
+}
+.vh-topic-pic { border-bottom: 1px solid var(--color-border); }
+.vh-topic-body { display: flex; flex-direction: column; gap: 12px; padding: 16px 18px 18px; }
+.vh-topic-title { font-family: var(--font-display); font-size: 17px; font-weight: 600; line-height: 1.3; letter-spacing: -.015em; color: var(--color-ink); }
+.vh-topic-meta { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--color-ink-muted); font-variant-numeric: tabular-nums; }
+
+/* ── Progress ring ───────────────────────────────────────────────── */
+.vh-ring { display: inline-grid; flex: none; }
+.vh-ring svg { display: block; }
+.vh-ring-track { fill: none; stroke: var(--color-border); stroke-width: 3; }
+.vh-ring-value { fill: none; stroke: transparent; stroke-width: 3; stroke-linecap: round; transition: stroke-dashoffset 800ms var(--vh-ease); }
+.vh-ring.has-progress .vh-ring-value { stroke: var(--color-vocabulary, #8b681a); }
+.vh-ring.is-complete .vh-ring-value { stroke: var(--color-success, #237346); }
+
+/* ── Topic page ──────────────────────────────────────────────────── */
+.vh-back { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; transition: gap 220ms var(--vh-ease); }
+.vh-back:hover { gap: 10px; }
+.vh-topic-header { margin: 10px 0 0; }
+.vh-banner { aspect-ratio: auto; height: clamp(160px, 24vw, 250px); border-radius: 22px; }
+.vh-banner img { object-position: center 55%; }
+.vh-topic-heading { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 10px 24px; margin-top: 24px; }
+.vh-topic-heading h1 { margin: 0; }
+.vh-topic-summary { display: inline-flex; align-items: center; gap: 10px; margin: 0; font-size: 14px; color: var(--color-ink-muted); font-variant-numeric: tabular-nums; }
+
+.vh-games { margin: 34px 0 0; }
+.vh-games h2 { margin-bottom: 14px; }
+.vh-games-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.vh-games-list li { display: grid; }
+.vh-game { display: flex; align-items: center; gap: 14px; min-height: 80px; padding: 16px 18px; border: 1px solid var(--color-border); border-radius: 18px; background: var(--color-surface); color: var(--color-ink); text-decoration: none; transition: transform 260ms var(--vh-ease), box-shadow 260ms ease, border-color 200ms ease; }
+.vh-game:focus-visible { outline: 2px solid var(--color-vocabulary, #8b681a); outline-offset: 3px; }
+@media (hover: hover) {
+  .vh-game:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--color-vocabulary, #8b681a) 45%, var(--color-border)); box-shadow: var(--vh-lift); }
+  .vh-game:hover .vh-game-icon { background: var(--color-vocabulary, #8b681a); color: #fffefa; }
+}
+.vh-game-icon { flex: none; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; background: var(--vh-tint); color: var(--color-vocabulary, #8b681a); transition: background 220ms ease, color 220ms ease; }
+.vh-game-text { min-width: 0; }
+.vh-game-name { display: block; font-family: var(--font-display); font-size: 15.5px; font-weight: 650; letter-spacing: -.01em; }
+.vh-game-note { display: block; margin-top: 3px; font-size: 12.5px; line-height: 1.4; color: var(--color-ink-muted); }
+
+.vocab-topic-practise.vh-practise { justify-content: flex-start; margin: 10px 0 40px; }
+.workspace-v2 .vh-practise .vocab-practise-link { text-decoration: none; transition: background 160ms ease, box-shadow 160ms ease; }
+.workspace-v2 .vh-practise .vocab-practise-link:hover { background: #172b24; color: var(--color-surface); box-shadow: 0 4px 12px #263c3526; }
+.workspace-v2 .vh-practise .vocab-practise-link:focus-visible { outline: 3px solid var(--color-vocabulary, #8b681a); outline-offset: 3px; }
+
+.vh-words-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 16px; margin: 0 0 8px; }
+.vh-words .vh-words-head h2 { margin: 0; }
+.vh-view-toggle { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 8px 15px; border: 1px solid var(--color-border); border-radius: 999px; background: var(--color-surface); color: var(--color-ink); font: inherit; font-size: 13px; font-weight: 650; cursor: pointer; transition: border-color 200ms ease, background 200ms ease; }
+.vh-view-toggle:hover { border-color: var(--color-ink); }
+.vh-view-toggle:focus-visible { outline: 2px solid var(--color-vocabulary, #8b681a); outline-offset: 2px; }
+.vh-words-hint { margin: 0 0 16px; font-size: 13px; color: var(--color-ink-muted); }
+.vh-words .vocab-word-list { margin-top: 10px; }
+.vh-flip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.vh-flip-grid li { display: grid; min-width: 0; }
+.vh-words { margin-bottom: 40px; }
+
+/* ── Topic lesson page: the picture above the lesson ─────────────── */
+.vh-lesson-art { margin: 0 0 30px; }
+.vh-lesson-art .vh-pic { aspect-ratio: auto; height: clamp(160px, 22vw, 240px); border-radius: 20px; }
+.vh-lesson-art .vh-pic img { object-position: center 55%; }
+.vh-lesson-play { display: inline-flex; align-items: center; gap: 18px; min-height: 48px; margin-top: 16px; padding: 11px 18px 11px 20px; border-radius: 999px; background: var(--color-ink, #263c35); color: #fffefa; font-size: 14px; font-weight: 650; text-decoration: none; transition: background 180ms ease, gap 260ms var(--vh-ease); }
+.vh-lesson-play:hover { background: #172b24; gap: 24px; }
+.vh-lesson-play:focus-visible { outline: 3px solid var(--color-vocabulary, #8b681a); outline-offset: 3px; }
+.vh-lesson-play svg { flex: none; }
+
+/* ── Smaller screens ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .vh-topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .vh-wotd { grid-template-columns: minmax(0, 1fr) 220px; }
+  .vh-games-list { grid-template-columns: 1fr; gap: 10px; }
+  .vh-game { min-height: 72px; }
+}
+@media (max-width: 719px) {
+  .vocab-review-space.vh-home,
+  .vocab-review-space.vh-topic-page { padding: 0 0 40px; }
+  .vh-today { flex-direction: column; align-items: stretch; gap: 18px; padding: 20px; border-radius: 19px; }
+  .vh-today-stats { flex-direction: column; gap: 12px; }
+  .vh-today-stats li { font-size: 14px; }
+  .vh-today-icon { width: 34px; height: 34px; }
+  .vh-today-intro { font-size: 14px; }
+  .vh-wotd { grid-template-columns: 1fr; margin-bottom: 44px; }
+  .vh-wotd-pic { display: none; }
+  .vh-flip--feature .vh-flip-face { min-height: 180px; padding: 22px; border-radius: 19px; }
+  .vh-flip--feature, .vh-flip--placeholder { border-radius: 19px; }
+  .vh-flip--placeholder { min-height: 180px; }
+  .vh-flip--feature .vh-flip-meaning { font-size: 16px; }
+  .vh-flip--feature .vh-flip-example { font-size: 14px; }
+  .vh-flip-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .vh-flip--grid .vh-flip-face { min-height: 116px; padding: 16px; border-radius: 16px; }
+  .vh-flip--grid { border-radius: 16px; }
+  .vh-flip-word { font-size: 17px; }
+  .vh-flip-meaning { font-size: 13.5px; }
+  .vh-flip-example { font-size: 12.5px; }
+  .vh-banner { height: 160px; border-radius: 19px; }
+  .vh-topic-heading { margin-top: 20px; }
+  .vh-lesson-art .vh-pic { height: 160px; border-radius: 18px; }
+}
+@media (max-width: 560px) {
+  .vh-topic-grid { grid-template-columns: 1fr; gap: 10px; }
+  .vh-topic { flex-direction: row; align-items: stretch; border-radius: 16px; }
+  .vh-topic-pic { flex: none; width: 112px; border-bottom: 0; border-right: 1px solid var(--color-border); }
+  .vh-topic-body { justify-content: center; gap: 8px; padding: 12px 14px; }
+  .vh-topic-title { font-size: 15.5px; }
+  /* One column: in two, every card grows as tall as its longest example
+     and the fronts read as empty boxes. */
+  .vh-flip-grid { grid-template-columns: 1fr; gap: 10px; }
+  .vh-flip--grid .vh-flip-face { min-height: 88px; padding: 16px 52px 16px 18px; }
+  .vh-flip--grid .vh-flip-back { padding-right: 18px; }
+  .vh-flip--grid .vh-flip-front { justify-content: center; }
+  .vh-flip--grid .vh-flip-turn { top: 50%; margin-top: -14px; }
+}
+
+/* Reduced motion: no turning and no lifting. The faces crossfade instead,
+   which the workspace's own reduced-motion rule (it shortens every
+   transition) would otherwise make instant, hence the stronger selector. */
+@media (prefers-reduced-motion: reduce) {
+  .vh-flip, .vh-topic, .vh-game, .vh-wotd-pic { transform: none !important; }
+  .vh-pic img { transform: none !important; }
+  .vh-flip-inner { transform: none !important; transition: none !important; }
+  .vh-flip-face { backface-visibility: visible; -webkit-backface-visibility: visible; }
+  .vh-flip-back { transform: none; opacity: 0; }
+  .vh-flip.is-flipped .vh-flip-back { opacity: 1; }
+  .vh-flip.is-flipped .vh-flip-front { opacity: 0; }
+  .workspace-v2 .vh-flip .vh-flip-face { transition: opacity 220ms ease !important; }
+}

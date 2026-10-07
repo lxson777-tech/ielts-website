@@ -1,0 +1,549 @@
+{
+  "run": "2026-10-08 02:35:24",
+  "open": "http://localhost:4640/ielts-website",
+  "gated": "http://localhost:4641/ielts-website",
+  "passed": 90,
+  "failed": 0,
+  "results": [
+    {
+      "section": "home",
+      "check": "heading is Vocabulary",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "home",
+      "check": "Today strip shows the new-student invitation",
+      "ok": true,
+      "detail": "New here? Five minutes a day is enough. Learn a few words, then spell them from memory. |  | Start today's 5 minutes"
+    },
+    {
+      "section": "home",
+      "check": "Start today's 5 minutes goes to Spell it, mixed set",
+      "ok": true,
+      "detail": "/ielts-website/review/games?game=spell"
+    },
+    {
+      "section": "home",
+      "check": "36 topics listed, 12 shown first",
+      "ok": true,
+      "detail": "12 / 36 results shown"
+    },
+    {
+      "section": "home",
+      "check": "topic cards have a picture frame, a title and a ring",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "home",
+      "check": "every picture has width, height and async decoding",
+      "ok": true,
+      "detail": "12 pictures in the server HTML"
+    },
+    {
+      "section": "home",
+      "check": "first row loads eagerly, the rest lazily",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "home",
+      "check": "a missing picture leaves its tinted frame at full size",
+      "ok": true,
+      "detail": "frame heights [233]"
+    },
+    {
+      "section": "home",
+      "check": "no sideways scroll at 1440",
+      "ok": true,
+      "detail": "0px"
+    },
+    {
+      "section": "word of the day",
+      "check": "shows one word, English",
+      "ok": true,
+      "detail": "pedestrian zone"
+    },
+    {
+      "section": "word of the day",
+      "check": "starts face up",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "word of the day",
+      "check": "a tap turns it over",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "word of the day",
+      "check": "the back shows meaning and example",
+      "ok": true,
+      "detail": "an area of a town where vehicles are not allowed"
+    },
+    {
+      "section": "word of the day",
+      "check": "it turns with a 3D rotation",
+      "ok": true,
+      "detail": "matrix3d(-1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1)"
+    },
+    {
+      "section": "word of the day",
+      "check": "only the visible side is read out",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "word of the day",
+      "check": "the same word after a reload (one per day)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "home",
+      "check": "search still filters topics",
+      "ok": true,
+      "detail": "1 cards for 'crime'"
+    },
+    {
+      "section": "home",
+      "check": "Show more reveals the next twelve",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "topic",
+      "check": "the URL names the topic",
+      "ok": true,
+      "detail": "http://localhost:4640/ielts-website/review?topic=environment"
+    },
+    {
+      "section": "topic",
+      "check": "the page opens at the top",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "topic",
+      "check": "picture header present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "topic",
+      "check": "picture header is modest (160 to 260px)",
+      "ok": true,
+      "detail": "250px"
+    },
+    {
+      "section": "topic",
+      "check": "ring summary reads 0 of 20 learnt",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "topic",
+      "check": "three game links point at the games with this topic, none marked paid",
+      "ok": true,
+      "detail": "[{\"g\": \"match\", \"href\": \"/ielts-website/review/games?game=match&topic=environment\", \"paid\": false}, {\"g\": \"sprint\", \"href\": \"/ielts-website/review/games?game=sprint&topic=environment\", \"paid\": false}, {\"g\": \"spell\", \"href\": \"/ielts-website/review/games?game=spell&topic=environment\", \"paid\": false}]"
+    },
+    {
+      "section": "topic",
+      "check": "the practice round button is still there",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "topic",
+      "check": "the ten main words are flip cards",
+      "ok": true,
+      "detail": "10"
+    },
+    {
+      "section": "flip",
+      "check": "a click turns a card over",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "flip",
+      "check": "the back shows the meaning",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "flip",
+      "check": "Enter turns a focused card over",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "flip",
+      "check": "Space turns it back",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "flip",
+      "check": "Tab moves to the next card with a visible focus ring",
+      "ok": true,
+      "detail": "{\"cls\": \"vh-flip vh-flip--grid\", \"focusVisible\": true, \"outline\": \"solid 2px\"}"
+    },
+    {
+      "section": "list view",
+      "check": "Show all as a list shows today's list",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "list view",
+      "check": "the toggle now offers cards",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "list view",
+      "check": "and back to cards",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "topic",
+      "check": "the lesson's other groups stay",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "topic",
+      "check": "no sideways scroll at 1440",
+      "ok": true,
+      "detail": "0px"
+    },
+    {
+      "section": "topic",
+      "check": "All topics returns to the home and clears the URL",
+      "ok": true,
+      "detail": "http://localhost:4640/ielts-website/review"
+    },
+    {
+      "section": "topic",
+      "check": "Conjunctions shows its 18 words as cards",
+      "ok": true,
+      "detail": "18"
+    },
+    {
+      "section": "phone 390",
+      "check": "home: no sideways scroll",
+      "ok": true,
+      "detail": "0px"
+    },
+    {
+      "section": "phone 390",
+      "check": "Today strip stacks",
+      "ok": true,
+      "detail": "column"
+    },
+    {
+      "section": "phone 390",
+      "check": "topic: no sideways scroll",
+      "ok": true,
+      "detail": "0px"
+    },
+    {
+      "section": "phone 390",
+      "check": "topic picture is 160px tall",
+      "ok": true,
+      "detail": "160px"
+    },
+    {
+      "section": "phone 390",
+      "check": "a tap turns a card",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phone 320",
+      "check": "home: no sideways scroll",
+      "ok": true,
+      "detail": "0px"
+    },
+    {
+      "section": "phone 320",
+      "check": "Today strip stacks",
+      "ok": true,
+      "detail": "column"
+    },
+    {
+      "section": "phone 320",
+      "check": "topic: no sideways scroll",
+      "ok": true,
+      "detail": "0px"
+    },
+    {
+      "section": "phone 320",
+      "check": "topic picture is 160px tall",
+      "ok": true,
+      "detail": "160px"
+    },
+    {
+      "section": "phone 320",
+      "check": "a tap turns a card",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "russian",
+      "check": "the switch turns the page Russian",
+      "ok": true,
+      "detail": "Словарь"
+    },
+    {
+      "section": "russian",
+      "check": "Today strip in Russian",
+      "ok": true,
+      "detail": "Впервые здесь? Хватит пяти минут в день. Выучите несколько слов, а потом напишите их по памяти. |  | Начать 5 минут на сегодня"
+    },
+    {
+      "section": "russian",
+      "check": "word of the day heading in Russian",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "russian",
+      "check": "the word itself stays English",
+      "ok": true,
+      "detail": "pedestrian zone"
+    },
+    {
+      "section": "russian",
+      "check": "topic names translated",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "russian",
+      "check": "word counts in Russian",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "russian",
+      "check": "game names and toggle in Russian",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "russian",
+      "check": "the vocabulary words stay English",
+      "ok": true,
+      "detail": "carbon footprint, biodiversity, deforestation"
+    },
+    {
+      "section": "russian",
+      "check": "meanings and examples stay English",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "russian",
+      "check": "no em or en dash on the page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "reduced motion",
+      "check": "no rotation, the faces crossfade",
+      "ok": true,
+      "detail": "{\"inner\": \"none\", \"back\": \"1\", \"front\": \"0\", \"tr\": \"opacity 0.22s\"}"
+    },
+    {
+      "section": "returning",
+      "check": "stores seeded under this browser's owner key",
+      "ok": true,
+      "detail": "::anon:94c55a93-f5bc-4711-9a0c-99c7e3115d79"
+    },
+    {
+      "section": "returning",
+      "check": "Today strip shows the streak and the words due",
+      "ok": true,
+      "detail": "2 day streak | 2 words to review today | Start today's 5 minutes"
+    },
+    {
+      "section": "returning",
+      "check": "the streak agrees with the dashboard",
+      "ok": true,
+      "detail": "dashboard: '2 day streak'"
+    },
+    {
+      "section": "returning",
+      "check": "Environment card: 1 of 20 learnt",
+      "ok": true,
+      "detail": "Environment & Ecology | 1 of 20 learnt"
+    },
+    {
+      "section": "returning",
+      "check": "its ring is drawn one twentieth full",
+      "ok": true,
+      "detail": "71.62831250184728"
+    },
+    {
+      "section": "returning",
+      "check": "the learnt word carries a Learnt mark",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "lesson 1440",
+      "check": "picture at the top, no taller than 260px",
+      "ok": true,
+      "detail": "240px"
+    },
+    {
+      "section": "lesson 1440",
+      "check": "Play games with these words links to this topic's games",
+      "ok": true,
+      "detail": "/ielts-website/review/games?game=match&topic=environment"
+    },
+    {
+      "section": "lesson 1440",
+      "check": "the lesson starts within the first screen and a half",
+      "ok": true,
+      "detail": "body at 855px"
+    },
+    {
+      "section": "lesson 1440",
+      "check": "no sideways scroll",
+      "ok": true,
+      "detail": "0px"
+    },
+    {
+      "section": "lesson 390",
+      "check": "picture at the top, no taller than 160px",
+      "ok": true,
+      "detail": "160px"
+    },
+    {
+      "section": "lesson 390",
+      "check": "Play games with these words links to this topic's games",
+      "ok": true,
+      "detail": "/ielts-website/review/games?game=match&topic=environment"
+    },
+    {
+      "section": "lesson 390",
+      "check": "the lesson starts within the first screen and a half",
+      "ok": true,
+      "detail": "body at 728px"
+    },
+    {
+      "section": "lesson 390",
+      "check": "no sideways scroll",
+      "ok": true,
+      "detail": "0px"
+    },
+    {
+      "section": "gated",
+      "check": "free account: the Vocabulary home renders",
+      "ok": true,
+      "detail": "v1-vocab-1791408892@example.test"
+    },
+    {
+      "section": "gated",
+      "check": "36 topics",
+      "ok": true,
+      "detail": "12 / 36 results shown"
+    },
+    {
+      "section": "gated",
+      "check": "word of the day present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "gated",
+      "check": "Today strip button has no paid marker",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "gated",
+      "check": "topic opens with its cards",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "gated",
+      "check": "game links carry no paid marker",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "gated",
+      "check": "the practice round keeps its paid marker",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "gated",
+      "check": "no sideways scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "errors",
+      "check": "no page errors (open-en-1440)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "errors",
+      "check": "no page errors (open-en-390)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "errors",
+      "check": "no page errors (open-en-320)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "errors",
+      "check": "no page errors (open-ru-1440)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "errors",
+      "check": "no page errors (open-reduced)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "errors",
+      "check": "no page errors (open-returning)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "errors",
+      "check": "no page errors (lesson-1440)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "errors",
+      "check": "no page errors (lesson-390)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "errors",
+      "check": "no page errors (gated-free)",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}

@@ -1027,6 +1027,65 @@
   .listening-question-paper td .listening-answer-line {
     width: clamp(4.75rem, 8vw, 7rem);
   }
+  /* A reading question key (TestPlayer, focused exercises) can carry the
+     publisher's own printed table: table completion, a word bank, a
+     category grid. The base reset strips every border, which left those
+     tables as loose words with nothing to show which row or column a gap
+     belongs to. These rules draw the grid the paper prints, and tint a cell
+     that holds only a bold label, which is how the source marks headers. */
+  .question-key {
+    overflow-x: auto;
+  }
+  .question-key table {
+    /* No min-width: on a phone the columns wrap to fit the screen, and
+       the key only scrolls sideways if one word is wider than its column. */
+    width: 100%;
+    margin: 0.25rem 0 0.75rem;
+    /* No bottom border of its own: every cell draws one, so the bottom
+       edge stays single even where a rowspan cell reaches the last row. */
+    border: 1px solid var(--color-border);
+    border-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: var(--color-surface);
+    line-height: 1.5;
+  }
+  .question-key table:last-child {
+    margin-bottom: 0.25rem;
+  }
+  .question-key td,
+  .question-key th {
+    width: auto;
+    padding: 0.55rem 0.6rem;
+    border-right: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: top;
+  }
+  .question-key tr > :last-child {
+    border-right: 0;
+  }
+  .question-key th,
+  .question-key td:has(> strong:only-child),
+  .question-key td:has(> span:only-child > strong:only-child) {
+    background: var(--color-brand-tint);
+    color: var(--color-ink);
+    font-weight: 750;
+  }
+  @media (max-width: 639px) {
+    .question-key td,
+    .question-key th {
+      padding: 0.5rem 0.45rem;
+    }
+  }
+  .question-key td p {
+    margin: 0.35rem 0 0;
+  }
+  .question-key td p:first-child {
+    margin-top: 0;
+  }
   @media (max-width: 639px) {
     .listening-question-paper {
       font-size: 0.9rem;
