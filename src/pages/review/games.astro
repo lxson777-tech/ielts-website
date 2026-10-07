@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import VocabGames from '../../components/vocab/games/VocabGames';
+import PaidContent from '../../components/trial/PaidContent';
+import { ACCESS_MODE } from '../../lib/trial/mode';
+
+/* The vocabulary games (8 October 2026): Match pairs, the 60-second sprint
+   and Spell it, at /review/games?game=match|sprint|spell&topic=<slug>.
+   Free with an account, with no AI.
+
+   Open site: the island reads the deck (every topic lesson's words) that
+   ships with it. Gated build (PUBLIC_ACCESS_MODE=trial): the page is free
+   with an account like the topic lists (trialGate kind 'free'), and
+   PaidContent fills the deck before the games mount: a paid account's
+   vocabulary pack, or a free account's own lessons through the content
+   door. */
+const gated = ACCESS_MODE === 'trial';
+---
+<BaseLayout trialGate={{ kind: 'free', title: 'Vocabulary games' }} title="Vocabulary games · IELTS is EZ" description="Quick vocabulary games for IELTS topic words: match the pairs, a 60-second sprint and a spelling game.">
+  {gated ? <PaidContent client:load view={{ name: 'vocab-games' }} /> : <VocabGames client:load />}
+</BaseLayout>

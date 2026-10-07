@@ -266,7 +266,9 @@ const CARD_BY_WORD = new Map<string, VocabCard>(CARD_SET.map((c) => [c.word, c])
     until the paid pack `vocabulary` brings the lesson deck, built by
     buildCardSetFromFragments above from the same lessons. Replaced where it
     stands, so every caller holding CARD_SET sees it. Never called on the
-    open site. */
+    open site. Since 8 October 2026 also called for a FREE account before
+    the vocabulary games mount (PaidContent's 'vocab-games' view), with the
+    deck built the same way from the lessons that account reads. */
 export function replaceCardSet(cards: readonly VocabCard[]): void {
   CARD_SET.splice(0, CARD_SET.length, ...cards);
   CARD_BY_WORD.clear();
@@ -830,18 +832,46 @@ export function recordReviewOutcome(
   assisted: boolean,
   today: string = todayStr(),
 ): VocabCardState | undefined {
+  return recordReviewOutcomeFor(currentOwner(), word, direction, correct, assisted, today);
+}
+
+/** recordReviewOutcome(), into one named owner's review state rather than
+    the current owner's (added 8 October 2026 for Spell it, the vocabulary
+    game under /review/games, whose answers belong to the student the game
+    was started for, exactly as rateFor() is to rate()). With no account
+    change it is exactly recordReviewOutcome(). */
+export function recordReviewOutcomeFor(
+  owner: CacheOwner,
+  word: string,
+  direction: ReviewMode,
+  correct: boolean,
+  assisted: boolean,
+  today: string = todayStr(),
+): VocabCardState | undefined {
   const grade = outcomeGrade(correct, assisted);
-  const next = rate(word, grade);
+  const next = rateFor(owner, word, grade);
   if (!next || !isRecallSuccess(direction, correct, assisted)) return next;
 
-  const store = loadStore();
+  const store = loadStore(owner);
   const state = store.cards[word];
   if (!state) return next;
   const dates = new Set(state.recallSuccessDates ?? []);
   dates.add(today);
   state.recallSuccessDates = Array.from(dates).sort();
-  saveStore(store);
+  saveStore(store, owner);
   return state;
+}
+
+/** One named owner's review store, read only (the vocabulary games build
+    their word sets from it, for the student the game was started for). */
+export function readVocabStoreFor(owner: CacheOwner): VocabStoreV1 {
+  return loadStore(owner);
+}
+
+/** Today's date as the review store spells it (UTC, YYYY-MM-DD), for the
+    games' set building, which compares it against stored due dates. */
+export function vocabToday(): string {
+  return todayStr();
 }
 
 /* ---------------------------------------------------------------------- */

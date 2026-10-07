@@ -1,0 +1,417 @@
+{
+  "site": "http://localhost:4650/ielts-website",
+  "student": "vg-student-1791409611@example.test",
+  "passed": 68,
+  "failed": 0,
+  "results": [
+    {
+      "section": "chooser",
+      "check": "three games offered",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "chooser",
+      "check": "topic chooser shows the topic pictures",
+      "ok": true,
+      "detail": "36 loaded"
+    },
+    {
+      "section": "signed-out",
+      "check": "invitation to sign in to keep progress",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "chooser",
+      "check": "an unknown topic falls back to the mixed set",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "account",
+      "check": "signed in as a synthetic student",
+      "ok": true,
+      "detail": "vg-student-1791409611@example.test"
+    },
+    {
+      "section": "match-desktop",
+      "check": "six pairs on the board",
+      "ok": true,
+      "detail": "['biodiversity', 'sustainable', 'greenhouse gases', 'deforestation', 'carbon footprint', 'renewable energy']"
+    },
+    {
+      "section": "match-desktop",
+      "check": "focus starts on the first word tile",
+      "ok": true,
+      "detail": "w:biodiversity"
+    },
+    {
+      "section": "match-desktop",
+      "check": "Enter selects a tile (aria-pressed)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "match-desktop",
+      "check": "a wrong pair shakes both tiles",
+      "ok": true,
+      "detail": "2"
+    },
+    {
+      "section": "match-desktop",
+      "check": "the live region says it was not a pair",
+      "ok": true,
+      "detail": "Not a pair. Try again."
+    },
+    {
+      "section": "match-desktop",
+      "check": "a right pair settles as done",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "match-desktop",
+      "check": "finish screen with time, mistakes and best",
+      "ok": true,
+      "detail": "New personal best\n\nEnvironment & Ecology\n\nTime\n0:01.7\nMistakes\n1\nYour best\n0:01.7\nWords to look at again\nbiodiversity\nThe variety of plant and animal life in an"
+    },
+    {
+      "section": "match-desktop",
+      "check": "the missed word is listed to look at again",
+      "ok": true,
+      "detail": "biodiversity"
+    },
+    {
+      "section": "match-desktop",
+      "check": "Play again and Next topic offered",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "match-desktop",
+      "check": "no sideways scroll",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "section": "match-desktop",
+      "check": "the missed word is in the review store as a lapse",
+      "ok": true,
+      "detail": "{\"ease\": 2.15, \"interval\": 1, \"due\": \"2026-10-08\", \"reps\": 1, \"lapses\": 1, \"introducedDate\": \"2026-10-07\", \"lastReviewed\": \"2026-10-07T21:47:01.112Z\"}"
+    },
+    {
+      "section": "match-desktop",
+      "check": "every pair written to the learner record as recognition",
+      "ok": true,
+      "detail": "7 events"
+    },
+    {
+      "section": "match-desktop",
+      "check": "a best time kept under this student's own key",
+      "ok": true,
+      "detail": "{\"version\": 1, \"match\": {\"environment\": {\"ms\": 1781, \"mistakes\": 1, \"at\": \"2026-10-07T21:47:02.240Z\"}}, \"sprint\": {}}"
+    },
+    {
+      "section": "sprint-desktop",
+      "check": "the clock does not run before Start",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "sprint-desktop",
+      "check": "a hidden tab pauses the minute",
+      "ok": true,
+      "detail": "50s -> 50s after 2.5s hidden"
+    },
+    {
+      "section": "sprint-desktop",
+      "check": "at least one wrong answer, shown with the right one",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "sprint-desktop",
+      "check": "a streak of three shows the flame",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "sprint-desktop",
+      "check": "end screen: score, best and the missed words",
+      "ok": true,
+      "detail": "New personal best\n\nEnvironment & Ecology\n\nScore\n48\nYour best\n48\nLongest streak\n43\nWords you missed\nrenewable energy\nEnergy from sources that are naturally replenished. Sun, wind, water.\nsustainable\nAb"
+    },
+    {
+      "section": "sprint-desktop",
+      "check": "no sideways scroll",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "section": "sprint-desktop",
+      "check": "a best score kept",
+      "ok": true,
+      "detail": "{\"environment\": {\"score\": 48, \"at\": \"2026-10-07T21:48:06.852Z\"}}"
+    },
+    {
+      "section": "spell-desktop",
+      "check": "start screen says this game makes words count as learnt",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "spell-desktop",
+      "check": "the hint types the first letter and marks it",
+      "ok": true,
+      "detail": "g"
+    },
+    {
+      "section": "spell-desktop",
+      "check": "end screen: words spelt and words to practise",
+      "ok": true,
+      "detail": "Set complete\n\nEnvironment & Ecology\n\nSpelt from memory\n8 of 10\nTo practise\n2\nNow learnt\n0\n\nSpell them again on another day and they count as learnt.\n\nWords to practise\nglobal warming\nthe gradual rise in the temperature o"
+    },
+    {
+      "section": "spell-desktop",
+      "check": "no sideways scroll",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "section": "spell-desktop",
+      "check": "unaided right spellings recorded as recall days",
+      "ok": true,
+      "detail": "{\"sustainable\": [\"2026-10-07\"], \"greenhouse gases\": [\"2026-10-07\"], \"deforestation\": [\"2026-10-07\"], \"carbon footprint\": [\"2026-10-07\"], \"fossil fuels\": [\"2026-10-07\"], \"ecosystem\": [\"2026-10-07\"], \"environmental degradation\": [\"2026-10-07\"], \"natural resources\": [\"2026-10-07\"]}"
+    },
+    {
+      "section": "spell-desktop",
+      "check": "each spelling written to the learner record as recall",
+      "ok": true,
+      "detail": "11 recall events"
+    },
+    {
+      "section": "spell-desktop",
+      "check": "the hinted answer is recorded as assisted (hint)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "spell-desktop",
+      "check": "the second go is recorded with the answer shown",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "second-day",
+      "check": "yesterday's recall days in the store after the shift",
+      "ok": true,
+      "detail": "sustainable, greenhouse gases, deforestation, carbon footprint, fossil fuels, ecosystem, environmental degradation, natural resources"
+    },
+    {
+      "section": "spell-day2-desktop",
+      "check": "start screen says this game makes words count as learnt",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "spell-day2-desktop",
+      "check": "end screen: words spelt and words to practise",
+      "ok": true,
+      "detail": "Set complete\n\nEnvironment & Ecology\n\nSpelt from memory\n10 of 10\nTo practise\n0\nNow learnt\n8\n\n8 words now count as learnt: ecosystem, fossil fuels, greenhouse gases, sustainable, environmental degradation, deforestation, n"
+    },
+    {
+      "section": "spell-day2-desktop",
+      "check": "no sideways scroll",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "section": "second-day",
+      "check": "a word spelt on two different days is now known",
+      "ok": true,
+      "detail": "sustainable, greenhouse gases, deforestation, carbon footprint, fossil fuels, ecosystem, environmental degradation, natural resources"
+    },
+    {
+      "section": "second-day",
+      "check": "the end screen says how many words now count as learnt",
+      "ok": true,
+      "detail": "Set complete\n\nEnvironment & Ecology\n\nSpelt from memory\n10 of 10\nTo practise\n0\nNow learnt\n8\n\n8 words now count as learnt: ecosystem, fossil fuels, greenhouse gases, sustainable, environmental degradation, deforestation, natural resources, ca"
+    },
+    {
+      "section": "phone",
+      "check": "chooser: no sideways scroll at 390",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "section": "match-phone",
+      "check": "six pairs on the board",
+      "ok": true,
+      "detail": "['global warming', 'greenhouse gases', 'deforestation', 'sustainable', 'renewable energy', 'carbon footprint']"
+    },
+    {
+      "section": "match-phone",
+      "check": "a wrong pair shakes both tiles",
+      "ok": true,
+      "detail": "2"
+    },
+    {
+      "section": "match-phone",
+      "check": "the live region says it was not a pair",
+      "ok": true,
+      "detail": "Not a pair. Try again."
+    },
+    {
+      "section": "match-phone",
+      "check": "a right pair settles as done",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "match-phone",
+      "check": "finish screen with time, mistakes and best",
+      "ok": true,
+      "detail": "New personal best\n\nEnvironment & Ecology\n\nTime\n0:02.5\nMistakes\n1\nYour best\n0:02.5\nWords to look at again\nglobal warming\nthe gradual rise in the temperature of t"
+    },
+    {
+      "section": "match-phone",
+      "check": "the missed word is listed to look at again",
+      "ok": true,
+      "detail": "global warming"
+    },
+    {
+      "section": "match-phone",
+      "check": "Play again and Next topic offered",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "match-phone",
+      "check": "no sideways scroll",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "section": "sprint-phone",
+      "check": "the clock does not run before Start",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "sprint-phone",
+      "check": "at least one wrong answer, shown with the right one",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "sprint-phone",
+      "check": "a streak of three shows the flame",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "sprint-phone",
+      "check": "end screen: score, best and the missed words",
+      "ok": true,
+      "detail": "New personal best\n\nEnvironment & Ecology\n\nScore\n76\nYour best\n76\nLongest streak\n76\nWords you missed\nenvironmental degradation\nthe gradual damage done to the natural world by human activity\nPlay again\nA"
+    },
+    {
+      "section": "sprint-phone",
+      "check": "no sideways scroll",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "section": "spell-phone",
+      "check": "start screen says this game makes words count as learnt",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "spell-phone",
+      "check": "the hint types the first letter and marks it",
+      "ok": true,
+      "detail": "e"
+    },
+    {
+      "section": "spell-phone",
+      "check": "end screen: words spelt and words to practise",
+      "ok": true,
+      "detail": "Set complete\n\nMixed set\n\nSpelt from memory\n0 of 10\nTo practise\n10\nNow learnt\n0\nWords to practise\nmedia literacy\nthe ability to judge whether a source of information can be trusted\nthought-provoking\nmaking people think se"
+    },
+    {
+      "section": "spell-phone",
+      "check": "no sideways scroll",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "section": "spell-phone",
+      "check": "with no topic the set is the mixed set",
+      "ok": true,
+      "detail": "Set complete\n\nMixed set\n\nSpelt from memory\n0 of 10\nTo practi"
+    },
+    {
+      "section": "phone",
+      "check": "end screen buttons at least 44px tall",
+      "ok": true,
+      "detail": "[48, 44]"
+    },
+    {
+      "section": "320",
+      "check": "no sideways scroll chooser",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "section": "320",
+      "check": "no sideways scroll ?game=match&topic=environment",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "section": "320",
+      "check": "match tiles at least 44px tall",
+      "ok": true,
+      "detail": "[52, 52, 52, 52, 52, 52, 61.125, 61.125, 61.125, 61.125, 61.125, 48]"
+    },
+    {
+      "section": "320",
+      "check": "no sideways scroll ?game=sprint",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "section": "320",
+      "check": "no sideways scroll ?game=spell&topic=ai",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "section": "russian",
+      "check": "the chooser is in Russian",
+      "ok": true,
+      "detail": "Игры со словами"
+    },
+    {
+      "section": "russian",
+      "check": "column labels in Russian, words in English",
+      "ok": true,
+      "detail": "greenhouse gases"
+    },
+    {
+      "section": "russian",
+      "check": "the meaning stays English",
+      "ok": true,
+      "detail": "Able to be maintained without depleting natural resources."
+    },
+    {
+      "section": "errors",
+      "check": "no page errors or console errors on the games pages",
+      "ok": true,
+      "detail": "[]"
+    }
+  ],
+  "errors": []
+}
