@@ -43,7 +43,7 @@ export const VOCAB_TOPIC_ART: Record<string, VocabTopicArt> = {
   'housing': { src: '/pics/vocab/housing.webp', alt: 'A street of different homes: a small house with a garden, a tall apartment block and a modern cabin', width: 960, height: 720 },
   'family': { src: '/pics/vocab/family.webp', alt: 'Three generations of a family sharing a meal at a round table, grandparents, parents and a child', width: 960, height: 720 },
   'language': { src: '/pics/vocab/language.webp', alt: 'Two speech bubbles with different alphabets shapes meeting in the middle, open dictionaries and a globe', width: 960, height: 720 },
-  'arts': { src: '/pics/vocab/arts.webp', alt: 'An artist's easel with a painting, a sculpture on a plinth and paint brushes in a jar in a gallery', width: 960, height: 720 },
+  'arts': { src: '/pics/vocab/arts.webp', alt: "An artist's easel with a painting, a sculpture on a plinth and paint brushes in a jar in a gallery", width: 960, height: 720 },
   'science': { src: '/pics/vocab/science.webp', alt: 'A laboratory bench with a microscope, flasks of coloured liquid, a DNA spiral and a telescope by the window', width: 960, height: 720 },
   'animals': { src: '/pics/vocab/animals.webp', alt: 'An elephant, a fox and a few birds in a savannah and forest edge, under a big sky', width: 960, height: 720 },
   'business': { src: '/pics/vocab/business.webp', alt: 'A small shop front with an open sign, a handshake, a laptop showing a chart and boxes ready to ship', width: 960, height: 720 },

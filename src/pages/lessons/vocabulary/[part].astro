@@ -4,6 +4,8 @@ import LessonBody from '../../../components/LessonBody.astro';
 import LessonStep from '../../../components/LessonStep.astro';
 import { withBase } from '../../../lib/url';
 import { VOCABULARY_PARTS } from '../../../data/vocabulary';
+import { vocabTopicArt } from '../../../data/vocab-topic-art';
+import { vocabGameHref } from '../../../lib/vocab-home';
 
 export function getStaticPaths() {
   return VOCABULARY_PARTS.map((part, i) => ({
@@ -24,6 +26,14 @@ if (!raw) throw new Error(`Missing fragment for vocabulary topic: ${part.slug}`)
 const body = raw.replaceAll('../pics/', withBase('/pics/'));
 
 const overviewUrl = withBase('/lessons/vocabulary');
+
+/* The topic's picture (src/data/vocab-topic-art.ts) at the top of the
+   lesson, kept short so the teaching starts within the first screen, and
+   the way into the three games with this topic's words. Outside the lesson
+   body on purpose: the gated build sends the body through the content gate,
+   but the picture and the games are free. */
+const art = vocabTopicArt(part.slug);
+const gamesHref = vocabGameHref('match', part.slug);
 ---
 
 <LessonLayout
@@ -32,6 +42,18 @@ const overviewUrl = withBase('/lessons/vocabulary');
   parent={{ label: 'Vocabulary', href: overviewUrl }}
 >
   <LessonStep order={order} of={of} section="Vocabulary" />
+
+  <figure class="vh-lesson-art">
+    <span class="vh-pic">
+      {art && <img src={withBase(art.src)} alt={art.alt} width={art.width} height={art.height} decoding="async" fetchpriority="high" />}
+    </span>
+    <figcaption>
+      <a class="vh-lesson-play" href={gamesHref}>
+        <span data-i18n>Play games with these words</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+      </a>
+    </figcaption>
+  </figure>
 
   <LessonBody slug={`vocabulary-${part.slug}`} html={body} />
 
@@ -62,3 +84,7 @@ const overviewUrl = withBase('/lessons/vocabulary');
     }
   </nav>
 </LessonLayout>
+
+<style is:global>
+  @import '../../../styles/vocab-home.css';
+</style>
