@@ -48,6 +48,8 @@ import * as accountCategories from './account-categories';
 import * as lLegal from './l-legal';
 import * as cConsent from './c-consent';
 import * as practiceSets from './practice-sets';
+import * as vocabHome from './vocab-home';
+import * as vocabGames from './vocab-games';
 
 /** Every batch module, in merge order. The test imports this same list. */
 export const BATCHES = [
@@ -91,6 +93,8 @@ export const BATCHES = [
   lLegal,
   cConsent,
   practiceSets,
+  vocabHome,
+  vocabGames,
 ];
 
 export const strings: Record<string, string> = Object.assign({}, ...BATCHES.map((b) => b.strings));
