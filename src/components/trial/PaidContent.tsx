@@ -10,9 +10,9 @@
    page's gate (TrialGate) already explains why the page is closed.
 
    The free-account model (1 October 2026) retired the trial, so no page is
-   "shared" with it any more. The one exception is the vocabulary topic
-   lists, free with an account: a free account gets them, without their
-   paid practice round.
+   "shared" with it any more. The exceptions are the vocabulary topic
+   lists and the vocabulary games (/review/games), free with an account: a
+   free account gets them, without the topic lists' paid practice round.
 
    The open site never renders this: its pages keep their tools as they are. */
 
@@ -37,6 +37,9 @@ export type PaidView =
   | { name: 'examiner' }
   | { name: 'mock-exam'; hubUrl: string }
   | { name: 'vocab-topics' }
+  /* The vocabulary games (/review/games, 8 October 2026): free with an
+     account, like the topic lists. */
+  | { name: 'vocab-games' }
   | { name: 'placement' }
   | { name: 'focused'; id: string }
   | { name: 'speaking-focus'; id: string };
@@ -132,6 +135,11 @@ function planFor(view: PaidView): Plan {
           return <VocabTopics topics={topics} />;
         },
       };
+    case 'vocab-games':
+      return {
+        packs: ['vocabulary'],
+        mount: () => el(() => import('../vocab/games/VocabGames'), {}),
+      };
     case 'placement':
       return {
         packs: ['band-guides'],
@@ -220,7 +228,7 @@ function usePaidView(view: PaidView, active: boolean, attempt: number): Stage {
     (GET lesson/vocabulary-<topic>; every pack stays paid). The page's
     practice round stays paid: its button carries data-paid-feature, so the
     upgrade pop-up opens. */
-function useFreeVocabTopics(active: boolean, userId: string | null, attempt: number): Stage {
+function useFreeVocabTopics(active: boolean, userId: string | null, attempt: number, games = false): Stage {
   const [stage, setStage] = useState<Stage>({ kind: 'idle' });
   useEffect(() => {
     if (!active) {
@@ -230,7 +238,7 @@ function useFreeVocabTopics(active: boolean, userId: string | null, attempt: num
     let live = true;
     setStage({ kind: 'loading' });
     void (async () => {
-      const [{ VOCABULARY_PARTS }, { buildVocabTopicData }] = await Promise.all([
+      const [{ VOCABULARY_PARTS }, { buildVocabTopicData, buildCardSetFromFragments, replaceCardSet }] = await Promise.all([
         import('../../data/vocabulary'),
         import('../../lib/vocab-review'),
       ]);
@@ -241,6 +249,23 @@ function useFreeVocabTopics(active: boolean, userId: string | null, attempt: num
         return setStage({ kind: 'failed', reason: refused.code === 'offline' ? 'offline' : refused.status === 401 ? 'signed-out' : 'unavailable' });
       }
       try {
+        if (games) {
+          /* The games read the practice deck (CARD_SET), which this build's
+             browser copy holds only the small words.ts part of. A free
+             account reads every vocabulary lesson, so the deck is built
+             from those same lessons, exactly as the paid pack builds it
+             (buildCardSetFromFragments), and put in place before the games
+             load. */
+          const fragments: Record<string, string> = {};
+          VOCABULARY_PARTS.forEach((part, i) => {
+            const body = bodies[i]!;
+            if (body.ok) fragments[`../content/lesson-bodies/vocabulary-${part.slug}.html`] = body.text;
+          });
+          replaceCardSet(buildCardSetFromFragments(fragments));
+          const { default: VocabGames } = await import('../vocab/games/VocabGames');
+          if (live) setStage({ kind: 'ready', element: <VocabGames /> });
+          return;
+        }
         const { default: VocabTopics } = await import('../VocabTopics');
         const topics = VOCABULARY_PARTS.map((part, i) => {
           const body = bodies[i]!;
@@ -254,7 +279,7 @@ function useFreeVocabTopics(active: boolean, userId: string | null, attempt: num
     return () => {
       live = false;
     };
-  }, [active, userId, attempt]);
+  }, [active, userId, attempt, games]);
   return stage;
 }
 
@@ -274,9 +299,9 @@ export default function PaidContent({
   const tier = browserTier(trial, trial.now);
   const [attempt, setAttempt] = useState(0);
   const stage = usePaidView(view, paid, attempt);
-  /* The one paid page whose content a free account also opens. */
-  const freeVocab = !paid && view.name === 'vocab-topics' && readsLessons(tier);
-  const freeStage = useFreeVocabTopics(freeVocab, trial.userId, attempt);
+  /* The paid pages whose content a free account also opens. */
+  const freeVocab = !paid && (view.name === 'vocab-topics' || view.name === 'vocab-games') && readsLessons(tier);
+  const freeStage = useFreeVocabTopics(freeVocab, trial.userId, attempt, view.name === 'vocab-games');
 
   const retry = () => {
     if (stage.kind === 'failed' && stage.reason === 'not-paid') void refreshTrial();

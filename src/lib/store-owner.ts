@@ -549,6 +549,12 @@ export const PROGRESS_STORE_KEY = 'ielts.progress.v1';
 export const STUDY_PLAN_STORE_KEY = 'ielts.studyplan.v1';
 export const VOCAB_STORE_KEY = 'ielts.vocab.v1';
 export const NOTES_STORE_KEY = 'ielts.notes.v1';
+/** The vocabulary games' personal bests (src/lib/vocab-games/bests.ts,
+    8 October 2026): the fastest Match per topic and the best Sprint score.
+    Born owner-scoped, so it has no device-wide past; listed below so the
+    "work saved on this device" claim carries a signed-out student's bests
+    into their account with everything else. */
+export const VOCAB_GAMES_STORE_KEY = 'ielts.vocabgames.v1';
 
 /** Every store that was device-wide before this fix, in the order a student
     would recognise them. The claim moves all of them together. */
@@ -561,6 +567,7 @@ export const LEGACY_STORE_KEYS: readonly string[] = [
      (src/lib/tests/mock.ts). Listed here so the explicit "work saved on
      this device" claim carries an anonymous mock sitting across too. */
   'ielts.mock.v1',
+  VOCAB_GAMES_STORE_KEY,
 ] as const;
 
 /** The two stores whose stored value names its OWN owner: the unfinished
