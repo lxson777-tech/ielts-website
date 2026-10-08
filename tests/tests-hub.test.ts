@@ -108,7 +108,7 @@ test('unseenCheckpointLinks: never points somewhere other than the plan when the
   assert.deepEqual(unseenCheckpointLinks(unseenPlan, rankings), [{ skill: 'reading', testId: 'reading-full-004', fromPlan: true }]);
 });
 
-test('the Tests page keeps every destination: rotation tiles, Writing, Speaking, the mock, Practice, the band guide, the credit and the list of every paper', () => {
+test('the Tests page keeps every destination: rotation tiles, Writing, Speaking, the mock, Practice, the band guide and the list of every paper', () => {
   const page = readFileSync('src/pages/tests/index.astro', 'utf8');
   for (const needle of [
     'data-rotation-key="ielts.rotation.reading-tests.v1"',
@@ -118,7 +118,6 @@ test('the Tests page keeps every destination: rotation tiles, Writing, Speaking,
     "withBase('/tests/mock')",
     "withBase('/trainers')",
     "withBase('/learn/bands')",
-    'https://practicepteonline.com/listening-ielts-tests/',
     '<PracticeOrTest current="tests" />',
     '<TestsHubCheckpoints client:load />',
     "withBase('/tests/all')",

@@ -157,14 +157,10 @@ const listeningSample = listeningTests[0];
 
     <footer class="tests-small-print">
       <PracticeOrTest current="tests" />
-      {/* One sentence, translated whole. The source's name is a proper noun
-          at the end, so no sentence is split around a link. */}
-      {listeningTests.length > 0 && (
-        <p class="tests-credits">
-          <span data-i18n>Listening questions and recordings are adapted with permission from</span>{' '}
-          <a href="https://practicepteonline.com/listening-ielts-tests/" target="_blank" rel="noreferrer">PracticePTEOnline</a>.
-        </p>
-      )}
+      {/* The PracticePTEOnline credit line was removed at Alex's request on
+          8 October 2026. The permission itself is recorded in
+          docs/listening-sources.md, and each Listening test keeps its source
+          in its data (source.name, source.url). */}
     </footer>
   </div>
 </BaseLayout>
