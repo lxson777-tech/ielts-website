@@ -108,7 +108,7 @@ test('unseenCheckpointLinks: never points somewhere other than the plan when the
   assert.deepEqual(unseenCheckpointLinks(unseenPlan, rankings), [{ skill: 'reading', testId: 'reading-full-004', fromPlan: true }]);
 });
 
-test('the Tests page keeps every destination: rotation tiles, Writing, Speaking, the mock, Practice, the band guide and the credit', () => {
+test('the Tests page keeps every destination: rotation tiles, Writing, Speaking, the mock, Practice, the band guide, the credit and the list of every paper', () => {
   const page = readFileSync('src/pages/tests/index.astro', 'utf8');
   for (const needle of [
     'data-rotation-key="ielts.rotation.reading-tests.v1"',
@@ -121,9 +121,15 @@ test('the Tests page keeps every destination: rotation tiles, Writing, Speaking,
     'https://practicepteonline.com/listening-ielts-tests/',
     '<PracticeOrTest current="tests" />',
     '<TestsHubCheckpoints client:load />',
-    'data-checkpoint-target={test.id}',
+    "withBase('/tests/all')",
   ]) {
     assert.ok(page.includes(needle), `missing: ${needle}`);
+  }
+  // The list of every paper moved to its own page on 8 October 2026; it keeps
+  // the checkpoint badges and the Reading / Listening tabs.
+  const all = readFileSync('src/pages/tests/all.astro', 'utf8');
+  for (const needle of ['<TestsHubCheckpoints client:load />', 'data-checkpoint-target={test.id}', 'data-catalog-tabs', "withBase('/tests')"]) {
+    assert.ok(all.includes(needle), `all papers page missing: ${needle}`);
   }
   // The gated build still guards the two rotation tiles.
   assert.equal((page.match(/data-paid-feature=\{trialBuild \? 'test' : undefined\}/g) ?? []).length, 2);

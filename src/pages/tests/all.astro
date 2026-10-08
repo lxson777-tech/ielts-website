@@ -1,0 +1,151 @@
+---
+import CatalogueControls from '../../components/CatalogueControls.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Count from '../../components/Count.astro';
+import { ntn } from '../../lib/i18n/translate';
+import TestsHubCheckpoints from '../../components/learning/TestsHubCheckpoints';
+import { withBase } from '../../lib/url';
+import { ALL_TESTS } from '../../data/tests';
+import { questionCount } from '../../lib/tests/schema';
+import { ACCESS_MODE } from '../../lib/trial/mode';
+
+/* Every full paper, behind Reading / Listening tabs. Moved off the Tests page
+   on 8 October 2026 (Alex: "we don't really need to list all tests on that
+   page"); the Tests page links here. TestsHubCheckpoints is mounted for the
+   same two jobs it has there: the quiet unseen-paper line and the status
+   badge on each paper below. In the gated build both are shown to practice
+   and guidance only, and every paper link opens the upgrade pop-up for an
+   account without it (src/lib/access/paid-guard.ts). */
+const trialBuild = ACCESS_MODE === 'trial';
+const readingTests = ALL_TESTS.filter((test) => test.skill === 'reading');
+const listeningTests = ALL_TESTS.filter((test) => test.skill === 'listening');
+
+const groups = [
+  { key: 'reading', label: 'Reading', tests: readingTests },
+  { key: 'listening', label: 'Listening', tests: listeningTests },
+].filter((group) => group.tests.length > 0);
+---
+
+<BaseLayout
+  title="All papers · IELTS Portal"
+  description="Every full timed IELTS Reading and Listening paper on IELTS is EZ."
+>
+  <div class="tests-hub tests-hub-v3 mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <header class="tests-head">
+      <p><a href={withBase('/tests')} data-i18n>Back to Tests</a></p>
+      <h1 data-i18n>All papers</h1>
+      <p><span data-i18n>Every full Reading and Listening paper. Pick one to start it.</span></p>
+    </header>
+
+    {trialBuild ? (
+      <div data-access-copy="paid" hidden>
+        <TestsHubCheckpoints client:load />
+      </div>
+    ) : (
+      <TestsHubCheckpoints client:load />
+    )}
+
+    <section data-discovery data-catalogue-limit="12" class="test-catalog tests-section" aria-labelledby="catalog-heading">
+      <div class="tests-section-head">
+        <h2 id="catalog-heading" data-i18n>Every full exam</h2>
+        <div role="tablist" class="tests-tabs" data-catalog-tabs data-i18n-attr="aria-label" aria-label="Choose a paper">
+          {groups.map((group, index) => (
+            <button
+              type="button"
+              role="tab"
+              id={`catalog-tab-${group.key}`}
+              aria-controls={`catalog-panel-${group.key}`}
+              aria-selected={index === 0 ? 'true' : 'false'}
+              tabindex={index === 0 ? 0 : -1}
+              data-catalog-tab={group.key}
+              class="tests-tab"
+            >
+              <span>{group.label}</span>
+              <span class="tests-tab-count" data-catalog-tab-count={group.key}>{group.tests.length}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      <CatalogueControls />
+      <div class="test-catalog-columns tests-catalog-panels">
+        {groups.map((group, index) => (
+          <div
+            data-discovery-group={group.key}
+            data-tab-group
+            data-tab-inactive={index === 0 ? undefined : ''}
+            hidden={index !== 0}
+            role="tabpanel"
+            id={`catalog-panel-${group.key}`}
+            aria-labelledby={`catalog-tab-${group.key}`}
+            class={`test-catalog-group skill-${group.key}`}
+          >
+            <ul>
+              {group.tests.map((test, i) => (
+                <li data-discovery-item data-search={group.label}><a href={withBase(`/tests/${test.id}`)} data-checkpoint-target={test.id}><span class="test-index">{String(i + 1).padStart(2, '0')}</span><span class="test-name">{test.title}</span><span class="test-meta"><Count phrase={test.id === 'listening-full-011' ? ntn(39, { one: '{n} scored question', other: '{n} scored questions' }) : ntn(questionCount(test), { one: '{n} question', other: '{n} questions' })} /></span></a></li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <p data-catalogue-empty hidden class="discovery-empty" data-i18n>No matches. Try another search.</p>
+      <button type="button" data-catalogue-more class="discovery-more" data-i18n>Show more</button>
+    </section>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  @import '../../styles/platform-pages.css';
+  @import '../../styles/tests-hub.css';
+</style>
+
+<script>
+  /* The bank's Reading / Listening tabs (WAI-ARIA tabs: arrow keys, Home
+     and End move between them). The lists themselves are filtered by
+     CatalogueControls, which skips a group marked data-tab-inactive and
+     reports how many matches each group holds. */
+  function initCatalogTabs() {
+    const root = document.querySelector<HTMLElement>('[data-discovery]');
+    const list = root?.querySelector<HTMLElement>('[data-catalog-tabs]');
+    if (!root || !list || list.dataset.bound) return;
+    list.dataset.bound = 'true';
+    const tabs = [...list.querySelectorAll<HTMLButtonElement>('[data-catalog-tab]')];
+    const select = (key: string, focus: boolean) => {
+      tabs.forEach((tab) => {
+        const on = tab.dataset.catalogTab === key;
+        tab.setAttribute('aria-selected', on ? 'true' : 'false');
+        tab.tabIndex = on ? 0 : -1;
+        if (on && focus) tab.focus();
+      });
+      root.querySelectorAll<HTMLElement>('[data-discovery-group]').forEach((group) => {
+        if (group.dataset.discoveryGroup === key) group.removeAttribute('data-tab-inactive');
+        else group.setAttribute('data-tab-inactive', '');
+      });
+      root.dispatchEvent(new CustomEvent('discovery:refresh'));
+    };
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab.dataset.catalogTab!, false));
+      tab.addEventListener('keydown', (e) => {
+        let next: number | null = null;
+        if (e.key === 'ArrowRight') next = (i + 1) % tabs.length;
+        else if (e.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length;
+        else if (e.key === 'Home') next = 0;
+        else if (e.key === 'End') next = tabs.length - 1;
+        if (next === null) return;
+        e.preventDefault();
+        select(tabs[next]!.dataset.catalogTab!, true);
+      });
+    });
+    root.addEventListener('discovery:counts', (e) => {
+      const counts = (e as CustomEvent<Record<string, number>>).detail ?? {};
+      root.querySelectorAll<HTMLElement>('[data-catalog-tab-count]').forEach((el) => {
+        el.textContent = String(counts[el.dataset.catalogTabCount!] ?? 0);
+      });
+    });
+  }
+
+  function init() {
+    initCatalogTabs();
+  }
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>

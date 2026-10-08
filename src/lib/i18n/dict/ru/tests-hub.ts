@@ -23,6 +23,13 @@ export const strings: Record<string, string> = {
 
   /* The two quiet lines */
   'Short on time? Practise one part at a time.': 'Мало времени? Тренируйте по одной части.',
+
+  /* The list of every paper, on its own page since 8 October 2026 (src/pages/tests/all.astro). */
+  'Want a specific paper?': 'Нужен конкретный вариант?',
+  'See all papers': 'Все варианты',
+  'All papers': 'Все варианты',
+  'Back to Tests': 'Назад к тестам',
+  'Every full Reading and Listening paper. Pick one to start it.': 'Все полные варианты Reading и Listening. Выберите вариант, чтобы начать.',
   "Want your real level? Try a paper you haven't seen:": 'Хотите узнать свой реальный уровень? Пройдите незнакомый тест:',
   'Start an unseen {skill} paper': 'Начать незнакомый тест {skill}',
 
