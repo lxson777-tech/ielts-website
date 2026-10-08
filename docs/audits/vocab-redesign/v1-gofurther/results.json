@@ -1,0 +1,758 @@
+{
+  "run": "2026-10-08 10:53:12",
+  "open": "http://localhost:4640/ielts-website",
+  "passed": 125,
+  "failed": 0,
+  "results": [
+    {
+      "section": "go further en-1440",
+      "check": "heading carries the Band 7+ tag",
+      "ok": true,
+      "detail": "Go Further Band 7+"
+    },
+    {
+      "section": "go further en-1440",
+      "check": "ten guess cards",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further en-1440",
+      "check": "the front shows the meaning, in English",
+      "ok": true,
+      "detail": "the gradual rise in the temperature of the Earth caused by human activity"
+    },
+    {
+      "section": "go further en-1440",
+      "check": "counter starts at none revealed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further en-1440",
+      "check": "a click reveals the word",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further en-1440",
+      "check": "the back carries the example sentence",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further en-1440",
+      "check": "Enter reveals a focused card",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further en-1440",
+      "check": "counter reads 2 of 10 revealed",
+      "ok": true,
+      "detail": "2 of 10 revealed | Hide all again"
+    },
+    {
+      "section": "go further en-1440",
+      "check": "Hide all again turns every card back",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further en-1440",
+      "check": "visibly distinct from the main cards (ochre tint)",
+      "ok": true,
+      "detail": "color(srgb 0.959059 0.943137 0.901333) vs rgb(255, 254, 250)"
+    },
+    {
+      "section": "collocations en-1440",
+      "check": "nine phrases, each with a blank and three choices",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations en-1440",
+      "check": "choices are distinct and include the bold word",
+      "ok": true,
+      "detail": "raise awareness, phase out, tackle"
+    },
+    {
+      "section": "collocations en-1440",
+      "check": "the right word fills the blank and the choices fold away",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations en-1440",
+      "check": "it fills with a gentle pop",
+      "ok": true,
+      "detail": "vh-pop"
+    },
+    {
+      "section": "collocations en-1440",
+      "check": "a wrong pick shakes and greys that choice, the phrase stays open",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations en-1440",
+      "check": "a second miss shows the right word",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations en-1440",
+      "check": "score counts only the right pick",
+      "ok": true,
+      "detail": "1 of 9 right | Try again"
+    },
+    {
+      "section": "collocations en-1440",
+      "check": "the result is announced",
+      "ok": true,
+      "detail": "The answer is combat."
+    },
+    {
+      "section": "collocations en-1440",
+      "check": "Enter answers, and focus moves to the next phrase",
+      "ok": true,
+      "detail": "focus on phrase 3"
+    },
+    {
+      "section": "collocations en-1440",
+      "check": "Try again resets every phrase",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases en-1440",
+      "check": "hint links to the Writing trainer",
+      "ok": true,
+      "detail": "/ielts-website/trainers/writing"
+    },
+    {
+      "section": "phrases en-1440",
+      "check": "topic words are marked inside the phrases",
+      "ok": true,
+      "detail": "Environmental degradation, Sustainable"
+    },
+    {
+      "section": "phrases en-1440",
+      "check": "Copy button labelled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases en-1440",
+      "check": "the clipboard holds the phrase, ready to continue",
+      "ok": true,
+      "detail": "'Environmental degradation poses a long-term threat to '"
+    },
+    {
+      "section": "phrases en-1440",
+      "check": "the button shows Copied with a tick",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases en-1440",
+      "check": "Copied is announced",
+      "ok": true,
+      "detail": "Copied: Environmental degradation poses a long-term threat to…"
+    },
+    {
+      "section": "phrases en-1440",
+      "check": "the phrases stay English",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases en-1440",
+      "check": "the tick fades back to Copy",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "page en-1440",
+      "check": "no sideways scroll",
+      "ok": true,
+      "detail": "0px"
+    },
+    {
+      "section": "go further ru-1440",
+      "check": "heading carries the Band 7+ tag",
+      "ok": true,
+      "detail": "Go Further Балл 7+"
+    },
+    {
+      "section": "go further ru-1440",
+      "check": "ten guess cards",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further ru-1440",
+      "check": "the front shows the meaning, in English",
+      "ok": true,
+      "detail": "the gradual rise in the temperature of the Earth caused by human activity"
+    },
+    {
+      "section": "go further ru-1440",
+      "check": "counter starts at none revealed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further ru-1440",
+      "check": "a click reveals the word",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further ru-1440",
+      "check": "the back carries the example sentence",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further ru-1440",
+      "check": "Enter reveals a focused card",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further ru-1440",
+      "check": "counter reads 2 of 10 revealed",
+      "ok": true,
+      "detail": "Открыто 2 из 10 | Скрыть все снова"
+    },
+    {
+      "section": "go further ru-1440",
+      "check": "Hide all again turns every card back",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further ru-1440",
+      "check": "visibly distinct from the main cards (ochre tint)",
+      "ok": true,
+      "detail": "color(srgb 0.959059 0.943137 0.901333) vs rgb(255, 254, 250)"
+    },
+    {
+      "section": "collocations ru-1440",
+      "check": "nine phrases, each with a blank and three choices",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations ru-1440",
+      "check": "choices are distinct and include the bold word",
+      "ok": true,
+      "detail": "raise awareness, phase out, tackle"
+    },
+    {
+      "section": "collocations ru-1440",
+      "check": "the right word fills the blank and the choices fold away",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations ru-1440",
+      "check": "it fills with a gentle pop",
+      "ok": true,
+      "detail": "vh-pop"
+    },
+    {
+      "section": "collocations ru-1440",
+      "check": "a wrong pick shakes and greys that choice, the phrase stays open",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations ru-1440",
+      "check": "a second miss shows the right word",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations ru-1440",
+      "check": "score counts only the right pick",
+      "ok": true,
+      "detail": "Верно 1 из 9 | Попробовать ещё раз"
+    },
+    {
+      "section": "collocations ru-1440",
+      "check": "the result is announced",
+      "ok": true,
+      "detail": "Правильный ответ: combat."
+    },
+    {
+      "section": "collocations ru-1440",
+      "check": "Enter answers, and focus moves to the next phrase",
+      "ok": true,
+      "detail": "focus on phrase 3"
+    },
+    {
+      "section": "collocations ru-1440",
+      "check": "Try again resets every phrase",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases ru-1440",
+      "check": "hint links to the Writing trainer",
+      "ok": true,
+      "detail": "/ielts-website/trainers/writing"
+    },
+    {
+      "section": "phrases ru-1440",
+      "check": "topic words are marked inside the phrases",
+      "ok": true,
+      "detail": "Environmental degradation, Sustainable"
+    },
+    {
+      "section": "phrases ru-1440",
+      "check": "Copy button labelled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases ru-1440",
+      "check": "the clipboard holds the phrase, ready to continue",
+      "ok": true,
+      "detail": "'Environmental degradation poses a long-term threat to '"
+    },
+    {
+      "section": "phrases ru-1440",
+      "check": "the button shows Copied with a tick",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases ru-1440",
+      "check": "Copied is announced",
+      "ok": true,
+      "detail": "Скопировано: Environmental degradation poses a long-term threat to…"
+    },
+    {
+      "section": "phrases ru-1440",
+      "check": "the phrases stay English",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases ru-1440",
+      "check": "the tick fades back to Copy",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "page ru-1440",
+      "check": "no sideways scroll",
+      "ok": true,
+      "detail": "0px"
+    },
+    {
+      "section": "go further en-390",
+      "check": "heading carries the Band 7+ tag",
+      "ok": true,
+      "detail": "Go Further Band 7+"
+    },
+    {
+      "section": "go further en-390",
+      "check": "ten guess cards",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further en-390",
+      "check": "the front shows the meaning, in English",
+      "ok": true,
+      "detail": "the gradual rise in the temperature of the Earth caused by human activity"
+    },
+    {
+      "section": "go further en-390",
+      "check": "counter starts at none revealed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further en-390",
+      "check": "a click reveals the word",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further en-390",
+      "check": "the back carries the example sentence",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further en-390",
+      "check": "Enter reveals a focused card",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further en-390",
+      "check": "counter reads 2 of 10 revealed",
+      "ok": true,
+      "detail": "2 of 10 revealed | Hide all again"
+    },
+    {
+      "section": "go further en-390",
+      "check": "Hide all again turns every card back",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further en-390",
+      "check": "visibly distinct from the main cards (ochre tint)",
+      "ok": true,
+      "detail": "color(srgb 0.959059 0.943137 0.901333) vs rgb(255, 254, 250)"
+    },
+    {
+      "section": "collocations en-390",
+      "check": "nine phrases, each with a blank and three choices",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations en-390",
+      "check": "choices are distinct and include the bold word",
+      "ok": true,
+      "detail": "raise awareness, phase out, tackle"
+    },
+    {
+      "section": "collocations en-390",
+      "check": "the right word fills the blank and the choices fold away",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations en-390",
+      "check": "it fills with a gentle pop",
+      "ok": true,
+      "detail": "vh-pop"
+    },
+    {
+      "section": "collocations en-390",
+      "check": "a wrong pick shakes and greys that choice, the phrase stays open",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations en-390",
+      "check": "a second miss shows the right word",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations en-390",
+      "check": "score counts only the right pick",
+      "ok": true,
+      "detail": "1 of 9 right | Try again"
+    },
+    {
+      "section": "collocations en-390",
+      "check": "the result is announced",
+      "ok": true,
+      "detail": "The answer is combat."
+    },
+    {
+      "section": "collocations en-390",
+      "check": "Enter answers, and focus moves to the next phrase",
+      "ok": true,
+      "detail": "focus on phrase 3"
+    },
+    {
+      "section": "collocations en-390",
+      "check": "Try again resets every phrase",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases en-390",
+      "check": "hint links to the Writing trainer",
+      "ok": true,
+      "detail": "/ielts-website/trainers/writing"
+    },
+    {
+      "section": "phrases en-390",
+      "check": "topic words are marked inside the phrases",
+      "ok": true,
+      "detail": "Environmental degradation, Sustainable"
+    },
+    {
+      "section": "phrases en-390",
+      "check": "Copy button labelled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases en-390",
+      "check": "the clipboard holds the phrase, ready to continue",
+      "ok": true,
+      "detail": "'Environmental degradation poses a long-term threat to '"
+    },
+    {
+      "section": "phrases en-390",
+      "check": "the button shows Copied with a tick",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases en-390",
+      "check": "Copied is announced",
+      "ok": true,
+      "detail": "Copied: Environmental degradation poses a long-term threat to…"
+    },
+    {
+      "section": "phrases en-390",
+      "check": "the phrases stay English",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases en-390",
+      "check": "the tick fades back to Copy",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "page en-390",
+      "check": "no sideways scroll",
+      "ok": true,
+      "detail": "0px"
+    },
+    {
+      "section": "go further ru-390",
+      "check": "heading carries the Band 7+ tag",
+      "ok": true,
+      "detail": "Go Further Балл 7+"
+    },
+    {
+      "section": "go further ru-390",
+      "check": "ten guess cards",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further ru-390",
+      "check": "the front shows the meaning, in English",
+      "ok": true,
+      "detail": "the gradual rise in the temperature of the Earth caused by human activity"
+    },
+    {
+      "section": "go further ru-390",
+      "check": "counter starts at none revealed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further ru-390",
+      "check": "a click reveals the word",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further ru-390",
+      "check": "the back carries the example sentence",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further ru-390",
+      "check": "Enter reveals a focused card",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further ru-390",
+      "check": "counter reads 2 of 10 revealed",
+      "ok": true,
+      "detail": "Открыто 2 из 10 | Скрыть все снова"
+    },
+    {
+      "section": "go further ru-390",
+      "check": "Hide all again turns every card back",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "go further ru-390",
+      "check": "visibly distinct from the main cards (ochre tint)",
+      "ok": true,
+      "detail": "color(srgb 0.959059 0.943137 0.901333) vs rgb(255, 254, 250)"
+    },
+    {
+      "section": "collocations ru-390",
+      "check": "nine phrases, each with a blank and three choices",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations ru-390",
+      "check": "choices are distinct and include the bold word",
+      "ok": true,
+      "detail": "raise awareness, phase out, tackle"
+    },
+    {
+      "section": "collocations ru-390",
+      "check": "the right word fills the blank and the choices fold away",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations ru-390",
+      "check": "it fills with a gentle pop",
+      "ok": true,
+      "detail": "vh-pop"
+    },
+    {
+      "section": "collocations ru-390",
+      "check": "a wrong pick shakes and greys that choice, the phrase stays open",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations ru-390",
+      "check": "a second miss shows the right word",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "collocations ru-390",
+      "check": "score counts only the right pick",
+      "ok": true,
+      "detail": "Верно 1 из 9 | Попробовать ещё раз"
+    },
+    {
+      "section": "collocations ru-390",
+      "check": "the result is announced",
+      "ok": true,
+      "detail": "Правильный ответ: combat."
+    },
+    {
+      "section": "collocations ru-390",
+      "check": "Enter answers, and focus moves to the next phrase",
+      "ok": true,
+      "detail": "focus on phrase 3"
+    },
+    {
+      "section": "collocations ru-390",
+      "check": "Try again resets every phrase",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases ru-390",
+      "check": "hint links to the Writing trainer",
+      "ok": true,
+      "detail": "/ielts-website/trainers/writing"
+    },
+    {
+      "section": "phrases ru-390",
+      "check": "topic words are marked inside the phrases",
+      "ok": true,
+      "detail": "Environmental degradation, Sustainable"
+    },
+    {
+      "section": "phrases ru-390",
+      "check": "Copy button labelled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases ru-390",
+      "check": "the clipboard holds the phrase, ready to continue",
+      "ok": true,
+      "detail": "'Environmental degradation poses a long-term threat to '"
+    },
+    {
+      "section": "phrases ru-390",
+      "check": "the button shows Copied with a tick",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases ru-390",
+      "check": "Copied is announced",
+      "ok": true,
+      "detail": "Скопировано: Environmental degradation poses a long-term threat to…"
+    },
+    {
+      "section": "phrases ru-390",
+      "check": "the phrases stay English",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "phrases ru-390",
+      "check": "the tick fades back to Copy",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "page ru-390",
+      "check": "no sideways scroll",
+      "ok": true,
+      "detail": "0px"
+    },
+    {
+      "section": "fallback",
+      "check": "Conjunctions keeps its 18 word cards and no new groups",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "fallback",
+      "check": "a collocation that is bold end to end shows as a plain row (business)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "fallback",
+      "check": "speaking phrases get copy cards without the Writing link (childhood)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "reduced motion",
+      "check": "guess cards crossfade instead of turning",
+      "ok": true,
+      "detail": "{\"inner\": \"none\", \"back\": \"1\"}"
+    },
+    {
+      "section": "errors",
+      "check": "no page errors (en-1440)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "errors",
+      "check": "no page errors (ru-1440)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "errors",
+      "check": "no page errors (en-390)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "errors",
+      "check": "no page errors (ru-390)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "section": "errors",
+      "check": "no page errors (fallbacks)",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}

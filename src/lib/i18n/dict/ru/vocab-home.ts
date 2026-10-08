@@ -44,6 +44,31 @@ export const strings: Record<string, string> = {
   'Show as cards': 'Показать карточками',
   'Tap a card to see its meaning and an example.': 'Нажмите на карточку, чтобы увидеть значение и пример.',
 
+  /* Go Further as guess-the-word cards (GuessCards.tsx) */
+  'Band 7+': 'Балл 7+',
+  '{revealed} of {total} revealed': 'Открыто {revealed} из {total}',
+  'Hide all again': 'Скрыть все снова',
+  'Read the meaning, think of the word, then tap to check.': 'Прочитайте значение, вспомните слово и нажмите, чтобы проверить.',
+  'Reveal the word': 'Показать слово',
+
+  /* Key Collocations as pick-the-partner (PartnerPicks.tsx). "Try again"
+     already has its Russian in another batch. */
+  'Pick the word that completes each phrase.': 'Выберите слово, которое завершает каждое сочетание.',
+  '{score} of {total} right': 'Верно {score} из {total}',
+  'Correct: {answer}.': 'Верно: {answer}.',
+  'The answer is {answer}.': 'Правильный ответ: {answer}.',
+  'Not quite. Try another word.': 'Не совсем. Попробуйте другое слово.',
+  'blank': 'пропуск',
+  'Choose the missing word': 'Выберите пропущенное слово',
+
+  /* Useful phrases as copy-ready cards (PhraseCards.tsx) */
+  'Copy': 'Копировать',
+  'Copied': 'Скопировано',
+  'Select to copy': 'Выделите текст',
+  'Could not copy. Select the text instead.': 'Не удалось скопировать. Выделите текст вручную.',
+  'Copy a phrase into the Writing trainer': 'Скопируйте фразу в тренажёр Writing',
+  'Words from this topic are marked.': 'Слова из этой темы выделены.',
+
   /* Topic lesson pages (src/pages/lessons/vocabulary/[part].astro) */
   'Play games with these words': 'Играть с этими словами',
 };

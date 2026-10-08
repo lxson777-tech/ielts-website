@@ -195,3 +195,194 @@ export function readStreak(now: Date = new Date()): number {
 export function readVocabStore(): VocabStoreV1 {
   return readVocabSyncSnapshot();
 }
+
+/* ------------------------------------------------------------------ */
+/* The topic page's lower groups (8 October 2026, second round):       */
+/* Go Further as "guess the word" cards, Key Collocations as "pick the */
+/* partner", Useful Phrases as copy-ready cards. Pure text work on the */
+/* sanitised inline HTML buildVocabTopicData() keeps for list items    */
+/* (only strong, em, b and i survive there).                           */
+/* ------------------------------------------------------------------ */
+
+/** The lesson HTML's entities, decoded for display as plain text. */
+export function decodeHtmlText(s: string): string {
+  return s
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;|&apos;/g, "'")
+    .replace(/&rsquo;/g, '’')
+    .replace(/&lsquo;/g, '‘')
+    .replace(/&ldquo;/g, '“')
+    .replace(/&rdquo;/g, '”')
+    .replace(/&hellip;/g, '…')
+    .replace(/&#(\d+);/g, (_, n: string) => String.fromCodePoint(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n: string) => String.fromCodePoint(parseInt(n, 16)))
+    .replace(/&amp;/g, '&');
+}
+
+/** Inline HTML to plain text: tags dropped, entities decoded, spaces tidied. */
+export function inlineHtmlToText(html: string): string {
+  return decodeHtmlText(html.replace(/<[^>]+>/g, '')).replace(/\s+/g, ' ').trim();
+}
+
+export interface CollocationGap {
+  /** Text before the blank. */
+  before: string;
+  /** The key word the lesson set in bold: the answer. */
+  answer: string;
+  /** Text after the blank. */
+  after: string;
+}
+
+/** A collocation with its bold key word taken out, or null when the item
+    has no bold word (it is then shown as a plain row).
+
+    Two bold words joined only by a slash ("<b>cut</b> / <b>curb</b> carbon
+    emissions") are one answer, "cut / curb". Bold words further apart
+    ("<b>become</b> obsolete / <b>render</b> something obsolete") blank only
+    the first one; the rest of the phrase stays as written. */
+export function parseCollocation(html: string): CollocationGap | null {
+  const parts: { text: string; bold: boolean }[] = [];
+  const re = /<(strong|b)>([\s\S]*?)<\/\1>/gi;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(html))) {
+    if (m.index > last) parts.push({ text: html.slice(last, m.index), bold: false });
+    parts.push({ text: m[2]!, bold: true });
+    last = m.index + m[0].length;
+  }
+  if (last < html.length) parts.push({ text: html.slice(last), bold: false });
+
+  const first = parts.findIndex((p) => p.bold && inlineHtmlToText(p.text) !== '');
+  if (first === -1) return null;
+  let end = first;
+  while (
+    end + 2 < parts.length &&
+    !parts[end + 1]!.bold &&
+    /^\s*\/\s*$/.test(decodeHtmlText(parts[end + 1]!.text)) &&
+    parts[end + 2]!.bold
+  ) {
+    end += 2;
+  }
+  const answer = parts
+    .slice(first, end + 1)
+    .filter((p) => p.bold)
+    .map((p) => inlineHtmlToText(p.text))
+    .join(' / ');
+  const raw = (from: number, to: number) =>
+    decodeHtmlText(parts.slice(from, to).map((p) => p.text).join('').replace(/<[^>]+>/g, '')).replace(/\s+/g, ' ');
+  const before = raw(0, first).trimStart();
+  const after = raw(end + 1, parts.length).trimEnd();
+  // A phrase that is bold from end to end ("<b>make a good impression</b>")
+  // leaves nothing around the blank to choose by: shown as a plain row.
+  if (!before.trim() && !after.trim()) return null;
+  return { before, answer, after };
+}
+
+/** FNV-1a: a small, stable string hash for seeding. */
+function hashString(s: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h >>> 0;
+}
+
+/** A tiny seeded generator (mulberry32), so a topic's options come out the
+    same on every render and every visit. */
+function seededRandom(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** The choices for collocation `index`: its own answer plus up to two
+    other answers from the same topic's collocations, never two that read
+    the same, in an order fixed by the topic and the item. */
+export function collocationOptions(answers: readonly string[], index: number, seed: string, count = 3): string[] {
+  const right = answers[index];
+  if (right === undefined) return [];
+  const norm = (s: string) => s.trim().toLowerCase();
+  const random = seededRandom(hashString(`${seed}#${index}`));
+  const pool: string[] = [];
+  const seen = new Set([norm(right)]);
+  for (const a of answers) {
+    if (seen.has(norm(a))) continue;
+    seen.add(norm(a));
+    pool.push(a);
+  }
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j]!, pool[i]!];
+  }
+  const options = [right, ...pool.slice(0, Math.max(0, count - 1))];
+  for (let i = options.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [options[i], options[j]] = [options[j]!, options[i]!];
+  }
+  return options;
+}
+
+/** Every spelling a word-table cell teaches, for highlighting: "literacy /
+    numeracy" gives both, "artificial intelligence (AI)" gives the phrase
+    and the abbreviation. */
+export function termVariants(word: string): string[] {
+  const out = new Set<string>();
+  const abbreviation = word.match(/\(([^)]+)\)/);
+  if (abbreviation) out.add(abbreviation[1]!.trim());
+  for (const piece of word.replace(/\([^)]*\)/g, '').split('/')) {
+    const t = piece.trim();
+    if (t.length >= 2) out.add(t);
+  }
+  return [...out];
+}
+
+export interface TextSegment {
+  text: string;
+  /** True when this run is one of the topic's own words. */
+  hit: boolean;
+}
+
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/** `text` cut into runs, marking every whole-word (or whole-phrase) use of
+    one of `terms`, case-insensitively, plural -s / -es allowed. "art" never
+    marks part of "artificial". Longer terms win over shorter ones inside
+    them ("carbon footprint" before "carbon"). */
+export function highlightTerms(text: string, terms: readonly string[]): TextSegment[] {
+  if (!text) return [];
+  const unique = [...new Set(terms.map((t) => t.trim()).filter((t) => t.length >= 2))].sort((a, b) => b.length - a.length);
+  if (unique.length === 0) return [{ text, hit: false }];
+  const pattern = new RegExp(
+    `(?<![\\p{L}\\p{N}])(?:${unique.map(escapeRegExp).join('|')})(?:e?s)?(?![\\p{L}\\p{N}])`,
+    'giu',
+  );
+  const out: TextSegment[] = [];
+  let last = 0;
+  for (const m of text.matchAll(pattern)) {
+    const at = m.index ?? 0;
+    if (at > last) out.push({ text: text.slice(last, at), hit: false });
+    out.push({ text: m[0], hit: true });
+    last = at + m[0].length;
+  }
+  if (last < text.length) out.push({ text: text.slice(last), hit: false });
+  return out;
+}
+
+/** A phrase as a student would paste it: no surrounding quote marks, and a
+    trailing "..." left open with a space so they can carry on typing. */
+export function phraseForCopy(text: string): string {
+  let s = text.trim().replace(/^["“‘']+/, '').replace(/["”’']+$/, '').trim();
+  if (/(…|\.\.\.)$/.test(s)) s = `${s.replace(/(…|\.\.\.)$/, '').trimEnd()} `;
+  return s;
+}

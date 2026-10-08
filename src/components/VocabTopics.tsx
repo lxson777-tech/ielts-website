@@ -44,6 +44,7 @@ import {
   todayStrip,
   topicRing,
   topicWordRows,
+  termVariants,
   wordOfTheDayDeck,
   type TodayStrip as TodayStripState,
   type WordOfTheDay,
@@ -55,6 +56,9 @@ import TopicPicture from './vocab/home/TopicPicture';
 import ProgressRing from './vocab/home/ProgressRing';
 import FlipCard from './vocab/home/FlipCard';
 import GamesRow from './vocab/home/GamesRow';
+import GuessCards from './vocab/home/GuessCards';
+import PartnerPicks, { playableCollocations } from './vocab/home/PartnerPicks';
+import PhraseCards from './vocab/home/PhraseCards';
 import { BackIcon, CardsIcon, ListIcon } from './vocab/home/icons';
 
 type View = 'landing' | 'topic' | 'session';
@@ -167,6 +171,8 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
         ? [{ heading: t('Words and phrases'), words: active.words }]
         : active.categories.filter((c) => c.words && c.words.length > 0).map((c) => ({ heading: c.heading, words: c.words! }));
     const restCategories = active.words.length > 0 ? active.categories : active.categories.filter((c) => !c.words);
+    // Every spelling of every word this topic teaches, to mark inside its phrases.
+    const topicTerms = topicWordRows(active).flatMap((w) => termVariants(w.word));
 
     return (
       <div className="vocab-review-space vh-topic-page">
@@ -238,7 +244,22 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
           </section>
         ))}
 
-        {restCategories.map((cat) => (
+        {restCategories.map((cat) => {
+          /* Each lower group plays the way its content teaches: a word
+             table under the main one (Go Further) becomes guess-the-word
+             cards, collocations with a bold key word become pick-the-
+             partner, phrase lists become copy-ready cards. Anything that
+             does not fit those shapes keeps the plain list below. */
+          if (cat.words && active.words.length > 0) {
+            return <GuessCards key={cat.heading} heading={cat.heading} words={cat.words} />;
+          }
+          if (cat.items && /collocation/i.test(cat.heading) && playableCollocations(cat.items)) {
+            return <PartnerPicks key={cat.heading} topic={active.slug} heading={cat.heading} items={cat.items} />;
+          }
+          if (cat.items && /phrase/i.test(cat.heading) && cat.items.length > 0) {
+            return <PhraseCards key={cat.heading} heading={cat.heading} items={cat.items} terms={topicTerms} />;
+          }
+          return (
           <section className="vocab-topic-group" key={cat.heading}>
             <h2>{cat.heading}</h2>
             <ul className="vocab-simple-list">
@@ -251,7 +272,8 @@ export default function VocabTopics({ topics }: { topics: VocabTopicData[] }) {
                 : (cat.items ?? []).map((html, i) => <li key={i} dangerouslySetInnerHTML={{ __html: html }} />)}
             </ul>
           </section>
-        ))}
+          );
+        })}
       </div>
     );
   }

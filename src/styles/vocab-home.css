@@ -165,6 +165,67 @@
 .vh-flip-grid li { display: grid; min-width: 0; }
 .vh-words { margin-bottom: 40px; }
 
+/* ── The lower groups: Go Further, Key Collocations, phrases ─────── */
+.vh-group-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 18px; margin: 0 0 6px; }
+.vh-topic-page .vh-group-head h2 { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0; }
+.vh-band-tag { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; background: var(--color-vocabulary, #8b681a); color: #fffefa; font-family: var(--font-sans, inherit); font-size: 11.5px; font-weight: 700; letter-spacing: .02em; }
+.vh-group-meta { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px 14px; margin: 0; font-size: 13px; color: var(--color-ink-muted); font-variant-numeric: tabular-nums; }
+.vh-text-btn { min-height: 36px; padding: 0 2px; border: 0; background: none; color: var(--color-ink); font: inherit; font-size: 13px; font-weight: 650; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--color-ink) 35%, transparent); text-underline-offset: 3px; cursor: pointer; transition: text-decoration-color 180ms ease; }
+.vh-text-btn:hover { text-decoration-color: currentColor; }
+.vh-text-btn:focus-visible { outline: 2px solid var(--color-vocabulary, #8b681a); outline-offset: 2px; border-radius: 4px; }
+.vh-guess, .vh-colloc-group, .vh-phrases { margin-bottom: 48px; }
+
+/* Go Further: the meaning on an ochre-tinted front, the word on the back. */
+.vh-flip--guess .vh-flip-front { justify-content: flex-start; padding-right: 54px; border-color: color-mix(in srgb, var(--color-vocabulary, #8b681a) 24%, var(--color-border)); background: var(--vh-tint); }
+.vh-flip--guess .vh-flip-turn { background: var(--color-surface); }
+.vh-guess-meaning { font-size: 15px; line-height: 1.5; color: var(--color-ink); }
+.vh-flip--guess .vh-flip-back { justify-content: center; background: var(--color-surface); }
+.vh-flip--guess .vh-flip-back .vh-flip-word { color: var(--color-vocabulary, #8b681a); font-size: 20px; }
+
+/* Key Collocations: rows with separators, a blank, three choices. */
+.vh-colloc-list { margin: 8px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--color-border); }
+.vh-colloc { padding: 16px 2px 15px; border-bottom: 1px solid var(--color-border); }
+.vh-colloc.is-plain { font-size: 15px; line-height: 1.6; color: var(--color-ink); }
+.vh-colloc-phrase { margin: 0; font-size: 16px; line-height: 1.7; color: var(--color-ink); }
+.vh-gap { display: inline-block; min-width: 4.5em; margin: 0 .2em; padding: 0 .35em; border-bottom: 2px solid color-mix(in srgb, var(--color-vocabulary, #8b681a) 55%, var(--color-border)); line-height: 1.35; text-align: center; vertical-align: baseline; transition: background-color 260ms ease, border-color 260ms ease; }
+.vh-gap.is-filled { min-width: 0; border-radius: 6px 6px 0 0; }
+.vh-colloc.is-right .vh-gap { border-color: var(--color-success, #237346); background: color-mix(in srgb, var(--color-success, #237346) 11%, transparent); color: var(--color-success, #237346); }
+.vh-colloc.is-revealed .vh-gap { border-color: var(--color-vocabulary, #8b681a); background: var(--vh-tint); }
+.vh-gap-word { display: inline-flex; align-items: center; gap: 4px; font-weight: 650; animation: vh-pop 440ms var(--vh-ease) both; }
+@keyframes vh-pop { 0% { transform: scale(.7); opacity: 0; } 60% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); } }
+.vh-chips-wrap { display: grid; grid-template-rows: 1fr; transition: grid-template-rows 340ms var(--vh-ease), opacity 220ms ease; }
+.vh-chips-wrap.is-collapsed { grid-template-rows: 0fr; opacity: 0; }
+.vh-chips { display: flex; flex-wrap: wrap; gap: 8px; min-height: 0; margin: 0 -4px; padding: 12px 4px 4px; overflow: hidden; }
+.vh-chips.is-shaking { animation: vh-shake 420ms ease; }
+@keyframes vh-shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-5px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(2px); } }
+.vh-chip { min-height: 42px; padding: 8px 17px; border: 1px solid var(--color-border); border-radius: 999px; background: var(--color-surface); color: var(--color-ink); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: border-color 200ms ease, background 200ms ease, transform 220ms var(--vh-ease), opacity 200ms ease; }
+@media (hover: hover) { .vh-chip:not(:disabled):hover { border-color: var(--color-vocabulary, #8b681a); background: var(--vh-tint); transform: translateY(-1px); } }
+.vh-chip:focus-visible { outline: 2px solid var(--color-vocabulary, #8b681a); outline-offset: 2px; }
+/* Wide screens: the choices sit beside the phrase, so the list stays short. */
+@media (min-width: 900px) {
+  .vh-colloc:not(.is-plain) { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 24px; padding-block: 12px; min-height: 66px; }
+  .vh-colloc .vh-chips { justify-content: flex-end; padding-top: 4px; }
+}
+.vh-chip.is-wrong { opacity: .45; text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--color-ink) 45%, transparent); cursor: default; }
+
+/* Useful phrases: copy-ready quote cards. */
+.vh-phrases-hint { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 20px; }
+.vh-hint-link { color: var(--color-ink); font-weight: 650; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--color-vocabulary, #8b681a) 60%, transparent); text-underline-offset: 3px; }
+.vh-hint-link:hover { text-decoration-color: currentColor; }
+.vh-hint-legend { display: inline-flex; align-items: center; gap: 8px; }
+.vh-hit-swatch { flex: none; width: 18px; height: 11px; border-radius: 3px; background: linear-gradient(transparent 45%, color-mix(in srgb, var(--color-vocabulary, #8b681a) 32%, transparent) 45%); }
+.vh-phrase-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 14px; margin: 8px 0 0; padding: 0; list-style: none; }
+.vh-phrase { display: flex; flex-direction: column; justify-content: space-between; gap: 18px; min-width: 0; padding: 22px 20px 16px 22px; border: 1px solid var(--color-border); border-radius: 18px; background: var(--color-surface); }
+.vh-phrase-text { margin: 0; font-family: var(--font-display); font-size: 17px; line-height: 1.5; letter-spacing: -.01em; color: var(--color-ink); overflow-wrap: anywhere; }
+.vh-phrase-text::before { content: '\201C'; color: var(--color-vocabulary, #8b681a); }
+.vh-phrase-text::after { content: '\201D'; color: var(--color-vocabulary, #8b681a); }
+.vh-hit { padding: 0 1px; border-radius: 2px; background: linear-gradient(transparent 58%, color-mix(in srgb, var(--color-vocabulary, #8b681a) 28%, transparent) 58%); color: inherit; }
+.vh-copy { align-self: flex-end; display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 8px 15px; border: 1px solid var(--color-border); border-radius: 999px; background: var(--color-surface); color: var(--color-ink); font: inherit; font-size: 13px; font-weight: 650; cursor: pointer; transition: border-color 200ms ease, background 200ms ease, color 200ms ease; }
+.vh-copy:hover { border-color: var(--color-ink); }
+.vh-copy:focus-visible { outline: 2px solid var(--color-vocabulary, #8b681a); outline-offset: 2px; }
+.vh-copy.is-copied { border-color: var(--color-success, #237346); background: color-mix(in srgb, var(--color-success, #237346) 10%, var(--color-surface)); color: var(--color-success, #237346); }
+.vh-copy.is-copied svg { animation: vh-pop 380ms var(--vh-ease) both; }
+
 /* ── Topic lesson page: the picture above the lesson ─────────────── */
 .vh-lesson-art { margin: 0 0 30px; }
 .vh-lesson-art .vh-pic { aspect-ratio: auto; height: clamp(160px, 22vw, 240px); border-radius: 20px; }
@@ -205,6 +266,11 @@
   .vh-banner { height: 160px; border-radius: 19px; }
   .vh-topic-heading { margin-top: 20px; }
   .vh-lesson-art .vh-pic { height: 160px; border-radius: 18px; }
+  .vh-colloc-phrase { font-size: 15px; }
+  .vh-chips { gap: 7px; }
+  .vh-chip { min-height: 40px; padding: 7px 13px; font-size: 13.5px; }
+  .vh-phrase { padding: 18px 16px 14px 18px; }
+  .vh-phrase-text { font-size: 16px; }
 }
 @media (max-width: 560px) {
   .vh-topic-grid { grid-template-columns: 1fr; gap: 10px; }
@@ -233,4 +299,6 @@
   .vh-flip.is-flipped .vh-flip-back { opacity: 1; }
   .vh-flip.is-flipped .vh-flip-front { opacity: 0; }
   .workspace-v2 .vh-flip .vh-flip-face { transition: opacity 220ms ease !important; }
+  .vh-gap-word, .vh-copy.is-copied svg, .vh-chips.is-shaking { animation: none !important; }
+  .vh-chip { transform: none !important; }
 }

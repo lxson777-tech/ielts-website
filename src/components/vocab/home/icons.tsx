@@ -106,6 +106,16 @@ export function CardsIcon() {
   );
 }
 
+/** Copy: two overlapping sheets. */
+export function CopyIcon() {
+  return (
+    <svg {...base} width={16} height={16}>
+      <rect x="8.5" y="8.5" width="11.5" height="11.5" rx="2.5" />
+      <path d="M15.5 8.5V6.5A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2" />
+    </svg>
+  );
+}
+
 /** Turn the card over: a curved arrow. */
 export function TurnIcon() {
   return (
