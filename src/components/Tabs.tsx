@@ -25,6 +25,7 @@ export default function Tabs({
   onChange,
   className,
   accent,
+  translate = true,
 }: {
   tabs: TabDef[];
   active: string;
@@ -32,6 +33,10 @@ export default function Tabs({
   className?: string;
   /** The highlight colour for every tab in this row that has no colour of its own. */
   accent?: string;
+  /** False keeps the labels exactly as given: the paper names Reading and
+      Listening stay English on the Tests page, as they do everywhere else
+      on it. */
+  translate?: boolean;
 }) {
   const { t: translateText } = useT();
   const listRef = useRef<HTMLDivElement>(null);
@@ -82,7 +87,7 @@ export default function Tabs({
                   style={color ? { backgroundColor: color } : undefined}
                 />
               )}
-              <span className={`relative ${isActive ? 'text-white' : 'text-ink-muted hover:text-ink'}`}>{translateText(t.label)}</span>
+              <span className={`relative ${isActive ? 'text-white' : 'text-ink-muted hover:text-ink'}`}>{translate ? translateText(t.label) : t.label}</span>
             </button>
           );
         })}

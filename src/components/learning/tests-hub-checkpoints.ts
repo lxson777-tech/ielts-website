@@ -78,3 +78,29 @@ export function recommendedCheckpoint(
   const top = ranking[0];
   return top ? { candidate: top, fromPlan: false } : null;
 }
+
+export interface UnseenCheckpointLink {
+  skill: Skill;
+  testId: string;
+  fromPlan: boolean;
+}
+
+/** The quiet "Try a paper you haven't seen: Reading · Listening" line on
+    /tests (8 October 2026). One link per skill, to exactly the paper
+    recommendedCheckpoint() picks, and only when that paper really is
+    unseen: the line promises a fresh paper, so a skill whose pick has
+    already been met (or whose plan queued a paper the student has seen) is
+    left out rather than pointed somewhere else. Never a competing next step:
+    this only filters the same recommendation, it never picks another one. */
+export function unseenCheckpointLinks(
+  session: SharedSessionView | null,
+  rankings: ReadonlyMap<Skill, readonly CheckpointCandidate[]>,
+): UnseenCheckpointLink[] {
+  const out: UnseenCheckpointLink[] = [];
+  for (const skill of SKILLS) {
+    const recommended = recommendedCheckpoint(session, skill, rankings.get(skill) ?? []);
+    if (!recommended || recommended.candidate.status !== 'unseen') continue;
+    out.push({ skill, testId: recommended.candidate.testId, fromPlan: recommended.fromPlan });
+  }
+  return out;
+}

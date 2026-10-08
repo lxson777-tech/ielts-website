@@ -4,9 +4,11 @@
  * "Every full exam" catalogue list further down the page); this island adds
  * two small, honest things on top, both read from checkpoints.ts:
  *
- *   1. one recommended checkpoint per skill, with a plain reason (unseen,
- *      partly seen and by how much, or already sat), and a running-low note
- *      once genuinely fresh papers start to run out;
+ *   1. one quiet line, "Want your real level? Try a paper you haven't seen:
+ *      Reading · Listening", each word starting the recommended checkpoint
+ *      for that skill; a skill whose recommended paper is not unseen is left
+ *      out, and with neither the line is not shown (8 October 2026: this
+ *      replaced two cards that repeated the same sentence twice);
  *   2. a quiet status badge next to every paper already listed in the
  *      static catalogue below, so a student can see at a glance which of
  *      the seventy are still unseen without opening each one.
@@ -35,20 +37,12 @@ import {
 } from '../../lib/learning';
 import { learningCatalogue, LEARNING_INDEX } from '../../lib/learning/catalog';
 import type { LearnerRecordV1 } from '../../lib/learning/contracts/evidence';
-import { rankCheckpoints, unseenCheckpointsRemaining, CHECKPOINT_REASON_SENTENCES, type CheckpointCandidate } from '../../lib/learning/checkpoints';
+import { rankCheckpoints, type CheckpointCandidate } from '../../lib/learning/checkpoints';
 import { withBase } from '../../lib/url';
 import { useT } from '../../lib/i18n/react';
-import { SKILLS, SKILL_LABEL, badgeText, badgeClass, recommendedCheckpoint, type Skill } from './tests-hub-checkpoints';
+import { SKILLS, SKILL_LABEL, badgeText, badgeClass, unseenCheckpointLinks, type Skill } from './tests-hub-checkpoints';
 
 ensureLearningWired();
-
-/** Why a fresh paper matters at all, one line, independent of which status
-    the recommended paper happens to have (that detail is the reason text
-    from checkpoints.ts, shown alongside this). Fixed per skill rather than
-    computed, because the point being made does not change sitting to
-    sitting. */
-const WHY_FRESH_MATTERS =
-  'A paper you have not met yet shows where you really stand. One you have already drilled or sat mostly shows what you remember.';
 
 export default function TestsHubCheckpoints() {
   const { t } = useT();
@@ -115,51 +109,27 @@ export default function TestsHubCheckpoints() {
 
   if (!ready || !record || !rankings) return null;
 
-  const cards = SKILLS.map((skill) => {
-    const list = rankings.get(skill) ?? [];
-    const recommended = recommendedCheckpoint(session, skill, list);
-    if (!recommended) return null;
-    const remaining = unseenCheckpointsRemaining(skill, catalogue, LEARNING_INDEX, record);
-    return { skill, candidate: recommended.candidate, fromPlan: recommended.fromPlan, remaining };
-  }).filter((c): c is NonNullable<typeof c> => c !== null);
-
-  if (cards.length === 0) return null;
+  const links = unseenCheckpointLinks(session, rankings);
+  if (links.length === 0) return null;
 
   return (
-    <section className="checkpoint-recommendations mb-8 grid gap-4 sm:grid-cols-2" aria-label={t('Recommended checkpoint')}>
-      {cards.map(({ skill, candidate, fromPlan, remaining }) => (
-        <div key={skill} className={`skill-${skill} rounded-card border border-border bg-surface p-5 shadow-card`}>
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-xs font-bold uppercase tracking-wider text-ink-muted">
-              {/* SKILL_LABEL is the protected paper name (Reading, Listening)
-                  and is never translated, the same rule every other card on
-                  this page follows (see the Badge tone="skill" usages
-                  above, none of which carry data-i18n either). */}
-              {fromPlan
-                ? t('{skill} checkpoint · in today’s plan', { skill: SKILL_LABEL[skill] })
-                : t('{skill} checkpoint', { skill: SKILL_LABEL[skill] })}
-            </p>
-            <span className={`inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[0.65rem] font-bold ${badgeClass(candidate.status)}`}>
-              {badgeText(candidate, t)}
-            </span>
-          </div>
-          <p className="mt-2 text-sm text-ink">{t(WHY_FRESH_MATTERS)}</p>
-          <p className="mt-1 text-xs text-ink-muted">
-            {candidate.reason.vars ? t(CHECKPOINT_REASON_SENTENCES[candidate.reason.key], candidate.reason.vars) : t(CHECKPOINT_REASON_SENTENCES[candidate.reason.key])}
-          </p>
-          {remaining > 0 && remaining <= 3 && (
-            <p className="mt-1 text-xs font-semibold text-warning">
-              {t('Only {n} unseen {skill} papers left after this one.', { n: remaining, skill: SKILL_LABEL[skill] })}
-            </p>
-          )}
+    <p className="tests-checkpoint-line" data-tests-checkpoints>
+      <span>{t("Want your real level? Try a paper you haven't seen:")}</span>{' '}
+      {links.map(({ skill, testId }, i) => (
+        <span key={skill}>
+          {i > 0 && <span aria-hidden="true" className="tests-checkpoint-sep"> · </span>}
+          {/* SKILL_LABEL is the protected paper name (Reading, Listening),
+              never translated, the same as the tiles above it. */}
           <a
-            href={withBase(`/tests/${candidate.testId}`)}
-            className="mt-4 inline-block rounded-button bg-[var(--skill)] px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            href={withBase(`/tests/${testId}`)}
+            className={`skill-${skill}`}
+            data-checkpoint-link={skill}
+            aria-label={t('Start an unseen {skill} paper', { skill: SKILL_LABEL[skill] })}
           >
-            {t('Start this checkpoint')}
+            {SKILL_LABEL[skill]}
           </a>
-        </div>
+        </span>
       ))}
-    </section>
+    </p>
   );
 }

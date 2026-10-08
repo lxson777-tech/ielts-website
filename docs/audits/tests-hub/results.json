@@ -1,0 +1,422 @@
+{
+  "checks": [
+    {
+      "name": "1440: no sideways scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440: page is shorter than the live page",
+      "ok": true,
+      "detail": "3132 -> 1531"
+    },
+    {
+      "name": "1440: Russian interface",
+      "ok": true,
+      "detail": "Тесты"
+    },
+    {
+      "name": "1440: five tiles",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440: credits line present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1440: one friendly line instead of empty boxes",
+      "ok": true,
+      "detail": "Ваши результаты\n\nВаши баллы и слабые места появятся здесь после первого теста."
+    },
+    {
+      "name": "1440: no page errors",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "390: no sideways scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "390: page is shorter than the live page",
+      "ok": true,
+      "detail": "5514 -> 2238"
+    },
+    {
+      "name": "390: Russian interface",
+      "ok": true,
+      "detail": "Тесты"
+    },
+    {
+      "name": "390: five tiles",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "390: credits line present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "390: one friendly line instead of empty boxes",
+      "ok": true,
+      "detail": "Ваши результаты\n\nВаши баллы и слабые места появятся здесь после первого теста."
+    },
+    {
+      "name": "390: no page errors",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "320: no sideways scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "320: page is shorter than the live page",
+      "ok": true,
+      "detail": "6247 -> 2350"
+    },
+    {
+      "name": "320: Russian interface",
+      "ok": true,
+      "detail": "Тесты"
+    },
+    {
+      "name": "320: five tiles",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "320: credits line present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "320: one friendly line instead of empty boxes",
+      "ok": true,
+      "detail": "Ваши результаты\n\nВаши баллы и слабые места появятся здесь после первого теста."
+    },
+    {
+      "name": "320: no page errors",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "Reading tile uses the live Reading rotation",
+      "ok": true,
+      "detail": "{'tile': 'reading', 'tag': 'BUTTON', 'href': None, 'rotation': 'ielts.rotation.reading-tests.v1', 'paid': None}"
+    },
+    {
+      "name": "Listening tile uses the live Listening rotation",
+      "ok": true,
+      "detail": "{'tile': 'listening', 'tag': 'BUTTON', 'href': None, 'rotation': 'ielts.rotation.listening-tests.v1', 'paid': None}"
+    },
+    {
+      "name": "writing tile goes where the live button goes",
+      "ok": true,
+      "detail": "/ielts-website/writing/checker"
+    },
+    {
+      "name": "speaking tile goes where the live button goes",
+      "ok": true,
+      "detail": "/ielts-website/speaking/examiner"
+    },
+    {
+      "name": "mock tile goes where the live button goes",
+      "ok": true,
+      "detail": "/ielts-website/tests/mock"
+    },
+    {
+      "name": "clicking the reading tile opens /tests/reading-full-",
+      "ok": true,
+      "detail": "http://localhost:4660/ielts-website/tests/reading-full-006"
+    },
+    {
+      "name": "Reading start screen says the clock cannot be paused (Russian)",
+      "ok": true,
+      "detail": "Таймер запускается сразу и идёт без остановки. Таймер нельзя поставить на паузу."
+    },
+    {
+      "name": "clicking the listening tile opens /tests/listening-full-",
+      "ok": true,
+      "detail": "http://localhost:4660/ielts-website/tests/listening-full-001"
+    },
+    {
+      "name": "Listening start screen asks for headphones before the clock starts",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "clicking the writing tile opens /writing/checker",
+      "ok": true,
+      "detail": "http://localhost:4660/ielts-website/writing/checker"
+    },
+    {
+      "name": "clicking the speaking tile opens /speaking/examiner",
+      "ok": true,
+      "detail": "http://localhost:4660/ielts-website/speaking/examiner"
+    },
+    {
+      "name": "Speaking start screen says a microphone is needed, before the interview starts",
+      "ok": true,
+      "detail": "Нужен доступ к микрофону."
+    },
+    {
+      "name": "clicking the mock tile opens /tests/mock",
+      "ok": true,
+      "detail": "http://localhost:4660/ielts-website/tests/mock"
+    },
+    {
+      "name": "the Practice line opens /trainers",
+      "ok": true,
+      "detail": "http://localhost:4660/ielts-website/trainers"
+    },
+    {
+      "name": "checkpoint line offers Reading and Listening to a new student",
+      "ok": true,
+      "detail": "[{'skill': 'reading', 'href': '/ielts-website/tests/reading-full-001', 'text': 'Reading'}, {'skill': 'listening', 'href': '/ielts-website/tests/listening-full-001', 'text': 'Listening'}]"
+    },
+    {
+      "name": "the Listening checkpoint link starts a Listening paper",
+      "ok": true,
+      "detail": "http://localhost:4660/ielts-website/tests/listening-full-001"
+    },
+    {
+      "name": "bank opens on Reading only",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bank shows 6 Reading papers before Show more",
+      "ok": true,
+      "detail": "6"
+    },
+    {
+      "name": "Show more adds papers",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mouse: Listening tab shows only Listening",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "keyboard: ArrowLeft moves to Reading and focuses it",
+      "ok": true,
+      "detail": "catalog-tab-reading"
+    },
+    {
+      "name": "keyboard: End selects the last tab",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "keyboard: Home selects the first tab",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "search updates both tab counts",
+      "ok": true,
+      "detail": "{'reading': '1', 'listening': '1'}"
+    },
+    {
+      "name": "search shows the match in the open tab",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no page errors on clicks and tabs",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "three synthetic attempts recorded through the real progress store",
+      "ok": true,
+      "detail": "3"
+    },
+    {
+      "name": "tiles show the last band",
+      "ok": true,
+      "detail": "{'reading': 'Последний: балл 6.5', 'listening': 'Последний: балл 7.0'}"
+    },
+    {
+      "name": "results open on the tab of the latest attempt (Listening)",
+      "ok": true,
+      "detail": "Listening"
+    },
+    {
+      "name": "Listening tab shows score history and weak spots",
+      "ok": true,
+      "detail": "История баллов\nДАТА\tТЕСТ\tРЕЗУЛЬТАТ\tБАЛЛ\tЗАТРАЧЕНО ВРЕМЕНИ\n7 Oct 2026\tIELTS Listening Test 4\t31 / 40\t7.0\t38 мин 20 с\nСбросить весь прогресс\nСлабые места\n\nПо всем пройденным тестам Listening. Пока слабе"
+    },
+    {
+      "name": "mouse: Reading tab shows two rows, the band chart and weak spots",
+      "ok": true,
+      "detail": "История баллов\nДАТА\tТЕСТ\tРЕЗУЛЬТАТ\tБАЛЛ\tЗАТРАЧЕНО ВРЕМЕНИ\n6 Oct 2026\tAcademic Reading Test 7\t28 / 40\t6.5\t59 мин 0 с\n2 Oct 2026\tAcademic Reading Test 3\t24 / 40\t6.0\t58 мин 0 с\nПримерный балл по попыткам"
+    },
+    {
+      "name": "keyboard: ArrowRight moves the results to Listening",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "signed in: no sideways scroll",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "signed in: no page errors",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "gated: five tiles render",
+      "ok": true,
+      "detail": "[{'tile': 'reading', 'tag': 'BUTTON', 'href': None, 'rotation': 'ielts.rotation.reading-tests.v1', 'paid': 'test'}, {'tile': 'listening', 'tag': 'BUTTON', 'href': None, 'rotation': 'ielts.rotation.listening-tests.v1', 'paid': 'test'}, {'tile': 'writing', 'tag': 'A', 'href': '/ielts-website/writing/checker', 'rotation': None, 'paid': None}, {'tile': 'speaking', 'tag': 'A', 'href': '/ielts-website/s"
+    },
+    {
+      "name": "gated: Reading and Listening tiles carry the paid guard",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "gated: checkpoint line hidden for a free account",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "gated: credits present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "gated: a free account's Reading tile opens the upgrade pop-up, not a paper",
+      "ok": true,
+      "detail": "http://localhost:4661/ielts-website/tests"
+    },
+    {
+      "name": "gated: no page errors",
+      "ok": true,
+      "detail": "[]"
+    }
+  ],
+  "heights": {
+    "after_1440": 1531,
+    "before_1440": 3132,
+    "after_1440_screens": 1.7,
+    "after_390": 2238,
+    "before_390": 5514,
+    "after_320": 2350,
+    "before_320": 6247,
+    "signed_in_1440": 2387
+  },
+  "page_errors": {
+    "new-1440": [],
+    "new-390": [],
+    "new-320": [],
+    "clicks": [],
+    "signed-in": [],
+    "gated-free": []
+  },
+  "tiles": [
+    {
+      "tile": "reading",
+      "tag": "BUTTON",
+      "href": null,
+      "rotation": "ielts.rotation.reading-tests.v1",
+      "paid": null
+    },
+    {
+      "tile": "listening",
+      "tag": "BUTTON",
+      "href": null,
+      "rotation": "ielts.rotation.listening-tests.v1",
+      "paid": null
+    },
+    {
+      "tile": "writing",
+      "tag": "A",
+      "href": "/ielts-website/writing/checker",
+      "rotation": null,
+      "paid": null
+    },
+    {
+      "tile": "speaking",
+      "tag": "A",
+      "href": "/ielts-website/speaking/examiner",
+      "rotation": null,
+      "paid": null
+    },
+    {
+      "tile": "mock",
+      "tag": "A",
+      "href": "/ielts-website/tests/mock",
+      "rotation": null,
+      "paid": null
+    }
+  ],
+  "tile_navigation": {
+    "reading": "/tests/reading-full-006",
+    "listening": "/tests/listening-full-001",
+    "writing": "/writing/checker",
+    "speaking": "/speaking/examiner",
+    "mock": "/tests/mock"
+  },
+  "checkpoint_links": [
+    {
+      "skill": "reading",
+      "href": "/ielts-website/tests/reading-full-001",
+      "text": "Reading"
+    },
+    {
+      "skill": "listening",
+      "href": "/ielts-website/tests/listening-full-001",
+      "text": "Listening"
+    }
+  ],
+  "gated_tiles": [
+    {
+      "tile": "reading",
+      "tag": "BUTTON",
+      "href": null,
+      "rotation": "ielts.rotation.reading-tests.v1",
+      "paid": "test"
+    },
+    {
+      "tile": "listening",
+      "tag": "BUTTON",
+      "href": null,
+      "rotation": "ielts.rotation.listening-tests.v1",
+      "paid": "test"
+    },
+    {
+      "tile": "writing",
+      "tag": "A",
+      "href": "/ielts-website/writing/checker",
+      "rotation": null,
+      "paid": null
+    },
+    {
+      "tile": "speaking",
+      "tag": "A",
+      "href": "/ielts-website/speaking/examiner",
+      "rotation": null,
+      "paid": null
+    },
+    {
+      "tile": "mock",
+      "tag": "A",
+      "href": "/ielts-website/tests/mock",
+      "rotation": null,
+      "paid": null
+    }
+  ],
+  "passed": 61,
+  "failed": 0
+}

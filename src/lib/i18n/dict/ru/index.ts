@@ -50,6 +50,7 @@ import * as cConsent from './c-consent';
 import * as practiceSets from './practice-sets';
 import * as vocabHome from './vocab-home';
 import * as vocabGames from './vocab-games';
+import * as testsHub from './tests-hub';
 
 /** Every batch module, in merge order. The test imports this same list. */
 export const BATCHES = [
@@ -95,6 +96,7 @@ export const BATCHES = [
   practiceSets,
   vocabHome,
   vocabGames,
+  testsHub,
 ];
 
 export const strings: Record<string, string> = Object.assign({}, ...BATCHES.map((b) => b.strings));

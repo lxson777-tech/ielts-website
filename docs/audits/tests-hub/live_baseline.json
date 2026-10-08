@@ -1,0 +1,207 @@
+{
+  "height_1440": 3132,
+  "links": [
+    {
+      "text": "Что нужно для каждого балла",
+      "href": "/ielts-website/learn/bands",
+      "rotation": null
+    },
+    {
+      "text": "Начать тест",
+      "href": null,
+      "rotation": "ielts.rotation.reading-tests.v1"
+    },
+    {
+      "text": "Есть только 20 минут? Попробуйте Тренажёр чтения",
+      "href": "/ielts-website/trainers/reading",
+      "rotation": null
+    },
+    {
+      "text": "Начать тест по Listening",
+      "href": null,
+      "rotation": "ielts.rotation.listening-tests.v1"
+    },
+    {
+      "text": "Сначала изучите четыре части Listening",
+      "href": "/ielts-website/lessons/listening",
+      "rotation": null
+    },
+    {
+      "text": "Начать писать",
+      "href": "/ielts-website/writing/checker",
+      "rotation": null
+    },
+    {
+      "text": "Нужны конструкции и фразы во время письма? Попробуйте Тренаж",
+      "href": "/ielts-website/trainers/writing",
+      "rotation": null
+    },
+    {
+      "text": "Начать интервью",
+      "href": "/ielts-website/speaking/examiner",
+      "rotation": null
+    },
+    {
+      "text": "Хотите практиковать по одной части за раз?",
+      "href": "/ielts-website/trainers/speaking",
+      "rotation": null
+    },
+    {
+      "text": "Начать этот контрольный тест",
+      "href": "/ielts-website/tests/reading-full-001",
+      "rotation": null
+    },
+    {
+      "text": "Начать этот контрольный тест",
+      "href": "/ielts-website/tests/listening-full-001",
+      "rotation": null
+    },
+    {
+      "text": "День пробного экзамена Один сплошной сеанс: сначала Listenin",
+      "href": "/ielts-website/tests/mock",
+      "rotation": null
+    },
+    {
+      "text": "Перейти к Практике ↗",
+      "href": "/ielts-website/trainers",
+      "rotation": null
+    },
+    {
+      "text": "PracticePTEOnline",
+      "href": "https://practicepteonline.com/listening-ielts-tests/",
+      "rotation": null
+    },
+    {
+      "text": "Пройти полный пробный экзамен",
+      "href": "/ielts-website/tests/mock",
+      "rotation": null
+    },
+    {
+      "text": "01Academic Reading Test 140 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-001",
+      "rotation": null
+    },
+    {
+      "text": "02Academic Reading Test 240 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-002",
+      "rotation": null
+    },
+    {
+      "text": "03Academic Reading Test 340 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-003",
+      "rotation": null
+    },
+    {
+      "text": "04Academic Reading Test 440 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-004",
+      "rotation": null
+    },
+    {
+      "text": "05Academic Reading Test 540 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-005",
+      "rotation": null
+    },
+    {
+      "text": "06Academic Reading Test 640 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-006",
+      "rotation": null
+    },
+    {
+      "text": "07Academic Reading Test 740 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-007",
+      "rotation": null
+    },
+    {
+      "text": "08Academic Reading Test 840 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-008",
+      "rotation": null
+    },
+    {
+      "text": "09Academic Reading Test 940 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-009",
+      "rotation": null
+    },
+    {
+      "text": "10Academic Reading Test 1040 вопросов",
+      "href": "/ielts-website/tests/reading-full-010",
+      "rotation": null
+    },
+    {
+      "text": "11Academic Reading Test 1140 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-011",
+      "rotation": null
+    },
+    {
+      "text": "12Academic Reading Test 1240 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-012",
+      "rotation": null
+    },
+    {
+      "text": "13Academic Reading Test 1340 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-013",
+      "rotation": null
+    },
+    {
+      "text": "14Academic Reading Test 1440 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-014",
+      "rotation": null
+    },
+    {
+      "text": "15Academic Reading Test 1540 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-015",
+      "rotation": null
+    },
+    {
+      "text": "16Academic Reading Test 1640 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-016",
+      "rotation": null
+    },
+    {
+      "text": "17Academic Reading Test 1740 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-017",
+      "rotation": null
+    },
+    {
+      "text": "18Academic Reading Test 1840 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-018",
+      "rotation": null
+    },
+    {
+      "text": "19Academic Reading Test 1940 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-019",
+      "rotation": null
+    },
+    {
+      "text": "20Academic Reading Test 2040 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-020",
+      "rotation": null
+    },
+    {
+      "text": "21Academic Reading Test 2140 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-021",
+      "rotation": null
+    },
+    {
+      "text": "22Academic Reading Test 2240 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-022",
+      "rotation": null
+    },
+    {
+      "text": "23Academic Reading Test 2340 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-023",
+      "rotation": null
+    },
+    {
+      "text": "24Academic Reading Test 2440 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-024",
+      "rotation": null
+    },
+    {
+      "text": "25Academic Reading Test 2540 вопросовUnseen",
+      "href": "/ielts-website/tests/reading-full-025",
+      "rotation": null
+    }
+  ],
+  "height_390": 5514,
+  "height_320": 6247
+}

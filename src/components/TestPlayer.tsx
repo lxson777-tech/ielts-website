@@ -3335,7 +3335,7 @@ function InstructionsScreen({
         </div>
 
         <p className="preflight-essential">{t('The timer starts as soon as you begin and runs continuously.')} <strong>{t('The clock cannot be paused.')}</strong></p>
-        {listening && <p className="text-sm text-ink-muted">{attemptKind === 'drill' ? t('Practice mode: pause and replay are available.') : t('Exam mode: the recording plays once.')}</p>}
+        {listening && <p className="text-sm text-ink-muted">{attemptKind === 'drill' ? t('Practice mode: pause and replay are available.') : <>{t('Exam mode: the recording plays once.')} {t('Use headphones if you can.')}</>}</p>}
         <details className="support-disclosure"><summary>{t('Instructions and scoring')}</summary>
         <ul className="mt-6 space-y-2.5 text-sm text-ink">
           <li className="flex gap-2.5">

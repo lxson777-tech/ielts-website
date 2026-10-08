@@ -9,6 +9,13 @@ const { types = {} } = Astro.props;
   <p class="discovery-count" aria-live="polite"><span data-catalogue-count></span> <span data-i18n>results shown</span></p>
 </div>
 <script>
+/* Tabbed groups (the Tests page, 8 October 2026): a group carrying
+   data-tab-inactive belongs to a tab that is not showing. Its items are
+   neither counted nor shown, but its matches are still counted and sent in
+   a "discovery:counts" event ({ [group name]: matches }) so the tabs can say
+   how many each holds. The page asks for a fresh count after a tab switch
+   with a "discovery:refresh" event. A page with no tabs behaves exactly as
+   before. data-catalogue-limit on the root sets the first page size. */
 function setupCatalogues() {
   document.querySelectorAll<HTMLElement>('[data-discovery]').forEach(root => {
     if (root.dataset.bound) return;
@@ -19,25 +26,36 @@ function setupCatalogues() {
     const cards = [...root.querySelectorAll<HTMLElement>('[data-discovery-item]')];
     const groups = [...root.querySelectorAll<HTMLElement>('[data-discovery-group]')];
     const more = root.querySelector<HTMLButtonElement>('[data-catalogue-more]')!;
-    let limit = 12;
+    const pageSize = Number(root.dataset.catalogueLimit) > 0 ? Number(root.dataset.catalogueLimit) : 12;
+    let limit = pageSize;
     if (type) { const asked = new URLSearchParams(location.search).get('type'); if (asked && [...type.options].some(o => o.value === asked)) type.value = asked; }
     function update() {
       const query = search.value.trim().toLocaleLowerCase();
       let total = 0;
+      const perGroup: Record<string, number> = {};
       cards.forEach(card => {
         const matches = (!duration?.value || Number(card.dataset.minutes) <= Number(duration.value)) && (!query || `${card.dataset.search || ''} ${card.textContent}`.toLocaleLowerCase().includes(query)) && (!type?.value || (card.dataset.drillTypes || '').split(',').includes(type.value));
+        const group = card.closest<HTMLElement>('[data-discovery-group]');
+        const name = group?.dataset.discoveryGroup;
+        if (name && matches) perGroup[name] = (perGroup[name] ?? 0) + 1;
+        if (group?.hasAttribute('data-tab-inactive')) { card.hidden = true; return; }
         if (matches) total++;
         card.hidden = !matches || total > limit;
       });
-      groups.forEach(group => { group.hidden = !group.querySelector('[data-discovery-item]:not([hidden])'); });
+      groups.forEach(group => {
+        if (group.hasAttribute('data-tab-inactive')) { group.hidden = true; return; }
+        group.hidden = !group.hasAttribute('data-tab-group') && !group.querySelector('[data-discovery-item]:not([hidden])');
+      });
       root.querySelector('[data-catalogue-count]')!.textContent = `${Math.min(limit,total)} / ${total}`;
       root.querySelector<HTMLElement>('[data-catalogue-empty]')!.hidden = total !== 0;
       more.hidden = total <= limit;
+      root.dispatchEvent(new CustomEvent('discovery:counts', { detail: perGroup }));
     }
-    search.addEventListener('input', () => {limit = 12;update();});
-    duration?.addEventListener('change', () => {limit = 12;update();});
-    type?.addEventListener('change', () => {limit = 12;update();});
-    more.addEventListener('click', () => {limit += 12;update();});
+    search.addEventListener('input', () => {limit = pageSize;update();});
+    duration?.addEventListener('change', () => {limit = pageSize;update();});
+    type?.addEventListener('change', () => {limit = pageSize;update();});
+    more.addEventListener('click', () => {limit += pageSize;update();});
+    root.addEventListener('discovery:refresh', () => {limit = pageSize;update();});
     update();
   });
 }

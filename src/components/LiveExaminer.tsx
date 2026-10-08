@@ -1592,6 +1592,9 @@ export default function LiveExaminer({
         <p className="ai-voice-note" data-testid="ai-voice-note">
           {t('{name} is an AI voice, not a real person. Your interview is marked by AI.', { name: EXAMINER_NAME })}
         </p>
+        {/* Said here, before the interview starts, since the Tests page
+            stopped repeating it under its tile (8 October 2026). */}
+        <p className="mx-auto mt-2 max-w-md text-xs text-ink-muted" data-testid="mic-note">{t('Microphone access required.')}</p>
         <ul className="mx-auto mt-4 max-w-md space-y-1 text-left text-xs text-ink-muted">
           <li>· {t('Use headphones if you can, in a quiet room')}</li>
           <li>· {t('Speak naturally, the examiner waits while you think')}</li>
@@ -1651,6 +1654,9 @@ export default function LiveExaminer({
         <p className="ai-voice-note" data-testid="ai-voice-note">
           {t('{name} is an AI voice, not a real person. Your interview is marked by AI.', { name: EXAMINER_NAME })}
         </p>
+        {/* Said here, before the interview starts, since the Tests page
+            stopped repeating it under its tile (8 October 2026). */}
+        <p className="mx-auto mt-2 max-w-md text-xs text-ink-muted" data-testid="mic-note">{t('Microphone access required.')}</p>
         <details className="support-disclosure speaking-tips"><summary>{t('Before you speak')}</summary>
         <ul className="mx-auto mt-4 max-w-md space-y-1 text-left text-xs text-ink-muted">
           <li>· {t('Use headphones if you can, in a quiet room')}</li>
