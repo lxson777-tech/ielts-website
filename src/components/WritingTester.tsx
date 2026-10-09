@@ -1,4 +1,5 @@
 import AssessmentBalance from './access/AssessmentBalance';
+import { TasterAfterCard } from './access/taster-ui';
 /* The writing tool: start → get a rotating task → write → submit → report.
    Every start serves a different prompt (localStorage rotation) until the
    whole pool has been used, then the cycle restarts. Grading goes through
@@ -108,7 +109,18 @@ const SUBMISSION_REFUSED_NOTE = nt(
   'This essay was started under a different account, so it was not sent for grading. It is kept for the student who wrote it.',
 );
 
-export default function WritingTester({ variant = 'trainer' }: { variant?: 'trainer' | 'checker' }) {
+export default function WritingTester({
+  variant = 'trainer',
+  taster,
+}: {
+  variant?: 'trainer' | 'checker';
+  /** A free account's one free essay check (free AI tries, 10 October 2026,
+      /try/essay): the question the student chose, so the tester opens on it
+      directly. Only the gated build passes it. The paid question bank, the
+      rotation, the coach, history hand-offs and "another test" are not part
+      of the free check. */
+  taster?: EssayPrompt;
+}) {
   const { t, tn, locale } = useT();
   const essayId = useId();
   const coached = variant === 'trainer';
@@ -542,6 +554,15 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
        ?type=task1|task2 the next question of that type, from the rotation
      Runs once, and only when nothing has been started yet. */
   useEffect(() => {
+    /* The free essay check opens on the question the student chose. */
+    if (taster && !prompt) {
+      setTaskType(taster.task);
+      setPrompt(taster);
+      setEssay(openEditor(taster.id));
+      setResult(null);
+      restartTimer();
+      return;
+    }
     /* Not in a trial build: there the Writing test has to be begun on the
        server first, which only the student's own press on Start does. */
     if (prompt || typeof window === 'undefined' || trialTest.active) return;
@@ -779,7 +800,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
         {/* Mr EZ reads the marking above rather than re-marking anything. He
             points at the stored attempt by its timestamp, so the explanation
             costs one cheap tutor turn, not a second grading run. */}
-        {attemptAt && (
+        {attemptAt && !taster && (
           <ExplainResult
             attempt={{ kind: 'writing', at: attemptAt, promptId: prompt.id }}
             summary={`Estimated band ${result.overallBand.toFixed(1)}`}
@@ -794,7 +815,7 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
             plan rather than offering a competing next step. Task 1 and
             Task 2 both pass through; WorkOnOverview decides internally
             whether either has something to say. */}
-        {attemptAt && (
+        {attemptAt && !taster && (
           <WorkOnOverview
             attempt={{
               at: attemptAt,
@@ -815,24 +836,30 @@ export default function WritingTester({ variant = 'trainer' }: { variant?: 'trai
 
         {/* The one control at the end of a piece of work, reading the same
             session every other surface reads. */}
-        <SessionContinueBar activityId={writingActivityId(prompt.id)} compact />
+        {!taster && <SessionContinueBar activityId={writingActivityId(prompt.id)} compact />}
 
-        <div className="flex flex-wrap justify-center gap-3">
-          <button
-            type="button"
-            onClick={() => setResult(null)}
-            className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
-          >
-            ✎ {t('Revise this essay')}
-          </button>
-          <button
-            type="button"
-            onClick={() => startTask(taskType!)}
-            className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
-          >
-            {t('Take another test')}
-          </button>
-        </div>
+        {/* The free essay check is one check: what it offers next is the
+            card below (free AI tries, 10 October 2026), not another test. */}
+        {taster ? (
+          <TasterAfterCard feature="writing" />
+        ) : (
+          <div className="flex flex-wrap justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => setResult(null)}
+              className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
+            >
+              ✎ {t('Revise this essay')}
+            </button>
+            <button
+              type="button"
+              onClick={() => startTask(taskType!)}
+              className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
+            >
+              {t('Take another test')}
+            </button>
+          </div>
+        )}
         <p className="text-center text-xs text-ink-muted">
           {t('Your essay and its scores are saved.')}{' '}
           <a href={withBase('/account#writing')} className="font-semibold text-brand hover:underline">

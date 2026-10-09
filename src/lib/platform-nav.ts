@@ -24,7 +24,7 @@ export interface WorkspaceTab {
 export const WORKSPACE_TABS: WorkspaceTab[] = [
   { href: '/dashboard', label: nt('Today'), also: ['/report', '/plan-settings'], icon: 'today' },
   { href: '/start', label: nt('Course'), also: ['/learn', '/lessons'], icon: 'course' },
-  { href: '/trainers', label: nt('Practice'), also: ['/writing', '/speaking'], icon: 'practice' },
+  { href: '/trainers', label: nt('Practice'), also: ['/writing', '/speaking', '/try'], icon: 'practice' },
   { href: '/tests', label: nt('Tests'), icon: 'tests' },
   { href: '/review', label: nt('Vocabulary'), icon: 'words' },
 ];
@@ -61,6 +61,9 @@ export const APP_ROUTE_PREFIXES = [
   '/tests',
   '/speaking',
   '/writing',
+  // A free account's free essay and Speaking checks (gated build only,
+  // 10 October 2026; src/pages/try/[kind].astro).
+  '/try',
   '/account',
   // The confirmation after deleting an account (2 October 2026).
   '/account-deleted',

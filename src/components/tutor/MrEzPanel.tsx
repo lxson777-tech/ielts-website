@@ -31,7 +31,7 @@
    second line, so nothing that returns for a previous owner, reply or
    failure, is shown or saved. */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { withBase } from '../../lib/url';
 import { signInHref } from '../../lib/auth/profile';
 import { currentRoute } from '../../lib/auth/next';
@@ -62,6 +62,10 @@ import { BOUNDARY_EXPLANATION, BOUNDARY_PLACEHOLDER, chatBlocked } from './mrez-
 import { ACCESS_MODE } from '../../lib/trial/mode';
 import { useAccessTier } from '../../lib/access/tier';
 import { openUpgrade, PAID_REQUIRED_CODE } from '../../lib/access/upgrade';
+import { onOpenMrEz } from '../../lib/access/taster-events';
+import { offerTaster, tasterSpent } from '../../lib/access/taster-offers';
+import { TasterAfterCard, TutorCounter } from '../access/taster-ui';
+import { initialTrialView, refreshTrial, subscribeTrialView, trialView } from '../../lib/trial/client';
 import { selectTutorMood } from './mrez-mood';
 
 /** Where the student is, read off the DOM the layout already labelled. */
@@ -106,7 +110,13 @@ export default function MrEzPanel() {
      it says so and sends nothing. The Worker refuses for itself
      (`paid-required`). Paid and complimentary access: no change. */
   const tier = useAccessTier();
-  const needsUpgrade = ACCESS_MODE === 'trial' && (tier === 'free' || tier === 'paid-ended');
+  /* Free AI tries (10 October 2026): a free account with free questions left
+     talks to Mr EZ instead, with a quiet counter. The database counts every
+     question; when none is left (or the server refuses `taster-used`) this
+     is the upgrade behaviour above again. */
+  const tasterStatus = useSyncExternalStore(subscribeTrialView, trialView, initialTrialView).status?.taster ?? null;
+  const freeTries = ACCESS_MODE === 'trial' && offerTaster(tier, tasterStatus, 'tutor');
+  const needsUpgrade = ACCESS_MODE === 'trial' && (tier === 'free' || tier === 'paid-ended') && !freeTries;
   const [open, setOpen] = useState(false);
   const [state, setState] = useState<ConversationState>(EMPTY_CONVERSATION);
   const [draft, setDraft] = useState('');
@@ -210,6 +220,18 @@ export default function MrEzPanel() {
     return () => observer.disconnect();
   }, []);
 
+  // Opened from somewhere else on the page (Today, a lesson's last card, a
+  // wrong answer in a lesson quiz). It may pre-fill the message box, never
+  // send it: a free question is only spent by the student's own send.
+  useEffect(
+    () =>
+      onOpenMrEz((request) => {
+        setOpen(true);
+        if (request.prompt) setDraft(request.prompt.slice(0, MAX_MESSAGE_CHARS));
+      }),
+    [],
+  );
+
   // Escape closes, and focus goes back where it came from.
   useEffect(() => {
     if (!open) return;
@@ -302,6 +324,9 @@ export default function MrEzPanel() {
         // promise on its own account.
         if (epochRef.current !== epoch) return;
         pendingRef.current = null;
+        /* A free question was just spent: ask the server how many are left,
+           so the counter (and, after the last, the upgrade card) is true. */
+        if (ACCESS_MODE === 'trial') void refreshTrial();
         setState((s) => ({
           conversationId: reply.conversationId || s.conversationId,
           turns: [
@@ -326,6 +351,13 @@ export default function MrEzPanel() {
         /* The Worker's own refusal for an account without practice and
            guidance: the pop-up explains, nothing was used. */
         if (clientError?.code === PAID_REQUIRED_CODE) openUpgrade('tutor', { from: currentRoute() });
+        /* The free questions are used up (HTTP 402 taster-used): say so
+           in the pop-up, and re-read the counts so the panel stops offering
+           them. */
+        if (clientError?.code === 'taster-used') {
+          openUpgrade('tutor', { from: currentRoute(), reason: 'taster-used' });
+          void refreshTrial();
+        }
         setError({
           code: clientError?.code ?? 'unavailable',
           message: clientError?.message ?? t('Something went wrong. Try again in a moment.'),
@@ -362,7 +394,7 @@ export default function MrEzPanel() {
         className="mrez-launcher"
         aria-expanded={open}
         aria-controls="mrez-panel"
-        data-paid-feature={ACCESS_MODE === 'trial' ? 'tutor' : undefined}
+        data-paid-feature={ACCESS_MODE === 'trial' && !freeTries ? 'tutor' : undefined}
         onClick={() => setOpen((v) => !v)}
       >
         {/* The same mood whether the drawer is open or shut: see mrez-mood.ts. */}
@@ -441,7 +473,12 @@ export default function MrEzPanel() {
 
           {/* A free account (the gated build): what Mr EZ comes with, and
               the way to see it, above the conversation. */}
-          {configured && needsUpgrade && !blocked && (
+          {/* Free AI tries (10 October 2026): the quiet counter while free
+              questions are left, and the short upgrade card once the last
+              one has been used. */}
+          {configured && freeTries && !blocked && <TutorCounter />}
+          {configured && needsUpgrade && !blocked && tasterSpent(tasterStatus, 'tutor') && <TasterAfterCard feature="tutor" />}
+          {configured && needsUpgrade && !blocked && !tasterSpent(tasterStatus, 'tutor') && (
             <div className="mrez-trial-note" role="status" data-mrez-paid-note>
               {t('Mr EZ, your personal tutor, comes with practice and guidance.')}{' '}
               <button type="button" className="mrez-note-link" onClick={() => openUpgrade('tutor', { from: currentRoute() })}>

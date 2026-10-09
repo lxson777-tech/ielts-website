@@ -263,6 +263,9 @@ export async function requestLessonHelp(input: HelpAskInput): Promise<HelpResult
        guidance (402 paid-required): the upgrade pop-up says what Mr EZ comes
        with, and the lesson's own answer is still given. */
     if (error instanceof TutorClientError && error.code === PAID_REQUIRED_CODE) openUpgrade('tutor');
+    /* The free questions are used up (HTTP 402 taster-used, 10 October
+       2026): the pop-up says so, and the lesson's own answer is still given. */
+    if (error instanceof TutorClientError && error.code === 'taster-used') openUpgrade('tutor', { reason: 'taster-used' });
     const reason = error instanceof TutorClientError ? error.message : undefined;
     return offlineHelp(input, reason);
   }

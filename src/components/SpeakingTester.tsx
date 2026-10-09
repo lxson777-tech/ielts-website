@@ -47,6 +47,7 @@ import SpeakingObjectiveHandoff from './learning/SpeakingObjectiveHandoff';
 import { readPersonalPlan } from '../lib/learning';
 import { withBase } from '../lib/url';
 import { isTrialBuild } from '../lib/trial/mode';
+import { TasterAfterCard, TasterSpeakingStart } from './access/taster-ui';
 import SupportLink from './support/SupportLink'; // [E trust]
 import AiEstimateNote from './legal/AiEstimateNote';
 import {
@@ -109,7 +110,17 @@ const SESSION_CLOSED_NOTICE = nt(
   'The account on this page changed, so the speaking session on screen was closed. Answers that had not yet been sent for grading were not kept.',
 );
 
-export default function SpeakingTester({ trialRecorded = false }: { trialRecorded?: boolean }) {
+export default function SpeakingTester({
+  trialRecorded = false,
+  taster = false,
+}: {
+  trialRecorded?: boolean;
+  /** A free account's one free recorded Speaking check (free AI tries,
+      10 October 2026, /try/speaking): one short, public Part 1 topic, no
+      choice of part and no paid question bank. Only the gated build passes
+      it. */
+  taster?: boolean;
+}) {
   const trialTest = useTrialTest('speaking-test', !trialRecorded);
   const trialSittingRef = useRef<string | null>(null);
   const { t, tn, locale } = useT();
@@ -248,7 +259,7 @@ export default function SpeakingTester({ trialRecorded = false }: { trialRecorde
       // and does not consume a rotation slot; otherwise the rotation serves
       // the next one, same as clicking the card always has.
       const id = explicitId ?? nextInRotation('ielts.rotation.speaking-part1.v1', SPEAKING_PART1_TOPICS.map((t) => t.id));
-      const topic = trialTest.active ? TRIAL_RECORDED_TOPIC : SPEAKING_PART1_TOPICS.find((t) => t.id === id) ?? SPEAKING_PART1_TOPICS[0]!;
+      const topic = trialTest.active || taster ? TRIAL_RECORDED_TOPIC : SPEAKING_PART1_TOPICS.find((t) => t.id === id) ?? SPEAKING_PART1_TOPICS[0]!;
       promptIdRef.current = topic.id;
       promptTitleRef.current = topic.topic;
       setPromptTitle(topic.topic);
@@ -714,7 +725,7 @@ export default function SpeakingTester({ trialRecorded = false }: { trialRecorde
             real AI result: the offline sample says what it is above. */}
         {result.grader.live && <AiEstimateNote />}
 
-        {attemptAt && (
+        {attemptAt && !taster && (
           <ExplainResult
             attempt={{ kind: 'speaking', at: attemptAt }}
             summary={`Estimated band ${result.overallBand.toFixed(1)}`}
@@ -726,48 +737,70 @@ export default function SpeakingTester({ trialRecorded = false }: { trialRecorde
             said something that names one of the objectives this package
             built material for, and pressing it reconciles into the ONE
             plan rather than offering a competing next step. */}
-        {mode && (
+        {mode && !taster && (
           <SpeakingObjectiveHandoff result={result} mode={mode} />
         )}
 
-        <SpeakingLibraryLinks result={result} mode={mode} topic={promptTitle} />
+        {!taster && <SpeakingLibraryLinks result={result} mode={mode} topic={promptTitle} />}
 
         {/* The one control at the end of a piece of work, reading the same
             session every other surface reads (WP20; mirrors WritingTester's
             own mounting of this bar). */}
-        <SessionContinueBar
-          activityId={
-            promptIdRef.current
-              ? mode === 'part3'
-                ? speakingPart3ActivityId(promptIdRef.current)
-                : speakingActivityId(promptIdRef.current)
-              : null
-          }
-          compact
-        />
+        {!taster && (
+          <SessionContinueBar
+            activityId={
+              promptIdRef.current
+                ? mode === 'part3'
+                  ? speakingPart3ActivityId(promptIdRef.current)
+                  : speakingActivityId(promptIdRef.current)
+                : null
+            }
+            compact
+          />
+        )}
 
-        <div className="flex flex-wrap justify-center gap-3">
-          <button
-            type="button"
-            onClick={() => void startMode(mode!)}
-            className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
-          >
-            ↻ {t('Practice this part again')}
-          </button>
-          <button
-            type="button"
-            onClick={backToMenu}
-            className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
-          >
-            {t('Choose a different part')}
-          </button>
-        </div>
+        {/* The free Speaking check is one check: what it offers next is the
+            card below (free AI tries, 10 October 2026). */}
+        {taster ? (
+          <TasterAfterCard feature="speaking" />
+        ) : (
+          <div className="flex flex-wrap justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => void startMode(mode!)}
+              className="rounded-button border border-border px-4 py-2 text-sm font-semibold hover:bg-surface-alt"
+            >
+              ↻ {t('Practice this part again')}
+            </button>
+            <button
+              type="button"
+              onClick={backToMenu}
+              className="rounded-button bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover"
+            >
+              {t('Choose a different part')}
+            </button>
+          </div>
+        )}
       </div>
     );
   }
 
   /* ── Menu screen ── */
   if (phase === 'menu' && trialTest.active && trialTest.block) return <TrialBlock reason={trialTest.block} title="Speaking" />;
+  /* The free Speaking check: one public topic, nothing to choose. */
+  if (phase === 'menu' && taster) {
+    return (
+      <div className="screen-in space-y-4">
+        <div className="speaking-choice">
+          <span className="absolute inset-x-0 top-0 h-1 bg-[var(--skill,#0E9F6E)]" aria-hidden="true" />
+          {micError && (
+            <p className="mx-auto mb-4 max-w-md rounded-lg bg-error-tint px-3 py-2 text-sm text-error">{micError}</p>
+          )}
+          <TasterSpeakingStart onStart={() => void startMode('part1')} disabled={!isSpeakingGraderConfigured()} />
+        </div>
+      </div>
+    );
+  }
   if (phase === 'menu') {
     return (
       <div className="screen-in space-y-4">
@@ -808,7 +841,7 @@ export default function SpeakingTester({ trialRecorded = false }: { trialRecorde
   const remainingMs = Math.max(0, (turnsRef.current[turnIndex]?.maxMs ?? 0) - elapsedMs);
   const currentIdeas = turnsRef.current[turnIndex]?.ideas;
   return (
-    <div className="screen-in lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-4">
+    <div className={taster ? 'screen-in mx-auto max-w-3xl' : 'screen-in lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-4'}>
     <div className="space-y-4">
       <div className="rounded-card border border-border bg-surface p-5 shadow-card">
         <div className="flex items-center justify-between gap-3">
@@ -889,7 +922,7 @@ export default function SpeakingTester({ trialRecorded = false }: { trialRecorde
     {/* The coach: remounts per question so the stage checklist starts fresh
         for every answer (one A.R.E./OREO pass per question). */}
     <div className="trainer-coach-rail mt-4 lg:mt-0">
-      <SpeakingCoachPanel key={`${promptTitle}-${turnIndex}`} method={STRUCTURE_METHOD[mode!]} vocab={vocab} />
+      {!taster && <SpeakingCoachPanel key={`${promptTitle}-${turnIndex}`} method={STRUCTURE_METHOD[mode!]} vocab={vocab} />}
     </div>
     </div>
   );

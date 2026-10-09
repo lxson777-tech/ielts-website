@@ -28,6 +28,17 @@ import { currentTier, opensEverything } from '../../lib/access/tier';
 import { LESSON_FINISHED_EVENT, markNudgeShown, shouldNudge } from '../../lib/access/nudge';
 import { PITCH_PRICE_LINE, pitchPlan, pitchPrice, upgradePitch } from '../../lib/access/upgrade-pitch';
 import { trialView } from '../../lib/trial/client';
+import { openMrEz } from '../../lib/access/taster-events';
+import {
+  DIALOG_TRY_BUTTON,
+  DIALOG_TRY_HEADING,
+  DIALOG_TRY_LEAD,
+  DIALOG_USED_HEADING,
+  TASTER_ROUTES,
+  dialogTasterLead,
+  dialogUsedLead,
+  tasterForPaidFeature,
+} from '../../lib/access/taster-offers';
 import { deviceStorage } from '../../lib/store-owner';
 import { getProgress } from '../../lib/progress';
 import { signUpHref } from '../../lib/auth/profile';
@@ -122,10 +133,31 @@ export default function UpgradeDialog() {
 
   const { request, signedOut } = open;
   const firstLesson = request.feature === 'first-lesson';
+  /* Free AI tries (10 October 2026). A free account reaching for a feature
+     it still has a free try of is led to the try first; one that has used
+     it, or was refused as used, is told so before the pitch. Never for a
+     visitor who is not signed in. */
+  const refusedAsUsed = request.reason === 'taster-used' ? tasterForPaidFeature(request.feature) : null;
+  const tasterLead = signedOut
+    ? null
+    : refusedAsUsed
+      ? { kind: 'used' as const, taster: refusedAsUsed }
+      : dialogTasterLead(request.feature, currentTier(), trialView().status?.taster ?? null);
+  const usedLead = tasterLead?.kind === 'used' ? dialogUsedLead(tasterLead.taster) : null;
   const lead = firstLesson
     ? t('Lessons stay free. When you want to practise what you have learned, with feedback on your own work, this is what practice and guidance adds.')
-    : t(UPGRADE_REASON[request.feature as Exclude<UpgradeRequest['feature'], 'first-lesson'>]);
-  const heading = firstLesson ? t('You finished your first lesson') : t('Add practice and guidance');
+    : tasterLead?.kind === 'try'
+      ? t(DIALOG_TRY_LEAD[tasterLead.taster])
+      : usedLead
+        ? t(usedLead.text, usedLead.vars)
+        : t(UPGRADE_REASON[request.feature as Exclude<UpgradeRequest['feature'], 'first-lesson'>]);
+  const heading = firstLesson
+    ? t('You finished your first lesson')
+    : tasterLead?.kind === 'try'
+      ? t(DIALOG_TRY_HEADING)
+      : tasterLead?.kind === 'used'
+        ? t(DIALOG_USED_HEADING[tasterLead.taster])
+        : t('Add practice and guidance');
   const plan = pitchPlan();
   const href = signedOut ? signUpHref('/plans') : withBase('/plans');
 
@@ -151,6 +183,28 @@ export default function UpgradeDialog() {
         <p id="upgrade-lead" className="upgrade-lead">
           {lead}
         </p>
+        {tasterLead?.kind === 'try' && (
+          <div className="upgrade-try" data-upgrade-try={tasterLead.taster}>
+            <p>{t('Use your free try now, then decide.')}</p>
+            {tasterLead.taster === 'tutor' ? (
+              <button
+                type="button"
+                className="trial-btn trial-primary"
+                data-upgrade-try-use
+                onClick={() => {
+                  close();
+                  openMrEz();
+                }}
+              >
+                {t(DIALOG_TRY_BUTTON.tutor)}
+              </button>
+            ) : (
+              <a className="trial-btn trial-primary" href={withBase(TASTER_ROUTES[tasterLead.taster])} data-upgrade-try-use>
+                {t(DIALOG_TRY_BUTTON[tasterLead.taster])}
+              </a>
+            )}
+          </div>
+        )}
         <ul className="upgrade-list">
           {upgradePitch().map((line) => (
             <li key={line.text}>
@@ -165,7 +219,12 @@ export default function UpgradeDialog() {
           {t(PITCH_PRICE_LINE, { price: pitchPrice(plan.amount, locale), days: plan.days })}
         </p>
         <div className="upgrade-actions">
-          <a ref={primaryRef} className="trial-btn trial-primary" href={href} data-upgrade-primary>
+          <a
+            ref={primaryRef}
+            className={tasterLead?.kind === 'try' ? 'trial-btn' : 'trial-btn trial-primary'}
+            href={href}
+            data-upgrade-primary
+          >
             {t('Get practice and guidance')}
           </a>
           <button type="button" className="trial-btn upgrade-secondary" onClick={close} data-upgrade-dismiss>

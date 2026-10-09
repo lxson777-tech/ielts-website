@@ -45,6 +45,8 @@ import {
 } from '../../lib/store-owner';
 import { askContext } from './learning-versions';
 import { isTrialBuild } from '../../lib/trial/mode';
+import { refreshTrial } from '../../lib/trial/client';
+import { TutorCounter, useTaster } from '../access/taster-ui';
 import { helpReplyNote, requestOwnedLessonHelp, watchMrEzHelpAvailable, type HelpResult } from './lesson-help';
 
 const KIND_LABEL: Readonly<Record<LessonHelpKind, string>> = {
@@ -104,6 +106,10 @@ export default function LessonHelpControls({
   inline,
 }: Props) {
   const { t } = useT();
+  /* Free AI tries (10 October 2026): a free account with free questions left
+     uses these buttons instead of being sent to the upgrade pop-up. */
+  const taster = useTaster();
+  const freeTries = isTrialBuild() && taster.offered('tutor');
   const [replies, setReplies] = useState<HelpResult[]>([]);
   const [busy, setBusy] = useState<LessonHelpKind | null>(null);
   /* The request on its way, and whose replies are on screen (as
@@ -212,6 +218,8 @@ export default function LessonHelpControls({
          buttons are still waiting for; one let go of at an account change
          has already cleared it. */
       binding.cancel();
+      /* A free question may just have been spent: re-read the counts. */
+      if (isTrialBuild()) void refreshTrial();
       if (asking.current === binding) {
         asking.current = null;
         setBusy(null);
@@ -231,13 +239,14 @@ export default function LessonHelpControls({
             /* The gated build: Mr EZ comes with practice and guidance, so for
                a free account the click guard opens the upgrade pop-up
                instead (src/lib/access/paid-guard.ts). */
-            data-paid-feature={isTrialBuild() ? 'tutor' : undefined}
+            data-paid-feature={isTrialBuild() && !freeTries ? 'tutor' : undefined}
             onClick={() => void ask(kind)}
           >
             {busy === kind ? t('Asking Mr EZ...') : t(KIND_LABEL[kind])}
           </button>
         ))}
       </div>
+      {freeTries && <TutorCounter />}
       {replies.length > 0 && (
         <div className="help-replies" aria-live="polite">
           {replies.map((reply, index) => (
