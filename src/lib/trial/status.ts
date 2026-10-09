@@ -18,6 +18,7 @@ import {
   type TrialQuestionnaire,
   type TrialSection,
 } from './offer';
+import { parseTaster, type TasterStatus } from '../access/taster';
 
 export type TrialState = 'none' | 'active' | 'ended';
 
@@ -117,6 +118,9 @@ export interface TrialStatus {
   questionnaire: TrialQuestionnaire | null;
   limits: { hours: number; testsPerSection: number; tutorPerSection: number };
   sections: Record<TrialSection, TrialSectionStatus>;
+  /** A free account's lifetime free AI tries (src/lib/access/taster.ts),
+      or null when the server does not report them: then none is offered. */
+  taster: TasterStatus | null;
 }
 
 function isIso(value: unknown): value is string {
@@ -202,6 +206,7 @@ export function parseTrialStatus(raw: unknown): TrialStatus | null {
       tutorPerSection: count(limitsRaw.tutorPerSection) || TRIAL_TUTOR_PER_SECTION,
     },
     sections,
+    taster: parseTaster(value.taster),
   };
 }
 
