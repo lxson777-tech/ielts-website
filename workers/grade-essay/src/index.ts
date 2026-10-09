@@ -26,7 +26,6 @@ import {
   refusalBody,
   refusalStatus,
   bearer,
-  requirePaidAccess,
   serviceRpc,
   verifyAccessToken,
 } from '../../../src/lib/trial/gate';
@@ -52,8 +51,9 @@ export interface Env {
   /** 'trial' is the commercial build (the name stays): the student must be
       signed in with paid or complimentary access running, and each essay
       uses one of the purchase's assessments (docs/paid-access/
-      FREE-ACCOUNT-MODEL.md). A free account is refused with 402
-      paid-required before anything is spent. Anything else, including
+      FREE-ACCOUNT-MODEL.md). A free account gets one free essay check for
+      its whole life, then 402 taster-used, before anything is spent.
+      Anything else, including
       unset, is today's open grader. */
   ACCESS_MODE?: string;
   /** Needed only in commercial mode, to verify the student and to ask
@@ -1088,9 +1088,12 @@ export function createHandler(deps: { fetch: typeof fetch; trace?: RequestTrace 
           const userId = token ? await verifyAccessToken(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, token) : null;
           if (!userId) return json({ error: 'Sign in to have your essay graded.', code: 'sign-in-required' }, 401, cors);
           const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
-          await requirePaidAccess(rpc, userId);
-          paid = true;
+          /* No separate paid check: the database decides in one step. A
+             running grant uses one of its 12 essay checks; a free account
+             (or one whose paid access ended) uses its ONE lifetime free
+             try, then gets 402 taster-used; nothing else is admitted. */
           assessmentClaim = await reserveAssessment(rpc, userId, 'writing');
+          paid = true;
         } catch (err) {
           if (err instanceof TrialRefusal) return json(refusalBody(err), refusalStatus(err), cors);
           // Fail closed: an allowance that cannot be checked is not spent.

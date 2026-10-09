@@ -40,7 +40,11 @@ export type TrialRefusalCode =
   /** The same request or test is being answered right now. */
   | 'trial-in-flight'
   /** Both interviews allowed under the Speaking test have been started. */
-  | 'trial-sessions-used';
+  | 'trial-sessions-used'
+  /** Free AI tries (10 October 2026): a free account has used up its
+      lifetime try of this kind. HTTP 402 BEFORE any provider call, as
+      { error, code: 'taster-used', reason: 'taster-used', kind, used, limit }. */
+  | 'taster-used';
 
 /** What an assessment refusal adds for the screens (review of 1 October
     2026): which allowance, and how much of it is used. */
@@ -107,7 +111,36 @@ export const TRIAL_REFUSAL_TEXT: Record<TrialRefusalCode, string> = {
   'trial-no-test': 'Start this section’s trial test before submitting it.',
   'trial-in-flight': 'This is already being answered. Give it a moment.',
   'trial-sessions-used': 'Both interviews for your trial Speaking test have been started.',
+  'taster-used': 'You have used your free tries.',
 };
+
+/** The sentence for a used-up free try, per kind, in both languages (the
+    Russian is also in src/lib/i18n/dict/ru/g-free.ts, so a screen's
+    t(error) finds it). The Workers send the English as `error`. */
+export const TASTER_USED_TEXT = {
+  tutor: {
+    en: 'You have used your free questions to Mr EZ.',
+    ru: 'Вы использовали бесплатные вопросы к Mr EZ.',
+  },
+  writing: {
+    en: 'You have used your free essay check.',
+    ru: 'Вы использовали бесплатную проверку эссе.',
+  },
+  speaking: {
+    en: 'You have used your free Speaking check.',
+    ru: 'Вы использовали бесплатную проверку Speaking.',
+  },
+} as const;
+
+/** A used-up free try as a refusal: HTTP 402, code and reason
+    'taster-used', plus which kind and the counts. */
+export function tasterUsed(kind: 'tutor' | 'writing' | 'speaking', used?: number, limit?: number): TrialRefusal {
+  return new TrialRefusal('taster-used', TASTER_USED_TEXT[kind].en, 'taster-used', {
+    kind,
+    ...(typeof used === 'number' ? { used } : {}),
+    ...(typeof limit === 'number' ? { limit } : {}),
+  });
+}
 
 export function refusal(code: TrialRefusalCode): TrialRefusal {
   return new TrialRefusal(code, TRIAL_REFUSAL_TEXT[code]);
@@ -209,7 +242,7 @@ export function paidRequired(): TrialRefusal {
 /** The HTTP status for a refusal: 402 for paid-required, 409 for a request
     already being answered, 403 for everything else. */
 export function refusalStatus(err: TrialRefusal): number {
-  if (err.code === 'paid-required') return 402;
+  if (err.code === 'paid-required' || err.code === 'taster-used') return 402;
   if (err.code === 'trial-in-flight') return 409;
   return 403;
 }
@@ -236,6 +269,49 @@ export async function paidAccessRunning(rpc: TrialRpc, userId: string): Promise<
   const result = await rpc('access_paid_now', { p_user: userId });
   if (typeof result.paid !== 'boolean') throw new TrialServiceError('trial: access_paid_now answered unreadably');
   return result.paid;
+}
+
+/* ── Free Mr EZ tries (10 October 2026) ───────────────────────────────── */
+
+export interface TutorTasterReservation {
+  /** Paid access was running after all: nothing was recorded or charged. */
+  paid: boolean;
+  /** This call took a NEW try. False for a retry or replay of a request id
+      already reserved: the caller must not release it. */
+  fresh: boolean;
+  used: number;
+  limit: number;
+}
+
+/** Reserves one of a free account's lifetime Mr EZ tries under `requestId`,
+    BEFORE the model is called (tutor_taster_reserve in
+    supabase/migrations/2026-10-10-free-taster.sql). Throws a 'taster-used'
+    TrialRefusal when the ten are used, or TrialServiceError when the
+    database cannot be asked (fail closed). */
+export async function reserveTutorTaster(rpc: TrialRpc, userId: string, requestId: string): Promise<TutorTasterReservation> {
+  const result = await rpc('tutor_taster_reserve', { p_user: userId, p_request: requestId });
+  if (result.ok !== true) {
+    if (result.reason === 'taster-used') {
+      throw tasterUsed('tutor', typeof result.used === 'number' ? result.used : undefined, typeof result.limit === 'number' ? result.limit : undefined);
+    }
+    throw new TrialServiceError(`trial: tutor_taster_reserve refused: ${String(result.reason)}`);
+  }
+  return {
+    paid: result.paid === true,
+    fresh: result.fresh === true,
+    used: typeof result.used === 'number' ? result.used : 0,
+    limit: typeof result.limit === 'number' ? result.limit : 0,
+  };
+}
+
+/** Gives a try back after a failed answer. Never throws: a release that
+    fails keeps the try counted (the safe direction). */
+export async function releaseTutorTaster(rpc: TrialRpc, userId: string, requestId: string): Promise<void> {
+  try {
+    await rpc('tutor_taster_release', { p_user: userId, p_request: requestId });
+  } catch {
+    /* kept counted */
+  }
 }
 
 /* ── Mr EZ ────────────────────────────────────────────────────────────── */

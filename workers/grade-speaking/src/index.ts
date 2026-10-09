@@ -61,8 +61,9 @@ export interface Env {
       recording set using one of the purchase's Speaking assessments, and
       a live interview's feedback finishing within a day of an interview
       begun while access was valid (docs/paid-access/FREE-ACCOUNT-MODEL.md).
-      A free account is refused with 402 paid-required before anything is
-      spent. Needs SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY then.
+      A free account gets one free recorded Speaking check for its whole
+      life, then 402 taster-used, before anything is spent; live interview
+      feedback stays paid (402 paid-required). Needs SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY then.
       Anything else, including unset, is today's open grader. */
   ACCESS_MODE?: string;
   SUPABASE_URL?: string; // vars, trial mode only
@@ -1964,7 +1965,12 @@ export function createHandler(deps: Deps): { fetch(request: Request, env: Env): 
         if (!userId) return json({ error: 'Sign in to have your speaking graded.', code: 'sign-in-required' }, 401, cors);
         const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
         const running = await paidAccessRunning(rpc, userId);
-        if (!running && body.kind !== 'interview') throw paidRequired();
+        /* No paid check here: for a recorded Speaking check the database
+           admits a free account's ONE lifetime free try (then 402
+           taster-used). A live interview's feedback from an account without
+           running access is admitted only within a day of an interview begun
+           while access was valid; otherwise unknown-session, answered as
+           paid-required below. */
         try {
           assessmentClaim = await reserveAssessment(rpc, userId, body.kind === 'interview' ? 'feedback' : 'speaking', body.liveSessionId);
         } catch (err) {

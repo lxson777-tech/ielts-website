@@ -111,3 +111,65 @@ commands; never touch `.git`; write only in your own worktree and scratch
 folder; never stop processes you did not start (4441, 4442, 8841, 8842 are
 Alex's review servers); never touch `C:\Users\Alex\.codex\worktrees\`; do not
 change prices, allowances, refund terms or grading models; commit early.
+
+## Free AI tries (10 October 2026)
+
+Alex's decision of 10 October 2026: a free account can now TRY the AI a little
+before buying. The rule above ("no AI of any kind") changes in one way only.
+
+**What a free account gets, once, for the whole life of the account:**
+
+| Try | How many | What counts |
+|---|---|---|
+| Mr EZ | 10 | each question to Mr EZ: his chat and the lesson help buttons |
+| Essay check | 1 | one AI Writing check |
+| Speaking check | 1 | one AI recorded Speaking check |
+
+Never free: the live interview, mock exams, the placement test, and the
+feedback on a live interview. Those stay paid. Mr EZ's other jobs (the
+dashboard welcome, weekly review, unit notes, test debriefs, explaining one
+wrong answer, judging a focused exercise, proposing the next step) are part of
+practice and the personal plan and stay paid. The welcome in particular opens
+by itself, so it must never spend a try the student did not ask for.
+
+**Rules that keep it fair and safe:**
+
+- It is lifetime, not monthly. Using a try never gives it back, except when
+  the answer failed (a failed grade or a failed Mr EZ answer costs nothing),
+  or when the answer was one already stored for the same question.
+- Paid and complimentary accounts never use tries; they keep their own
+  allowances (12 essays, 6 Speaking checks, 2 live interviews, Mr EZ's daily
+  limits). Tries used before buying do not shrink the purchase, and the
+  purchase does not use up a try.
+- A paid account that ENDED is free again and has whatever tries it has left.
+  Allowances it used while paid do not count against its tries.
+- The one assessment the old three-day trial allowed counts as that kind's
+  free try (the database recorded it with no grant). Simple and fair.
+- Free essay and Speaking checks still count toward the 24-a-day safety
+  limit every account has.
+- Signed-out visitors get nothing.
+- The open (live) site is untouched: this exists only in the commercial build
+  (`ACCESS_MODE=trial`).
+
+**Where it is enforced (the server decides, the browser only displays):**
+
+- The database: `supabase/migrations/2026-10-10-free-taster.sql`. The limits
+  live in one function, `taster_limit()`, and must equal `TASTER_LIMITS` in
+  `src/lib/access/taster.ts` (a test checks it). `assessment_reserve` admits
+  the one essay and the one Speaking check for an account with no running
+  grant; `tutor_taster_reserve` and `tutor_taster_release` count the ten Mr EZ
+  questions; `trial_status` carries `taster: {tutor, writing, speaking}`, each
+  `{used, limit}`, for every signed-in account.
+- The Workers: Mr EZ reserves a try before the model is called and gives it
+  back on any failure; the essay and Speaking graders let the database decide.
+  When a try is used up the answer is HTTP 402 with
+  `{ error, code: 'taster-used', reason: 'taster-used', kind, used, limit }`,
+  before any model call. The live examiner is unchanged (always paid).
+- A database that cannot be asked still fails closed.
+
+**Not applied to production.** The migration is a proposal, tested only
+against the local in-memory database and the local stand-in. It needs Alex's
+yes before anyone runs it on the real Supabase project, and it must be applied
+BEFORE the Workers that use it are deployed (otherwise a free account's
+question is refused as unavailable, which fails closed). Until then the live
+site behaves exactly as before.

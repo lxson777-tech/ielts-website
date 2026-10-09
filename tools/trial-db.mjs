@@ -49,8 +49,12 @@ export const FREE_MIGRATION = resolve(REPO, 'supabase/migrations/2026-10-01-free
 /** A student deleting their own account (2 October 2026). Runs after the
     free-account migration, whose access_grants shape it relies on. */
 export const DELETION_MIGRATION = resolve(REPO, 'supabase/migrations/2026-10-02-account-deletion.sql');
+/** Free AI tries for a free account (10 October 2026). Redefines
+    assessment_reserve and trial_status_for from the free-account file, so it
+    runs after it. A proposal, not applied to any real project. */
+export const TASTER_MIGRATION = resolve(REPO, 'supabase/migrations/2026-10-10-free-taster.sql');
 /** What a project runs today, in order. */
-export const ALL_MIGRATIONS = [TRIAL_MIGRATION, ADMIN_MIGRATION, PROFILES_MIGRATION, PAID_MIGRATION, OFFER_MIGRATION, FREE_MIGRATION, DELETION_MIGRATION];
+export const ALL_MIGRATIONS = [TRIAL_MIGRATION, ADMIN_MIGRATION, PROFILES_MIGRATION, PAID_MIGRATION, OFFER_MIGRATION, FREE_MIGRATION, DELETION_MIGRATION, TASTER_MIGRATION];
 /** The stack as it stood before the trial was retired (1 October 2026),
     for the tests that keep the trial's own history provable. */
 export const PRE_FREE_MIGRATIONS = [TRIAL_MIGRATION, PAID_MIGRATION, OFFER_MIGRATION];
@@ -176,6 +180,15 @@ export async function createTrialDb({ migration = null, migrations = ALL_MIGRATI
          where user_id = $1`,
         [userId, minutes],
       );
+    },
+
+    /** Test and stand-in only: gives one student their free AI tries back
+        (the Mr EZ tries and the grant-less writing and speaking rows), so a
+        walk-through can be repeated. Never exposed to the site. */
+    async resetTaster(userId) {
+      await db.query('delete from public.tutor_taster_uses where user_id = $1', [userId]);
+      const r = await db.query('delete from public.assessment_usage where user_id = $1 and grant_id is null', [userId]);
+      return r.affectedRows ?? 0;
     },
 
     /** Test only: ages one student's reservations, to exercise the stale rule. */

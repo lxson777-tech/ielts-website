@@ -12,7 +12,9 @@
  *   - the open site (no ACCESS_MODE) behaves exactly as before and never
  *     asks the database's access functions anything;
  *   - a free account (signed in, profile done, nothing paid) is refused 402
- *     paid-required before the model is called, for every task;
+ *     paid-required before the model is called, for every task except a
+ *     question (chat, lesson help), which takes one of its ten lifetime free
+ *     tries (10 October 2026; tests/free-taster-worker.test.ts proves those);
  *   - an old trial row, even a running one, buys nothing;
  *   - paid and complimentary access are answered as the open site answers;
  *     when complimentary access is stopped, Mr EZ is refused again;
@@ -101,17 +103,13 @@ test('without ACCESS_MODE the Worker answers as it always has and never asks the
 
 /* ── A free account is refused before any money is spent ─────────────── */
 
-test('a free account is refused 402 paid-required for every task, with no model call and nothing reserved', async () => {
+test('a free account is refused 402 paid-required for every task that is not a question, with no model call and nothing reserved', async () => {
   const { db, state } = await world();
   const bodies = [
-    chat(undefined),
-    chat(READING_LESSON),
-    chat({ testId: 'reading-full-001' }),
     { task: 'welcome', idempotencyKey: 'free-welcome-01' },
-    {
-      task: 'lesson-help', kind: 'hint', lessonKey: 'reading-tfng', blockId: 'b1-bbbbbbbb', previousHints: [], assistanceSoFar: 'none',
-      versions: { planRevision: 0, evidenceVersion: 0, indexVersion: 'x' }, idempotencyKey: 'free-help-0001',
-    },
+    { task: 'weekly', idempotencyKey: 'free-weekly-001' },
+    { task: 'debrief', idempotencyKey: 'free-debrief-01', review: { testId: 'reading-full-001', items: [{ questionId: 'q1', given: 'TRUE' }] } },
+    { task: 'evaluate-practice', idempotencyKey: 'free-evaluate-01', activityId: 'focus:x', contentVersion: 1, subskill: 'tfng', itemIds: [], submission: 'x', versions: { planRevision: 0, evidenceVersion: 0, indexVersion: 'x' } },
   ];
   for (const body of bodies) {
     const { response, payload, recorder } = await run(state, body);
@@ -133,11 +131,17 @@ test('an old trial, even one still inside its 72 hours, buys no Mr EZ message', 
   await db.raw.query("insert into public.trial_accounts (user_id, started_at, ends_at) values ($1, now(), now() + interval '72 hours')", [USER_A]);
   assert.deepEqual(((await db.rpc('trial_start', {}, { userId: USER_B })) as { code: string }).code, 'trial-retired');
   for (const token of [GOOD_TOKEN, OTHER_TOKEN]) {
-    const { response, payload, recorder } = await run(state, chat(READING_LESSON), COMMERCIAL, token);
+    const { response, payload, recorder } = await run(state, { task: 'welcome', idempotencyKey: 'old-trial-welcome' }, COMMERCIAL, token);
     assert.equal(response.status, 402);
     assert.equal(payload.code, 'paid-required');
     assert.equal(recorder.openAiCalls.length, 0);
   }
+  // A question is a free-account try, charged to THOSE tries and never to the old trial's usage.
+  const asked = await run(state, chat(READING_LESSON));
+  assert.equal(asked.response.status, 200);
+  const rows = (sql: string) => db.select(sql, [USER_A], { role: 'service_role' }) as Promise<{ n: number }[]>;
+  assert.equal((await rows("select count(*)::int as n from public.trial_usage where user_id = $1 and kind = 'tutor'"))[0].n, 0, 'nothing charged to the old trial');
+  assert.equal((await rows('select count(*)::int as n from public.tutor_taster_uses where user_id = $1'))[0].n, 1);
   /* The trial's own reservation function refuses too, so nothing could be
      charged to it even by a Worker that still asked. */
   assert.deepEqual(
@@ -151,19 +155,21 @@ test('an old trial, even one still inside its 72 hours, buys no Mr EZ message', 
 
 test('complimentary access is answered like the open site; stopping it refuses Mr EZ again', async () => {
   const { db, state, complimentary } = await world();
-  assert.equal((await run(state, chat(READING_LESSON))).response.status, 402);
+  const welcome = (key: string) => ({ task: 'welcome', idempotencyKey: key });
+  assert.equal((await run(state, welcome('comp-welcome-01'))).response.status, 402);
   assert.equal((await complimentary(USER_A, 'give')).ok, true);
   const answered = await run(state, chat(READING_LESSON));
   assert.equal(answered.response.status, 200);
   assert.equal(answered.payload.trial, undefined, 'no trial allowance note');
   assert.equal(answered.recorder.openAiCalls.length, 1);
+  assert.equal(answered.recorder.urls.some((u) => u.includes('/rpc/tutor_taster_reserve')), false, 'a paid answer takes no free try');
   // General chat too: paid guidance is not limited to trial references.
   assert.equal((await run(state, chat(undefined))).response.status, 200);
   // Another student is still free.
-  assert.equal((await run(state, chat(READING_LESSON), COMMERCIAL, OTHER_TOKEN)).response.status, 402);
+  assert.equal((await run(state, welcome('comp-welcome-02'), COMMERCIAL, OTHER_TOKEN)).response.status, 402);
 
   assert.equal((await complimentary(USER_A, 'stop')).ok, true);
-  const stopped = await run(state, chat(READING_LESSON));
+  const stopped = await run(state, welcome('comp-welcome-03'));
   assert.equal(stopped.response.status, 402);
   assert.equal(stopped.recorder.openAiCalls.length, 0);
   await db.close();

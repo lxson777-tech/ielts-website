@@ -193,8 +193,9 @@ const chat = (place?: Record<string, unknown>) => ({ task: 'chat', message: 'Can
 
 test('Mr EZ: a paid account is answered for any task, and the daily limit still applies', async () => {
   const w = await tutorWorld();
-  // Free: refused before the model, for any task.
-  const free = await w.run(chat());
+  // Free: a task that is not a question (the dashboard welcome) is practice and guidance, refused before the model.
+  // (Chat and lesson help are the free tries: tests/free-taster-worker.test.ts.)
+  const free = await w.run({ task: 'welcome', idempotencyKey: 'free-welcome-01' });
   assert.deepEqual([free.response.status, free.payload.code], [402, 'paid-required']);
   assert.equal(free.recorder.openAiCalls.length, 0);
 
@@ -223,9 +224,13 @@ test('Mr EZ: when paid access ends, he is refused again (402), lesson help inclu
   await buy(w.db, USER_A);
   assert.equal((await w.run(chat())).response.status, 200);
   await w.db.expirePaid(USER_A);
-  const ended = await w.run(chat({ lessonKey: 'reading-paraphrase' }));
+  const ended = await w.run({ task: 'welcome', idempotencyKey: 'ended-welcome-01' });
   assert.deepEqual([ended.response.status, ended.payload.code], [402, 'paid-required']);
   assert.equal(ended.recorder.openAiCalls.length, 0);
+  // Back to free, a question is one of the ten lifetime tries, not a paid answer.
+  const asked = await w.run(chat({ lessonKey: 'reading-paraphrase' }));
+  assert.equal(asked.response.status, 200);
+  assert.equal(asked.recorder.openAiCalls.length, 1);
   await w.db.close();
 });
 
@@ -285,9 +290,12 @@ async function essayWorld() {
 
 test('essay grader: a paid account is graded on its own question; a free or paid-ended account is refused 402', async () => {
   const w = await essayWorld();
-  // Free account: refused before any spend.
-  assert.equal((await w.submit('token-a')).body.code, 'paid-required');
-  assert.equal(w.counts.model, 0);
+  // Free account: its ONE lifetime try is graded, the second is refused 402 before any spend.
+  assert.equal((await w.submit('token-a')).status, 200);
+  assert.equal(w.counts.model, 1);
+  const second = await w.submit('token-a');
+  assert.deepEqual([second.status, second.body.code], [402, 'taster-used']);
+  assert.equal(w.counts.model, 1);
 
   await buy(w.db, A);
   for (let i = 0; i < 3; i++) {
@@ -296,16 +304,17 @@ test('essay grader: a paid account is graded on its own question; a free or paid
     assert.equal(graded.body.trial, undefined);
     assert.ok(graded.body.guides, 'band guide steps, which a trial build\'s browser does not carry');
   }
-  assert.equal(w.counts.model, 3, 'as many grades as submitted: this grader has no per-student daily limit');
+  assert.equal(w.counts.model, 4, 'as many grades as submitted (1 free try + 3 paid): this grader has no per-student daily limit');
   assert.ok(w.prompts.every((p) => p.includes('STUDENT-CHOSEN-QUESTION')), 'graded on the student\'s own question');
   assert.equal(w.counts.rpc.includes('trial_test_lease'), false, 'no trial test leased');
 
-  // B has no payment: refused.
-  assert.equal((await w.submit('token-b')).body.code, 'paid-required');
-  // A's paid access ends: refused again.
+  // B has no payment: one free try, then refused.
+  assert.equal((await w.submit('token-b')).status, 200);
+  assert.equal((await w.submit('token-b')).body.code, 'taster-used');
+  // A's paid access ends: refused again (A's lifetime try was used before buying).
   await w.db.expirePaid(A);
-  assert.equal((await w.submit('token-a')).body.code, 'paid-required');
-  assert.equal(w.counts.model, 3);
+  assert.equal((await w.submit('token-a')).body.code, 'taster-used');
+  assert.equal(w.counts.model, 5);
   await w.db.close();
 });
 
@@ -333,8 +342,20 @@ test('speaking grader: a paid account may grade recorded practice; a free one is
     );
     return { status: response.status, body: (await response.json()) as Record<string, unknown> };
   };
-  assert.equal((await submit()).body.code, 'paid-required', 'free: recorded practice needs paid access');
-  assert.equal(counts.model, 0);
+  // Free: the one lifetime try reaches the grader (a failed grade is given back, costs nothing)...
+  assert.ok((await submit()).status >= 500);
+  const afterFirst = counts.model;
+  assert.ok(afterFirst > 0, 'the free try reached the grader');
+  assert.ok((await submit()).status >= 500, 'a failed grade did not use the try');
+  assert.ok(counts.model > afterFirst, 'so it reached the grader again');
+  const afterSecond = counts.model;
+  // ...a graded one does; then refused 402 before any model call.
+  const used = (await db.rpc('assessment_reserve', { p_user: A, p_kind: 'speaking', p_request: 'burn-the-try-1' }, { role: 'service_role' })) as Record<string, unknown>;
+  assert.equal(used.ok, true);
+  await db.rpc('assessment_finish', { p_user: A, p_kind: 'speaking', p_request: 'burn-the-try-1', p_success: true }, { role: 'service_role' });
+  const refused = await submit();
+  assert.deepEqual([refused.status, refused.body.code, refused.body.reason, refused.body.kind], [402, 'taster-used', 'taster-used', 'speaking']);
+  assert.equal(counts.model, afterSecond, 'refused before any model call');
   await buy(db, A);
   const paid = await submit();
   assert.ok(counts.model > 0, 'paid: it reached the grader (answered 500 here, so no grade)');

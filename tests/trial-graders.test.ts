@@ -130,19 +130,27 @@ async function world() {
   return { db, calls, model, submit, balance, buy, complimentary };
 }
 
-test('commercial mode: no sign-in is 401, and a free account is refused 402 paid-required before anything is spent', async () => {
+test('commercial mode: no sign-in is 401, and a free account gets ONE essay try, then 402 taster-used before anything is spent', async () => {
   const w = await world();
   assert.equal((await w.submit(null)).status, 401);
   assert.equal((await w.submit('forged')).status, 401);
+  assert.equal(w.calls.openAi, 0, 'nothing is spent before the sign-in is proved');
+  // The free account's one lifetime try is graded...
+  const first = await w.submit('token-a');
+  assert.equal(first.status, 200);
+  const openAiAfterFirst = w.calls.openAi;
+  assert.ok(openAiAfterFirst > 0);
+  // ...then every further essay is refused 402 BEFORE any model call.
   const free = await w.submit('token-a');
   assert.equal(free.status, 402);
-  assert.deepEqual([free.body.code, free.body.reason], ['paid-required', 'paid-required']);
-  assert.equal(typeof free.body.error, 'string');
+  assert.deepEqual([free.body.code, free.body.reason, free.body.kind, free.body.used, free.body.limit], ['taster-used', 'taster-used', 'writing', 1, 1]);
+  assert.equal(free.body.error, 'You have used your free essay check.');
   // An old trial sitting buys nothing either (the trial is retired).
   const oldTrial = await w.submit('token-a', 'sit-w-00001');
   assert.equal(oldTrial.status, 402);
-  assert.equal(w.calls.openAi, 0);
-  assert.equal(((await w.balance(A)) as { writingUsed: number }).writingUsed, 0, 'nothing reserved');
+  assert.equal(w.calls.openAi, openAiAfterFirst, 'no model call after the try is used');
+  const balance = (await w.balance(A)) as { writingUsed: number; trialUsed: number };
+  assert.deepEqual([balance.writingUsed, balance.trialUsed], [0, 1], 'the free try is counted apart from any purchase');
   await w.db.close();
 });
 
@@ -195,10 +203,15 @@ test('complimentary access grades exactly like paid access, from the same allowa
   assert.ok(graded.body.guides, 'the band steps a commercial build carries only for paid access');
   const balance = (await w.balance(A)) as { writingUsed: number; kind: string; limits: { writing: number } };
   assert.deepEqual([balance.writingUsed, balance.kind, balance.limits.writing], [1, 'complimentary', 12]);
-  assert.equal((await w.submit('token-b')).status, 402, 'another student is still free');
+  const otherFree = await w.submit('token-b');
+  assert.equal(otherFree.status, 200, 'another student is still free and gets the one free try');
+  assert.equal((await w.submit('token-b')).status, 402, 'then the free try is used');
   assert.equal((await w.complimentary(A, 'stop')).ok, true);
-  assert.equal((await w.submit('token-a')).status, 402);
-  assert.equal(w.calls.openAi, 1);
+  const stopped = await w.submit('token-a');
+  assert.deepEqual([stopped.status, stopped.body.code], [200, undefined], 'back to free: the account still has its own lifetime try');
+  const stoppedAgain = await w.submit('token-a');
+  assert.deepEqual([stoppedAgain.status, stoppedAgain.body.code], [402, 'taster-used']);
+  assert.equal(w.calls.openAi, 3);
   await w.db.close();
 });
 
@@ -592,13 +605,18 @@ function speakingGrader(w: Awaited<ReturnType<typeof speakingWorld>>, reply: 'gr
 const SPEAKING_CLIP = { question: 'Tell me about your work.', mimeType: 'audio/mpeg', audioBase64: validMp3(), durationMs: 60000 };
 const RECORDED = { kind: 'part1', part1: { topic: 'Work', answers: [SPEAKING_CLIP] } };
 
-test('speaking grader: a free account is refused 402 for recorded practice and for interview feedback, before anything is spent', async () => {
+test('speaking grader: a free account gets ONE recorded try, then 402 taster-used; interview feedback is always 402 paid-required; nothing is spent on a refusal', async () => {
   const w = await speakingWorld();
   const { submit, calls } = speakingGrader(w, 'grade');
   assert.equal((await submit(null, RECORDED)).status, 401);
+  const first = await submit('token-a', RECORDED);
+  assert.equal(first.status, 200, JSON.stringify(first.body).slice(0, 200));
+  const modelAfterFirst = calls.model;
+  assert.ok(modelAfterFirst > 0);
   const recorded = await submit('token-a', { ...RECORDED, trialSitting: 'sit-s-00004' });
   assert.equal(recorded.status, 402);
-  assert.deepEqual([recorded.body.code, recorded.body.reason], ['paid-required', 'paid-required']);
+  assert.deepEqual([recorded.body.code, recorded.body.reason, recorded.body.kind], ['taster-used', 'taster-used', 'speaking']);
+  assert.equal(recorded.body.error, 'You have used your free Speaking check.');
   const feedback = await submit('token-a', {
     kind: 'interview',
     interview: { transcript: [{ role: 'examiner', text: 'Hello' }, { role: 'candidate', text: 'Hi' }], audio: SPEAKING_CLIP },
@@ -606,7 +624,7 @@ test('speaking grader: a free account is refused 402 for recorded practice and f
   });
   assert.equal(feedback.status, 402, 'no interview of their own: paid-required, not an allowance message');
   assert.equal(feedback.body.code, 'paid-required');
-  assert.equal(calls.model, 0);
+  assert.equal(calls.model, modelAfterFirst, 'no model call after the try is used');
   await w.db.close();
 });
 

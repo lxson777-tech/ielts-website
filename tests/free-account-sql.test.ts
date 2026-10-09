@@ -131,8 +131,10 @@ test('the trial is retired: starting one is refused, and an existing trial grant
   await db.raw.query("insert into public.trial_usage (user_id, kind, section, request_id, activity_id, status) values ($1, 'test', 'reading', 'sit-old-trial-1', 'reading-full-001', 'reserved'), ($1, 'tutor', 'reading', 'msg-old-trial-1', 'lesson:reading-paraphrase', 'settled')", [OTHER]);
   assert.equal((await canOpen(db, 'test:reading-full-001', OTHER)).reason, 'paid-required', 'a test begun in the trial no longer opens');
   assert.equal((await canOpen(db, 'lesson:reading-paraphrase', OTHER)).tier, 'free', 'lessons open as for any account');
-  assert.equal((await reserve(db, 'writing', 'old-trial-essay', OTHER)).reason, 'paid-required', 'no trial assessment');
-  assert.equal((await reserve(db, 'speaking', 'old-trial-speak', OTHER)).reason, 'paid-required');
+  // The trial's own assessment is gone; what remains is the free account's lifetime try (2026-10-10-free-taster.sql), one of each.
+  assert.equal((await reserve(db, 'live', 'old-trial-live', OTHER)).reason, 'paid-required', 'no trial live interview');
+  assert.equal((await reserve(db, 'writing', 'old-trial-essay', OTHER)).ok, true, 'the free essay try, not a trial assessment');
+  assert.equal((await reserve(db, 'writing', 'old-trial-essay2', OTHER)).reason, 'taster-used');
   assert.deepEqual(await db.rpc('trial_tutor_reserve', { p_user: OTHER, p_section: 'reading', p_request: 'msg-old-trial-2', p_activity: 'lesson:reading-paraphrase' }, service), { ok: false, reason: 'trial-retired' });
   assert.deepEqual(await db.rpc('trial_test_lease', { p_user: OTHER, p_section: 'reading', p_request: 'sit-old-trial-1' }, service), { ok: false, reason: 'trial-retired' });
   assert.deepEqual(await db.rpc('trial_speaking_session_start', { p_user: OTHER, p_request: 'sit-old-trial-1' }, service), { ok: false, reason: 'trial-retired' });
@@ -149,9 +151,14 @@ test('the trial is retired: starting one is refused, and an existing trial grant
 
 /* ── The AI allowance ────────────────────────────────────────────────── */
 
-test('a free account gets no AI assessment of any kind; complimentary access carries exactly the paid allowances', async () => {
+test('a free account gets only its one lifetime writing and speaking try (never live, mock or placement); complimentary access carries exactly the paid allowances', async () => {
   const db = await world();
-  for (const kind of ['writing', 'speaking', 'live']) assert.equal((await reserve(db, kind, `free-${kind}-1`)).reason, 'paid-required', kind);
+  assert.equal((await reserve(db, 'live', 'free-live-1')).reason, 'paid-required', 'live');
+  // (On another free account: the free tries count toward the 24-a-day safety limit, which the complimentary run below fills.)
+  for (const kind of ['writing', 'speaking']) {
+    assert.equal((await reserve(db, kind, `free-${kind}-1`, OTHER)).ok, true, `${kind}: the one free try`);
+    assert.equal((await reserve(db, kind, `free-${kind}-2`, OTHER)).reason, 'taster-used', `${kind}: then used`);
+  }
   assert.equal((await reserve(db, 'live', 'free-place-1', STUDENT, 'placement')).reason, 'paid-required');
   assert.equal((await reserve(db, 'feedback', 'free-feedback', STUDENT, undefined, 'live_none')).reason, 'unknown-session');
 
@@ -293,7 +300,8 @@ test('stop returns a complimentary-only account to free: lessons open, practice 
   await complimentary(db, 'stop');
   assert.equal((await canOpen(db, 'test:reading-full-001')).reason, 'paid-required');
   assert.equal((await canOpen(db, 'lesson:reading-tfng')).ok, true);
-  assert.equal((await reserve(db, 'writing', 'after-stop-1')).reason, 'paid-required');
+  assert.equal((await reserve(db, 'live', 'after-stop-1')).reason, 'paid-required');
+  assert.equal((await reserve(db, 'writing', 'after-stop-2')).ok, true, 'back to free: the lifetime try is still there');
   const s = await status(db);
   assert.deepEqual([s.access.tier, s.paid.kind], ['paid-ended', 'complimentary']);
   assert.equal(tierOf(s as TrialStatus, true, ms(s.serverNow)), 'paid-ended');

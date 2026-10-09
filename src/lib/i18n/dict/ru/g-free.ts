@@ -10,6 +10,11 @@ export const strings: Record<string, string> = {
   // code 'paid-required' (HTTP 402), from every AI Worker and the gate.
   'Practice and personal guidance come with paid access. Every lesson stays free with your account.':
     'Практика и личное сопровождение доступны с оплатой. Все уроки остаются бесплатными в вашем аккаунте.',
+  // code 'taster-used' (HTTP 402): a free account's lifetime AI try is used
+  // (TASTER_USED_TEXT in src/lib/trial/gate.ts).
+  'You have used your free questions to Mr EZ.': 'Вы использовали бесплатные вопросы к Mr EZ.',
+  'You have used your free essay check.': 'Вы использовали бесплатную проверку эссе.',
+  'You have used your free Speaking check.': 'Вы использовали бесплатную проверку Speaking.',
   // The content gate's other refusals.
   'Sign in to open this.': 'Войдите, чтобы открыть это.',
   'Complete your profile to open the lessons.': 'Заполните профиль, чтобы открыть уроки.',

@@ -116,6 +116,12 @@
  *     access_admin_complimentary as the stand-in admin, for scripts. The
  *     browser's admin panel calls the same function itself.
  *   - GET /__trial/state lists every grant with its kind.
+ *
+ *   FREE AI TRIES (10 October 2026, supabase/migrations/2026-10-10-free-taster.sql,
+ *   loaded with the rest): a free account may use 10 Mr EZ requests (chat and
+ *   lesson help), 1 essay check and 1 recorded Speaking check, once for its
+ *   whole life; then 402 taster-used. GET /__trial/state shows each account's
+ *   counts under `taster`; POST /__taster/reset {email} gives them back.
  */
 
 import { createServer } from 'node:http';
@@ -2145,6 +2151,16 @@ const server = createServer(async (req, res) => {
       await trialDb.rewind(user.id, Number(body.minutes) || 0);
       return send(res, 200, { rewound: user.email, minutes: Number(body.minutes) || 0 });
     }
+    if (url.pathname === '/__taster/reset' && req.method === 'POST') {
+      /* STAND-IN TEST HELPER (local only): gives one student their free AI
+         tries (10 Mr EZ, 1 essay, 1 Speaking) back, to repeat a walk-through. */
+      if (!trialDb) return send(res, 404, { message: 'start with --trial' });
+      const body = await readBody(req);
+      const user = db.users.get(String(body.email ?? '').trim().toLowerCase());
+      if (!user) return send(res, 404, { message: 'no such local user' });
+      await trialDb.resetTaster(user.id);
+      return send(res, 200, { standIn: true, reset: user.email });
+    }
     if (url.pathname === '/__access/complimentary' && req.method === 'POST') {
       /* STAND-IN TEST HELPER (local only, never a site route): runs the real
          admin function as the stand-in admin, for scripts. The admin panel
@@ -2193,6 +2209,13 @@ const server = createServer(async (req, res) => {
         usage: usage.map((u) => ({ ...u, email: emailOf(u.user_id) })),
         orders: orders.map((o) => ({ ...o, email: emailOf(o.user_id) })),
         grants: grants.map((g) => ({ ...g, email: emailOf(g.user_id), grantedByEmail: g.granted_by ? emailOf(g.granted_by) : null })),
+        /* Free AI tries per account, as the status reply reports them. */
+        taster: await Promise.all(
+          [...db.users.values()].map(async (u) => ({
+            email: u.email,
+            ...((await trialDb.select('select public.taster_status($1) as t', [u.id], { role: 'service_role' }).catch(() => [{ t: null }]))[0]?.t ?? {}),
+          })),
+        ),
         tiers: await Promise.all(
           [...db.users.values()].map(async (u) => ({
             email: u.email,

@@ -5,7 +5,7 @@
    the Workers return as
      { error, code: 'assessment-unavailable', reason, kind?, purpose?, used?, limit? }
    so a screen can tell "used up" from "the service is down". */
-import { TrialRefusal, type TrialRpc, TrialServiceError, paidRequired } from '../trial/gate';
+import { TrialRefusal, type TrialRpc, TrialServiceError, paidRequired, tasterUsed } from '../trial/gate';
 
 export type AssessmentKind = 'writing' | 'speaking' | 'live' | 'feedback';
 /** Which allowance a live interview uses (Alex, 1 October 2026): the 2
@@ -45,6 +45,12 @@ export async function reserveAssessment(
     /* No paid or complimentary access (2026-10-01-free-account.sql): the
        free account's one refusal, HTTP 402, the same from every Worker. */
     if (reason === 'paid-required') throw paidRequired();
+    /* A free account's lifetime try of this kind is used up (10 October
+       2026, 2026-10-10-free-taster.sql): HTTP 402 with its own code, not an
+       assessment-unavailable refusal, so a screen can offer the upgrade. */
+    if (reason === 'taster-used' && (kind === 'writing' || kind === 'speaking')) {
+      throw tasterUsed(kind, typeof result.used === 'number' ? result.used : undefined, typeof result.limit === 'number' ? result.limit : undefined);
+    }
     const message = REFUSAL_MESSAGES[reason];
     if (!message) throw new TrialServiceError('Assessment allowance could not be checked.');
     const details = typeof result.limit === 'number'
