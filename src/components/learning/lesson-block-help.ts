@@ -49,6 +49,10 @@ import {
 } from '../../lib/store-owner';
 import { askContext } from './learning-versions';
 import { isTrialBuild } from '../../lib/trial/mode';
+import { onTrialChange, refreshTrial, serverNow } from '../../lib/trial/client';
+import { browserTier } from '../../lib/access/tier';
+import { TASTER_LIMITS, tasterLeft } from '../../lib/access/taster';
+import { TUTOR_COUNTER, offerTaster } from '../../lib/access/taster-offers';
 import {
   helpReplyNote,
   requestOwnedLessonHelp,
@@ -425,6 +429,8 @@ function buildControl(input: {
       );
     } finally {
       binding.cancel();
+      /* A free question may just have been spent: re-read the counts. */
+      if (isTrialBuild()) void refreshTrial();
       if (inFlight.get(wrap) === binding) inFlight.delete(wrap);
       buttons.forEach((entry) => {
         entry.disabled = false;
@@ -433,7 +439,37 @@ function buildControl(input: {
     }
   }
 
-  wrap.append(row, replies);
+  /* Free AI tries (10 October 2026): while a free account has free Mr EZ
+     questions left, these buttons answer instead of opening the upgrade
+     pop-up, with the quiet counter under them. The attribute and the counter
+     follow the server's count; with none left (or on a paid account) it is
+     exactly as before. Gated build only. */
+  const counter = document.createElement('p');
+  counter.className = 'taster-counter';
+  counter.dataset.tasterCounter = 'tutor';
+  counter.hidden = true;
+  if (isTrialBuild()) {
+    let stop: () => void = () => {};
+    let wasConnected = false;
+    stop = onTrialChange((view) => {
+      if (wrap.isConnected) wasConnected = true;
+      else if (wasConnected) {
+        stop();
+        return;
+      }
+      const taster = view.status?.taster ?? null;
+      const free = offerTaster(browserTier(view, serverNow()), taster, 'tutor', document.body.dataset.examRunning === 'true');
+      for (const entry of buttons) {
+        if (free) delete entry.dataset.paidFeature;
+        else entry.dataset.paidFeature = 'tutor';
+      }
+      if (free) void import('../access/access-styles').then((m) => m.ensureAccessStyles());
+      counter.hidden = !free;
+      counter.textContent = free ? t(TUTOR_COUNTER, { left: tasterLeft(taster, 'tutor'), total: TASTER_LIMITS.tutor }) : '';
+    });
+  }
+
+  wrap.append(row, counter, replies);
   return wrap;
 }
 

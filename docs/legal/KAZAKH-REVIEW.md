@@ -2664,6 +2664,21 @@ Source file: `src/lib/i18n/dict/kk/buying.ts`
    - **KK:** {days} күнге {price}. Автоматты ұзарту жоқ.
    - **Correction:**
 
+497a. **EN:** Use your free try now, then decide.
+   - **RU:** Воспользуйтесь бесплатной попыткой, а потом решайте.
+   - **KK:** Тегін талпынысты қазір пайдаланыңыз, содан кейін шешіңіз.
+   - **Correction:**
+
+497b. **EN:** You have already used your free Speaking check. Nothing was used.
+   - **RU:** Вы уже использовали бесплатную проверку Speaking. Ничего не списано.
+   - **KK:** Тегін Speaking тексеруін бұрын пайдаландыңыз. Ештеңе жұмсалған жоқ.
+   - **Correction:**
+
+497c. **EN:** You have already used your free essay check. Nothing was used.
+   - **RU:** Вы уже использовали бесплатную проверку эссе. Ничего не списано.
+   - **KK:** Тегін эссе тексеруін бұрын пайдаландыңыз. Ештеңе жұмсалған жоқ.
+   - **Correction:**
+
 ## Sign-up and the profile form (/sign-up, /profile)
 
 Source file: `src/lib/i18n/dict/kk/auth.ts`

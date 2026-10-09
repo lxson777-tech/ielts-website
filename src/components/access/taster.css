@@ -55,14 +55,18 @@
 }
 .taster-row-action {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 14px;
+  gap: 8px 14px;
+  min-width: 0;
 }
 .taster-row-action small {
   font-size: 12px;
   font-weight: 600;
   color: var(--trial-muted);
-  white-space: nowrap;
+}
+.taster-card {
+  min-width: 0;
 }
 .taster-foot {
   display: flex;
@@ -226,8 +230,9 @@
 
 @media (max-width: 560px) {
   .taster-card { padding: 20px 18px; }
-  .taster-row-action { width: 100%; justify-content: space-between; }
-  .taster-row-action .trial-btn { flex: 1 1 auto; }
+  .taster-row-action { width: 100%; }
+  .taster-row-action .trial-btn { flex: 1 1 100%; white-space: normal; text-align: center; }
+  .taster-row-text { flex-basis: 100%; }
   .taster-after { padding: 18px; }
   .taster-ask { margin-left: 0; }
 }

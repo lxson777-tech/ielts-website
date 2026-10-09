@@ -269,6 +269,10 @@ export const strings: Record<string, string> = {
   'Mr EZ guidance on everything you study': 'Оқитыныңыздың бәрі бойынша Mr EZ сүйемелдеуі',
   'Your personal study plan, with practice every day': 'Күн сайынғы практикасы бар жеке оқу жоспарыңыз',
   '{price} for {days} days. No automatic renewal.': '{days} күнге {price}. Автоматты ұзарту жоқ.',
+  /* Free AI tries (10 October 2026) */
+  'Use your free try now, then decide.': 'Тегін талпынысты қазір пайдаланыңыз, содан кейін шешіңіз.',
+  'You have already used your free Speaking check. Nothing was used.': 'Тегін Speaking тексеруін бұрын пайдаландыңыз. Ештеңе жұмсалған жоқ.',
+  'You have already used your free essay check. Nothing was used.': 'Тегін эссе тексеруін бұрын пайдаландыңыз. Ештеңе жұмсалған жоқ.',
 };
 
 export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {};

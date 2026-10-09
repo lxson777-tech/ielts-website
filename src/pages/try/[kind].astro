@@ -14,15 +14,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import TasterTry from '../../components/access/TasterTry';
 import { isTrialBuild } from '../../lib/trial/mode';
 
-export const getStaticPaths: GetStaticPaths = () =>
-  isTrialBuild()
-    ? [
-        { params: { kind: 'essay' }, props: { kindName: 'essay' } },
-        { params: { kind: 'speaking' }, props: { kindName: 'speaking' } },
-      ]
-    : [];
+export const getStaticPaths: GetStaticPaths = () => (isTrialBuild() ? [{ params: { kind: 'essay' }, props: { kindName: 'essay' } }, { params: { kind: 'speaking' }, props: { kindName: 'speaking' } }] : []);
 
-const { kindName } = Astro.props as { kindName: 'essay' | 'speaking' };
+const kindName = Astro.props.kindName as 'essay' | 'speaking';
 const essay = kindName === 'essay';
 ---
 <BaseLayout

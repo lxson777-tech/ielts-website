@@ -70,8 +70,6 @@ export const strings: Record<string, string> = {
   'Your free Speaking check': 'Ваша бесплатная проверка Speaking',
   'Answer a few questions out loud.': 'Ответьте вслух на несколько вопросов.',
   'Start my free Speaking check': 'Начать бесплатную проверку Speaking',
-  'You have used your free Speaking check.': 'Вы уже использовали бесплатную проверку Speaking.',
-  'You have used your free essay check.': 'Вы уже использовали бесплатную проверку эссе.',
   'Free tries are not available right now.': 'Бесплатные попытки сейчас недоступны.',
   'Your lessons are all still open. Please try again later.': 'Все уроки по-прежнему открыты. Попробуйте позже.',
   'Your result is saved in your account. Every lesson stays free, and practice and guidance keeps the checks coming.':

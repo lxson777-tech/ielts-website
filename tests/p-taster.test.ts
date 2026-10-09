@@ -254,6 +254,13 @@ test('Mr EZ\'s launcher and lesson buttons only keep the upgrade attribute when 
   assert.match(read('src/components/tutor/MrEzPanel.tsx'), /const needsUpgrade = ACCESS_MODE === 'trial' && \(tier === 'free' \|\| tier === 'paid-ended'\) && !freeTries;/);
 });
 
+test('the lesson body\'s Explain / Example buttons follow the same rule', () => {
+  const source = read('src/components/learning/lesson-block-help.ts');
+  assert.match(source, /offerTaster\(browserTier\(view, serverNow\(\)\), taster, 'tutor'/);
+  assert.match(source, /if \(free\) delete entry\.dataset\.paidFeature;\s*else entry\.dataset\.paidFeature = 'tutor';/);
+  assert.match(source, /if \(isTrialBuild\(\)\) \{\s*let stop/, 'gated build only');
+});
+
 test('the count of free tries left follows the plural rules in Russian', () => {
   const forms = { one: '{n} free try left', other: '{n} free tries left' };
   const plural = (n: number) => pluralWith(dict, 'ru', n, forms);
@@ -308,8 +315,7 @@ test('the result and the end-of-lesson cards are shown only from the server\'s o
 
 test('the essay and Speaking try pages exist only in the gated build', () => {
   const page = read('src/pages/try/[kind].astro');
-  assert.match(page, /isTrialBuild\(\)\s*\?\s*\[/);
-  assert.match(page, /: \[\];/, 'the open build generates no page');
+  assert.match(page, /getStaticPaths: GetStaticPaths = \(\) => \(isTrialBuild\(\) \? \[.*\] : \[\]\);/, 'the open build generates no page');
   assert.match(page, /trialGate=\{\{ kind: 'free'/, 'any signed-in account opens it; a visitor gets the invitation');
 });
 
