@@ -32,10 +32,19 @@ export function baseAttemptId(testId: string): string {
 }
 
 /** Drill ids are always `${sourceTestId}-drill-p${n}` (src/lib/tests/
-    drills.ts). Checked after stripping "-retake" so a retake built from a
-    drill's wrong questions is still recognised as one. */
+    drills.ts), and a paper of several (not all) chosen parts from the start
+    screen's settings is `${sourceTestId}-drill-p1-p3` (src/lib/tests/
+    practice-subset.ts). Checked after stripping "-retake" so a retake built
+    from a drill's wrong questions is still recognised as one. */
 export function isDrillAttemptId(testId: string): boolean {
-  return /-drill-p\d+$/.test(baseAttemptId(testId));
+  return /-drill-p\d+(?:-p\d+)*$/.test(baseAttemptId(testId));
+}
+
+/** A paper of several chosen parts (`...-drill-p1-p3`). It has no drill of its
+    own in the catalogue, so it is recorded against its full paper's activity
+    (as practice), never against a drill id nothing else knows. */
+export function isMultiPartSubsetId(testId: string): boolean {
+  return /-drill-p\d+(?:-p\d+)+$/.test(baseAttemptId(testId));
 }
 
 export function isRetakeAttemptId(testId: string): boolean {
@@ -61,6 +70,7 @@ export function paperFromAttemptId(testId: string): Paper | undefined {
     shared item ids (store.browser.ts's earlierAttempt). */
 export function attemptActivityId(testId: string): string {
   const base = baseAttemptId(testId);
+  if (isMultiPartSubsetId(base)) return paperActivityId(base.replace(/-drill-p\d+(?:-p\d+)+$/, ''));
   return isDrillAttemptId(base) ? drillActivityId(base) : paperActivityId(base);
 }
 
@@ -84,8 +94,12 @@ export function attemptEvidenceMode(attemptKind: 'full' | 'drill', override?: Ev
     the next load (see recordStaleSessionAbandonment in TestPlayer.tsx): a
     drill, or a retake of anything, is practice; a plain paper id is a timed
     assessment. */
-export function attemptEvidenceModeFromId(testId: string): EvidenceMode {
-  return isDrillAttemptId(testId) || isRetakeAttemptId(testId) ? 'practice' : 'assessment';
+export function attemptEvidenceModeFromId(testId: string, tookHelp = false): EvidenceMode {
+  /* `tookHelp` is what the sitting itself says (TestSession.practice): a full
+     paper's id alone cannot tell an exam from a paper sat with the timer off
+     or answers checked as you go, and the id must never be the reason such a
+     sitting reads as an exam. */
+  return tookHelp || isDrillAttemptId(testId) || isRetakeAttemptId(testId) ? 'practice' : 'assessment';
 }
 
 /* ── Question item identity ──────────────────────────────────────────────── */
@@ -121,6 +135,10 @@ export function buildQuestionItems(
   answers: Readonly<Record<string, string>>,
   scoredIds: ReadonlySet<string>,
   assistedIds: ReadonlySet<string>,
+  /** Questions the student pressed Check on before handing in (check as you
+      go): the answer was shown to them, which is a higher level of help than
+      a hint and wins over it. */
+  answerShownIds: ReadonlySet<string> = new Set(),
 ): ItemOutcomeDraft[] {
   return entries
     .filter(({ question }) => question.scored !== false)
@@ -128,7 +146,11 @@ export function buildQuestionItems(
       itemId: testItemId(baseId, question.id),
       firstAnswer: answers[question.id] ?? '',
       correct: scoredIds.has(question.id),
-      assistance: (assistedIds.has(question.id) ? 'hint' : 'none') as AssistanceLevel,
+      assistance: (answerShownIds.has(question.id)
+        ? 'answer-shown'
+        : assistedIds.has(question.id)
+          ? 'hint'
+          : 'none') as AssistanceLevel,
       subskill: group.type,
     }));
 }

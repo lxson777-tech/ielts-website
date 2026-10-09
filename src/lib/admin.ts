@@ -137,13 +137,16 @@ export async function listAllUsers(): Promise<AdminListResult> {
     bank: "reading-full-001-drill-p2-retake" -> "Reading test 1, passage 2
     drill (retake)". Unknown shapes come back as the raw id. */
 export function testLabel(id: string): string {
-  const m = /^(reading|listening)-full-(\d+)(?:-drill-p(\d+))?(-retake)?$/.exec(id);
+  const m = /^(reading|listening)-full-(\d+)(?:-drill-(p\d+(?:-p\d+)*))?(-retake)?$/.exec(id);
   if (!m) return id;
-  const [, skill, num, part, retake] = m;
+  const [, skill, num, parts, retake] = m;
   const paper = skill === 'reading' ? 'Reading' : 'Listening';
   const unit = skill === 'reading' ? 'passage' : 'part';
   let label = `${paper} test ${Number(num)}`;
-  if (part) label += `, ${unit} ${part} drill`;
+  if (parts) {
+    const numbers = parts.split('-').map((p) => p.slice(1));
+    label += numbers.length > 1 ? `, ${unit}s ${numbers.join(' and ')} drill` : `, ${unit} ${numbers[0]} drill`;
+  }
   if (retake) label += ' (retake)';
   return label;
 }
@@ -388,7 +391,7 @@ const num = (value: unknown): number | null => (typeof value === 'number' && Num
 /** "reading-full-003-drill-p2" -> "reading-full-003"; any other id unchanged.
     The same rule as sourceTestId in src/lib/tutor/test-items.ts. */
 export function sourcePaperId(id: string): string {
-  return id.replace(/-drill-p\d+$/, '');
+  return id.replace(/-drill-p\d+(?:-p\d+)*$/, '');
 }
 
 export function attemptSummary(t: AdminWorkTest): AttemptSummary {
@@ -403,7 +406,7 @@ export function attemptSummary(t: AdminWorkTest): AttemptSummary {
     sourceId: sourcePaperId(testId),
     title: testLabel(testId),
     paper,
-    kind: t.activity_id.startsWith('drill:') || /-drill-p\d+$/.test(testId) ? 'drill' : 'full',
+    kind: t.activity_id.startsWith('drill:') || /-drill-p\d+(?:-p\d+)*$/.test(testId) ? 'drill' : 'full',
     raw: num(outcome.raw),
     total: num(outcome.total),
     band: num(outcome.bandEstimate),

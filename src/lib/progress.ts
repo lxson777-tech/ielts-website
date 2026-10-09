@@ -85,6 +85,12 @@ export interface TestAttempt {
       means a complete test — band history and best-band only count those,
       since a band estimate is only meaningful over the full 40-question mix. */
   kind?: 'full' | 'drill';
+  /** True for a FULL paper sat with help (practice settings: extra time, no
+      timer, answers checked as you go, some passages only, the recording
+      replayed). It is stored as kind 'drill', so every band history leaves it
+      out; this flag only lets a list say "Practice". Optional, so older
+      attempts load unchanged. */
+  practice?: boolean;
   /** Which skill this attempt belongs to. Optional so attempts recorded
       before this field existed still load; treat missing as 'reading' since
       that was the only skill with scored attempts at the time. Needed once

@@ -97,7 +97,7 @@ function summariseTest(progress: ProgressV1, ref: TutorAttemptRef): AssessmentSu
       title: `${(attempt.skill ?? 'reading') === 'listening' ? 'Listening' : 'Reading'} ${
         attempt.kind === 'drill' ? 'drill' : 'test'
       } (${testId})`,
-      overallBand: attempt.band,
+      overallBand: attempt.kind === 'drill' ? undefined : attempt.band,
       raw: attempt.raw,
       total: attempt.total,
       byType: Object.entries(attempt.byType ?? {}).map(([type, v]) => ({

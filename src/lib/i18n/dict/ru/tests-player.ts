@@ -335,6 +335,62 @@ export const strings: Record<string, string> = {
     'В конце вы получите результат и полный разбор ответов вместе с расшифровкой записи. Одной части слишком мало для оценки балла.',
   'At the end you get a score and a full answer review, with every question explained with the exact line from the passage. One passage is too short for a band.':
     'В конце вы получите результат и полный разбор ответов, где каждый вопрос объяснён точной строкой из текста. Одного текста слишком мало для оценки балла.',
+
+  /* ---------------------------------------------------------------- */
+  /* Practice settings on the start screen (Alex, 9 October 2026)      */
+  /* ---------------------------------------------------------------- */
+  'Extra time': 'Дополнительное время',
+  'No timer': 'Без таймера',
+  'no timer': 'без таймера',
+  'Exam time': 'Время экзамена',
+  'Check as you go': 'Проверка по ходу',
+  'Pause and replay': 'Пауза и повтор',
+  'Play once': 'Один раз',
+  'Part {n} only': 'Только Part {n}',
+  'Passage {n} only': 'Только отрывок {n}',
+  'Parts {list}': 'Parts {list}',
+  'Passages {list}': 'Отрывки {list}',
+  'Part {n}': 'Part {n}',
+  'Passage {n}': 'Отрывок {n}',
+  Timer: 'Таймер',
+  Checking: 'Проверка',
+  Parts: 'Части',
+  Passages: 'Отрывки',
+  'At the end': 'В конце',
+  'As I go': 'По ходу',
+  'Marked after you hand in': 'Оценка после сдачи',
+  'A checked answer locks': 'Проверенный ответ блокируется',
+  'Listening playback': 'Прослушивание записи',
+  'Like the real test': 'Как на настоящем тесте',
+  'Seek and replay freely': 'Можно перематывать и переслушивать',
+  'With these settings the result is recorded as practice, with no band estimate.':
+    'С такими настройками результат сохраняется как тренировочный, без примерного балла.',
+  'There is no timer. The time you spend is counted up, and you hand in when you are ready.':
+    'Таймера нет. Затраченное время считается вперёд, а работу вы сдаёте, когда будете готовы.',
+  'The recording plays once.': 'Запись звучит один раз.',
+  'Press Check under an answer to see whether it is right. A checked answer is locked and cannot be changed.':
+    'Нажмите «Проверить» под ответом, чтобы узнать, верен ли он. Проверенный ответ блокируется, и изменить его нельзя.',
+  'You can play, pause, seek and replay the recording as often as you like. Each part plays its own stretch of the recording.':
+    'Запись можно включать, ставить на паузу, перематывать и переслушивать сколько угодно. Каждая часть воспроизводит свой отрезок записи.',
+  'Press Start recording when ready. It plays once, with no pausing, seeking or replaying. Refreshing keeps your answers, but restarts the recording.':
+    'Нажмите «Включить запись», когда будете готовы. Она звучит один раз, без пауз, перемотки и повторов. При обновлении страницы ответы сохраняются, а запись начинается заново.',
+  'At the end you get a score and a full answer review, including the transcript. With these settings there is no band estimate.':
+    'В конце вы получите результат и полный разбор ответов, включая текст записи. С такими настройками примерного балла нет.',
+  'At the end you get a score and a full answer review, with every question explained with the exact line from the passage. With these settings there is no band estimate.':
+    'В конце вы получите результат и полный разбор ответов: каждый вопрос объяснён с точной строкой из текста. С такими настройками примерного балла нет.',
+  /* In the paper itself. */
+  'Time spent': 'Затрачено времени',
+  'Hide time': 'Скрыть время',
+  'Show time': 'Показать время',
+  'Right. This answer is now locked.': 'Верно. Этот ответ теперь заблокирован.',
+  'Not right. This answer is now locked.': 'Неверно. Этот ответ теперь заблокирован.',
+  'Practice result: no band estimate, because this paper was taken with help.':
+    'Тренировочный результат: примерного балла нет, потому что работа выполнена с подсказками.',
+  'Practice result: no band estimate, because only part of this paper was taken.':
+    'Тренировочный результат: примерного балла нет, потому что пройдена только часть работы.',
+  'Plays once': 'Звучит один раз',
+  'Part {part} of the recording runs from {from} to {to}.':
+    'Part {part} записи идёт с {from} до {to}.',
 };
 
 export const plurals: Record<string, { one: string; few: string; many: string; other: string }> = {
@@ -413,4 +469,16 @@ export const plurals: Record<string, { one: string; few: string; many: string; o
     other: '{n} слова · {status}',
   },
   '{n} words': { one: '{n} слово', few: '{n} слова', many: '{n} слов', other: '{n} слова' },
+  'Answer all {scored} scored questions across {n} parts, then submit when you are ready.': {
+    one: 'Ответьте на все {scored} оцениваемых вопросов в {n} части, затем отправьте работу, когда будете готовы.',
+    few: 'Ответьте на все {scored} оцениваемых вопросов в {n} частях, затем отправьте работу, когда будете готовы.',
+    many: 'Ответьте на все {scored} оцениваемых вопросов в {n} частях, затем отправьте работу, когда будете готовы.',
+    other: 'Ответьте на все {scored} оцениваемых вопросов в {n} частях, затем отправьте работу, когда будете готовы.',
+  },
+  'Answer all {scored} scored questions across {n} passages, then submit when you are ready.': {
+    one: 'Ответьте на все {scored} оцениваемых вопросов в {n} отрывке, затем отправьте работу, когда будете готовы.',
+    few: 'Ответьте на все {scored} оцениваемых вопросов в {n} отрывках, затем отправьте работу, когда будете готовы.',
+    many: 'Ответьте на все {scored} оцениваемых вопросов в {n} отрывках, затем отправьте работу, когда будете готовы.',
+    other: 'Ответьте на все {scored} оцениваемых вопросов в {n} отрывках, затем отправьте работу, когда будете готовы.',
+  },
 };
