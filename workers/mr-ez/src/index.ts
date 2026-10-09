@@ -115,7 +115,16 @@ import { isSiteTest, resolveItems, summariseByType, type SiteTest } from '../../
 import { formatDate, tutorCount, tutorText } from '../../../src/lib/tutor/ru';
 import { buildCourse, courseLessonCount } from '../../../src/lib/course';
 import { parseAccessMode } from '../../../src/lib/trial/offer';
-import { TrialRefusal, TrialServiceError, paidAccessRunning, paidRequired, serviceRpc } from '../../../src/lib/trial/gate';
+import {
+  TrialRefusal,
+  TrialServiceError,
+  paidAccessRunning,
+  paidRequired,
+  refusalBody,
+  releaseTutorTaster,
+  reserveTutorTaster,
+  serviceRpc,
+} from '../../../src/lib/trial/gate';
 import type { ContentLocale as Locale } from '../../../src/lib/i18n/locale';
 import type { ProgressV1 } from '../../../src/lib/progress';
 import { errorName, timedFetch, withRequestLog, type RequestTrace } from '../../../src/lib/observability/request-log';
@@ -1799,18 +1808,26 @@ export function createHandler(deps: Deps) {
       if (isRecord(body) && isLearningTask(body.task)) {
         const learningReq = parseLearningRequest(body);
         deps.trace?.set('task', learningReq.task);
-        const reply = await withTrial(deps, env, userId, () => runLearningTurn(deps, env, userId, learningReq));
+        const reply = await withTrial(deps, env, userId, { task: learningReq.task, key: learningReq.idempotencyKey }, () =>
+          runLearningTurn(deps, env, userId, learningReq),
+        );
         return json(reply, 200, cors);
       }
 
       const req = parseTutorRequest(body);
       deps.trace?.set('task', req.task);
 
-      const reply = await withTrial(deps, env, userId, () => runTurn(deps, env, userId, req));
+      const reply = await withTrial(deps, env, userId, { task: req.task, key: req.idempotencyKey }, () =>
+        runTurn(deps, env, userId, req),
+      );
       return json(reply, 200, cors);
     } catch (err) {
       if (err instanceof TutorRequestError) {
         return fail(err.code, err.message, cors, err.code === 'busy' ? 10 : undefined);
+      }
+      if (err instanceof TrialRefusal && err.code === 'taster-used') {
+        // A free account's ten tries are used: 402 before any model call.
+        return json(refusalBody(err), STATUS_FOR['paid-required'], cors);
       }
       if (err instanceof TrialRefusal && err.code === 'paid-required') {
         return json({ error: err.message, code: 'paid-required', reason: 'paid-required' }, STATUS_FOR['paid-required'], cors);
@@ -1853,18 +1870,53 @@ export function createHandler(deps: Deps) {
        site answers, under this Worker's existing per-student daily limits
        (Alex, 29 September 2026: those limits are the paid caps);
      - anything else (a free account, a paid one that ended, an old trial):
-       refused with 402 paid-required, no model call;
+       a free account's lifetime TEN tries (10 October 2026, 2026-10-10-
+       free-taster.sql): only Mr EZ's chat and the lesson help buttons
+       (TASTER_TASKS) take one. One is reserved BEFORE the model is called
+       (tutor_taster_reserve, keyed by the request's idempotency key, so a
+       retry or replay of the same key is never charged twice) and given back
+       when no answer is delivered (any error) or when the answer was a
+       stored one (cached). When the ten are used: 402 taster-used, no model
+       call. Every other task (welcome, explain, weekly, unit, debrief, item,
+       evaluate-practice, propose-next) belongs to practice and the personal
+       plan and stays 402 paid-required; the debrief and item tasks also read
+       paid test material, and welcome opens by itself, so it must never
+       spend a try the student did not ask for;
      - a database that cannot be asked: refused (fail closed).
 
    The three-day trial's five messages per section are retired with the
    trial. Its database functions now refuse too, and nothing here reserves
    one. */
 
-async function withTrial<T>(deps: Deps, env: Env, userId: string, run: () => Promise<T>): Promise<T> {
+/** The tasks a free account may spend a try on: the ones a student starts
+    by asking a question. */
+const TASTER_TASKS: ReadonlySet<string> = new Set(['chat', 'lesson-help']);
+
+async function withTrial<T>(
+  deps: Deps,
+  env: Env,
+  userId: string,
+  asked: { task: string; key?: string },
+  run: () => Promise<T>,
+): Promise<T> {
   if (parseAccessMode(env.ACCESS_MODE) !== 'trial') return run();
   const rpc = serviceRpc(deps.fetch, env.SUPABASE_URL as string, env.SUPABASE_SERVICE_ROLE_KEY as string);
   if (await paidAccessRunning(rpc, userId)) return run();
-  throw paidRequired();
+  if (!TASTER_TASKS.has(asked.task)) throw paidRequired();
+
+  const requestId = asked.key && asked.key.length >= 8 && asked.key.length <= 128 ? asked.key : crypto.randomUUID();
+  const taken = await reserveTutorTaster(rpc, userId, requestId);
+  // Only a try THIS call took is this call's to give back.
+  const giveBack = taken.fresh ? () => releaseTutorTaster(rpc, userId, requestId) : async () => undefined;
+  let reply: T;
+  try {
+    reply = await run();
+  } catch (err) {
+    await giveBack();
+    throw err;
+  }
+  if (isRecord(reply) && reply.cached === true) await giveBack();
+  return reply;
 }
 
 async function runTurn(deps: Deps, env: Env, userId: string, req: TutorRequest): Promise<TutorReply> {
