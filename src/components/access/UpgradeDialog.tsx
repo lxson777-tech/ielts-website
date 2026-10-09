@@ -36,6 +36,7 @@ import {
   DIALOG_USED_HEADING,
   TASTER_ROUTES,
   dialogTasterLead,
+  anyTasterOffered,
   dialogUsedLead,
   tasterForPaidFeature,
 } from '../../lib/access/taster-offers';
@@ -96,6 +97,11 @@ export default function UpgradeDialog() {
            finished before this one, on any device, means it is not. */
         const finishedBefore = Object.keys(getProgress().lessons).filter((key) => key !== finishedKey).length;
         if (!shouldNudge({ tier: currentTier(), userId: view.userId, storage, underExam, finishedBefore })) return;
+        /* A free try still on offer means the lesson's own end card is
+           already inviting the student to try the AI; a pop-up on top of it
+           would be the same invitation twice, so the nudge waits until the
+           tries are used (it is not marked shown, so it can come later). */
+        if (anyTasterOffered(currentTier(), view.status?.taster ?? null, underExam)) return;
         markNudgeShown(storage, view.userId!, new Date().toISOString());
         show({ feature: 'first-lesson' });
       }, NUDGE_DELAY_MS);

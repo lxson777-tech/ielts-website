@@ -336,6 +336,7 @@ const STATUS_FOR: Record<TutorErrorCode, number> = {
   'trial-allowance-used': 429,
   'trial-not-included': 403,
   'paid-required': 402,
+  'taster-used': 402,
 };
 
 function fail(code: TutorErrorCode, message: string, cors: Record<string, string>, retryAfter?: number): Response {
