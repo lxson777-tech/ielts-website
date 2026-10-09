@@ -19,7 +19,9 @@ import { pitchPlan, pitchPrice, PITCH_PRICE_LINE } from '../../lib/access/upgrad
 import { useTrial } from '../../lib/trial/react';
 import { deviceStorage } from '../../lib/store-owner';
 import { currentRoute } from '../../lib/auth/next';
+import { anyTasterOffered } from '../../lib/access/taster-offers';
 import { ensureAccessStyles } from './access-styles';
+import { TasterTodayCard, useTaster } from './taster-ui';
 
 const LESSONS: CourseLesson[] = buildCourse().flatMap((module) => module.lessons);
 
@@ -67,6 +69,8 @@ export default function FreeHome({ ended = false }: { ended?: boolean }) {
   const next = useMemo(() => freeNextLessons(LESSONS, done, start), [progress, start]); // eslint-disable-line react-hooks/exhaustive-deps
   const { done: studied, total } = freeProgress(LESSONS, done);
   const plan = pitchPlan();
+  const tries = useTaster();
+  const showTries = anyTasterOffered(tries.tier, tries.taster, tries.underExam);
   const percent = total > 0 ? Math.round((studied / total) * 100) : 0;
 
   return (
@@ -130,7 +134,12 @@ export default function FreeHome({ ended = false }: { ended?: boolean }) {
         </div>
       </section>
 
-      <aside className="trial-ui free-home-pitch" aria-labelledby="free-pitch-title" data-free-pitch>
+      {/* Free AI tries (10 October 2026): while any is left, the card below
+          takes the pitch's place and carries the pitch as its quiet footer.
+          Once every try is used, or for an account that gets none, it is the
+          plain pitch again. */}
+      <TasterTodayCard />
+      {!showTries && <aside className="trial-ui free-home-pitch" aria-labelledby="free-pitch-title" data-free-pitch>
         <span className="upgrade-eyebrow">{t('Practice and guidance')}</span>
         <h2 id="free-pitch-title">{t('Practise what you learn, with feedback on your own work.')}</h2>
         <p>
@@ -147,7 +156,7 @@ export default function FreeHome({ ended = false }: { ended?: boolean }) {
           </button>
           <small>{t(PITCH_PRICE_LINE, { price: pitchPrice(plan.amount, locale), days: plan.days })}</small>
         </div>
-      </aside>
+      </aside>}
     </div>
   );
 }

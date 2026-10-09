@@ -113,7 +113,7 @@ const blockIds = bodyHtml ? segmentLessonBody(bodyHtml).map((block) => block.id)
     >
       {lesson.skill === 'vocabulary' && <LessonVocabularySearch />}
       <slot />
-      {ACCESS_MODE === 'trial' && <LessonPracticeNotice client:load />}
+      {ACCESS_MODE === 'trial' && <LessonPracticeNotice client:load skill={lesson.skill} />}
       {ACCESS_MODE !== 'trial' && <details class="lesson-optional-vocabulary">
         <summary data-i18n>Vocabulary quick check</summary>
       <div class="lesson-word-quiz"><span data-i18n>Vocabulary quick check</span>

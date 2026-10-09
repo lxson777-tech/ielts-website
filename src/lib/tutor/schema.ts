@@ -310,7 +310,10 @@ export type TutorErrorCode =
      signed-in account without paid or complimentary access, answered with
      HTTP 402 { error, code: 'paid-required', reason: 'paid-required' }.
      Only from a Worker running ACCESS_MODE=trial (the commercial build). */
-  | 'paid-required';
+  | 'paid-required'
+  /* Free AI tries (10 October 2026): a free account has used its ten free
+     questions, answered with HTTP 402 { error, code: 'taster-used' }. */
+  | 'taster-used';
 
 /** How much of one section's trial allowance is used, after this reply.
     Present only on replies from a Worker running the trial. */

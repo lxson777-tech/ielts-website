@@ -13,6 +13,7 @@
 
 import upgradeCss from './upgrade.css?inline';
 import freeHomeCss from './free-home.css?inline';
+import tasterCss from './taster.css?inline';
 
 const STYLE_ID = 'access-free-styles';
 
@@ -20,6 +21,6 @@ export function ensureAccessStyles(): void {
   if (typeof document === 'undefined' || document.getElementById(STYLE_ID)) return;
   const style = document.createElement('style');
   style.id = STYLE_ID;
-  style.textContent = `${upgradeCss}\n${freeHomeCss}`;
+  style.textContent = `${upgradeCss}\n${freeHomeCss}\n${tasterCss}`;
   document.head.append(style);
 }

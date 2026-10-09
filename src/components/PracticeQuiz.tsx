@@ -23,6 +23,8 @@ import type { AssistanceLevel } from '../lib/learning/contracts/evidence';
 import type { CacheOwner } from '../lib/learning/contracts/sync';
 import { onOwnerChange, type OwnerBinding } from '../lib/store-owner';
 import LessonHelpControls from './learning/LessonHelpControls';
+import { AskMrEzFree } from './access/taster-ui';
+import { isTrialBuild } from '../lib/trial/mode';
 import {
   EXERCISE_OWNER_CHANGED_NOTE,
   claimExerciseCheck,
@@ -447,6 +449,12 @@ function UnitBlock({
                   )}
                   {q.source && <p className="mt-1 text-xs text-ink-muted">{t('Source: {source}', { source: q.source })}</p>}
                 </div>
+              )}
+
+              {/* The gated build, a free account with free Mr EZ questions
+                  left (10 October 2026): a quiet way to ask about a miss. */}
+              {locked && !right && isTrialBuild() && (
+                <AskMrEzFree question={q.prompt} answer={answerLabel(q, correction.expected)} />
               )}
 
               {/* Help at the teaching point: a hint that leads toward the

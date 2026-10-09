@@ -85,6 +85,7 @@ import * as practiceSets from '../src/lib/i18n/dict/ru/practice-sets.ts';
 import * as vocabHome from '../src/lib/i18n/dict/ru/vocab-home.ts';
 import * as vocabGames from '../src/lib/i18n/dict/ru/vocab-games.ts';
 import * as testsHubBatch from '../src/lib/i18n/dict/ru/tests-hub.ts';
+import * as pTasterBatch from '../src/lib/i18n/dict/ru/p-taster.ts';
 
 import * as partStrategies from '../src/lib/i18n/dict/ru/parts/strategies.ts';
 import * as partStructures from '../src/lib/i18n/dict/ru/parts/structures.ts';
@@ -136,6 +137,7 @@ const BATCH_FILES: { file: string; mod: { strings: Record<string, string>; plura
   { file: 'dict/ru/vocab-home.ts', mod: vocabHome },
   { file: 'dict/ru/vocab-games.ts', mod: vocabGames },
   { file: 'dict/ru/tests-hub.ts', mod: testsHubBatch },
+  { file: 'dict/ru/p-taster.ts', mod: pTasterBatch },
 ];
 
 /* The extra dictionary parts (src/lib/i18n/dict/parts.ts): the big coaching

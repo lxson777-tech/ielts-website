@@ -1,0 +1,241 @@
+/* The free AI tries (Alex, 10 October 2026): the card on Today, the card
+   after a try is used, the quiet counter by Mr EZ's buttons, the lesson-end
+   offer and the pop-up's "try this first" lead. Gated build only, inserted
+   by access-styles.ts the first time one of these is drawn, so the open
+   site's pages never carry it. Same tokens as the other access screens
+   (src/styles/trial.css): forest ink, warm paper, the orange primary. */
+
+.taster-card {
+  background: var(--trial-paper);
+  border: 1px solid var(--trial-line-soft);
+  border-radius: 20px;
+  padding: 28px;
+}
+.taster-card h2 {
+  font-size: 22px;
+  margin: 12px 0 8px;
+}
+.taster-lead {
+  margin: 0 0 18px;
+  max-width: 620px;
+  font-size: 14px;
+  color: var(--trial-muted);
+}
+.taster-rows {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: grid;
+}
+.taster-rows li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  padding: 16px 0;
+  border-top: 1px solid var(--trial-line-soft);
+}
+.taster-rows li.is-spent {
+  opacity: 0.62;
+}
+.taster-row-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 260px;
+}
+.taster-row-text b {
+  font-weight: 600;
+  font-size: 15px;
+}
+.taster-row-text span {
+  font-size: 13px;
+  color: var(--trial-muted);
+}
+.taster-row-action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  min-width: 0;
+}
+.taster-row-action small {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--trial-muted);
+}
+.taster-card {
+  min-width: 0;
+}
+.taster-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  margin: 0;
+}
+.taster-foot small {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--trial-ink);
+}
+.taster-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--trial-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--trial-line-soft);
+  cursor: pointer;
+}
+.taster-link:hover {
+  text-decoration-color: currentColor;
+}
+
+/* After a try is used: one short paragraph, one button. */
+.taster-after {
+  margin-top: 22px;
+  padding: 22px 24px;
+}
+.taster-after-line {
+  margin: 0 0 16px;
+  max-width: 640px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* The counter next to Mr EZ's buttons and inside his panel. */
+.taster-counter {
+  margin: 8px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--color-ink-muted, #616c64);
+}
+.mrez-panel .taster-counter {
+  margin: 0;
+  padding: 8px 18px 0;
+}
+
+/* The end-of-lesson offer (replaces the plain practice notice while a try
+   of the lesson's own kind is left). */
+.taster-lesson {
+  margin-top: 2rem;
+  padding: 22px 24px;
+}
+.taster-lesson h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+.taster-lesson p {
+  margin: 0 0 16px;
+  max-width: 620px;
+  font-size: 14px;
+  color: var(--trial-muted);
+}
+.taster-lesson-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 20px;
+}
+
+/* A quiet line under a wrong answer in a lesson's own quiz. */
+.taster-ask {
+  margin: 8px 0 0 44px;
+  font-size: 13px;
+}
+.taster-ask .taster-link {
+  font-size: 13px;
+}
+
+/* The pop-up leads with the try. */
+.upgrade-try {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--trial-orange-soft);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+}
+.upgrade-try p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--trial-ink);
+}
+
+/* The essay and Speaking try pages. */
+.taster-page-intro {
+  max-width: 640px;
+  margin: 0 0 24px;
+  font-size: 15px;
+  color: var(--color-ink-muted, #616c64);
+}
+.taster-questions {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.taster-question {
+  width: 100%;
+  text-align: left;
+  padding: 16px 18px;
+  border: 1px solid var(--trial-line-soft);
+  border-radius: 14px;
+  background: var(--trial-paper);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.55;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+.taster-question:hover,
+.taster-question:focus-visible {
+  border-color: var(--skill, var(--color-brand));
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px -18px rgb(32 37 34 / 45%);
+}
+.taster-own {
+  display: grid;
+  gap: 10px;
+}
+.taster-own label {
+  font-size: 14px;
+  font-weight: 600;
+}
+.taster-own textarea {
+  width: 100%;
+  min-height: 96px;
+  padding: 12px 14px;
+  border: 1px solid var(--trial-line-soft);
+  border-radius: 14px;
+  background: #fff;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+@media (max-width: 560px) {
+  .taster-card { padding: 20px 18px; }
+  .taster-row-action { width: 100%; }
+  .taster-row-action .trial-btn { flex: 1 1 100%; white-space: normal; text-align: center; }
+  .taster-row-text { flex-basis: 100%; }
+  .taster-after { padding: 18px; }
+  .taster-ask { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .taster-question { transition: none; }
+}

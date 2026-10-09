@@ -156,7 +156,7 @@ async function post<TReply>(url: string, token: string, req: unknown, signal?: A
     if (resp.status === 401) code = 'sign-in-required';
     /* An account without practice and guidance (the gated build's Worker,
        free-account model): the panel opens the upgrade pop-up. */
-    if (resp.status === 402) code = 'paid-required';
+    if (resp.status === 402 && code !== 'taster-used') code = 'paid-required';
     /* Ours first, the Worker's English only for a code we have no wording
        of our own for. See src/lib/tutor/errors.ts for why that way round. */
     const message = tutorErrorMessage(code) ?? fromWorker ?? t('Mr EZ could not answer just now.');
