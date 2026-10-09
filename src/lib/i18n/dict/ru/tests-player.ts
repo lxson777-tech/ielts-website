@@ -339,7 +339,7 @@ export const strings: Record<string, string> = {
   /* ---------------------------------------------------------------- */
   /* Practice settings on the start screen (Alex, 9 October 2026)      */
   /* ---------------------------------------------------------------- */
-  'Extra time': 'Дополнительное время',
+  'Extra time': 'Больше времени',
   'No timer': 'Без таймера',
   'no timer': 'без таймера',
   'Exam time': 'Время экзамена',
