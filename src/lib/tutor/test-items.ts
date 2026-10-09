@@ -148,7 +148,7 @@ export function toSiteTest(test: PracticeTest): SiteTest {
    drills.ts: `${sourceTestId}-drill-p${partIndex + 1}`), so a review of a
    drill attempt is answered from the one published file for the full test
    it was lifted from — there is no separate published JSON per drill. */
-const DRILL_SUFFIX_RE = /-drill-p\d+$/;
+const DRILL_SUFFIX_RE = /-drill-p\d+(?:-p\d+)*$/;
 
 /** 'reading-full-003-drill-p2' -> 'reading-full-003'; any other id unchanged. */
 export function sourceTestId(id: string): string {

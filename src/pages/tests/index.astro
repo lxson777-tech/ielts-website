@@ -173,7 +173,7 @@ const listeningSample = listeningTests[0];
 <script>
   import { withBase } from '../../lib/url';
   import { nextInRotation } from '../../lib/rotation';
-  import { activeSession, secondsLeft } from '../../lib/test-session';
+  import { activeSession, isUntimed, secondsLeft, sessionResumable } from '../../lib/test-session';
   import { t } from '../../lib/i18n/translate';
   import { onLocaleChange } from '../../lib/i18n/locale';
   import { getAttempts, onProgressChange } from '../../lib/progress';
@@ -188,10 +188,10 @@ const listeningSample = listeningTests[0];
       const ids: string[] = JSON.parse(btn.dataset.testIds!);
       const rotationKey = btn.dataset.rotationKey!;
       const session = activeSession();
-      const resume = session && ids.includes(session.testId) && secondsLeft(session) > 0 ? session : null;
+      const resume = session && ids.includes(session.testId) && sessionResumable(session) ? session : null;
       if (resume) {
         const line = btn.querySelector<HTMLElement>('[data-tile-line]');
-        if (line) {
+        if (line && !isUntimed(resume)) {
           /* Set through t() directly rather than data-i18n: this text is
              computed on the student's device, where the locale is known. */
           line.removeAttribute('data-i18n');

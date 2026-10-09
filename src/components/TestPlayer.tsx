@@ -20,6 +20,7 @@ import { useTrialTest } from './trial/useTrialTest';
 import {
   activeSession,
   currentSessionOwner,
+  sessionExpired,
   isTestSessionStorageKey,
   ownerStillCurrent,
   paperClockAt,
@@ -28,6 +29,7 @@ import {
   secondsLeft,
   sittingRefOf,
   standaloneSitting,
+  timeUsedSeconds,
   type PaperSittingRef,
   type PaperSittingStore,
   type SittingLoss,
@@ -43,6 +45,23 @@ import {
 import { onOwnerChange } from '../lib/store-owner';
 import type { ReviewOwnerChange } from '../lib/tutor/review-owner';
 import { drillTypes } from '../lib/tests/drills';
+import {
+  EXAM_CONDITIONS,
+  clockMinutes,
+  isExamConditions,
+  readRememberedSettings,
+  rememberSettings,
+  selectedParts,
+  type PracticeSettings,
+} from '../lib/tests/practice-settings';
+import {
+  buildPracticePaper,
+  checkUnit,
+  drillPartNumbers,
+  resultKindOf,
+  sourcePaperOf,
+  timerRuns,
+} from '../lib/tests/practice-subset';
 import Html from './Html';
 import StrategyPanel from './StrategyPanel';
 import { LABELS as TYPE_LABELS, lessonHref, practiseHref } from './TypeAnalytics';
@@ -208,12 +227,25 @@ interface Numbered {
   n: number;
 }
 
-function numberQuestions(test: PracticeTest): Numbered[] {
+/** Number the questions of `test`. When it holds only some parts of
+    `reference` (the paper the page opened, see buildPracticePaper), each part
+    keeps the numbers it has in the whole paper, so "Questions 14 to 26" in a
+    group's title still matches the circles. A paper that is its own reference
+    is numbered from 1, as it always was. */
+function numberQuestions(test: PracticeTest, reference: PracticeTest = test): Numbered[] {
+  const startOf = new Map<TestPart, number>();
+  let count = 0;
+  for (const part of reference.parts) {
+    startOf.set(part, count);
+    for (const group of part.groups) count += group.questions.length;
+  }
   const out: Numbered[] = [];
   let n = 0;
-  for (const part of test.parts)
+  for (const part of test.parts) {
+    n = startOf.get(part) ?? n;
     for (const group of part.groups)
       for (const question of group.questions) out.push({ question, group, part, n: ++n });
+  }
   return out;
 }
 
@@ -283,15 +315,20 @@ function truncatePlain(html: string, max = 90): string {
     deterministic id rather than a second row. */
 function recordStaleSessionAbandonment(stale: TestSession): void {
   const at = new Date(stale.startedAt).toISOString();
-  const cappedEnd = Math.min(Date.now(), stale.endsAt);
+  /* A sitting with no timer has no deadline to cap at and never expires. */
+  const cappedEnd = stale.endsAt === null ? Date.now() : Math.min(Date.now(), stale.endsAt);
   const secondsUsed = Math.max(0, Math.round((cappedEnd - stale.startedAt) / 1000));
-  const expired = Date.now() >= stale.endsAt;
-  const baseId = baseAttemptId(stale.testId);
+  const expired = sessionExpired(stale);
+  /* The paper actually sat (a subset of the page's paper has its own id), and
+     whether it was sat with help: a full paper's id alone must never make a
+     paper taken with the timer off read as an exam. */
+  const sat = stale.paperId ?? stale.testId;
+  const baseId = baseAttemptId(sat);
   recordUnfinishedAttempt({
-    activityId: attemptActivityId(stale.testId),
-    paper: paperFromAttemptId(stale.testId),
+    activityId: attemptActivityId(sat),
+    paper: paperFromAttemptId(sat),
     at,
-    mode: attemptEvidenceModeFromId(stale.testId),
+    mode: attemptEvidenceModeFromId(sat, stale.practice === true),
     completion: expired ? 'expired' : 'abandoned',
     secondsUsed,
     sourceTestId: baseId,
@@ -343,9 +380,9 @@ export default function TestPlayer(props: Props) {
 }
 
 function TestPlayerBody({
-  test,
+  test: pageTest,
   hubUrl,
-  attemptKind = 'full',
+  attemptKind: pageKind = 'full',
   onFinish,
   mockSitting,
   onSittingLost,
@@ -356,15 +393,16 @@ function TestPlayerBody({
      order, and read as `t`/`tn` only for text: nothing in the timer, the
      session or the scoring reads it. */
   const { t, tn, locale } = useT();
-  const numbered = useMemo(() => numberQuestions(test), [test]);
-  const TOTAL = numbered.length;
-  const SCORED_TOTAL = numbered.filter(({ question }) => question.scored !== false).length;
   const isRetake = !!onFinish;
+  /* `pageTest` is the paper the page opened; `test` (below, once the settings
+     are known) is the paper actually sat: the same paper, or a subset of its
+     passages or parts when the start screen's settings chose some. The sitting
+     is kept and found under `pageTest.id` either way. */
   /* The three-day trial, in a trial build only (useTrialTest is inert on
      the open site). A nested retake of a submitted paper and a mock leg are
      not the section's test: the retake reviews a paper already sat, and the
      mock page is gated as a whole. */
-  const trialTest = useTrialTest(test.id, isRetake || !!mockSitting);
+  const trialTest = useTrialTest(pageTest.id, isRetake || !!mockSitting);
 
   /* WHERE THIS PAPER'S SITTING IS KEPT (R2B-03). A leg of a mock sitting is
      kept inside that sitting, found by its identity; any other paper uses the
@@ -382,8 +420,8 @@ function TestPlayerBody({
       paper. Only the mode, the shared session id and the source key. */
   const placementRecording = inPlacement ? placementEvidence(placementSittingId) : null;
   const sittingStore = useMemo(
-    () => sittingStoreFor(test, mockOwner, mockSittingId, placementOwner, placementSittingId),
-    [test, mockOwner, mockSittingId, placementOwner, placementSittingId],
+    () => sittingStoreFor(pageTest, mockOwner, mockSittingId, placementOwner, placementSittingId),
+    [pageTest, mockOwner, mockSittingId, placementOwner, placementSittingId],
   );
 
   // Resume an in-progress session if one exists (survives refresh / tab
@@ -392,6 +430,35 @@ function TestPlayerBody({
     () => (restore && typeof window !== 'undefined' ? sittingStore.load() : null),
     [sittingStore, restore],
   );
+
+  /* THE PRACTICE SETTINGS (Alex, 9 October 2026): the timer, checking answers
+     as you go, which passages or parts to do, and how the recording plays.
+     Chosen on the start screen of a paper opened on its own; a resumed
+     sitting carries the ones it started with. A retake, a mock leg and a
+     placement part never show that screen, so they are always exam
+     conditions, exactly as before. */
+  const canChoose = !isRetake && !mockSittingId && !inPlacement;
+  const [settings, setSettings] = useState<PracticeSettings>(() => resumed?.settings ?? EXAM_CONDITIONS);
+  /* This device's last timer, checking and playback choices, picked up once
+     the browser can be read (never during hydration, which must match the
+     server's start screen). Parts are never remembered. */
+  useEffect(() => {
+    if (!restore || !canChoose || resumed || startedRef.current) return;
+    setSettings(readRememberedSettings());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [restore]);
+  /** The paper actually sat: the page's paper, or only the chosen parts. */
+  const test = useMemo(() => buildPracticePaper(pageTest, settings), [pageTest, settings]);
+  /** What kind of result this sitting is. A full paper in exam conditions is
+      'full' (a band estimate, exam evidence); anything taken with help, and
+      every drill, is 'drill' (practice, no band). Everything that is about
+      HOW THE PAGE OPENED the paper (coaching panels, the recording's mode,
+      where a bookmark points) reads `pageKind` instead. */
+  const attemptKind = resultKindOf(pageKind, settings, pageTest);
+  const untimed = !timerRuns(settings);
+  const numbered = useMemo(() => numberQuestions(test, pageTest), [test, pageTest]);
+  const TOTAL = numbered.length;
+  const SCORED_TOTAL = numbered.filter(({ question }) => question.scored !== false).length;
 
   /* WHOSE SITTING THIS IS (finding 1 of the 23 September 2026 review).
      Captured the moment this player picks a sitting up, and never read off
@@ -473,6 +540,27 @@ function TestPlayerBody({
   const deadlineRef = useRef<number | null>(
     typeof window === 'undefined' ? null : (resumed?.endsAt ?? null),
   );
+  /* When this sitting began (epoch ms): the one thing the time USED is worked
+     out from, so it is right with extra time and with no timer at all, where
+     "the paper's minutes minus what was left" is not. Null before it starts. */
+  const startedAtRef = useRef<number | null>(
+    typeof window === 'undefined' ? null : (resumed?.startedAt ?? null),
+  );
+  /* Seconds since the sitting began, shown as "Time spent" when there is no
+     timer. Counted from startedAtRef at every tick, never by adding one. */
+  const [elapsed, setElapsed] = useState(() =>
+    resumed ? Math.max(0, Math.round((Date.now() - resumed.startedAt) / 1000)) : 0,
+  );
+  const [showElapsed, setShowElapsed] = useState(true);
+  const syncElapsed = () => {
+    const began = startedAtRef.current;
+    if (began !== null) setElapsed(Math.max(0, Math.round((Date.now() - began) / 1000)));
+  };
+  /* Check as you go: the questions the student pressed Check on. Their
+     answers are locked and their review is showing. Kept in the sitting, so
+     a reload keeps them locked. */
+  const [checkedIds, setCheckedIds] = useState<Set<string>>(() => new Set(resumed?.checked ?? []));
+  const checkedRef = useRef(checkedIds);
 
   // A retake is coaching, not a fresh exam start: it skips the instructions
   // gate and begins straight away, same as if "Start test" had been clicked.
@@ -502,7 +590,7 @@ function TestPlayerBody({
     return () => cancelAnimationFrame(raf);
   }, [showScore]);
   const [timeLeft, setTimeLeft] = useState(() =>
-    resumed ? secondsLeft(resumed) : test.durationMinutes * 60,
+    resumed ? secondsLeft(resumed) : (clockMinutes(test.durationMinutes, settings.timer) ?? 0) * 60,
   );
   const [activePart, setActivePart] = useState(0);
   const [splitPct, setSplitPct] = useState(50);
@@ -604,11 +692,27 @@ function TestPlayerBody({
     /* A mock leg always belongs to the student who started the mock, and a
        placement part to the student who started the placement. */
     sittingOwnerRef.current = mockOwner || placementOwner || currentSessionOwner();
-    const s = sittingStore.start();
+    /* A paper opened on its own starts with what the start screen chose: its
+       clock (none at all for "No timer"), the settings themselves, the id of
+       the paper actually sat, and whether it was started with help. Anything
+       that never shows that screen starts as it always did. */
+    const s = sittingStore.start(
+      canChoose
+        ? {
+            clockMinutes: clockMinutes(test.durationMinutes, settings.timer),
+            settings,
+            paperId: test.id,
+            practice: attemptKind === 'drill',
+          }
+        : undefined,
+    );
     sittingRef.current = sittingRefOf(s);
     deadlineRef.current = s.endsAt;
+    startedAtRef.current = s.startedAt;
     setTimeLeft(secondsLeft(s));
+    setElapsed(0);
     setStarted(true);
+    if (canChoose) rememberSettings(settings);
   }
 
   /* "Start fresh" on the owner-changed screen: throw away what is on screen
@@ -623,6 +727,8 @@ function TestPlayerBody({
     setAnswers({});
     setFlagged(new Set());
     setAssistedIds(new Set());
+    checkedRef.current = new Set();
+    setCheckedIds(checkedRef.current);
     setConfirmSubmit(false);
     setByTypeStats(null);
     setActivePart(0);
@@ -637,13 +743,15 @@ function TestPlayerBody({
     /* The previous student's deadline and sitting go with their sitting; the
        paper gets its own when it is started for whoever is here now. */
     deadlineRef.current = null;
+    startedAtRef.current = null;
     sittingRef.current = null;
+    setElapsed(0);
     if (isRetake) {
       start();
       return;
     }
     sittingOwnerRef.current = currentSessionOwner();
-    setTimeLeft(test.durationMinutes * 60);
+    setTimeLeft((clockMinutes(test.durationMinutes, settings.timer) ?? 0) * 60);
     setStarted(false);
   }
 
@@ -657,6 +765,7 @@ function TestPlayerBody({
       const s = sittingStore.start();
       sittingRef.current = sittingRefOf(s);
       deadlineRef.current = s.endsAt;
+      startedAtRef.current = s.startedAt;
       setTimeLeft(secondsLeft(s));
       /* A paper of a mock that another tab of the same sitting handed in
          just before this one opened is refused a fresh start (a result is
@@ -691,7 +800,7 @@ function TestPlayerBody({
   useEffect(() => {
     if (mockSittingId || placementSittingId) return;
     const stale = activeSession();
-    if (stale && stale.testId !== test.id) recordStaleSessionAbandonment(stale);
+    if (stale && stale.testId !== pageTest.id) recordStaleSessionAbandonment(stale);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -739,6 +848,7 @@ function TestPlayerBody({
            sitting found on a fresh load. No time is given back. */
         const deadline = deadlineRef.current;
         if (deadline !== null) setTimeLeft(paperClockAt(deadline).secondsLeft);
+        else syncElapsed();
         setOwnerChange(null);
         /* While they were away the sitting may have been replaced, or taken
            away (added to an account in another tab): then this tab stops
@@ -841,6 +951,9 @@ function TestPlayerBody({
 
   function setAnswer(qid: string, value: string) {
     if (submittedRef.current || lostRef.current) return;
+    /* A checked answer is locked: the student has been shown whether it is
+       right, so it cannot be changed afterwards. */
+    if (checkedRef.current.has(qid)) return;
     setAnswers((prev) => {
       const next = { ...prev };
       // Store exactly what was typed — trimming here eats the space the
@@ -854,9 +967,31 @@ function TestPlayerBody({
          sitting (R2D-02): once another tab's sitting has taken the slot, or
          this one is gone, it writes nothing either, and the effect below
          finds out why. */
-      if (!sittingStore.save(next, sittingOwnerRef.current, sittingRef.current)) saveRefusedRef.current = true;
+      if (!sittingStore.save(next, sittingOwnerRef.current, sittingRef.current, { checked: [...checkedRef.current] })) {
+        saveRefusedRef.current = true;
+      }
       return next;
     });
+  }
+
+  /* CHECK AS YOU GO. Pressing Check on a question (or on the whole group it
+     is marked with, see checkUnit) locks its answer and shows whether it is
+     right, with the same review the results screen gives. The answer was
+     shown before the paper was handed in, so each checked question is
+     recorded with the help level 'answer-shown' (buildQuestionItems), and
+     the final score still counts the answer as it was given. Kept in the
+     sitting so a reload keeps it locked. */
+  function checkQuestions(ids: string[]) {
+    if (submittedRef.current || lostRef.current || ids.length === 0) return;
+    const next = new Set(checkedRef.current);
+    for (const id of ids) next.add(id);
+    if (next.size === checkedRef.current.size) return;
+    checkedRef.current = next;
+    setCheckedIds(next);
+    if (!sittingStore.save(answers, sittingOwnerRef.current, sittingRef.current, { checked: [...next] })) {
+      saveRefusedRef.current = true;
+      noticeLost();
+    }
   }
 
   /* A keystroke's save was refused: if that is because the sitting was
@@ -886,6 +1021,11 @@ function TestPlayerBody({
        never from the number on screen, which can be behind it (R2C-03). */
     const deadline = deadlineRef.current;
     const left = deadline !== null ? paperClockAt(deadline).secondsLeft : timeLeft;
+    /* The time used is real time: from when the sitting began to now. It is
+       NOT the paper's minutes minus what was left, which is wrong with extra
+       time and has no meaning with no timer. A timed sitting never reports
+       more than its own clock allowed (timeUsedSeconds). */
+    const secondsUsed = timeUsedSeconds(startedAtRef.current, deadline);
     const raw = scoredIds.size;
     const byType: Record<string, { correct: number; total: number }> = {};
     for (const { question, group } of numbered) {
@@ -900,7 +1040,7 @@ function TestPlayerBody({
       total: SCORED_TOTAL,
       band: bandMidpoint(raw, SCORED_TOTAL, test.skill),
       bandLabel: bandEstimate(raw, SCORED_TOTAL, test.skill),
-      secondsUsed: test.durationMinutes * 60 - left,
+      secondsUsed,
     };
 
     /* FINALISED BEFORE ANYTHING IS RECORDED (fifth Codex round, R2D-02). The
@@ -937,12 +1077,18 @@ function TestPlayerBody({
     setSubmitted(true);
     setShowScore(true);
     setTimeLeft(left);
+    syncElapsed();
+    /* A paper taken with help (a setting other than exam conditions) is
+       recorded as practice: kind 'drill', which every band history, the
+       report and Mr EZ leave out, and flagged so a list can say so. */
+    const tookHelp = pageKind === 'full' && attemptKind === 'drill';
     recordTestAttempt(test.id, {
       at,
       ...outcome,
       byType,
       kind: attemptKind,
       skill: test.skill,
+      ...(tookHelp ? { practice: true } : {}),
     });
     setByTypeStats(byType);
 
@@ -961,7 +1107,7 @@ function TestPlayerBody({
        this one flag already keeps a mock leg (attemptKind="full") assessed
        and a retake practised, exactly as required. */
     const baseId = baseAttemptId(test.id);
-    const items = buildQuestionItems(baseId, numbered, answers, scoredIds, assistedIds);
+    const items = buildQuestionItems(baseId, numbered, answers, scoredIds, assistedIds, checkedIds);
     const blank = isEntirelyBlank(numbered, answers);
     recordSubmission({
       activityId: attemptActivityId(test.id),
@@ -973,7 +1119,7 @@ function TestPlayerBody({
       raw,
       total: SCORED_TOTAL,
       bandEstimate: attemptKind === 'full' ? bandMidpoint(raw, SCORED_TOTAL, test.skill) : undefined,
-      secondsUsed: test.durationMinutes * 60 - left,
+      secondsUsed,
       sourceTestId: baseId,
       /* A placement part: the sitting's shared session id, so the policy
          reads its four parts as one occasion, and the placement's source
@@ -1035,7 +1181,12 @@ function TestPlayerBody({
     if (!started || submitted || ownerChange || lost) return;
     const tick = () => {
       const deadline = deadlineRef.current;
-      if (deadline === null) return;
+      /* No timer: nothing counts down and nothing is ever handed in by the
+         clock. The time spent is counted up from when the sitting began. */
+      if (deadline === null) {
+        syncElapsed();
+        return;
+      }
       const clock = paperClockAt(deadline);
       setTimeLeft(clock.secondsLeft);
       if (clock.timeUp) {
@@ -1174,6 +1325,22 @@ function TestPlayerBody({
       requestAnimationFrame(() => row.classList.add('is-ready'));
     }
   });
+  /* HOW THE RECORDING PLAYS. A drill, a retake and a paper sat with "Pause and
+     replay" have native controls (pause, seek, replay) and each part plays
+     only its own stretch of the shared recording. A paper in exam conditions
+     plays once from the beginning, as it always did. A placement part is the
+     drill's stretch played once. Choosing only some parts of a paper that
+     plays once gives each part its own stretch, played once. */
+  const audioReplay = !inPlacement && (pageKind === 'drill' || settings.playback === 'replay');
+  const audioSliced = inPlacement || audioReplay || test.parts.length < pageTest.parts.length;
+  /* The parts whose once-only recording has been started, so switching back
+     to a part does not give it a second play. */
+  const playedPartsRef = useRef<Set<number>>(new Set());
+  /** Whether a question's right-or-wrong and review are showing: the paper is
+      handed in, or this question was checked. */
+  const marked = (id: string) => submitted || checkedIds.has(id);
+  /** Check as you go is on: a Check button appears under an answered question. */
+  const checkMode = settings.check === 'as-you-go';
   const legacyAudioPart = test.parts.find((p) => p.stimulus.kind === 'audio');
   const sharedAudioSrc = test.audioSrc ??
     (legacyAudioPart?.stimulus.kind === 'audio' ? legacyAudioPart.stimulus.src : undefined);
@@ -1191,7 +1358,7 @@ function TestPlayerBody({
   // results screen, so a bookmark into it wouldn't resolve to anything.
   const bookmarkBase = isRetake
     ? undefined
-    : withBase(attemptKind === 'drill' ? `/trainers/${test.skill}/${test.id}` : `/tests/${test.id}`);
+    : withBase(pageKind === 'drill' ? `/trainers/${test.skill}/${test.id}` : `/tests/${pageTest.id}`);
 
   // Mr EZ on the review screen: the whole-paper debrief card below, and the
   // per-question "why was my answer wrong?" button inside AnswerReview.
@@ -1222,7 +1389,10 @@ function TestPlayerBody({
          questions are the very same objects;
        - an English student never enters this at all (the hook returns the
          English unchanged and makes no request). */
-  const explain = useExplanations(baseTestId(test.id), locale, submitted);
+  /* A paper of chosen parts (or a drill) borrows its full paper's notes: the
+     question ids are the same, and only the full paper's file is published.
+     Switched on by a Check as well as by the hand-in. */
+  const explain = useExplanations(sourcePaperOf(baseTestId(test.id)), locale, submitted || checkedIds.size > 0);
 
   function openRetake() {
     const wrongIds = new Set(
@@ -1314,9 +1484,12 @@ function TestPlayerBody({
     return (
       <InstructionsScreen
         test={test}
+        pageTest={pageTest}
         hubUrl={hubUrl}
         onStart={onStart}
-        attemptKind={attemptKind}
+        attemptKind={pageKind}
+        settings={settings}
+        onSettings={canChoose ? setSettings : undefined}
         trial={
           trialTest.active
             ? { usesTest: trialTest.startUsesTest, busy: trialTest.busy, error: trialTest.error }
@@ -1351,6 +1524,25 @@ function TestPlayerBody({
           <span>{t('Tests')}</span>
         </a>
         <span className="hidden truncate font-display text-sm font-bold md:block">{practiceTestTitle(test, t)}</span>
+        {untimed ? (
+          /* No timer: the time spent counts up here instead, with a way to
+             hide it for a student who finds a running clock distracting. It
+             never hands the paper in. */
+          <div className="mx-auto flex shrink-0 items-center gap-1 rounded-full bg-surface-alt py-1 pl-3 pr-1.5 font-mono text-sm font-bold text-ink max-[359px]:pl-2 sm:gap-2 sm:pl-4">
+            <span role="timer" aria-label={t('Time spent')} className="flex items-center gap-1.5">
+              <span aria-hidden="true">⏱</span>
+              {showElapsed ? `${pad(Math.floor(elapsed / 60))}:${pad(elapsed % 60)}` : '--:--'}
+            </span>
+            <button
+              type="button"
+              onClick={() => setShowElapsed((v) => !v)}
+              aria-pressed={!showElapsed}
+              className="rounded-full px-2 py-1 font-sans text-xs font-semibold text-ink-muted hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+            >
+              {showElapsed ? t('Hide time') : t('Show time')}
+            </button>
+          </div>
+        ) : (
         <div
           className={`tp-timer mx-auto flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-sm font-bold max-[359px]:gap-1 max-[359px]:px-2 sm:gap-2 sm:px-4 ${
             timerWarn ? 'animate-pulse bg-error-tint text-error' : 'bg-surface-alt text-ink'
@@ -1361,6 +1553,7 @@ function TestPlayerBody({
           <span aria-hidden="true">⏱</span>
           {pad(Math.floor(timeLeft / 60))}:{pad(timeLeft % 60)}
         </div>
+        )}
         <button
           type="button"
           onClick={() => {
@@ -1458,13 +1651,23 @@ function TestPlayerBody({
 
       {test.skill === 'listening' && (
         <ListeningAudio
+          /* One player per part when each part plays its own stretch, so a
+             new part seeks to its own start; one player for the whole paper
+             in exam conditions, which must not restart when the tab changes. */
+          key={audioSliced ? `part-${activePart}` : 'whole'}
           src={sharedAudioSrc ? asset(sharedAudioSrc) : undefined}
-          attemptKind={attemptKind}
+          attemptKind={pageKind}
+          replay={audioReplay}
+          sliced={audioSliced}
+          examLabel={attemptKind === 'full' || inPlacement}
           startSeconds={stimulus.kind === 'audio' ? stimulus.startSeconds : undefined}
           endSeconds={stimulus.kind === 'audio' ? stimulus.endSeconds : undefined}
-          drillPartNumber={attemptKind === 'drill' ? drillPartNumber(test.id) : null}
+          drillPartNumber={
+            isRetake || !audioSliced ? null : (drillPartNumbers(test.id)?.[activePart] ?? activePart + 1)
+          }
           onAssistanceUsed={markAllAssisted}
-          playOnce={inPlacement}
+          alreadyPlayed={!audioReplay && !inPlacement && audioSliced && playedPartsRef.current.has(activePart)}
+          onPlayed={() => playedPartsRef.current.add(activePart)}
         />
       )}
 
@@ -1710,35 +1913,57 @@ function TestPlayerBody({
                       html={group.legendHtml}
                     />
                   )}
-                  {attemptKind === 'drill' && !inPlacement && (
+                  {pageKind === 'drill' && !inPlacement && (
                     <div onClickCapture={() => markGroupAssisted(group)}>
                       <StrategyPanel skill={test.skill} type={group.type} />
                     </div>
                   )}
                   {group.type === 'diagram-labelling' && group.diagram && (
-                    <DiagramFigure diagram={group.diagram} items={groupQs} answers={answers} submitted={submitted} />
+                    <DiagramFigure diagram={group.diagram} items={groupQs} answers={answers} isMarked={marked} />
                   )}
                   {group.type === 'multiple-answer' && !group.questions.some((question) => question.multiSelect) ? (
-                    <MultiAnswer group={group} slotIds={groupQs.map((nq) => nq.question.id)} answers={answers} submitted={submitted} setAnswer={setAnswer} />
+                    <MultiAnswer
+                      group={group}
+                      slotIds={groupQs.map((nq) => nq.question.id)}
+                      answers={answers}
+                      submitted={groupQs.every((nq) => marked(nq.question.id))}
+                      setAnswer={setAnswer}
+                      onCheck={
+                        checkMode && !submitted ? () => checkQuestions(groupQs.map((nq) => nq.question.id)) : undefined
+                      }
+                    />
                   ) : group.type === 'table-completion' && group.table ? (
                     <TableGrid
                       table={group.table}
                       items={groupQs}
                       answers={answers}
-                      submitted={submitted}
+                      isMarked={marked}
                       wordLimit={group.wordLimit}
                       numberRule={numberRuleOf(group)}
                       setAnswer={setAnswer}
                       onLocate={locateEvidence}
                       skill={test.skill}
+                      onCheck={checkMode && !submitted ? (id) => checkQuestions(checkUnit(group, groupQs.find((nq) => nq.question.id === id)!.question)) : undefined}
                     />
                   ) : (
-                    visibleQs.map((nq) => (
+                    visibleQs.map((nq) => {
+                      const unit = checkUnit(group, nq.question);
+                      return (
                       <QuestionItem
                         key={nq.question.id}
                         nq={nq}
                         value={answers[nq.question.id] ?? ''}
-                        submitted={submitted}
+                        submitted={marked(nq.question.id)}
+                        lockedNote={!submitted && checkedIds.has(nq.question.id)}
+                        onCheck={
+                          checkMode &&
+                          !submitted &&
+                          !checkedIds.has(nq.question.id) &&
+                          nq.question.scored !== false &&
+                          unit.every((id) => answers[id])
+                            ? () => checkQuestions(unit)
+                            : undefined
+                        }
                         scored={scoredIds.has(nq.question.id)}
                         onChange={(v) => setAnswer(nq.question.id, v)}
                         onLocate={locateEvidence}
@@ -1748,11 +1973,12 @@ function TestPlayerBody({
                         testId={test.id}
                         testTitle={test.title}
                         bookmarkHref={bookmarkBase ? `${bookmarkBase}#q${nq.n}` : undefined}
-                        tutorTestId={tutorTestId}
+                        tutorTestId={submitted ? tutorTestId : undefined}
                         tutorOwner={tutorOwner}
                         onTutorOwnerChanged={setReviewWithheld}
                       />
-                    ))
+                      );
+                    })
                   )}
                 </section>
               );
@@ -1810,10 +2036,11 @@ function TestPlayerBody({
               .map(({ question, n }) => {
                 const unavailable = question.scored === false;
                 const answered = !!answers[question.id];
-                const ok = submitted && scoredIds.has(question.id);
+                const shown = marked(question.id);
+                const ok = shown && scoredIds.has(question.id);
                 const cls = unavailable
                   ? 'bg-surface-alt text-ink-muted'
-                  : submitted
+                  : shown
                   ? ok
                     ? 'bg-success text-white'
                     : 'bg-error text-white'
@@ -1901,7 +2128,18 @@ function TestPlayerBody({
                      it (platform audit 2026-09-23, "do not present a short
                      drill as an official IELTS score"). Its stored band is
                      already left out of Report, best bands and Mr EZ. */
-                  <p className="mt-3 text-sm text-ink-muted">{t('A single drill is too short to estimate a band.')}</p>
+                  pageKind === 'full' ? (
+                    /* A full paper taken with help (timer changed or off,
+                       answers checked as you go, some passages only, the
+                       recording replayed): honest practice, never a band. */
+                    <p className="practice-result mt-3 text-sm text-ink-muted">
+                      {test.parts.length < pageTest.parts.length
+                        ? t('Practice result: no band estimate, because only part of this paper was taken.')
+                        : t('Practice result: no band estimate, because this paper was taken with help.')}
+                    </p>
+                  ) : (
+                    <p className="mt-3 text-sm text-ink-muted">{t('A single drill is too short to estimate a band.')}</p>
+                  )
                 ) : (
                 <p className="mt-3 inline-block rounded-full bg-brand-tint px-4 py-1.5 font-display font-bold text-brand">
                   {/* bandEstimate returns a number like "7.0", or the one
@@ -2027,10 +2265,20 @@ function QuestionItem({
   tutorTestId,
   tutorOwner,
   onTutorOwnerChanged,
+  onCheck,
+  lockedNote,
 }: {
   nq: Numbered;
   value: string;
+  /** Whether this question's right-or-wrong and review are showing: the
+      paper is handed in, or this question was checked (check as you go). */
   submitted: boolean;
+  /** Present while a Check button is offered: the question is answered, not
+      yet checked, and check as you go is on. */
+  onCheck?: () => void;
+  /** Checked while the paper is still being sat: say so, and that the answer
+      is locked. */
+  lockedNote?: boolean;
   scored: boolean;
   onChange: (v: string) => void;
   onLocate?: (evidence: string) => void;
@@ -2218,6 +2466,12 @@ function QuestionItem({
           </p>
         </div>
       )}
+      {onCheck && !submitted && <CheckButton onCheck={onCheck} className="mt-3 sm:ml-10" />}
+      {lockedNote && (
+        <p className={`mt-3 text-xs font-semibold sm:ml-10 ${ok ? 'text-success' : 'text-error'}`} role="status">
+          {ok ? t('Right. This answer is now locked.') : t('Not right. This answer is now locked.')}
+        </p>
+      )}
       {submitted && (showHint || q.explanation || q.evidence || (ok && answerLeniency(q, value))) && (
         <AnswerReview
           q={q}
@@ -2395,18 +2649,38 @@ function AnswerReview({
   );
 }
 
+/** The small button that marks one answered question (or its whole group) when
+    "Check as you go" is on. Quiet by design: a text button in the brand tint,
+    never louder than the Submit button. */
+function CheckButton({ onCheck, className = '' }: { onCheck: () => void; className?: string }) {
+  const { t } = useT();
+  return (
+    <div className={className}>
+      <button
+        type="button"
+        onClick={onCheck}
+        className="rounded-button border border-brand/30 bg-brand-tint px-3 py-1.5 text-xs font-semibold text-brand transition-colors hover:bg-brand-tint/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+      >
+        {t('Check')}
+      </button>
+    </div>
+  );
+}
+
 /* Diagram with numbered pins, one per question in the group (in order).
-   Pins recolor on submit to match each label input's correctness. */
+   Pins recolor on submit (or once checked) to match each label input's
+   correctness. */
 function DiagramFigure({
   diagram,
   items,
   answers,
-  submitted,
+  isMarked,
 }: {
   diagram: NonNullable<QuestionGroup['diagram']>;
   items: Numbered[];
   answers: Record<string, string>;
-  submitted: boolean;
+  /** Whether a question's right-or-wrong is showing (handed in, or checked). */
+  isMarked: (questionId: string) => boolean;
 }) {
   return (
     <div className="mb-4 rounded-card border border-border bg-white p-3">
@@ -2416,8 +2690,9 @@ function DiagramFigure({
           const nq = items[i];
           if (!nq) return null;
           const answered = !!answers[nq.question.id];
-          const ok = submitted && isCorrect(nq.question, answers[nq.question.id] ?? '');
-          const color = submitted ? (ok ? 'bg-success' : 'bg-error') : answered ? 'bg-brand' : 'bg-ink/60';
+          const shown = isMarked(nq.question.id);
+          const ok = shown && isCorrect(nq.question, answers[nq.question.id] ?? '');
+          const color = shown ? (ok ? 'bg-success' : 'bg-error') : answered ? 'bg-brand' : 'bg-ink/60';
           return (
             <span
               key={i}
@@ -2445,12 +2720,16 @@ function MultiAnswer({
   answers,
   submitted,
   setAnswer,
+  onCheck,
 }: {
   group: QuestionGroup;
   slotIds: string[];
   answers: Record<string, string>;
+  /** The whole group is marked: the paper is handed in, or it was checked. */
   submitted: boolean;
   setAnswer: (qid: string, value: string) => void;
+  /** Present while check as you go is on and the group is not yet checked. */
+  onCheck?: () => void;
 }) {
   const { t } = useT();
   const selectCount = group.selectCount ?? slotIds.length;
@@ -2514,6 +2793,7 @@ function MultiAnswer({
           );
         })}
       </div>
+      {onCheck && !submitted && selected.length > 0 && <CheckButton onCheck={onCheck} className="mt-3" />}
       {submitted && explanationHtml && (
         <Html className="mt-3 rounded-lg bg-surface/70 px-3 py-2 text-sm text-ink-muted" html={explanationHtml} />
       )}
@@ -2530,22 +2810,28 @@ function TableGrid({
   table,
   items,
   answers,
-  submitted,
+  isMarked,
   wordLimit,
   numberRule,
   setAnswer,
   onLocate,
   skill,
+  onCheck,
 }: {
   table: NonNullable<QuestionGroup['table']>;
   items: Numbered[];
   answers: Record<string, string>;
-  submitted: boolean;
+  /** Whether a blank's right-or-wrong and review are showing: the paper is
+      handed in, or that blank was checked. */
+  isMarked: (questionId: string) => boolean;
   wordLimit?: number;
   numberRule: NumberRule;
   setAnswer: (qid: string, value: string) => void;
   onLocate?: (evidence: string) => void;
   skill: TestSkill;
+  /** Present while check as you go is on: checks one blank. Each blank of a
+      table is marked on its own. */
+  onCheck?: (questionId: string) => void;
 }) {
   const { t } = useT();
   const byId = new Map(items.map((nq) => [nq.question.id, nq]));
@@ -2578,8 +2864,9 @@ function TableGrid({
                 const nq = byId.get(cell.questionId);
                 if (!nq) return <td key={ci} className="px-3 py-2" />;
                 const value = answers[nq.question.id] ?? '';
-                const ok = submitted && isCorrect(nq.question, value);
-                const cls = submitted
+                const marked = isMarked(nq.question.id);
+                const ok = marked && isCorrect(nq.question, value);
+                const cls = marked
                   ? ok
                     ? 'border-success bg-success-tint'
                     : 'border-error bg-error-tint'
@@ -2592,14 +2879,17 @@ function TableGrid({
                     <input
                       type="text"
                       value={value}
-                      disabled={submitted}
+                      disabled={marked}
                       onChange={(e) => setAnswer(nq.question.id, e.target.value)}
                       placeholder="…"
                       aria-label={t('Question {n}', { n: nq.n })}
                       className={`w-32 rounded-lg border px-2 py-0.5 text-center font-semibold focus:border-brand ${cls}`}
                     />
-                    {wordLimit != null && !submitted && isOverWordLimit(value, wordLimit, numberRule) && (
+                    {wordLimit != null && !marked && isOverWordLimit(value, wordLimit, numberRule) && (
                       <WordLimitWarning value={value} limit={wordLimit} rule={numberRule} className="mt-1" />
+                    )}
+                    {onCheck && !marked && value && nq.question.scored !== false && (
+                      <CheckButton onCheck={() => onCheck(nq.question.id)} className="mt-1.5" />
                     )}
                   </td>
                 );
@@ -2608,8 +2898,8 @@ function TableGrid({
           ))}
         </tbody>
       </table>
-      {submitted &&
-        items.map((nq) => {
+      {items.map((nq) => {
+          if (!isMarked(nq.question.id)) return null;
           const value = answers[nq.question.id] ?? '';
           const ok = isCorrect(nq.question, value);
           const answerText = Array.isArray(nq.question.answer) ? nq.question.answer[0]! : nq.question.answer;
@@ -2825,13 +3115,10 @@ function Highlightable({
   );
 }
 
-/** Drill ids are always built by drills.ts as `${sourceTestId}-drill-p${n}`,
-    so the 1-based part number can be read straight off the id instead of the
-    part's own (differently-worded, being renamed elsewhere) label string. */
-function drillPartNumber(testId: string): number | null {
-  const m = testId.match(/-drill-p(\d+)$/);
-  return m ? parseInt(m[1], 10) : null;
-}
+/* The 1-based part numbers of a drill-style paper are read straight off its id
+   (drillPartNumbers in src/lib/tests/practice-subset.ts, which also reads the
+   `-drill-p1-p3` ids of several chosen parts) instead of the part's own
+   (differently-worded, being renamed elsewhere) label string. */
 
 function fmtClock(seconds: number): string {
   const s = Math.max(0, Math.floor(seconds));
@@ -2841,48 +3128,71 @@ function fmtClock(seconds: number): string {
 /** The shared listening recording, in one of two very different modes per
     the house rule "trainers coach with every aid, tests are bare exam
     conditions":
-    - drill: full native controls (play/pause/seek/replay). If the part
-      carries startSeconds it seeks there on load and shows which slice of
-      the recording this drill covers; if it carries endSeconds it pauses
-      there automatically (seeking further is still allowed).
-    - full: bare exam conditions. A single "Start recording" button plays the
-      whole recording once from the beginning; no seek bar, no pause, no
-      replay, native controls are not rendered at all. */
+    - replay (a drill, or "Pause and replay" on a paper's start screen): full
+      native controls (play/pause/seek/replay). If the part carries
+      startSeconds it seeks there on load and shows which slice of the
+      recording it covers; if it carries endSeconds it pauses there
+      automatically (seeking further is still allowed).
+    - once (exam conditions): bare. A single "Start recording" button plays
+      the whole recording once from the beginning; no seek bar, no pause, no
+      replay, native controls are not rendered at all. A part that plays once
+      on its own (a placement part, or chosen parts of a paper) plays only
+      its own stretch, once.
+    `sliced` says each part plays only its own stretch; `replay` says whether
+    the controls are native. (practice settings, 9 October 2026) */
 function ListeningAudio({
   src,
   attemptKind,
+  replay,
+  sliced,
+  examLabel,
   startSeconds,
   endSeconds,
   drillPartNumber: partNumber,
   onAssistanceUsed,
-  playOnce = false,
+  alreadyPlayed = false,
+  onPlayed,
 }: {
   src?: string;
+  /** How the page opened the paper: 'drill' for a trainer drill, a retake or
+      a placement part, 'full' for a paper opened on its own. Only the wording
+      reads it; what the controls do is `replay` and `sliced`. */
   attemptKind: 'full' | 'drill';
+  /** Native controls: play, pause, seek and replay as often as you like (a
+      drill, a retake, or "Pause and replay" on the start screen). When false
+      the recording plays ONCE, from one Start button, with nothing to pause,
+      seek or replay (exam conditions, a placement part). */
+  replay: boolean;
+  /** The part plays only its own stretch of the shared recording: it seeks to
+      startSeconds on load and stops at endSeconds. Always true for a drill; a
+      full paper in exam conditions plays the whole recording instead. */
+  sliced: boolean;
+  /** The once-only wording is "exam conditions" (an exam, a placement part)
+      rather than a practice setting. */
+  examLabel: boolean;
   startSeconds?: number;
   endSeconds?: number;
   drillPartNumber: number | null;
   /** Learner-evidence recording (WP12): fired the first time the student
-      replays or seeks the drill recording after it has actually started
-      playing. Never wired for attemptKind === 'full' by the caller, and
-      also guarded here, so a full exam's bare single-play button (which
-      has no seek bar to begin with) can never fire it. */
+      replays or seeks the recording after it has actually started playing.
+      Only fires with native controls, so a once-only single-play button
+      (which has no seek bar to begin with) can never fire it. */
   onAssistanceUsed?: () => void;
-  /** A placement part (24 September 2026): the drill's own slice of the
-      recording, played ONCE under exam conditions, with the full exam's
-      single Start button and no seek bar, pause or replay. The slice still
-      starts at startSeconds and stops at endSeconds, exactly as a drill's
-      does; only the controls change. */
-  playOnce?: boolean;
+  /** A once-only part whose recording was already started earlier in this
+      sitting: it stays played, so switching back to the part does not hand
+      out a second play. */
+  alreadyPlayed?: boolean;
+  /** Told when a once-only recording is started. */
+  onPlayed?: () => void;
 }) {
   const { t } = useT();
-  /* Bare exam controls: a full paper, or a placement part. */
-  const examControls = attemptKind === 'full' || playOnce;
+  /* Bare exam controls: one Start button, nothing to pause, seek or replay. */
+  const examControls = !replay;
   const audioRef = useRef<HTMLAudioElement>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(src ? 'loading' : 'error');
   const [retry, setRetry] = useState(0);
-  const [started, setStarted] = useState(false);
-  const [ended, setEnded] = useState(false);
+  const [started, setStarted] = useState(alreadyPlayed);
+  const [ended, setEnded] = useState(alreadyPlayed);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   // Set the first time playback actually begins, so the programmatic seek
@@ -2905,7 +3215,7 @@ function ListeningAudio({
     const el = audioRef.current;
     if (!el) return;
     setDuration(el.duration || 0);
-    if (attemptKind === 'drill' && startSeconds != null) {
+    if (sliced && startSeconds != null) {
       el.currentTime = startSeconds;
       setCurrentTime(startSeconds);
     }
@@ -2915,9 +3225,9 @@ function ListeningAudio({
     const el = audioRef.current;
     if (!el) return;
     setCurrentTime(el.currentTime);
-    if (attemptKind === 'drill' && endSeconds != null && el.currentTime >= endSeconds) {
+    if (sliced && endSeconds != null && el.currentTime >= endSeconds) {
       el.pause();
-      if (playOnce) setEnded(true);
+      if (examControls) setEnded(true);
     }
   }
 
@@ -2926,31 +3236,41 @@ function ListeningAudio({
   }
 
   function handleSeeked() {
-    if (attemptKind !== 'drill' || !hasPlayedRef.current || assistanceFiredRef.current) return;
+    if (!replay || !hasPlayedRef.current || assistanceFiredRef.current) return;
     assistanceFiredRef.current = true;
     onAssistanceUsed?.();
   }
 
   function startRecording() {
     setStarted(true);
+    onPlayed?.();
     audioRef.current?.play();
   }
 
   /* Two whole sentences rather than one built around a "Part N"/"one part"
      fragment: Russian needs the phrase in its own place. "Part" itself stays
-     English, like every other exam label. */
+     English, like every other exam label. A paper opened on its own (not a
+     trainer drill) is not "a drill", so it has its own wording. */
   const rangeNote =
-    attemptKind === 'drill' && !playOnce && startSeconds != null
-      ? partNumber != null
-        ? t('This drill covers Part {part} of the recording ({from} to {to}).', {
-            part: partNumber,
-            from: fmtClock(startSeconds),
-            to: fmtClock(endSeconds ?? duration),
-          })
-        : t('This drill covers one part of the recording ({from} to {to}).', {
-            from: fmtClock(startSeconds),
-            to: fmtClock(endSeconds ?? duration),
-          })
+    replay && sliced && startSeconds != null
+      ? attemptKind === 'full'
+        ? partNumber != null
+          ? t('Part {part} of the recording runs from {from} to {to}.', {
+              part: partNumber,
+              from: fmtClock(startSeconds),
+              to: fmtClock(endSeconds ?? duration),
+            })
+          : null
+        : partNumber != null
+          ? t('This drill covers Part {part} of the recording ({from} to {to}).', {
+              part: partNumber,
+              from: fmtClock(startSeconds),
+              to: fmtClock(endSeconds ?? duration),
+            })
+          : t('This drill covers one part of the recording ({from} to {to}).', {
+              from: fmtClock(startSeconds),
+              to: fmtClock(endSeconds ?? duration),
+            })
       : null;
 
   // Before a full exam's recording is started, this bar is the candidate's
@@ -2959,12 +3279,11 @@ function ListeningAudio({
   // throwaway toolbar control. Once playing, it settles back to the same
   // compact bar the drill uses.
   const examGate = examControls && !started;
-  /* A placement part plays a slice of a longer recording, so its readout
-     counts from the slice's own start rather than showing the position in
-     the whole file. */
-  const sliceStart = playOnce && startSeconds != null ? startSeconds : 0;
+  /* A part that plays its own stretch once counts from the stretch's start
+     rather than showing the position in the whole file. */
+  const sliceStart = sliced && examControls && startSeconds != null ? startSeconds : 0;
   const shownTime = Math.max(0, currentTime - sliceStart);
-  const shownLength = playOnce && startSeconds != null ? (endSeconds ?? duration) - startSeconds : duration;
+  const shownLength = sliced && examControls && startSeconds != null ? (endSeconds ?? duration) - startSeconds : duration;
 
   return (
     <section
@@ -2975,14 +3294,18 @@ function ListeningAudio({
       <div className="mx-auto flex max-w-5xl flex-col gap-2 sm:flex-row sm:items-center">
         <div className="shrink-0 sm:w-44">
           <p className="text-xs font-bold uppercase tracking-wider text-[var(--skill,var(--color-brand))]">
-            {playOnce ? t('Listening recording') : attemptKind === 'drill' ? t('Drill recording') : t('Full recording')}
+            {sliced && examControls ? t('Listening recording') : attemptKind === 'drill' ? t('Drill recording') : t('Full recording')}
           </p>
           <p className="text-xs text-ink-muted">
-            {examControls ? t('Plays once, exam conditions') : t('Pause and replay freely')}
+            {examControls
+              ? examLabel
+                ? t('Plays once, exam conditions')
+                : t('Plays once')
+              : t('Pause and replay freely')}
           </p>
         </div>
 
-        {src && attemptKind === 'drill' && !playOnce && (
+        {src && replay && (
           <audio
             key={retry}
             ref={audioRef}
@@ -2991,7 +3314,7 @@ function ListeningAudio({
             preload="metadata"
             src={src}
             className="h-10 w-full min-w-0 shrink-0 sm:w-auto sm:flex-1"
-            aria-label={t('Drill recording')}
+            aria-label={attemptKind === 'drill' ? t('Drill recording') : t('Listening recording')}
             onLoadedMetadata={handleLoadedMetadata}
             onTimeUpdate={handleTimeUpdate}
             onPlay={handlePlay}
@@ -3027,7 +3350,8 @@ function ListeningAudio({
               </button>
             ) : (
               <span className="font-mono text-sm font-semibold text-ink" aria-live="polite">
-                {ended ? t('Recording finished') : t('Recording playing')} · {fmtClock(shownTime)} / {fmtClock(shownLength)}
+                {ended ? t('Recording finished') : t('Recording playing')}
+                {!alreadyPlayed && <> · {fmtClock(shownTime)} / {fmtClock(shownLength)}</>}
               </span>
             )}
           </div>
@@ -3037,7 +3361,7 @@ function ListeningAudio({
 
         <div className="min-h-5 shrink-0 text-xs sm:w-36 sm:text-right" aria-live="polite">
           {status === 'loading' && <span className="text-ink-muted">{t('Loading recording...')}</span>}
-          {status === 'ready' && !started && attemptKind === 'drill' && !playOnce && <span className="text-success">{t('Recording ready')}</span>}
+          {status === 'ready' && !started && replay && <span className="text-success">{t('Recording ready')}</span>}
           {status === 'error' && (
             <span className="text-error">
               {t('Recording unavailable.')}{' '}
@@ -3274,23 +3598,68 @@ function SittingStoppedScreen({
   );
 }
 
-/* Full-screen instructions gate shown before the timer starts. */
+/* One choice in the start screen's settings: a quiet bordered pill holding a
+   visually hidden radio (or checkbox), so keyboard and screen-reader users get
+   the native control and the pill carries the look. */
+function SettingChoice({
+  type,
+  name,
+  checked,
+  onChange,
+  label,
+  hint,
+}: {
+  type: 'radio' | 'checkbox';
+  name: string;
+  checked: boolean;
+  onChange: () => void;
+  label: string;
+  hint?: string;
+}) {
+  return (
+    <label
+      className={`flex min-w-0 cursor-pointer items-baseline justify-between gap-2 rounded-lg border px-3 py-2 text-sm transition-colors focus-within:ring-2 focus-within:ring-brand focus-within:ring-offset-1 sm:flex-col sm:items-start sm:justify-start sm:gap-0 ${
+        checked ? 'border-brand bg-brand-tint' : 'border-border hover:border-brand/50'
+      }`}
+    >
+      <input type={type} name={name} checked={checked} onChange={onChange} className="sr-only" />
+      <span className="font-semibold">{label}</span>
+      {hint && <span className="text-xs text-ink-muted">{hint}</span>}
+    </label>
+  );
+}
+
+/* Full-screen instructions gate shown before the timer starts.
+
+   `test` is the paper that will be sat (every part, or only the ones the
+   settings chose); `pageTest` is the whole paper the page opened, which is
+   what the passage or part choices are listed from. `onSettings` is absent
+   where the settings are not offered (it never is for a paper on this
+   screen, but a caller that wanted a fixed start could leave it out). */
 function InstructionsScreen({
   test,
+  pageTest,
   hubUrl,
   onStart,
   attemptKind,
+  settings,
+  onSettings,
   trial,
 }: {
   test: PracticeTest;
+  pageTest: PracticeTest;
   hubUrl: string;
   onStart: () => void;
   attemptKind: 'full' | 'drill';
+  settings: PracticeSettings;
+  onSettings?: (next: PracticeSettings) => void;
   /** Present in a trial build: whether starting uses the section's one test,
       whether the server is being asked, and why it last said no. */
   trial?: { usesTest: boolean; busy: boolean; error: string | null };
 }) {
   const { t, tn } = useT();
+  const panelId = useId();
+  const [open, setOpen] = useState(false);
   const listening = test.skill === 'listening';
   /* The caption under the "how many parts" figure. Counted, not a fixed word:
      Russian needs four forms, and a single-part drill used to print the
@@ -3308,14 +3677,61 @@ function InstructionsScreen({
     0,
   );
   const unavailableTotal = numberedTotal - scoredTotal;
+
+  /* What the chosen settings mean for this sitting. */
+  const partCount = pageTest.parts.length;
+  const picked = selectedParts(settings, partCount);
+  /* The recording choice belongs to a paper opened on its own: a trainer drill
+     always has native controls. */
+  const playbackApplies = listening && attemptKind === 'full';
+  const exam = isExamConditions(settings, partCount, playbackApplies);
+  const minutes = clockMinutes(test.durationMinutes, settings.timer);
+  const timed = timerRuns(settings);
+  const replayOn = attemptKind === 'drill' || settings.playback === 'replay';
+  const checking = settings.check === 'as-you-go';
+
+  /* The one-line summary. Built from whole translated pieces, never an
+     English sentence put together here. */
+  const pieces: string[] = [];
+  if (settings.timer === 'extra') pieces.push(t('Extra time'));
+  if (settings.timer === 'off') pieces.push(t('No timer'));
+  if (checking) pieces.push(t('Check as you go'));
+  if (picked.length < partCount) {
+    if (picked.length === 1) {
+      pieces.push(
+        listening
+          ? t('Part {n} only', { n: picked[0]! + 1 })
+          : t('Passage {n} only', { n: picked[0]! + 1 }),
+      );
+    } else {
+      const list = picked.map((i) => i + 1).join(', ');
+      pieces.push(listening ? t('Parts {list}', { list }) : t('Passages {list}', { list }));
+    }
+  }
+  if (playbackApplies && settings.playback === 'replay') pieces.push(t('Pause and replay'));
+  const summary = pieces.length > 0 ? pieces.join(' · ') : t('Exam conditions');
+
+  function togglePart(index: number) {
+    if (!onSettings) return;
+    const now = new Set(picked);
+    if (now.has(index)) {
+      if (now.size === 1) return; // at least one must stay ticked
+      now.delete(index);
+    } else {
+      now.add(index);
+    }
+    const next = [...now].sort((a, b) => a - b);
+    onSettings({ ...settings, parts: next.length === partCount ? [] : next });
+  }
+
   return (
     <div className="grid min-h-dvh place-items-center bg-surface-alt p-4">
       <div className="study-preflight w-full max-w-lg rounded-card border border-border bg-surface p-6 shadow-card sm:p-8">
         <p className="text-xs font-bold uppercase tracking-wider text-brand">
           {listening ? t('Listening Practice Test') : t('Reading Test')}
         </p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold">{practiceTestTitle(test, t)}</h1>
-        <p className="mt-2 text-ink-muted">{practiceTestDescription(test, t)}</p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold">{practiceTestTitle(pageTest, t)}</h1>
+        <p className="mt-2 text-ink-muted">{practiceTestDescription(pageTest, t)}</p>
 
         <div className="mt-6 grid grid-cols-3 gap-3 text-center">
           <div className="rounded-card bg-surface-alt p-3">
@@ -3329,23 +3745,174 @@ function InstructionsScreen({
             </p>
           </div>
           <div className="rounded-card bg-surface-alt p-3">
-            <p className="font-display text-2xl font-extrabold text-brand">{test.durationMinutes}</p>
-            <p className="text-xs text-ink-muted">{tn(test.durationMinutes, { one: 'minute', other: 'minutes' })}</p>
+            <p className="font-display text-2xl font-extrabold text-brand">{minutes ?? '∞'}</p>
+            <p className="text-xs text-ink-muted">
+              {minutes === null ? t('no timer') : tn(minutes, { one: 'minute', other: 'minutes' })}
+            </p>
           </div>
         </div>
 
-        <p className="preflight-essential">{t('The timer starts as soon as you begin and runs continuously.')} <strong>{t('The clock cannot be paused.')}</strong></p>
-        {listening && <p className="text-sm text-ink-muted">{attemptKind === 'drill' ? t('Practice mode: pause and replay are available.') : <>{t('Exam mode: the recording plays once.')} {t('Use headphones if you can.')}</>}</p>}
+        {/* ── Practice settings: one quiet line, and a Change button that opens
+             the four settings. Exam conditions unless the student says
+             otherwise. ── */}
+        {onSettings && (
+          <div className="mt-5 rounded-card border border-border" data-testid="practice-settings">
+            <div className="flex items-center justify-between gap-3 px-4 py-3">
+              <p className="min-w-0 text-sm font-semibold text-ink" aria-live="polite">
+                {summary}
+              </p>
+              <button
+                type="button"
+                onClick={() => setOpen((v) => !v)}
+                aria-expanded={open}
+                aria-controls={panelId}
+                className="shrink-0 rounded-md px-1 py-1 text-sm font-semibold text-brand hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              >
+                {open ? t('Done') : t('Change')}
+              </button>
+            </div>
+            {!exam && attemptKind === 'full' && (
+              <p className="px-4 pb-3 text-xs text-ink-muted">
+                {t('With these settings the result is recorded as practice, with no band estimate.')}
+              </p>
+            )}
+            {open && (
+              <div id={panelId} className="grid gap-5 border-t border-border px-4 py-4">
+                <fieldset>
+                  <legend className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-muted">{t('Timer')}</legend>
+                  <div className="grid gap-2 sm:grid-cols-3">
+                    <SettingChoice
+                      type="radio"
+                      name="practice-timer"
+                      checked={settings.timer === 'exam'}
+                      onChange={() => onSettings({ ...settings, timer: 'exam' })}
+                      label={t('Exam time')}
+                      hint={t('{n} min', { n: clockMinutes(test.durationMinutes, 'exam') ?? 0 })}
+                    />
+                    <SettingChoice
+                      type="radio"
+                      name="practice-timer"
+                      checked={settings.timer === 'extra'}
+                      onChange={() => onSettings({ ...settings, timer: 'extra' })}
+                      label={t('Extra time')}
+                      hint={t('{n} min', { n: clockMinutes(test.durationMinutes, 'extra') ?? 0 })}
+                    />
+                    <SettingChoice
+                      type="radio"
+                      name="practice-timer"
+                      checked={settings.timer === 'off'}
+                      onChange={() => onSettings({ ...settings, timer: 'off' })}
+                      label={t('No timer')}
+                    />
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-muted">{t('Checking')}</legend>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <SettingChoice
+                      type="radio"
+                      name="practice-check"
+                      checked={settings.check === 'end'}
+                      onChange={() => onSettings({ ...settings, check: 'end' })}
+                      label={t('At the end')}
+                      hint={t('Marked after you hand in')}
+                    />
+                    <SettingChoice
+                      type="radio"
+                      name="practice-check"
+                      checked={settings.check === 'as-you-go'}
+                      onChange={() => onSettings({ ...settings, check: 'as-you-go' })}
+                      label={t('As I go')}
+                      hint={t('A checked answer locks')}
+                    />
+                  </div>
+                </fieldset>
+
+                {partCount > 1 && (
+                  <fieldset>
+                    <legend className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-muted">
+                      {listening ? t('Parts') : t('Passages')}
+                    </legend>
+                    <div className="grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr))]">
+                      {pageTest.parts.map((part, i) => {
+                        const count = part.groups.reduce((sum, g) => sum + g.questions.length, 0);
+                        return (
+                          <SettingChoice
+                            key={part.label}
+                            type="checkbox"
+                            name="practice-parts"
+                            checked={picked.includes(i)}
+                            onChange={() => togglePart(i)}
+                            label={listening ? t('Part {n}', { n: i + 1 }) : t('Passage {n}', { n: i + 1 })}
+                            hint={tn(count, { one: '{n} question', other: '{n} questions' })}
+                          />
+                        );
+                      })}
+                    </div>
+                  </fieldset>
+                )}
+
+                {playbackApplies && (
+                  <fieldset>
+                    <legend className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-muted">
+                      {t('Listening playback')}
+                    </legend>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      <SettingChoice
+                        type="radio"
+                        name="practice-playback"
+                        checked={settings.playback === 'once'}
+                        onChange={() => onSettings({ ...settings, playback: 'once' })}
+                        label={t('Play once')}
+                        hint={t('Like the real test')}
+                      />
+                      <SettingChoice
+                        type="radio"
+                        name="practice-playback"
+                        checked={settings.playback === 'replay'}
+                        onChange={() => onSettings({ ...settings, playback: 'replay' })}
+                        label={t('Pause and replay')}
+                        hint={t('Seek and replay freely')}
+                      />
+                    </div>
+                  </fieldset>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {timed ? (
+          <p className="preflight-essential">{t('The timer starts as soon as you begin and runs continuously.')} <strong>{t('The clock cannot be paused.')}</strong></p>
+        ) : (
+          <p className="preflight-essential">{t('There is no timer. The time you spend is counted up, and you hand in when you are ready.')}</p>
+        )}
+        {listening && (
+          <p className="text-sm text-ink-muted">
+            {replayOn ? (
+              t('Practice mode: pause and replay are available.')
+            ) : exam ? (
+              <>{t('Exam mode: the recording plays once.')} {t('Use headphones if you can.')}</>
+            ) : (
+              <>{t('The recording plays once.')} {t('Use headphones if you can.')}</>
+            )}
+          </p>
+        )}
         <details className="support-disclosure"><summary>{t('Instructions and scoring')}</summary>
         <ul className="mt-6 space-y-2.5 text-sm text-ink">
-          <li className="flex gap-2.5">
-            <span aria-hidden="true" className="shrink-0">⏱</span>
-            <span>{t('The timer starts as soon as you begin and runs continuously.')}</span>
-          </li>
-          <li className="flex gap-2.5">
-            <span aria-hidden="true" className="shrink-0">🚫</span>
-            <span><strong>{t('The clock cannot be paused.')}</strong> {t('Refreshing or closing the tab will not stop the clock. You will resume with time already elapsed.')}</span>
-          </li>
+          {timed && (
+            <li className="flex gap-2.5">
+              <span aria-hidden="true" className="shrink-0">⏱</span>
+              <span>{t('The timer starts as soon as you begin and runs continuously.')}</span>
+            </li>
+          )}
+          {timed && (
+            <li className="flex gap-2.5">
+              <span aria-hidden="true" className="shrink-0">🚫</span>
+              <span><strong>{t('The clock cannot be paused.')}</strong> {t('Refreshing or closing the tab will not stop the clock. You will resume with time already elapsed.')}</span>
+            </li>
+          )}
           <li className="flex gap-2.5">
             <span aria-hidden="true" className="shrink-0">✍️</span>
             {/* Two counted things in one sentence, and the noun changes with the
@@ -3353,22 +3920,40 @@ function InstructionsScreen({
                 word glued on at the end. */}
             <span>
               {listening
-                ? tn(
-                    test.parts.length,
-                    {
-                      one: 'Answer all {scored} scored questions across {n} part, then submit. It auto-submits when time runs out.',
-                      other: 'Answer all {scored} scored questions across {n} parts, then submit. It auto-submits when time runs out.',
-                    },
-                    { scored: scoredTotal },
-                  )
-                : tn(
-                    test.parts.length,
-                    {
-                      one: 'Answer all {scored} scored questions across {n} passage, then submit. It auto-submits when time runs out.',
-                      other: 'Answer all {scored} scored questions across {n} passages, then submit. It auto-submits when time runs out.',
-                    },
-                    { scored: scoredTotal },
-                  )}
+                ? timed
+                  ? tn(
+                      test.parts.length,
+                      {
+                        one: 'Answer all {scored} scored questions across {n} part, then submit. It auto-submits when time runs out.',
+                        other: 'Answer all {scored} scored questions across {n} parts, then submit. It auto-submits when time runs out.',
+                      },
+                      { scored: scoredTotal },
+                    )
+                  : tn(
+                      test.parts.length,
+                      {
+                        one: 'Answer all {scored} scored questions across {n} part, then submit when you are ready.',
+                        other: 'Answer all {scored} scored questions across {n} parts, then submit when you are ready.',
+                      },
+                      { scored: scoredTotal },
+                    )
+                : timed
+                  ? tn(
+                      test.parts.length,
+                      {
+                        one: 'Answer all {scored} scored questions across {n} passage, then submit. It auto-submits when time runs out.',
+                        other: 'Answer all {scored} scored questions across {n} passages, then submit. It auto-submits when time runs out.',
+                      },
+                      { scored: scoredTotal },
+                    )
+                  : tn(
+                      test.parts.length,
+                      {
+                        one: 'Answer all {scored} scored questions across {n} passage, then submit when you are ready.',
+                        other: 'Answer all {scored} scored questions across {n} passages, then submit when you are ready.',
+                      },
+                      { scored: scoredTotal },
+                    )}
             </span>
           </li>
           {unavailableTotal > 0 && (
@@ -3382,6 +3967,12 @@ function InstructionsScreen({
               </span>
             </li>
           )}
+          {checking && (
+            <li className="flex gap-2.5">
+              <span aria-hidden="true" className="shrink-0">✅</span>
+              <span>{t('Press Check under an answer to see whether it is right. A checked answer is locked and cannot be changed.')}</span>
+            </li>
+          )}
           {listening ? (
             <li className="flex gap-2.5">
               <span aria-hidden="true" className="shrink-0">🎧</span>
@@ -3392,7 +3983,11 @@ function InstructionsScreen({
               <span>
                 {attemptKind === 'drill'
                   ? t('This is a single-part drill. You can play, pause, seek and replay the recording as often as you like; pausing the recording does not pause the clock.')
-                  : t('This is exam conditions: press Start recording when ready and it plays once, from the beginning, with no pausing, seeking or replaying. Refreshing keeps your answers and running timer, but restarts the recording from the beginning.')}
+                  : replayOn
+                    ? t('You can play, pause, seek and replay the recording as often as you like. Each part plays its own stretch of the recording.')
+                    : exam
+                      ? t('This is exam conditions: press Start recording when ready and it plays once, from the beginning, with no pausing, seeking or replaying. Refreshing keeps your answers and running timer, but restarts the recording from the beginning.')
+                      : t('Press Start recording when ready. It plays once, with no pausing, seeking or replaying. Refreshing keeps your answers, but restarts the recording.')}
               </span>
             </li>
           ) : (
@@ -3409,14 +4004,19 @@ function InstructionsScreen({
             <span aria-hidden="true" className="shrink-0">📊</span>
             <span>
               {/* A drill shows no band (it is too short for the band table), so
-                  its promise leaves the band out. */}
+                  its promise leaves the band out. So does a paper taken with
+                  help: only exam conditions earn a band. */}
               {attemptKind === 'drill'
                 ? listening
                   ? t('At the end you get a score and a full answer review, including the transcript. One part is too short for a band.')
                   : t('At the end you get a score and a full answer review, with every question explained with the exact line from the passage. One passage is too short for a band.')
-                : listening
-                  ? t('At the end you get a score, an estimated band, and a full answer review, including the transcript.')
-                  : t('At the end you get a score, an estimated band, and a full answer review, with every question explained with the exact line from the passage.')}
+                : !exam
+                  ? listening
+                    ? t('At the end you get a score and a full answer review, including the transcript. With these settings there is no band estimate.')
+                    : t('At the end you get a score and a full answer review, with every question explained with the exact line from the passage. With these settings there is no band estimate.')
+                  : listening
+                    ? t('At the end you get a score, an estimated band, and a full answer review, including the transcript.')
+                    : t('At the end you get a score, an estimated band, and a full answer review, with every question explained with the exact line from the passage.')}
             </span>
           </li>
         </ul>

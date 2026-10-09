@@ -1864,7 +1864,15 @@ test('R2C-03: the player\'s timer, its owner listener and its submit all read th
   assert.match(listener, /ownerStillCurrent\(sittingOwnerRef\.current\)\) \{\s*const deadline = deadlineRef\.current;\s*if \(deadline !== null\) setTimeLeft\(paperClockAt\(deadline\)\.secondsLeft\);/);
   /* Handing in reads it too, for the time used. */
   assert.match(player, /const left = deadline !== null \? paperClockAt\(deadline\)\.secondsLeft : timeLeft;/);
-  assert.equal((player.match(/secondsUsed: test\.durationMinutes \* 60 - left/g) ?? []).length, 2);
+  /* ...and the time used is real time since the sitting began (practice
+     settings, 9 October 2026): "the paper's minutes minus what was left" is
+     wrong with extra time and meaningless with no timer. It is still read
+     from the moment of handing in, capped at the sitting's own clock, and
+     both the history row and the evidence get that one figure. */
+  assert.doesNotMatch(player, /secondsUsed: test\.durationMinutes \* 60 - /);
+  assert.match(player, /const secondsUsed = timeUsedSeconds\(startedAtRef\.current, deadline\);/);
+  const handIn = player.slice(player.indexOf('function handleSubmit()'), player.indexOf('const unansweredCount'));
+  assert.equal((handIn.match(/^\s+secondsUsed,$/gm) ?? []).length, 2, 'the history row and the evidence share one time used');
   assert.doesNotMatch(player, /secondsUsed: test\.durationMinutes \* 60 - timeLeft/);
   /* Every place a sitting is picked up or started sets the deadline. */
   assert.equal((player.match(/deadlineRef\.current = s\.endsAt;/g) ?? []).length, 2);
@@ -2103,7 +2111,16 @@ test('R2D-02: the player finalises before it records anything, names its sitting
   assert.match(submit, /if \(!paperMayBeRecorded\(finished\)\) return;\s*submittedRef\.current = true;/);
   assert.equal((player.match(/sittingStore\.finish\(/g) ?? []).length, 1, 'the sitting is finished in more than one place');
   /* Every save names the sitting. */
-  assert.match(player, /sittingStore\.save\(next, sittingOwnerRef\.current, sittingRef\.current\)/);
+  /* (Since the practice settings it also carries the questions checked so
+     far, so a reload keeps them locked.) */
+  assert.match(
+    player,
+    /sittingStore\.save\(next, sittingOwnerRef\.current, sittingRef\.current, \{ checked: \[\.\.\.checkedRef\.current\] \}\)/,
+  );
+  assert.match(
+    player,
+    /sittingStore\.save\(answers, sittingOwnerRef\.current, sittingRef\.current, \{ checked: \[\.\.\.next\] \}\)/,
+  );
   assert.equal((player.match(/sittingRef\.current = sittingRefOf\(s\);/g) ?? []).length, 2);
   /* The other tab's write is listened for: the standalone slot for a paper
      on its own, the mock's own record for a paper of a mock (R2E-03). */

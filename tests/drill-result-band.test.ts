@@ -15,7 +15,9 @@ const source = readFileSync(join(import.meta.dirname, '..', 'src', 'components',
 test('the score modal shows the band only for a full paper', () => {
   const at = source.indexOf("t('Estimated Band: {band}'");
   assert.ok(at > 0, 'the full-paper band line is still there');
-  const before = source.slice(Math.max(0, at - 1500), at);
+  /* 2400 characters: the drill branch now also says why a full paper taken
+     with help has no band (practice settings, 9 October 2026). */
+  const before = source.slice(Math.max(0, at - 2400), at);
   assert.match(before, /attemptKind === 'drill' \?/, 'the band is inside the drill/full branch');
   assert.match(before, /A single drill is too short to estimate a band\./, 'the drill branch says why there is no band');
 });

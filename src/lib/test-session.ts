@@ -95,6 +95,7 @@
 import type { CacheOwner } from './learning/contracts/sync';
 import { LEGACY_ADOPTION_KEY } from './learning/contracts/sync';
 import type { PracticeTest } from './tests/schema';
+import type { PracticeSettings } from './tests/practice-settings';
 import {
   anonymousOwner,
   type BrowserStorage,
@@ -124,8 +125,27 @@ export interface TestSession {
       and the moment it started. */
   sittingId?: string;
   startedAt: number; // epoch ms
-  endsAt: number; // epoch ms, startedAt plus the duration
+  /** epoch ms, startedAt plus the duration; null for a sitting with NO TIMER
+      (practice settings, 9 October 2026): it has no deadline, so it never
+      expires and nothing hands it in. Read it through isUntimed,
+      secondsLeft and sessionExpired, never as a bare number. */
+  endsAt: number | null;
   answers: Record<string, string>;
+  /** The practice settings this sitting was started with (timer, checking,
+      passages, playback). Absent for a sitting written before them, a mock
+      leg or a placement part: all of those are exam conditions. */
+  settings?: PracticeSettings;
+  /** The id of the paper actually sat, when it is a subset of the page's
+      paper (`reading-full-016-drill-p2`). `testId` stays the page's paper so
+      the sitting is found again on reload. */
+  paperId?: string;
+  /** True when this sitting was started with help (any setting other than
+      exam conditions): it is recorded as practice, never as an exam, even
+      when it is abandoned and only found stale on a later visit. */
+  practice?: boolean;
+  /** Question ids the student pressed Check on (check as you go). Locked:
+      their answers cannot change. */
+  checked?: string[];
   /** The owner this sitting was started under, as store-owner.ts spells an
       owner: 'u:<userId>' or 'anon:<deviceId>'. Optional, because a session
       written before this build has no owner written inside it; such a
@@ -312,19 +332,56 @@ function isSitting(s: TestSession, ref: PaperSittingRef): boolean {
     their own key and is left exactly where it is. The one write that may
     put a sitting in another's place (R2D-02): only "Start test", and a
     retake starting, call it. */
-export function startSession(test: PracticeTest): TestSession {
+export function startSession(test: PracticeTest, options: SittingStartOptions = {}): TestSession {
   const now = Date.now();
+  /* `clockMinutes` left out means the paper's own minutes; null means no
+     timer at all. */
+  const minutes = options.clockMinutes === undefined ? test.durationMinutes : options.clockMinutes;
   const s: TestSession = {
     version: 1,
     testId: test.id,
     sittingId: newSittingId(),
     startedAt: now,
-    endsAt: now + test.durationMinutes * 60_000,
+    endsAt: minutes === null ? null : now + minutes * 60_000,
     answers: {},
     owner: currentSessionOwner(),
+    ...(options.settings ? { settings: options.settings } : {}),
+    ...(options.paperId && options.paperId !== test.id ? { paperId: options.paperId } : {}),
+    ...(options.practice ? { practice: true } : {}),
   };
   write(s);
   return s;
+}
+
+/** What the start screen chose, for the one write that begins a sitting. All
+    optional: a retake, a mock leg and a placement part pass nothing and get
+    the paper's own clock, exactly as before. */
+export interface SittingStartOptions {
+  /** Minutes on the clock; null for no timer; left out for the paper's own. */
+  clockMinutes?: number | null;
+  settings?: PracticeSettings;
+  /** The id of the paper actually sat, when a subset of the page's paper. */
+  paperId?: string;
+  /** Started with help: recorded as practice. */
+  practice?: boolean;
+}
+
+/** A sitting with no timer: no deadline, never expires, never handed in by a
+    clock. */
+export function isUntimed(s: Pick<TestSession, 'endsAt'>): boolean {
+  return s.endsAt === null;
+}
+
+/** Whether a sitting's clock ran out by `now`. A sitting with no timer never
+    does. */
+export function sessionExpired(s: Pick<TestSession, 'endsAt'>, now: number = Date.now()): boolean {
+  return s.endsAt !== null && now >= s.endsAt;
+}
+
+/** Whether a sitting can still be picked up: it has time left, or has no
+    timer. What the Tests page asks before offering to resume. */
+export function sessionResumable(s: Pick<TestSession, 'endsAt'>, now: number = Date.now()): boolean {
+  return isUntimed(s) || secondsLeft(s, now) > 0;
 }
 
 /** The in-progress session for whichever test the CURRENT owner is part way
@@ -340,9 +397,27 @@ export function loadSession(testId: string): TestSession | null {
   return s && s.testId === testId ? s : null;
 }
 
-/** Seconds left for a session at `now`, floored at 0. */
+/** Seconds left for a session at `now`, floored at 0. A sitting with no
+    timer has no seconds left to count: 0 here, so ask isUntimed first (the
+    callers that matter do, see sessionResumable and sessionExpired). */
 export function secondsLeft(s: Pick<TestSession, 'endsAt'>, now: number = Date.now()): number {
-  return paperClockAt(s.endsAt, now).secondsLeft;
+  return s.endsAt === null ? 0 : paperClockAt(s.endsAt, now).secondsLeft;
+}
+
+/** Seconds really spent on a sitting that began at `startedAt` (epoch ms), at
+    `now`. It is the real time since the start, so it is right with extra time
+    and with no timer, where "the paper's minutes minus what was left" is not.
+    A sitting with a deadline (`endsAt`) never reports more than its own clock
+    allowed, so a tick that fires a moment late cannot show 60:01 on a 60
+    minute paper. A sitting whose start is not known reads as 0. */
+export function timeUsedSeconds(
+  startedAt: number | null,
+  endsAt: number | null,
+  now: number = Date.now(),
+): number {
+  if (startedAt === null) return 0;
+  const since = Math.max(0, Math.round((now - startedAt) / 1000));
+  return endsAt === null ? since : Math.min(since, Math.max(0, Math.round((endsAt - startedAt) / 1000)));
 }
 
 /* THE CLOCK OF A PAPER ON SCREEN IS ITS DEADLINE (fourth Codex round, 23
@@ -402,14 +477,21 @@ export function saveAnswers(
   answers: Record<string, string>,
   sittingOwner?: string,
   sitting?: PaperSittingRef,
+  extras?: SittingExtras,
 ): boolean {
   if (!ownerStillCurrent(sittingOwner)) return false;
   const s = read();
   if (!s) return false;
   if (sittingOwner && s.owner && s.owner !== sittingOwner) return false;
   if (sitting && !isSitting(s, sitting)) return false;
-  write({ ...s, answers });
+  write({ ...s, answers, ...(extras?.checked ? { checked: extras.checked } : {}) });
   return true;
+}
+
+/** What else a save carries beside the answers: the questions the student
+    checked (check as you go). Only the standalone slot keeps it. */
+export interface SittingExtras {
+  checked?: string[];
 }
 
 /** Clear the CURRENT owner's in-progress sitting. Another student's copy on
@@ -544,12 +626,19 @@ export function paperFinishLoss(finish: PaperFinish): SittingLoss | null {
 export interface PaperSittingStore {
   /** The sitting of this paper the current owner can resume, if any. */
   load(): TestSession | null;
-  /** A fresh sitting of this paper, with a fresh deadline and no answers. */
-  start(): TestSession;
+  /** A fresh sitting of this paper, with a fresh deadline and no answers.
+      `options` is what the start screen chose (clock, settings); a mock leg
+      and a placement part ignore it and keep the paper's own clock. */
+  start(options?: SittingStartOptions): TestSession;
   /** Save the answers of the sitting `sitting`, which `sittingOwner`
       started. False, writing nothing, once somebody else is using this
       browser, or when the stored sitting is not that one (R2D-02). */
-  save(answers: Record<string, string>, sittingOwner: string | undefined, sitting: PaperSittingRef | null): boolean;
+  save(
+    answers: Record<string, string>,
+    sittingOwner: string | undefined,
+    sitting: PaperSittingRef | null,
+    extras?: SittingExtras,
+  ): boolean;
   /** Why `sitting` is no longer the stored one, for good, or null while it
       still is (or the account changed, which is not a loss). */
   lost(sittingOwner: string | undefined, sitting: PaperSittingRef | null): SittingLoss | null;
@@ -572,14 +661,14 @@ export function standaloneSitting(test: PracticeTest): PaperSittingStore {
       everHeld = s !== null;
       return s;
     },
-    start: () => {
-      const s = startSession(test);
+    start: (options) => {
+      const s = startSession(test, options);
       everHeld = standaloneSittingStatus(s.owner, sittingRefOf(s)) === 'held';
       return s;
     },
-    save: (answers, sittingOwner, sitting) => {
+    save: (answers, sittingOwner, sitting, extras) => {
       if (!sitting) return false;
-      const saved = saveAnswers(answers, sittingOwner, sitting);
+      const saved = saveAnswers(answers, sittingOwner, sitting, extras);
       if (saved) everHeld = true;
       return saved;
     },
