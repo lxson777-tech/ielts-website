@@ -3128,13 +3128,18 @@ function fmtClock(seconds: number): string {
 /** The shared listening recording, in one of two very different modes per
     the house rule "trainers coach with every aid, tests are bare exam
     conditions":
-    - drill: full native controls (play/pause/seek/replay). If the part
-      carries startSeconds it seeks there on load and shows which slice of
-      the recording this drill covers; if it carries endSeconds it pauses
-      there automatically (seeking further is still allowed).
-    - full: bare exam conditions. A single "Start recording" button plays the
-      whole recording once from the beginning; no seek bar, no pause, no
-      replay, native controls are not rendered at all. */
+    - replay (a drill, or "Pause and replay" on a paper's start screen): full
+      native controls (play/pause/seek/replay). If the part carries
+      startSeconds it seeks there on load and shows which slice of the
+      recording it covers; if it carries endSeconds it pauses there
+      automatically (seeking further is still allowed).
+    - once (exam conditions): bare. A single "Start recording" button plays
+      the whole recording once from the beginning; no seek bar, no pause, no
+      replay, native controls are not rendered at all. A part that plays once
+      on its own (a placement part, or chosen parts of a paper) plays only
+      its own stretch, once.
+    `sliced` says each part plays only its own stretch; `replay` says whether
+    the controls are native. (practice settings, 9 October 2026) */
 function ListeningAudio({
   src,
   attemptKind,

@@ -1871,7 +1871,8 @@ test('R2C-03: the player\'s timer, its owner listener and its submit all read th
      both the history row and the evidence get that one figure. */
   assert.doesNotMatch(player, /secondsUsed: test\.durationMinutes \* 60 - /);
   assert.match(player, /const secondsUsed = timeUsedSeconds\(startedAtRef\.current, deadline\);/);
-  assert.equal((player.match(/^\s+secondsUsed,$/gm) ?? []).length, 2, 'the history row and the evidence share one time used');
+  const handIn = player.slice(player.indexOf('function handleSubmit()'), player.indexOf('const unansweredCount'));
+  assert.equal((handIn.match(/^\s+secondsUsed,$/gm) ?? []).length, 2, 'the history row and the evidence share one time used');
   assert.doesNotMatch(player, /secondsUsed: test\.durationMinutes \* 60 - timeLeft/);
   /* Every place a sitting is picked up or started sets the deadline. */
   assert.equal((player.match(/deadlineRef\.current = s\.endsAt;/g) ?? []).length, 2);
