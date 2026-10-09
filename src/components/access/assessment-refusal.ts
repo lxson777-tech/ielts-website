@@ -49,6 +49,9 @@ export type RefusalKind =
   | 'daily-limit'
   /** A live interview needs paid access. */
   | 'paid-required'
+  /** A free account's one free try of this kind (an essay check, a recorded
+      Speaking check) is used up (HTTP 402 `taster-used`). */
+  | 'taster-used'
   /** The same assessment is already being graded, or was. */
   | 'already-requested'
   /** Interview feedback asked for a session that is not this student's. */
@@ -67,6 +70,7 @@ export const ASSESSMENT_REFUSAL_REASONS: Readonly<Record<string, RefusalKind>> =
   'placement-used': 'placement-taken',
   'trial-ended': 'trial-ended',
   'paid-required': 'paid-required',
+  'taster-used': 'taster-used',
   'daily-limit': 'daily-limit',
   'already-requested': 'already-requested',
   'unknown-session': 'unknown-session',
@@ -94,6 +98,8 @@ export const ASSESSMENT_REFUSAL_CODES: Readonly<Record<string, RefusalKind>> = {
   /* The free-account model (1 October 2026): every AI Worker refuses an
      account without practice and guidance with HTTP 402 and this code. */
   'paid-required': 'paid-required',
+  /* A free account's free try is used up (10 October 2026). */
+  'taster-used': 'taster-used',
   'assessment-already-requested': 'already-requested',
   'assessment-in-flight': 'already-requested',
   'assessment-unknown-session': 'unknown-session',
@@ -134,12 +140,12 @@ export function refusalKind(code: string, serverMessage = '', reason = ''): Refu
     an ended trial or a taken placement will refuse again, so the screen
     offers the way forward instead of "try again". */
 export function refusalIsFinal(kind: RefusalKind): boolean {
-  return kind === 'used-up' || kind === 'mock-used-up' || kind === 'placement-taken' || kind === 'trial-ended' || kind === 'paid-required' || kind === 'unknown-session';
+  return kind === 'used-up' || kind === 'mock-used-up' || kind === 'placement-taken' || kind === 'trial-ended' || kind === 'paid-required' || kind === 'taster-used' || kind === 'unknown-session';
 }
 
 /** Whether the Plans page is the way forward. */
 export function refusalOffersPlans(kind: RefusalKind): boolean {
-  return kind === 'used-up' || kind === 'mock-used-up' || kind === 'trial-ended' || kind === 'paid-required';
+  return kind === 'used-up' || kind === 'mock-used-up' || kind === 'trial-ended' || kind === 'paid-required' || kind === 'taster-used';
 }
 
 /** A period's date inside a sentence: "31 October 2026" / "31 октября 2026".
@@ -224,6 +230,13 @@ export function refusalMessage(
       return input.what === 'live' || input.what === 'feedback'
         ? t('Live interviews are included with paid access. Recorded Speaking and Writing assessments are on the Plans page too.')
         : join(t('AI feedback comes with practice and guidance. Nothing was used.'), kept);
+    case 'taster-used':
+      return join(
+        input.what === 'speaking'
+          ? t('You have already used your free Speaking check. Nothing was used.')
+          : t('You have already used your free essay check. Nothing was used.'),
+        kept,
+      );
     case 'already-requested':
       return t('This is already being assessed. Give it a moment, then refresh the page to see the result.');
     case 'unknown-session':

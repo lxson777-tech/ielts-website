@@ -16,8 +16,13 @@ const REFUSAL_PREFIX = /^(trial|assessment|allowance)-/;
     here so this file stays dependency-free. */
 const PAID_REQUIRED = 'paid-required';
 
+/** A free account's try of this kind is used up (HTTP 402, free AI tries of
+    10 October 2026; src/lib/access/taster.ts TASTER_USED_CODE). Only the
+    essay and recorded Speaking graders have a free try. */
+const TASTER_USED = 'taster-used';
+
 export function isGraderRefusalCode(code: string): boolean {
-  return code === 'sign-in-required' || code === PAID_REQUIRED || REFUSAL_PREFIX.test(code);
+  return code === 'sign-in-required' || code === PAID_REQUIRED || code === TASTER_USED || REFUSAL_PREFIX.test(code);
 }
 
 /** The live examiner's refusals: the same prefixes (its sign-in failure is

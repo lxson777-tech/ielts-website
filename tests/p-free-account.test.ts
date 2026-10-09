@@ -248,7 +248,9 @@ test('a 402 paid-required refusal is a refusal, never an outage, and opens the p
   assert.equal(refusalUpgradeFeature('used-up', 'writing'), null, 'an allowance used is not an upgrade');
   const en = (text: string, vars?: Record<string, string | number>) => interpolate(text, vars);
   assert.match(refusalMessage({ kind: 'paid-required', what: 'writing' }, null, NOW, en, 'en'), /^AI feedback comes with practice and guidance\. Nothing was used\. Your essay is safe on this page\.$/);
-  assert.match(read('src/lib/tutor/client.ts'), /if \(resp\.status === 402\) code = 'paid-required';/);
+  /* Free AI tries (10 October 2026): a 402 whose code is taster-used stays
+     taster-used; every other 402 is still paid-required. */
+  assert.match(read('src/lib/tutor/client.ts'), /if \(resp\.status === 402 && code !== 'taster-used'\) code = 'paid-required';/);
   assert.match(read('src/components/tutor/MrEzPanel.tsx'), /clientError\?\.code === PAID_REQUIRED_CODE\) openUpgrade\('tutor'/);
 });
 

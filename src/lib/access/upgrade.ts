@@ -7,6 +7,7 @@
 
 import type { PaidFeature } from './model';
 import { nt } from '../i18n/translate';
+import { TASTER_USED_CODE } from './taster';
 
 export const UPGRADE_EVENT = 'ielts:upgrade';
 
@@ -26,15 +27,28 @@ export function isPaidRequired(status: number, code: string | null | undefined, 
   return code === PAID_REQUIRED_CODE || reason === PAID_REQUIRED_CODE || (status === PAID_REQUIRED_STATUS && !code);
 }
 
+/** Whether a Worker's reply says a free try was already used up (HTTP 402
+    `taster-used`, src/lib/access/taster.ts). Check it BEFORE isPaidRequired:
+    that one reads a 402 with no code at all as paid-required. */
+export function isTasterUsed(_status: number, code: string | null | undefined, reason?: string | null): boolean {
+  return code === TASTER_USED_CODE || reason === TASTER_USED_CODE;
+}
+
 export interface UpgradeRequest {
   feature: PaidFeature | 'first-lesson';
   /** Where the request came from, for the dialog's return link. */
   from?: string;
+  /** 'taster-used': the server refused because the account's free try of
+      this kind is used up. The pop-up says so, then gives the pitch. */
+  reason?: 'taster-used';
 }
 
-export function openUpgrade(feature: UpgradeRequest['feature'], opts: { from?: string } = {}): void {
+export function openUpgrade(
+  feature: UpgradeRequest['feature'],
+  opts: { from?: string; reason?: UpgradeRequest['reason'] } = {},
+): void {
   if (typeof window === 'undefined') return;
-  window.dispatchEvent(new CustomEvent<UpgradeRequest>(UPGRADE_EVENT, { detail: { feature, from: opts.from } }));
+  window.dispatchEvent(new CustomEvent<UpgradeRequest>(UPGRADE_EVENT, { detail: { feature, from: opts.from, reason: opts.reason } }));
 }
 
 export function onUpgrade(listener: (request: UpgradeRequest) => void): () => void {
