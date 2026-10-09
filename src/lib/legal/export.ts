@@ -44,6 +44,7 @@ export const EXPORT_TABLES: { table: string; description: string }[] = [
   { table: 'trial_accounts', description: nt('Your trial, if you had one.') },
   { table: 'trial_usage', description: nt('What you used during the trial.') },
   { table: 'assessment_usage', description: nt('Each AI assessment counted against your access.') },
+  { table: 'tutor_taster_uses', description: nt('Each AI assessment counted against your access.') },
   { table: 'access_grants', description: nt('Your periods of access.') },
   { table: 'payment_orders', description: nt('Your purchases and receipts.') },
 ];
